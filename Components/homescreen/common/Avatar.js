@@ -96,10 +96,10 @@ export default class Avatarcommon  extends React.Component{
 Listrenderer=({id,user,tag,icon})=>{
     return(
     <CardItem style={styles.carditem}>
-        <Card>
-    <View style={{ justifyContent: 'center', alignContent: 'center', alignItems: 'center', width: 100}}>
+        <Card style={{backgroundColor:'yellow'}}>
+    <View style={{ justifyContent: 'center', alignContent: 'center', alignItems: 'center', width: 100,backgroundColor:'#0E043B'}}>
         <Avatar rounded size='large' source={{uri:icon}} /> 
-        <View style={{paddingTop: 10}}>
+        <View style={{paddingTop: 10,}}>
         <TouchableOpacity
           style={styles.follow}
           activeOpacity={0.5}
@@ -125,10 +125,6 @@ Listrenderer=({id,user,tag,icon})=>{
     }
         return(
             <View style={styles.screen}>
-              <View style={{flex: 1, flexDirection: 'row'}}>
-                <View style={{flex: 1}}>
-                </View>
-              </View>
               <FlatList
                 horizontal
                 pagingEnabled={true}
@@ -163,7 +159,7 @@ carditem:{
     backgroundColor:'#0E043B'
 },
 follow:{
-    backgroundColor:'#0E043B',
+    backgroundColor:'green',
     width:80,
     justifyContent:'center',
 },
@@ -172,7 +168,7 @@ followtext:{
     textAlign:"center",
 },
 title:{
-    color:'#0E043B'
+    color:'white'
 }
 }
 );

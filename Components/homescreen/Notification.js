@@ -1,6 +1,6 @@
 import React, { Component,useState } from 'react';
 import { Image ,StyleSheet,SafeAreaView,FlatList} from 'react-native';
-import { Container, Header, Content, List, ListItem, Thumbnail, Text, Left, Body, Right, Button ,TextInput,Item,Icon,Input} from 'native-base';
+import { Container, Header, Content, List, ListItem, Thumbnail, Text, Left, Body, Right, Button ,TextInput,Item,Icon,Input,Title,} from 'native-base';
 import { EvilIcons,AntDesign,FontAwesome5,Entypo} from '@expo/vector-icons';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
@@ -105,9 +105,27 @@ export default class notifications extends React.Component{
 
     return (
         <Container>
-        <Header style = {styles.header} >
-        <Text style = {styles.feeds}>Notifications</Text>
-</Header>
+      <Header>
+          <Left>
+            <Button transparent>
+              <Icon name='menu' />
+            </Button>
+          </Left>
+          <Body>
+            <Title>Notifications</Title>
+          </Body>
+          <Right>
+            <Button transparent>
+              <Icon name='search' />
+            </Button>
+            <Button transparent>
+              <Icon name='share' />
+            </Button>
+            <Button transparent>
+              <Icon name='settings' />
+            </Button>
+          </Right>
+        </Header>
 <Content>
 <Text style = {{color:'black'}}>Today</Text>
 <FlatList

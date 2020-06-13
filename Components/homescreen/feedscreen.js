@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Image ,StyleSheet,FlatList,ScrollView} from 'react-native';
-import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body } from 'native-base';
+import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body ,Title,Right} from 'native-base';
 import { EvilIcons,AntDesign,FontAwesome5,Entypo} from '@expo/vector-icons';
 const bloginfo =[
     {
@@ -49,10 +49,15 @@ const bloginfo =[
                 }
 ]
 
-export default class blogpage extends Component {
+export default class Blogpage extends Component {
   constructor(props){
     super(props);
 }
+static navigationOptions = {
+  title: 'Sign up',
+  headerStyle: { backgroundColor: 'white' },
+  headerTitleStyle: { color: 'black',textAlign:'center' },
+};
 Listrenderer({id,user,date,icon,description,postimage,like,comment,upvote}){
     return(
         <ScrollView>
@@ -107,12 +112,28 @@ Listrenderer({id,user,date,icon,description,postimage,like,comment,upvote}){
   render() {   
     return (
     <Container>
-          <Content>
-        <Header style = {styles.header}>
+      <Header>
           <Left>
-          <Text style = {styles.feeds}>Feeds</Text>
+            <Button transparent>
+              <Icon name='menu' />
+            </Button>
           </Left>
+          <Body>
+            <Title>Feed</Title>
+          </Body>
+          <Right>
+            <Button transparent>
+              <Icon name='search' />
+            </Button>
+            <Button transparent>
+              <Icon name='share' />
+            </Button>
+            <Button transparent>
+              <Icon name='settings' />
+            </Button>
+          </Right>
         </Header>
+          <Content>
         <FlatList
         data={bloginfo}
      renderItem={({ item }) => ( 

@@ -9,6 +9,7 @@ import blogpage from '../Components/homescreen/feedscreen';
 import notifications from '../Components/homescreen/Notification';
 import profile from '../Components/homescreen/profile';
 const Tab = createMaterialBottomTabNavigator();
+
 const MaintabScreen = () =>(
         <NavigationContainer>
         <Tab.Navigator

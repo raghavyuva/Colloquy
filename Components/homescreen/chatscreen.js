@@ -1,193 +1,190 @@
-import React from 'react';
-import { Dimensions,StyleSheet,View,ScrollView,TouchableOpacity} from 'react-native';
-import { Card, Image, Avatar, ListItem, FlatList } from 'react-native-elements';
+import React, { Component,useState } from 'react';
+import { Image ,StyleSheet,SafeAreaView,FlatList,TouchableOpacity} from 'react-native';
+import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body,Drawer,View,ListItem,Right,Radio, List,Title} from 'native-base';
+import { EvilIcons,AntDesign,FontAwesome5,Entypo} from '@expo/vector-icons';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
-import {Text} from 'native-base';
-import chatwithme from './openchat';
-const { width: screenWidth } = Dimensions.get('window');
+import { ScrollView } from 'react-native-gesture-handler';
 
-const Data=[
-  {
-    id:"1",
-    image:require('../../assets/MichaelRosen.jpg'),
-    Author: "Michael Rosen",
-    recentchat: "Hi. How are you?",
-    recentchattime: "12:45 am"
-  },
-  {
-    id:"2",
-    image:require('../../assets/MarcusBerkmann.jpg'),
-    Author: "Marcus Berkmann",
-    recentchat: "Hi. How are you?",
-    recentchattime: "12:45 am"
-  },
-  {
-    id:"3",
-    image:require('../../assets/DeliaOwens.jpg'),
-    Author: "Delia Owens",
-    recentchat: "Hi. How are you?",
-    recentchattime: "12:45 am"
-  },
-  {
-    id:"4",
-    image:require('../../assets/StassiSchroeder.jpg'),
-    Author: "Stassi Schroeder",
-    recentchat: "Hi. How are you?",
-    recentchattime: "12:45 am"
-  },
-  {
-    id:"5",
-    image:require('../../assets/MichaelRosen.jpg'),
-    Author: "Michael Rosen",
-    recentchat: "Hi. How are you?",
-    recentchattime: "12:45 am"
-  },
-  {
-    id:"6",
-    image:require('../../assets/MarcusBerkmann.jpg'),
-    Author: "Marcus Berkmann",
-    recentchat: "Hi. How are you?",
-    recentchattime: "12:45 am"
-  },
-  {
-    id:"7",
-    image:require('../../assets/DeliaOwens.jpg'),
-    Author: "Delia Owens",
-    recentchat: "Hi. How are you?",
-    recentchattime: "12:45 am"
-  },
-  {
-    id:"8",
-    image:require('../../assets/StassiSchroeder.jpg'),
-    Author: "Stassi Schroeder",
-    recentchat: "Hi. How are you?",
-    recentchattime: "12:45 am"
-  },
-  {
-    id:"9",
-    image:require('../../assets/MarcusBerkmann.jpg'),
-    Author: "Marcus Berkmann",
-    recentchat: "Hi. How are you?",
-    recentchattime: "12:45 am"
-  },
-  {
-    id:"10",
-    image:require('../../assets/DeliaOwens.jpg'),
-    Author: "Delia Owens",
-    recentchat: "Hi. How are you?",
-    recentchattime: "12:45 am"
-  },
-  {
-    id:"11",
-    image:require('../../assets/StassiSchroeder.jpg'),
-    Author: "Stassi Schroeder",
-    recentchat: "Hi. How are you?",
-    recentchattime: "12:45 am"
-  }
+export default class ChatTab extends React.Component{
+	constructor(props){
+		super(props);
+	}
+	Listrenderer=({id,user,tag,time,message,pic})=>{
+		return(
+			<TouchableOpacity>
+			<List>
+            <ListItem avatar>
+              <Left>
+                <Thumbnail source={{ uri: pic}} />
+              </Left>
+              <Body>
+                <Text>{user} </Text>
+                <Text note>{tag} </Text>
+              </Body>
+              <Right>
+			  <Text note style={{color:'green',fontSize:15,fontWeight:'bold'}}>{message}</Text>	  
+		<Text note>{time}</Text>
+              </Right>
+            </ListItem>
+          </List>
+		  </TouchableOpacity>
+		);
+	}
+	render(){
+		return(
+<Container>
+<Header>
+          <Left>
+            <Button transparent>
+              <Icon name='menu' />
+            </Button>
+          </Left>
+          <Body>
+            <Title>Chat</Title>
+          </Body>
+          <Right>
+            <Button transparent>
+              <Icon name='search' />
+            </Button>
+            <Button transparent>
+              <Icon name='share' />
+            </Button>
+            <Button transparent>
+              <Icon name='settings' />
+            </Button>
+          </Right>
+        </Header>
+		<Content>
+<FlatList
+                pagingEnabled={true}
+                showsHorizontalScrollIndicator={false}
+                data={listofchats}
+                renderItem={({item})=>
+                <this.Listrenderer
+                id={item.id}
+                user={item.username}
+				tag={item.recent}
+				time={item.time}
+				message={item.numberofmessage}
+                pic={item.userpic}
+              />
+            }
+          keyExtractor={item => item.id}
+              />
+			  </Content>
+</Container>
+		);
+	}
+}
+const Styles = StyleSheet.create({
+
+});
+
+const listofchats =[
+	{
+		id:'1',
+		username:'Helium',
+		userpic:'https://randomuser.me/api/portraits/women/87.jpg',
+		time:'10.40 pm',
+		numberofmessage:'3',
+		recent:'Call me,lets have a party',
+	},
+	{
+		id:'2',
+		username:'Cadmium',
+		userpic:'https://randomuser.me/api/portraits/men/21.jpg',
+		time:'8.30 pm',
+		numberofmessage:'9',
+		recent:'Hey raghav',
+	},
+	{
+		id:'3',
+		username:'john ',
+		userpic:'https://randomuser.me/api/portraits/women/8.jpg',
+		time:'6.50 pm',
+		numberofmessage:'7',
+		recent:'call me its urgent',
+	},
+	{
+		id:'4',
+		username:'Tarest',
+		userpic:'https://randomuser.me/api/portraits/men/11.jpg',
+		time:'6.10',
+		numberofmessage:'2',
+		recent:'Thanks for the treat',
+	},
+	{
+		id:'5',
+		username:'Owela Enizuela',
+		userpic:'https://randomuser.me/api/portraits/men/50.jpg',
+		time:'5.00 pm',
+		numberofmessage:'8',
+		recent:'i saw you there',
+	},
+	{
+		id:'6',
+		username:'Heaster',
+		userpic:'https://randomuser.me/api/portraits/women/77.jpg',
+		time:'4.15 pm',
+		numberofmessage:'6',
+		recent:'please help me out',
+	},
+	{
+		id:'7',
+		username:'Balrace',
+		userpic:'https://randomuser.me/api/portraits/men/63.jpg',
+		time:'3.0 pm',
+		numberofmessage:'4',
+		recent:'myself Balrance',
+	},
+	{
+		id:'8',
+		username:'Christopher',
+		userpic:'https://randomuser.me/api/portraits/men/27.jpg',
+		time:'2.50 pm',
+		numberofmessage:'3',
+		recent:'meet me tomorrow',
+	},
+	{
+		id:'9',
+		username:'Kallius',
+		userpic:'https://randomuser.me/api/portraits/men/44.jpg',
+		time:'1.08 pm',
+		numberofmessage:'6',
+		recent:'ok,fine no probs',
+	},
+	{
+		id:'10',
+		username:'Sherry',
+		userpic:'https://randomuser.me/api/portraits/men/3.jpg',
+		time:'12.00 am',
+		numberofmessage:'8',
+		recent:'pop up notification',
+	},
+	{
+		id:'11',
+		username:'Helium',
+		userpic:'https://randomuser.me/api/portraits/women/87.jpg',
+		time:'10.40 am',
+		numberofmessage:'3',
+		recent:'Call me,lets have a party',
+	},
+	{
+		id:'12',
+		username:'Cadmium',
+		userpic:'https://randomuser.me/api/portraits/men/21.jpg',
+		time:'8.30 am',
+		numberofmessage:'9',
+		recent:'Hey raghav',
+	},
+	{
+		id:'13',
+		username:'john ',
+		userpic:'https://randomuser.me/api/portraits/women/8.jpg',
+		time:'6.50 am',
+		numberofmessage:'7',
+		recent:'call me its urgent',
+	},
+
 ]
-
-class ChatTab  extends React.Component{
-  static navigationOptions = ({ navigation }) => {
-    return {
-       header: () => null
-    } 
-}
-  constructor(props){
-    super(props);
-  }
-  
-  state = {
-    data: {},
-    loading: true
-  }
-
-  componentWillReceiveProps(){
-    this.setState({data: this.props.data})
-  }
-
-  async componentDidMount() {
-    await Font.loadAsync({
-      'Roboto': require('native-base/Fonts/Roboto.ttf'),
-      'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
-      ...Ionicons.font,
-    })
-    this.setState({ loading: false })
-  }
-
-  render(){
-    if (this.state.loading) {
-      return (
-        <View></View>
-      );
-    }
-        return(
-            <View style={styles.screen}>
-              <ScrollView>
-                {
-                  Data.map((l, i) => (
-                    <ListItem
-                      key={i}
-                      leftAvatar={{ source: l.image, size: 'medium' }}
-                      title={l.Author}
-                      subtitle={l.recentchat}
-                      rightSubtitle={l.recentchattime}
-                      bottomDivider
-                      badge={{ status: "success", value: 8, textStyle: { color: '#ffffff' } }}
-                      onPress={()=>this.props.navigation.navigate('openchat') }
-                    />
-                  ))
-                }
-              </ScrollView>
-
-            </View>
-
-         
-        );
-    }
-  }
-
-
-
-const styles = StyleSheet.create({
-screen: {
-    flex:1,
-    flexDirection: 'column',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0
-},
-TextBold:{
-  fontSize:20,
-  fontWeight:"bold",
-  paddingLeft:20
-},
-title: {
-    paddingTop: 10, 
-    fontSize: 16, 
-    fontWeight: 'bold',
-    justifyContent: 'center',
-    alignSelf: 'center',
-    textAlign: 'center'
-},
-ButtonStyle: {
-  justifyContent: 'center',
-  textAlign: 'center',
-  backgroundColor: '#5abd8c',
-  borderWidth: 0,
-  alignSelf: 'center',
-  borderRadius: 20,
-  width: 100,
-  height: 30
-},
-ButtonText:{
-  fontSize:18,
-  fontWeight:"bold",
-  textAlign: 'center',
-  color: '#ffffff'
-},
-}
-);
-
-export default ChatTab;

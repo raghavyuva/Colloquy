@@ -8,11 +8,11 @@ import {
   import { Ionicons } from '@expo/vector-icons';
   'use strict';
 export default class Signuppage extends ValidationComponent {
-    static navigationOptions = {
-        title: 'Sign up',
-        headerStyle: { backgroundColor: 'white' },
-        headerTitleStyle: { color: 'black',textAlign:'center' },
-      };
+  static navigationOptions = {
+    title: 'Sign up',
+    headerStyle: { backgroundColor: 'white' },
+    headerTitleStyle: { color: 'black',textAlign:'center' },
+  };
     constructor(props){
         super(props);
       this.state = {email:"",pass:'',name:'',number:'',usn:''};

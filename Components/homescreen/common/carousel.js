@@ -5,6 +5,7 @@ import Carousel, { Pagination, ParallaxImage  } from 'react-native-snap-carousel
 import {Thumbnail, Text, Left, Body, Button ,Card,CardItem,Image} from 'native-base';
 const { width: screenWidth } = Dimensions.get('window');
 import { EvilIcons,AntDesign,FontAwesome5,Entypo} from '@expo/vector-icons';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const bloginfo =[
     {
@@ -91,6 +92,7 @@ export default class Carouselimage extends React.Component{
                {item.description}
               </Text>
             </Body>
+
           </CardItem>
           <CardItem>
             

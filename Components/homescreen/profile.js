@@ -1,99 +1,95 @@
 import React, { Component } from 'react';
-import { Image ,StyleSheet} from 'react-native';
-import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body } from 'native-base';
-import { EvilIcons,AntDesign,FontAwesome5} from '@expo/vector-icons';
+import { StyleSheet,FlatList,ScrollView} from 'react-native';
+import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body,Title,Right, List,ListItem} from 'native-base';
+import { EvilIcons,AntDesign,FontAwesome5,MaterialCommunityIcons} from '@expo/vector-icons';
+import Blogpage from '../../Components/homescreen/feedscreen';
+const profiledetails =[
+  {
+id:'1',
+username:'Tarest',
+userpic:'https://randomuser.me/api/portraits/men/11.jpg',
+tagline:'developer, Engineering student,pro skilled Programmer,indian  geek',
+usn:'1cd15cs098'
+  }
+]
 
-
-export default class blogpage extends Component {
+export default class profile extends Component {
   constructor(props){
     super(props);
 }
+Listrenderer =({id,pic,user,tag,usn})=>{
+  return(
+<Content>
+<Card style ={styles.card}>
+<List>
+  <ListItem>
+  <Thumbnail source ={{uri:pic}} large style={{width:200,height:160}}/>
+  </ListItem>
+  <ListItem>
+  <Left>
+  <Text style={styles.text}>{user}</Text> 
+  </Left>
+  </ListItem>
+  <ListItem>
 
+  <Text  style={styles.text}>{tag}</Text>
+  
+  </ListItem>
+  <ListItem>
+
+  <Text  style={styles.text}>{usn}</Text>
+  </ListItem>
+  </List>
+</Card>
+<Button style={styles.edit}><Text>Edit profile</Text></Button>
+<Text>Recent Posts</Text>
+<ScrollView>
+<Blogpage/>
+</ScrollView>
+</Content>
+  );
+}
   render() {   
     return (
       <Container>
-        <Header style = {styles.header}>
+        <Header>
           <Left>
-          <Text style = {styles.feeds}>Feeds</Text>
+            <Button transparent>
+              <Icon name='menu' />
+            </Button>
           </Left>
+          <Body>
+            <Title>Profile</Title>
+          </Body>
+          <Right>
+            <Button transparent>
+              <Icon name='search' />
+            </Button>
+            <Button transparent>
+              <Icon name='share' />
+            </Button>
+            <Button transparent>
+              <Icon name='settings' />
+            </Button>
+          </Right>
         </Header>
-        <Content>
-          <Card style={styles.card}>
-            <CardItem>
-              <Body>
-                <Image source={{uri: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Flerablog.org%2Fwp-content%2Fuploads%2F2018%2F01%2Fgtrgrtgfgfgs.jpg&f=1&nofb=1'}} style={{height: 400, width: 350, flex: 1}}/>
-                <Text>
-                  my first post gefgewgfgedfgedugd
-                </Text>
-              </Body>
-            </CardItem>
-            <CardItem>
-              <Left>
-                <Thumbnail source={{uri: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.q4eUNekkKecXzcmJNlUA1AHaHa%26pid%3DApi&f=1'}} />
-                <Body>
-                  <Text>hayley barnes</Text>
-                  <Text note>April 15, 2048</Text>
-                </Body>
-                <Button style = {styles.follow}><Text>follow</Text></Button>
-              </Left>
-            </CardItem>
-            <CardItem>
+<FlatList
+                pagingEnabled={true}
+                showsHorizontalScrollIndicator={false}
+                data={profiledetails}
+                renderItem={({item})=>
+                <this.Listrenderer
+                id={item.id}
+                user={item.username}
+				tag={item.tagline}
+                pic={item.userpic}
+                usn={item.usn}
+              />
+            }
+          keyExtractor={item => item.id}
+              />
+           
               
-              <Left>
-                <Button transparent textStyle={{color: '#87838B'}}>
-                <EvilIcons name="comment" size={24} color="black" />
-                  <Text style = {{textTransform:'capitalize'}}>20 Comments</Text>
-                </Button>
-                <Button transparent textStyle={{color: '#87838B'}}>
-                <AntDesign name="heart" size={24} color="black" />
-               <Text style = {{textTransform:'capitalize'}}>1k Likes</Text>
-                </Button>
-                <Button transparent textStyle={{color: '#87838B'}}>
-                <FontAwesome5 name="share" size={24} color="black" />
-               <Text style = {{textTransform:'capitalize'}}>share</Text>
-                </Button>
-              </Left>
-            </CardItem>
-          </Card>
-          <Card style={styles.card}>
-            <CardItem>
-              <Body>
-                <Image source={{uri: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Flerablog.org%2Fwp-content%2Fuploads%2F2018%2F01%2Fgtrgrtgfgfgs.jpg&f=1&nofb=1'}} style={{height: 400, width: 350, flex: 1}}/>
-                <Text>
-                  my first post gefgewgfgedfgedugd
-                </Text>
-              </Body>
-            </CardItem>
-            <CardItem>
-              <Left>
-                <Thumbnail source={{uri: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.q4eUNekkKecXzcmJNlUA1AHaHa%26pid%3DApi&f=1'}} />
-                <Body>
-                  <Text>hayley barnes</Text>
-                  <Text note>April 15, 2048</Text>
-                </Body>
-                <Button style = {styles.follow}><Text>following</Text></Button>
-              </Left>
-            </CardItem>
-            <CardItem>
-              
-              <Left>
-                <Button transparent textStyle={{color: '#87838B'}}>
-                <EvilIcons name="comment" size={24} color="black" />
-                  <Text style = {{textTransform:'capitalize'}}>20 Comments</Text>
-                </Button>
-                <Button transparent textStyle={{color: '#87838B'}}>
-                <AntDesign name="heart" size={24} color="black" />
-               <Text style = {{textTransform:'capitalize'}}>1k Likes</Text>
-                </Button>
-                <Button transparent textStyle={{color: '#87838B'}}>
-                <FontAwesome5 name="share" size={24} color="black" />
-               <Text style = {{textTransform:'capitalize'}}>share</Text>
-                </Button>
-              </Left>
-            </CardItem>
-          </Card>
-        </Content>
-        
       </Container>
       
     );
@@ -109,10 +105,25 @@ feeds:{
   fontSize:26,
 },
 card:{
-  flex:0,
+ justifyContent:'center',
+ alignSelf:'center',
+ width:400,
+ height:400,
+ alignItems:'center',
+ backgroundColor:'#0E043B',
 },
 follow:{
   backgroundColor:'red'
 },
+text:{
+  color:"#FFF"
+},
+edit:{
+  borderRadius:2,
+  justifyContent:'center',
+  backgroundColor:'black',
+  width:400,
+  alignSelf:'center'
+}
 
 })
