@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Image ,StyleSheet,FlatList,ScrollView} from 'react-native';
-import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body ,Title,Right} from 'native-base';
+import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body ,Title,Right,DeckSwiper,View} from 'native-base';
 import { EvilIcons,AntDesign,FontAwesome5,Entypo} from '@expo/vector-icons';
 const bloginfo =[
     {
@@ -8,8 +8,8 @@ const bloginfo =[
     username:'David Rodrigues',
     date:'April 15, 2048',
     description:'my first post gefgewgfgedfgedugd',
-    postimage:'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimages.wallpapersden.com%2Fimage%2Fdownload%2Fsmall-memory_58461_3840x2160.jpg&f=1&nofb=1',
-    commentnum:'21',
+    postimage:'https://randomuser.me/api/portraits/men/63.jpg',
+   comment:'21',
     likenum:'1k',
     upvotenum:'100',
     id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
@@ -19,8 +19,8 @@ const bloginfo =[
         username:'David ',
         date:'April 15, 2048',
         description:'my first post gefgewgfgedfgedugd',
-        postimage:'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimages.wallpapersden.com%2Fimage%2Fdownload%2Fsmall-memory_58461_3840x2160.jpg&f=1&nofb=1',
-        commentnum:'21',
+        postimage:'https://randomuser.me/api/portraits/women/87.jpg',
+       comment:'21',
         likenum:'1k',
         upvotenum:'100',
         id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
@@ -30,8 +30,8 @@ const bloginfo =[
             username:'David Rodrigues',
             date:'April 15, 2048',
             description:'my first post gefgewgfgedfgedugd',
-            postimage:'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimages.wallpapersden.com%2Fimage%2Fdownload%2Fsmall-memory_58461_3840x2160.jpg&f=1&nofb=1',
-            commentnum:'21',
+            postimage:'https://randomuser.me/api/portraits/men/21.jpg',
+           comment:'21',
             likenum:'1k',
             upvotenum:'100',
             id: '3ac68afc-c605-48d3-a4f8-fbd91aa97ffh',
@@ -41,15 +41,15 @@ const bloginfo =[
                 username:'David Rodrigues',
                 date:'April 15, 2048',
                 description:'my first post gefgewgfgedfgedugd',
-                postimage:'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimages.wallpapersden.com%2Fimage%2Fdownload%2Fsmall-memory_58461_3840x2160.jpg&f=1&nofb=1',
-                commentnum:'21',
+                postimage:'https://randomuser.me/api/portraits/men/11.jpg',
+               comment:'21',
                 likenum:'1k',
                 upvotenum:'100',
                 id: '3ac68afc-c605-48d3-a4f8-fbd91aa97sdf',
                 }
 ]
 
-export default class Blogpage extends Component {
+export default class FeedComponent extends Component {
   constructor(props){
     super(props);
 }
@@ -58,15 +58,15 @@ static navigationOptions = {
   headerStyle: { backgroundColor: 'white' },
   headerTitleStyle: { color: 'black',textAlign:'center' },
 };
-Listrenderer({id,user,date,icon,description,postimage,like,comment,upvote}){
+Listrenderer({id,userpic,date,username,description,postimage,likenum,upvotenum,comment}){
     return(
-        <ScrollView>
+    
     <Card style={styles.card}>
     <CardItem>
         <Left>
-          <Thumbnail source={{uri: icon}} />
+          <Thumbnail source={{uri: userpic}} />
           <Body>
-             <Text>{user}</Text>
+             <Text>{username}</Text>
             <Text note>{date} </Text>
           </Body>
           <Button style = {styles.follow}>
@@ -76,7 +76,7 @@ Listrenderer({id,user,date,icon,description,postimage,like,comment,upvote}){
       </CardItem>
       <CardItem>
         <Body>
-          <Image source={{uri: postimage}} style={{height: 400, width: 380, flex: 1}}/>
+          <Image source={{uri: postimage}} style={{height: 300, width: 380, flex: 1}}/>
           <Text>
            {description}
           </Text>
@@ -91,7 +91,7 @@ Listrenderer({id,user,date,icon,description,postimage,like,comment,upvote}){
           </Button>
           <Button transparent textStyle={{color: '#87838B'}}>
           <AntDesign name="heart" size={24} color="black" />
-         <Text style = {{textTransform:'capitalize'}}>{like}</Text>
+         <Text style = {{textTransform:'capitalize'}}>{likenum}</Text>
           </Button>
           <Button transparent textStyle={{color: '#87838B'}}>
           <FontAwesome5 name="share" size={24} color="black" />
@@ -99,59 +99,30 @@ Listrenderer({id,user,date,icon,description,postimage,like,comment,upvote}){
           </Button>
           <Button transparent>
           <FontAwesome5 name="hand-point-up" size={24} color="black" />
-          <Text style = {{textTransform:'capitalize'}}>{upvote}</Text>
+          <Text style = {{textTransform:'capitalize'}}>{upvotenum}</Text>
           </Button>
         </Left>
       </CardItem>
+
     </Card>
-    </ScrollView>
+   
     );
        
 }
 
   render() {   
     return (
-    <Container>
-      <Header>
-          <Left>
-            <Button transparent>
-              <Icon name='menu' />
-            </Button>
-          </Left>
-          <Body>
-            <Title>Feed</Title>
-          </Body>
-          <Right>
-            <Button transparent>
-              <Icon name='search' />
-            </Button>
-            <Button transparent>
-              <Icon name='share' />
-            </Button>
-            <Button transparent>
-              <Icon name='settings' />
-            </Button>
-          </Right>
-        </Header>
-          <Content>
-        <FlatList
-        data={bloginfo}
-     renderItem={({ item }) => ( 
-            <this.Listrenderer
-              id={item.id}
-              user={item.username}
-              date={item.date}
-              icon={item.userpic}
-              description={item.description}
-              postimage={item.postimage}
-              like={item.likenum}
-              comment={item.commentnum}
-              upvote={item.upvotenum}
-            />
-          )}
-        keyExtractor={item => item.id}
-        />
-        </Content>
+     
+    <Container style ={{flex:1}}>
+       
+          
+       <DeckSwiper
+            ref={(c) => this._deckSwiper = c}
+            dataSource={bloginfo}
+            renderItem={this.Listrenderer}
+            keyExtractor={item => item.id}
+    />
+     
         </Container>
       
     );

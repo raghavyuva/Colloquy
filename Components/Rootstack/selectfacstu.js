@@ -37,12 +37,12 @@ import {
 <View style = {styles.screen}>
     <View>
     </View>
-<ImageBackground source={require('../assets/CITLogo-800x142.png')} style={styles.background}/>
+<ImageBackground source={require('../../assets/CITLogo-800x142.png')} style={styles.background}/>
 <List style={styles.list}>
     <Text style={styles.selection}>select who you are</Text>
     <ListItem>
     
-<TouchableOpacity style = {styles.button} onPress={()=>this.props.navigation.navigate('tab') }>
+<TouchableOpacity style = {styles.button} onPress={()=>this.props.navigation.navigate('home') }>
 <LinearGradient
           colors={['#4B480F', '#EE2EB9',]}
           style={{ padding: 15, alignItems: 'center', borderRadius: 5 }}>

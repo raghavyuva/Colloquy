@@ -50,6 +50,7 @@ export default class Upcoming_events extends React.Component{
     }
     Listrenderer=({id,title,icon,tagline,date})=>{
         return(
+       
 <Card style={Styles.card}>
     <CardItem>
 <Text style={Styles.title}>Event Name: {title} </Text>
@@ -80,12 +81,12 @@ export default class Upcoming_events extends React.Component{
           </Button>
 </CardItem>
 </Card>
+
         );
     }
     render(){
         return(
-<Container style={{backgroundColor:'#0E043B'}}>
-<Content>
+<View style={{backgroundColor:'#0E043B'}}>
      <FlatList
                 horizontal
                 pagingEnabled={true}
@@ -103,8 +104,8 @@ export default class Upcoming_events extends React.Component{
           keyExtractor={item => item.id}
               />
 
-</Content>
-</Container>
+
+</View>
         );
     }
 }
@@ -116,7 +117,8 @@ fontSize:18,
 marginRight:15
 },
 card:{
-width:300
+width:300,
+height:500,
 },
 image:{
     width:300,

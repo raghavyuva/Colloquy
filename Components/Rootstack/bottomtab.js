@@ -1,4 +1,7 @@
-import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
+{/*
+  
+  import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import homescreen from '../Components/homescreen/homescreen';
 import ChatTab from '../Components/homescreen/chatscreen';
@@ -8,10 +11,12 @@ import {FontAwesome5,MaterialIcons} from 'react-native-vector-icons';
 import blogpage from '../Components/homescreen/feedscreen';
 import notifications from '../Components/homescreen/Notification';
 import profile from '../Components/homescreen/profile';
+import Settings from './homescreen/settings';
 const Tab = createMaterialBottomTabNavigator();
-
+const Drawer = createDrawerNavigator();
 const MaintabScreen = () =>(
         <NavigationContainer>
+           
         <Tab.Navigator
           initialRouteName="Screns"
           activeColor="yellow"
@@ -67,10 +72,24 @@ const MaintabScreen = () =>(
               ),
             }}
           />
+                   <Tab.Screen
+            name="settings"
+            component={Settings}
+            options={{
+              tabBarLabel: 'settings',
+              tabBarIcon: ({ color }) => (
+                <MaterialCommunityIcons name="settings" color={color} size={26} />
+              ),
+            }}
+          />
 
 
         </Tab.Navigator>
+
         </NavigationContainer>
+        
       );
 
 export default MaintabScreen;
+
+          */}

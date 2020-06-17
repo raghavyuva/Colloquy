@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { StyleSheet,FlatList,ScrollView} from 'react-native';
-import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body,Title,Right, List,ListItem} from 'native-base';
+import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body,Title,Right, List,ListItem,View} from 'native-base';
 import { EvilIcons,AntDesign,FontAwesome5,MaterialCommunityIcons} from '@expo/vector-icons';
-import Blogpage from '../../Components/homescreen/feedscreen';
+import FeedComponent from '../common/Feedscreencopy';
 const profiledetails =[
   {
 id:'1',
@@ -20,6 +20,7 @@ export default class profile extends Component {
 Listrenderer =({id,pic,user,tag,usn})=>{
   return(
 <Content>
+  <ScrollView>
 <Card style ={styles.card}>
 <List>
   <ListItem>
@@ -42,9 +43,9 @@ Listrenderer =({id,pic,user,tag,usn})=>{
   </List>
 </Card>
 <Button style={styles.edit}><Text>Edit profile</Text></Button>
-<Text>Recent Posts</Text>
-<ScrollView>
-<Blogpage/>
+<Text style ={styles.recent}>Recent Posts</Text>
+
+<FeedComponent/>
 </ScrollView>
 </Content>
   );
@@ -73,6 +74,7 @@ Listrenderer =({id,pic,user,tag,usn})=>{
             </Button>
           </Right>
         </Header>
+     
 <FlatList
                 pagingEnabled={true}
                 showsHorizontalScrollIndicator={false}
@@ -89,7 +91,7 @@ Listrenderer =({id,pic,user,tag,usn})=>{
           keyExtractor={item => item.id}
               />
            
-              
+         
       </Container>
       
     );
@@ -124,6 +126,12 @@ edit:{
   backgroundColor:'black',
   width:400,
   alignSelf:'center'
+},
+recent:{
+  fontSize:26,
+  backgroundColor:'#0E043B',
+  marginTop:10,
+  color:"#FFF"
 }
 
 })

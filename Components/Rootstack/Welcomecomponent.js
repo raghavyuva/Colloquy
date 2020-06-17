@@ -34,7 +34,7 @@ export default class Welcomepage extends React.Component{
     }
         return(
 <View style = {styles.screen}>
-<ImageBackground source={require('../assets/citech.jpg')} style={styles.background}/>
+<ImageBackground source={require('../../assets/citech.jpg')} style={styles.background}/>
 <Button style = {styles.button} onPress={()=>this.props.navigation.navigate('who') }><Text style = {styles.texts}>step in</Text></Button>
 </View>
         );

@@ -1,16 +1,16 @@
 import React, { Component,useState } from 'react';
 import { Image ,StyleSheet,SafeAreaView,FlatList,View,Dimensions} from 'react-native';
-import { Container, Header,Text, Left, Body, Right, Button ,TextInput,Item,Icon,Input,CardItem,Title} from 'native-base';
+import { Container, Header,Text, Left, Body, Right, Button ,TextInput,Item,Icon,Input,CardItem,Title,Footer} from 'native-base';
 import { EvilIcons,AntDesign,FontAwesome5,Entypo,MaterialCommunityIcons} from '@expo/vector-icons';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
-import Carousel from './common/carousel';
-import Avatarcommon from './common/Avatar';
-import Upcoming_events from './common/upcomingevents';
+import Carousel from '../common/carousel';
+import Avatarcommon from '../common/Avatar';
+import Upcoming_events from '../common/upcomingevents';
 const { width: screenWidth } = Dimensions.get('window');
-import settings from './settings';
-
+import Notessharedcopy from '../common/notescomponentcopy';
+import Headingbar from '../common/Header';
 export default class homescreen extends React.Component{
   constructor(props){
     super(props);
@@ -19,27 +19,8 @@ export default class homescreen extends React.Component{
     return(
 <View >
  
-<Header>
-          <Left>
-            <Button transparent onPress={this.props.navigation.openDrawer}>
-              <Icon name='menu' />
-            </Button>
-          </Left>
-          <Body>
-            <Title>Home</Title>
-          </Body>
-          <Right>
-            <Button transparent>
-              <Icon name='search' />
-            </Button>
-            <Button transparent>
-              <Icon name='share' />
-            </Button>
-            <Button transparent>
-              <Icon name='settings' />
-            </Button>
-          </Right>
-        </Header>
+<Headingbar />
+
     <ScrollView style={{backgroundColor:'#0E043B'}}>
     <CardItem style={Styles.carditem}> 
     <Left>
@@ -63,9 +44,17 @@ export default class homescreen extends React.Component{
 <Text style ={Styles.heading}>Upcoming Events</Text>
   <Upcoming_events/>
 </View>
+<View>
+<Text style ={Styles.heading}>Shared Notes</Text>
+<Notessharedcopy/>
+</View>
 </ScrollView>
+{/*<Footer>
+<MaintabScreen />
+</Footer>*/}
 </View>
     );
+    
   }
 }
 const Styles =StyleSheet.create({

@@ -1,6 +1,6 @@
 import React, { Component,useState } from 'react';
 import { Image ,StyleSheet,SafeAreaView,FlatList,TouchableOpacity} from 'react-native';
-import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body,Drawer,View,ListItem,Right,Radio, List,Title} from 'native-base';
+import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body,Drawer,View,ListItem,Right,Radio, List,Title,Fab} from 'native-base';
 import { EvilIcons,AntDesign,FontAwesome5,Entypo} from '@expo/vector-icons';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
@@ -9,6 +9,9 @@ import { ScrollView } from 'react-native-gesture-handler';
 export default class ChatTab extends React.Component{
 	constructor(props){
 		super(props);
+	}
+	state={
+		active:false,
 	}
 	Listrenderer=({id,user,tag,time,message,pic})=>{
 		return(
@@ -47,9 +50,9 @@ export default class ChatTab extends React.Component{
             <Button transparent>
               <Icon name='search' />
             </Button>
-            <Button transparent>
-              <Icon name='share' />
-            </Button>
+			<Button>
+			<Icon name='share' />
+			</Button>
             <Button transparent>
               <Icon name='settings' />
             </Button>
@@ -73,6 +76,24 @@ export default class ChatTab extends React.Component{
           keyExtractor={item => item.id}
               />
 			  </Content>
+			  <Fab
+            active={this.state.active}
+            direction="up"
+            containerStyle={{ }}
+            style={{ backgroundColor: '#5067FF' }}
+            position="bottomRight"
+            onPress={() => this.setState({ active: !this.state.active })}>
+          <AntDesign name="pluscircleo" size={24} color="black" />
+            <Button style={{ backgroundColor: '#34A34F' }}>
+              <Icon name="logo-whatsapp" />
+            </Button>
+            <Button style={{ backgroundColor: '#3B5998' }}>
+              <Icon name="logo-facebook" />
+            </Button>
+            <Button  style={{ backgroundColor: '#DD5144' }}>
+              <Icon name="mail" />
+            </Button>
+          </Fab>
 </Container>
 		);
 	}
