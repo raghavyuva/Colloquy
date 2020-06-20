@@ -5,6 +5,8 @@ import {
   import { Container, Header, Content, Item, Input, Button,Text, View ,CheckBox,ListItem,Body,AppLoading} from 'native-base';
   import * as Font from 'expo-font';
   import { Ionicons } from '@expo/vector-icons';
+  import {Actions} from 'react-native-router-flux';
+
 export default class Welcomepage extends React.Component{
     static navigationOptions = {
         title: 'Cambridge welcomes you',
@@ -35,7 +37,7 @@ export default class Welcomepage extends React.Component{
         return(
 <View style = {styles.screen}>
 <ImageBackground source={require('../../assets/citech.jpg')} style={styles.background}/>
-<Button style = {styles.button} ><Text style = {styles.texts}>step in</Text></Button>
+<Button style = {styles.button} ><Text style = {styles.texts}onPress={Actions.Authentication()}>step in</Text></Button>
 </View>
         );
     }

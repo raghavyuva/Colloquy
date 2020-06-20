@@ -1,13 +1,14 @@
 import React,{Component} from 'react';
 import {
   ImageBackground,
-  SafeAreaView,StyleSheet,Dimensions,FlatList,TextInput, Linking } from 'react-native';
+  SafeAreaView,StyleSheet,Dimensions,FlatList,TextInput, Linking,AsyncStorage} from 'react-native';
   import { WebView } from 'react-native-webview';
   import { Container, Header, Content, Item, Input, Button,Text, View,Thumbnail, Card,Form,Label,CardItem, Left, Right} from 'native-base';
   import * as Font from 'expo-font';
   import ValidationComponent from 'react-native-form-validator';
   import { Ionicons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import {Actions} from 'react-native-router-flux';
 export default class Signinpage extends ValidationComponent {
     static navigationOptions = {
         title: 'Sign in',
@@ -16,26 +17,37 @@ export default class Signinpage extends ValidationComponent {
       };
     constructor(props){
         super(props);
-      this.state = {usn:"",pass:''};
+      this.state = {usn:"",pass:""};
     }  
 
     state = {
       loading: true,
     }
 onLoginPress=()=>{
-  this.validate({
+ var checkedforvalidation= this.validate({
     usn: {usn: true,required:true,maxlength:10,minlength:10},
     pass:{minlength:8,required: true,},
   });
+  this.setState({validate:checkedforvalidation})
+if(checkedforvalidation) {
+  if (!this.state.usn || !this.state.pass) return;
+  fetch('http://192.168.225.238:3001/sessions/create', {
+    method: 'POST',
+    headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      username: this.state.usn,
+      password: this.state.pass,
+    })
+  })
+  .then((response) => response.json())
+  .then((responseData) => {
+    this.saveItem('id_token', responseData.id_token),
+    Alert.alert('Login Success!', 'Click the button to get a Chuck Norris quote!'),
+    Actions.HomePage();
+  })
+  .done();}
+}
 
-}
-saveData=async()=>{
-  const {usn,pass}=this.state;
-  let logindetails ={
-      usn:usn,
-      pass:pass,
-  }
-}
       async componentDidMount() {
         await Font.loadAsync({
           'Roboto': require('native-base/Fonts/Roboto.ttf'),
@@ -43,6 +55,15 @@ saveData=async()=>{
           ...Ionicons.font,
         })
         this.setState({ loading: false })
+      }
+
+
+      async saveItem(item, selectedValue) {
+        try {
+          await AsyncStorage.setItem(item, selectedValue);
+        } catch (error) {
+          console.error('AsyncStorage error: ' + error.message);
+        }
       }
     render(){
       const uri = 'http://stackoverflow.com/questions/35531679/react-native-open-links-in-browser';
@@ -60,12 +81,12 @@ saveData=async()=>{
         <Form>
               <Item floatingLabel>
                     <Label style={styles.fieldtitle} >University seat number</Label>
-                    <Input style={styles.fieldinput} onChangeText={(usn) => this.setState({usn})} value={this.state.usn}  />
+                    <Input style={styles.fieldinput} onChangeText={(usn) => this.setState({usn})} value={this.state.usn} ref='usn' returnKeyType='next' editable={true} />
                     {this.isFieldInError('usn') && this.getErrorsInField('usn').map(errorMessage => <Text>{errorMessage}</Text>) }
                   </Item>
                   <Item  floatingLabel>
                     <Label style={styles.fieldtitle}>Password</Label>
-                    <Input style={styles.fieldinput}onChangeText={(pass) => this.setState({pass})} value={this.state.pass} secureTextEntry={true}  />
+                    <Input style={styles.fieldinput}onChangeText={(pass) => this.setState({pass})} value={this.state.pass} secureTextEntry={true} editable={true} ref='pass' returnKeyType='next' />
                     {this.isFieldInError('pass') && this.getErrorsInField('pass').map(errorMessage => <Text>{errorMessage}</Text>) }
    
                   </Item>
@@ -79,7 +100,7 @@ saveData=async()=>{
               </Form>
               <Item style={styles.fieldtitl} >
               <Label style={styles.fieldtitle}>Don't have an account?  </Label>
-              <TouchableOpacity><Text style={styles.signup} >Sign up</Text></TouchableOpacity>
+              <TouchableOpacity><Text style={styles.signup} onPress={Actions.Signup() } >Sign up</Text></TouchableOpacity>
               </Item>
               <Item>
               <Right>

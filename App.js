@@ -1,5 +1,5 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, {Component} from 'react';
+import { StyleSheet, Text, View,ActivityIndicator,AsyncStorage} from 'react-native';
 import {createAppContainer} from 'react-navigation';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { createDrawerNavigator } from '@react-navigation/drawer';
@@ -20,8 +20,67 @@ import Headingbar from './Components/common/Header';
 import Upcoming_events from './Components/common/upcomingevents';
 import Downloadpage from './Components/Homestack/downloads';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-//this is working but when i try to do with commented part its not working,,
-const navigator = createStackNavigator(
+import {AppRegistry} from 'react-native';
+import {Router, Scene} from 'react-native-router-flux';
+AppRegistry.registerComponent('ReactNativeAuth', () => App);
+
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasToken: false,isLoaded: false  };
+  }
+  componentDidMount() {
+    AsyncStorage.getItem('id_token').then((token) => {
+      this.setState({ hasToken: token !== null, isLoaded: true })
+    });
+  }
+
+  render() {
+    if (!this.state.isLoaded) {
+      return (
+        <ActivityIndicator />
+      )
+    } else {
+    return(
+      <Router>
+        <Scene key='root'>
+        <Scene
+            component={Welcomepage}
+            hideNavBar={true}
+            key='welcome page'
+            title='welcome'
+            initial={true}
+          />
+          <Scene
+            component={Signpage}
+            hideNavBar={true}
+            key='Authentication'
+            title='Authentication'
+            initial={!this.state.hasToken}
+          />
+          <Scene
+            component={Signuppage}
+            hideNavBar={true}
+            key='Signup'
+            title='user signup'
+
+          />
+          <Scene
+            component={homescreen}
+            hideNavBar={true}
+            key='Home'
+            title='Home'
+            initial={this.state.hasToken}
+          />
+        </Scene>
+      </Router>
+    )
+  }
+}
+}
+export default App;
+
+/*const navigator = createStackNavigator(
   {
 welcome:Welcomepage,
 login:Signpage,
@@ -37,7 +96,7 @@ header:Headingbar,
 setting:Settings,
   },
 {
-  initialRouteName: 'welcome',
+  initialRouteName: 'login',
   headerMode:'none',
 },
 
@@ -53,7 +112,7 @@ export default () =>{
 
 
 
-/*
+
 const Tab = createMaterialBottomTabNavigator();
 
 function Homestack(){

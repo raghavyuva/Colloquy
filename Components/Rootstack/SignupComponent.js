@@ -2,11 +2,12 @@ import React,{Component} from 'react';
 import {
   ImageBackground,
   SafeAreaView,StyleSheet,Dimensions,FlatList,TextInput } from 'react-native';
-  import { Container, Header, Content, Item, Input, Button,Text, View,Thumbnail, Card,Form,Label,CardItem} from 'native-base';
+  import { Container, Header, Content, Item, Input, Button,Text, View,Thumbnail, Card,Form,Label,CardItem, ActionSheet} from 'native-base';
   import * as Font from 'expo-font';
   import ValidationComponent from 'react-native-form-validator';
   import { Ionicons } from '@expo/vector-icons';
   'use strict';
+  import {Actions} from 'react-native-router-flux';
 export default class Signuppage extends ValidationComponent {
   static navigationOptions = {
     title: 'Sign up',
@@ -22,13 +23,37 @@ export default class Signuppage extends ValidationComponent {
       loading: true,
     }
 onSignupPress=()=>{
-  this.validate({
+  var checkedforvalidation=this.validate({
     email: {email: true,required:true},
     pass:{minlength:8,required: true,},
-    name: {minlength:3, maxlength:7, required: true},
+    name: {minlength:3, maxlength:15, required: true},
     number: {numbers: true,required: true},
-    usn:{numbers:true,required: true}
+    usn:{required: true,minlength:10,maxlength:10}
   });
+  if(checkedforvalidation) {
+  fetch('http://192.168.225.238:3001/users', {
+    method: 'POST',
+    headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      username: this.state.usn,
+      password: this.state.pass,
+    })
+  })
+  .then((response) => response.json())
+  .then((responseData) => {
+    this.saveItem('id_token', responseData.id_token),
+    Alert.alert( 'Signup Success!', 'Click the button to get a Chuck Norris quote!'),
+    Actions.HomePage();
+  })
+  .done();
+}
+  }
+async saveItem(item, selectedValue) {
+  try {
+    await AsyncStorage.setItem(item, selectedValue);
+  } catch (error) {
+    console.error('AsyncStorage error: ' + error.message);
+  }
 }
       async componentDidMount() {
         await Font.loadAsync({
@@ -82,18 +107,17 @@ onSignupPress=()=>{
                   <Item stackedLabel style={styles.submission}>
                     <Button style={styles.submit}  onPress={this.onSignupPress} ><Text style={styles.submittext}>sign up</Text></Button>
                   </Item>
+                  <Item stackedLabel style={styles.submission}>
+                    <Button style={styles.submit}  onPress={Actions.Authentication()} ><Text style={styles.submittext}>SIGN IN</Text></Button>
+                  </Item>
               </Form>
-              
               </Card>
               </Content>
             </Container>
         );
 }
 }
-
-const rules = {any: /^(.*)$/};
  
-
 const styles = StyleSheet.create({
   screen: {
   flex:1,
