@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Image ,StyleSheet,FlatList,ScrollView} from 'react-native';
-import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body ,Title,Right,DeckSwiper,View} from 'native-base';
+import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body ,Title,Right,DeckSwiper,View,ActionSheet} from 'native-base';
 import { EvilIcons,AntDesign,FontAwesome5,Entypo} from '@expo/vector-icons';
 const bloginfo =[
     {
@@ -48,10 +48,19 @@ const bloginfo =[
                 id: '3ac68afc-c605-48d3-a4f8-fbd91aa97sdf',
                 }
 ]
+var BUTTONS = [
+  { text: "WhatsApp", icon: "logo-whatsapp", iconColor: "#2c8ef4" },
+  { text: "Facebook", icon: "logo-facebook", iconColor: "blue" },
+  { text: "Gmail", icon: "mail", iconColor: "#ea943b" },
+  { text: "Instagram", icon: "logo-instagram", iconColor: "#fa213b" },
+  { text: "Cancel", icon: "close", iconColor: "red" }
+];
+var CANCEL_INDEX = 4;
 
 export default class FeedComponent extends Component {
   constructor(props){
     super(props);
+    this.state={};
 }
 static navigationOptions = {
   title: 'Sign up',
@@ -93,7 +102,17 @@ Listrenderer({id,userpic,date,username,description,postimage,likenum,upvotenum,c
           <AntDesign name="heart" size={24} color="black" />
          <Text style = {{textTransform:'capitalize'}}>{likenum}</Text>
           </Button>
-          <Button transparent textStyle={{color: '#87838B'}}>
+          <Button transparent textStyle={{color: '#87838B'}}  onPress={() =>
+    ActionSheet.show(
+      {
+        options: BUTTONS,
+        cancelButtonIndex: CANCEL_INDEX,
+        title: "Share to"
+      },
+      buttonIndex => {
+        this.setState({ clicked: BUTTONS[buttonIndex] });
+      }
+    )}>
           <FontAwesome5 name="share" size={24} color="black" />
          <Text style = {{textTransform:'capitalize'}}>share</Text>
           </Button>

@@ -53,7 +53,7 @@ import {
 </ListItem>
 <ListItem>
 
-<TouchableOpacity style = {styles.button} onPress={()=>this.props.navigation.navigate('signup') }><LinearGradient
+<TouchableOpacity style = {styles.button} onPress={()=>this.props.navigation.navigate('login') }><LinearGradient
           colors={['#4B480F', '#EE2EB9',]}
           style={{ padding: 15, alignItems: 'center', borderRadius: 5 }}><Text style = {styles.texts}>Student</Text></LinearGradient></TouchableOpacity>
 </ListItem>

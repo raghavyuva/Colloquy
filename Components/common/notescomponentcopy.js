@@ -1,11 +1,10 @@
 import React, { Component,useState } from 'react';
 import { Image ,StyleSheet,SafeAreaView,FlatList,View,Dimensions} from 'react-native';
-import { Container, Header, Content, List, ListItem, Thumbnail, Text, Left, Body, Right, Button ,TextInput,Item,Icon,Input,Card,CardItem} from 'native-base';
+import { Container, Header, Content, List, ListItem, Thumbnail, Text, Left, Body, Right, Button ,TextInput,Item,Icon,Input,Card,CardItem,ActionSheet} from 'native-base';
 import { EvilIcons,AntDesign,FontAwesome5,Entypo} from '@expo/vector-icons';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 import { ScrollView } from 'react-native-gesture-handler';
-
 const noteinfo =[
     {
         id:'1',
@@ -38,10 +37,30 @@ const noteinfo =[
         notesname:'Semiconductors and light emitting diode',
     },
 ]
+var BUTTONS = [
+    { text: "WhatsApp", icon: "logo-whatsapp", iconColor: "#2c8ef4" },
+    { text: "Facebook", icon: "logo-facebook", iconColor: "blue" },
+    { text: "Gmail", icon: "mail", iconColor: "#ea943b" },
+    { text: "Instagram", icon: "logo-instagram", iconColor: "#fa213b" },
+    { text: "Cancel", icon: "close", iconColor: "red" }
+  ];
+  var CANCEL_INDEX = 4;
+  
 export default class Upcoming_events extends React.Component{
     constructor(props){
         super(props);
+        this.state = {};
     }
+
+
+_Downloadfile=()=>{
+  
+        
+
+
+
+}
+
     Listrenderer=({id,sharednotes,sharedperson,notesname})=>{
         return(
        
@@ -52,13 +71,26 @@ export default class Upcoming_events extends React.Component{
 <Image source={{uri:sharednotes}} style={Styles.image}/>
 <CardItem>
 <Text style={Styles.title}>shared by: {sharedperson} </Text>
-<Button transparent textStyle={{color: '#87838B'}}>
-          <FontAwesome5 name="save" size={24} color="red" />
-         <Text style = {{textTransform:'capitalize'}}>save notes</Text>
+<Button transparent textStyle={{color: '#87838B'}} onPress ={this._Downloadfile}>
+          <FontAwesome5 name="download" size={24} color="red" />
+         <Text style = {{textTransform:'capitalize'}}>Download</Text>
           </Button>
 </CardItem>
 <CardItem>
-<Button transparent textStyle={{color: '#87838B'}}>
+<Button transparent textStyle={{color: '#87838B'}}
+
+onPress={() =>
+    ActionSheet.show(
+      {
+        options: BUTTONS,
+        cancelButtonIndex: CANCEL_INDEX,
+        title: "Share to"
+      },
+      buttonIndex => {
+        this.setState({ clicked: BUTTONS[buttonIndex] });
+      }
+    )}
+>
           <FontAwesome5 name="share" size={24} color="black" />
          <Text style = {{textTransform:'capitalize'}}>share</Text>
           </Button>

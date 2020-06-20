@@ -1,12 +1,11 @@
-import React from 'react';
-import { Dimensions, StyleSheet,View,FlatList,ScrollView, } from 'react-native';
+import React,{useState}from 'react';
+import { Dimensions, StyleSheet,View,FlatList,ScrollView,} from 'react-native';
 import { SliderBox } from "react-native-image-slider-box";
 import Carousel, { Pagination, ParallaxImage  } from 'react-native-snap-carousel';
-import {Thumbnail, Text, Left, Body, Button ,Card,CardItem,Image} from 'native-base';
+import {Thumbnail, Text, Left, Body, Button ,Card,CardItem,Image,ActionSheet} from 'native-base';
 const { width: screenWidth } = Dimensions.get('window');
 import { EvilIcons,AntDesign,FontAwesome5,Entypo} from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-
 const bloginfo =[
     {
     userpic:'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fs.cdpn.io%2F69263%2Fprofile%2Fprofile-512.jpg%3F2&f=1&nofb=1',
@@ -60,9 +59,10 @@ export default class Carouselimage extends React.Component{
       activeIndex: 0,
       animating: false
     };
+  
   }
 
-  renderItem({item,index}, parallaxProps){
+  renderItem({item,index,props}, parallaxProps){
     return (
         <ScrollView>
         <Card style={styles.card}>

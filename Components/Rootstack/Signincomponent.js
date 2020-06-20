@@ -1,7 +1,8 @@
 import React,{Component} from 'react';
 import {
   ImageBackground,
-  SafeAreaView,StyleSheet,Dimensions,FlatList,TextInput } from 'react-native';
+  SafeAreaView,StyleSheet,Dimensions,FlatList,TextInput, Linking } from 'react-native';
+  import { WebView } from 'react-native-webview';
   import { Container, Header, Content, Item, Input, Button,Text, View,Thumbnail, Card,Form,Label,CardItem, Left, Right} from 'native-base';
   import * as Font from 'expo-font';
   import ValidationComponent from 'react-native-form-validator';
@@ -44,6 +45,7 @@ saveData=async()=>{
         this.setState({ loading: false })
       }
     render(){
+      const uri = 'http://stackoverflow.com/questions/35531679/react-native-open-links-in-browser';
     if (this.state.loading){
         return (
             <View></View>
@@ -77,11 +79,16 @@ saveData=async()=>{
               </Form>
               <Item style={styles.fieldtitl} >
               <Label style={styles.fieldtitle}>Don't have an account?  </Label>
-              <TouchableOpacity><Text style={styles.signup}  onPress={()=>this.props.navigation.navigate('signup') }>Sign up</Text></TouchableOpacity>
+              <TouchableOpacity><Text style={styles.signup} >Sign up</Text></TouchableOpacity>
               </Item>
               <Item>
               <Right>
-              <TouchableOpacity><Text style={styles.signup}>forgot password?</Text></TouchableOpacity>
+              <TouchableOpacity><Text style={styles.signup} onPress={()=>{
+                return(
+                <WebView source={{ uri: 'https://reactnative.dev/' }} />
+           
+                );
+              }}>forgot password?</Text></TouchableOpacity>
 </Right>
               </Item>
               </Card>
