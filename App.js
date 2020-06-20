@@ -53,7 +53,8 @@ export default () =>{
 
 
 
-/*const Tab = createMaterialBottomTabNavigator();
+/*
+const Tab = createMaterialBottomTabNavigator();
 
 function Homestack(){
   return(
@@ -137,14 +138,25 @@ const Stack = createStackNavigator();
 function Rootstack() {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator initialRouteName="welcome" headermode="none">
         <Stack.Screen name="login" component={Signpage} />
-        <Stack.Screen name="signup" component={Signuppage} />  //checking if working or not
+        <Stack.Screen name="signup" component={Signuppage} /> 
+        <Stack.Screen name="welcome" component={welcomepage} /> 
+        <Stack.Screen name="who" component={whoyouare} /> 
+        <Stack.Screen name="home" component={Homestack} /> 
       </Stack.Navigator>
     </NavigationContainer>
   )
 }
 
-
+export default class App extends Component {
+  render() {
+    return (
+      <Root>
+        <Rootstack />
+      </Root>
+    )
+  }
+}
 
 */
