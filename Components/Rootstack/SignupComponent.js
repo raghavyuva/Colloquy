@@ -1,7 +1,7 @@
 import React,{Component} from 'react';
 import {
   ImageBackground,
-  SafeAreaView,StyleSheet,Dimensions,FlatList,TextInput } from 'react-native';
+  SafeAreaView,StyleSheet,Dimensions,FlatList,TextInput,AsyncStorage} from 'react-native';
   import { Container, Header, Content, Item, Input, Button,Text, View,Thumbnail, Card,Form,Label,CardItem, ActionSheet} from 'native-base';
   import * as Font from 'expo-font';
   import ValidationComponent from 'react-native-form-validator';
@@ -37,13 +37,13 @@ onSignupPress=()=>{
     body: JSON.stringify({
       username: this.state.usn,
       password: this.state.pass,
-    })
+    }),
   })
   .then((response) => response.json())
   .then((responseData) => {
     this.saveItem('id_token', responseData.id_token),
     Alert.alert( 'Signup Success!', 'Click the button to get a Chuck Norris quote!'),
-    Actions.HomePage();
+    Actions.Home();
   })
   .done();
 }
@@ -62,6 +62,9 @@ async saveItem(item, selectedValue) {
           ...Ionicons.font,
         })
         this.setState({ loading: false })
+      }
+      onloginpress=()=>{
+        Actions.Authentication();
       }
     render(){
     if (this.state.loading){
@@ -108,7 +111,7 @@ async saveItem(item, selectedValue) {
                     <Button style={styles.submit}  onPress={this.onSignupPress} ><Text style={styles.submittext}>sign up</Text></Button>
                   </Item>
                   <Item stackedLabel style={styles.submission}>
-                    <Button style={styles.submit}  onPress={Actions.Authentication()} ><Text style={styles.submittext}>SIGN IN</Text></Button>
+                    <Button style={styles.submit} onPress={this.onloginpress}  ><Text style={styles.submittext}>SIGN IN</Text></Button>
                   </Item>
               </Form>
               </Card>

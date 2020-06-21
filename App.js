@@ -49,14 +49,14 @@ class App extends Component {
             hideNavBar={true}
             key='welcome page'
             title='welcome'
-            initial={true}
-          />
+            initial={!this.state.hasToken}          
+            />
           <Scene
             component={Signpage}
             hideNavBar={true}
             key='Authentication'
             title='Authentication'
-            initial={!this.state.hasToken}
+           
           />
           <Scene
             component={Signuppage}

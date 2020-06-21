@@ -43,9 +43,10 @@ if(checkedforvalidation) {
   .then((responseData) => {
     this.saveItem('id_token', responseData.id_token),
     Alert.alert('Login Success!', 'Click the button to get a Chuck Norris quote!'),
-    Actions.HomePage();
-  })
-  .done();}
+    Actions.Home();
+    })
+  .done();
+}
 }
 
       async componentDidMount() {
@@ -64,6 +65,10 @@ if(checkedforvalidation) {
         } catch (error) {
           console.error('AsyncStorage error: ' + error.message);
         }
+      }
+
+      onsignuppress=()=>{
+        Actions.Signup();
       }
     render(){
       const uri = 'http://stackoverflow.com/questions/35531679/react-native-open-links-in-browser';
@@ -100,7 +105,7 @@ if(checkedforvalidation) {
               </Form>
               <Item style={styles.fieldtitl} >
               <Label style={styles.fieldtitle}>Don't have an account?  </Label>
-              <TouchableOpacity><Text style={styles.signup} onPress={Actions.Signup() } >Sign up</Text></TouchableOpacity>
+              <TouchableOpacity><Text style={styles.signup} onPress={this.onsignuppress} >Sign up</Text></TouchableOpacity>
               </Item>
               <Item>
               <Right>

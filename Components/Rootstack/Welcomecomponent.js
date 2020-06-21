@@ -27,7 +27,9 @@ export default class Welcomepage extends React.Component{
         })
         this.setState({ loading: false })
       }
-         
+         onstepinpress=()=>{
+          Actions.Authentication();
+         }
     render(){
     if (this.state.loading){
         return (
@@ -37,7 +39,7 @@ export default class Welcomepage extends React.Component{
         return(
 <View style = {styles.screen}>
 <ImageBackground source={require('../../assets/citech.jpg')} style={styles.background}/>
-<Button style = {styles.button} ><Text style = {styles.texts}onPress={Actions.Authentication()}>step in</Text></Button>
+<Button style = {styles.button} ><Text style = {styles.texts}onPress={this.onstepinpress}>step in</Text></Button>
 </View>
         );
     }
