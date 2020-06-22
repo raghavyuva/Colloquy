@@ -17,6 +17,9 @@ export default class profile extends Component {
   constructor(props){
     super(props);
 }
+logoutpress=()=>{
+  
+}
 Listrenderer =({id,pic,user,tag,usn})=>{
   return(
 <Content>
@@ -43,6 +46,9 @@ Listrenderer =({id,pic,user,tag,usn})=>{
   </List>
 </Card>
 <Button style={styles.edit}><Text>Edit profile</Text></Button>
+
+<Button style={styles.edit} onPress={this.logoutpress}><Text>Logout</Text></Button>
+
 <Text style ={styles.recent}>Recent Posts</Text>
 
 <FeedComponent/>

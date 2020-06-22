@@ -1,7 +1,7 @@
 import React,{Component} from 'react';
 import {
   ImageBackground,
-  SafeAreaView,StyleSheet,Dimensions,FlatList,TextInput,AsyncStorage} from 'react-native';
+  SafeAreaView,StyleSheet,Dimensions,FlatList,TextInput,AsyncStorage,Alert} from 'react-native';
   import { Container, Header, Content, Item, Input, Button,Text, View,Thumbnail, Card,Form,Label,CardItem, ActionSheet} from 'native-base';
   import * as Font from 'expo-font';
   import ValidationComponent from 'react-native-form-validator';

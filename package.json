@@ -38,6 +38,7 @@
     "react-native-screens": "~2.2.0",
     "react-native-settings-page": "^2.0.6",
     "react-native-tab-view": "^2.14.4",
+    "react-native-unimodules": "^0.9.1",
     "react-native-web": "^0.11.7",
     "react-native-webview": "8.1.1",
     "react-navigation": "^4.3.9",

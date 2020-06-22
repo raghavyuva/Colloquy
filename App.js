@@ -42,6 +42,7 @@ class App extends Component {
       )
     } else {
     return(
+      <Root>
       <Router>
         <Scene key='root'>
         <Scene
@@ -72,11 +73,35 @@ class App extends Component {
             title='Home'
             initial={this.state.hasToken}
           />
+                   <Scene
+            component={mydrawer}
+            hideNavBar={true}
+            key='drawer'
+            title='drawer'
+
+          /> 
+          <Scene
+            component={Homestack}
+            hideNavBar={true}
+            key='homestack'
+            title='homestack'
+
+          /> 
         </Scene>
       </Router>
+      </Root>
     )
   }
 }
+}
+const Drawer = createDrawerNavigator();
+function mydrawer(){
+  return(
+  <Drawer.Navigator initialRouteName="Home">
+  <Drawer.Screen name="Home" component={Signpage} />
+  <Drawer.Screen name="Notifications" component={Signuppage} />
+</Drawer.Navigator>
+  );
 }
 export default App;
 
@@ -111,7 +136,7 @@ export default () =>{
 }
 
 
-
+*/
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -190,7 +215,7 @@ function Homestack(){
 
 
 
-
+/*
 
 const Stack = createStackNavigator();
 
@@ -217,5 +242,4 @@ export default class App extends Component {
     )
   }
 }
-
 */
