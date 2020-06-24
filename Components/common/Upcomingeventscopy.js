@@ -5,38 +5,44 @@ import { EvilIcons,AntDesign,FontAwesome5,Entypo} from '@expo/vector-icons';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 import { ScrollView } from 'react-native-gesture-handler';
-
-const noteinfo =[
+import Headingbar from './Header';
+const eventlist =[
     {
         id:'1',
-        sharedperson:'daniel',
-        sharednotes:'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.2cXlf0nckerE9yp0PNyfsAHaDZ%26pid%3DApi&f=1',
-        notesname:'javascript and its complete guide',
+        title:'chiguru',
+        image:'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.ytimg.com%2Fvi%2F0bXVRPzqUTE%2Fmaxresdefault.jpg&f=1&nofb=1',
+        description:' time when students get bonded in very special ways and the true essence of being a CAMBRIAN comes into form',
+        date:'12-03-2018'
     },
     {
         id:'2',
-        sharedperson:'raghav',
-        sharednotes:'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimage.slidesharecdn.com%2Fstrategicchangeinterventionsv05-131023015437-phpapp01%2F95%2Fstrategic-change-interventions-12-638.jpg%3Fcb%3D1382493447&f=1&nofb=1',
-        notesname:'structures of networking',
+        title:'Event',
+        image:'http://rsquare2014.com/wp-content/uploads/2017/02/External-Events-banner_2.png',
+        description:' time when students get bonded in very special ways and the true essence of being a CAMBRIAN comes into form',
+        date:'12-03-2018'
     },
     {
         id:'3',
-        sharedperson:'rasif',
-        sharednotes:'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse3.mm.bing.net%2Fth%3Fid%3DOIP.SyDN_Kx-lsZasFnhW9ZiGAHaEK%26pid%3DApi&f=1',
-        notesname:'working on machines',
+        title:'Intuit',
+        image:'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse3.mm.bing.net%2Fth%3Fid%3DOIP.SyDN_Kx-lsZasFnhW9ZiGAHaEK%26pid%3DApi&f=1',
+        description:' time when students get bonded in very special ways and the true essence of being a CAMBRIAN comes into form',
+        date:'12-03-2018'
     },
     {
         id:'4',
-        sharedperson:'harry',
-        sharednotes:'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.oP6RsHt-5-iliHpCGFcGugHaE8%26pid%3DApi&f=1',
-        notesname:'structural engineering',
+        title:'Get together',
+        image:'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.oP6RsHt-5-iliHpCGFcGugHaE8%26pid%3DApi&f=1',
+        description:' time when students get bonded in very special ways and the true essence of being a CAMBRIAN comes into form',
+        date:'12-03-2018'
     },
     {
         id:'5',
-        sharedperson:'stephen',
-        sharednotes:'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse3.mm.bing.net%2Fth%3Fid%3DOIP.4pWYz7vPYAP-iWWguvUQmgHaEi%26pid%3DApi&f=1',
-        notesname:'Semiconductors and light emitting diode',
-    },
+        title:'Night party',
+        image:'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse3.mm.bing.net%2Fth%3Fid%3DOIP.4pWYz7vPYAP-iWWguvUQmgHaEi%26pid%3DApi&f=1',
+        description:' time when students get bonded in very special ways and the true essence of being a CAMBRIAN comes into form',
+        date:'12-03-2018'
+    }
+
 ]
 var BUTTONS = [
     { text: "WhatsApp", icon: "logo-whatsapp", iconColor: "#2c8ef4" },
@@ -47,10 +53,10 @@ var BUTTONS = [
   ];
   var CANCEL_INDEX = 4;
   
-export default class Notescomponent extends React.Component{
+export default class Upcoming_events_copy extends React.Component{
     constructor(props){
         super(props);
-        this.state = {};
+        this.state={};
     }
     state = {
         loading: true
@@ -63,34 +69,26 @@ export default class Notescomponent extends React.Component{
         })
         this.setState({ loading: false })
       }
-
-_Downloadfile=()=>{
-  
-        
-
-
-
-}
-
-    Listrenderer=({id,sharednotes,sharedperson,notesname})=>{
+    Listrenderer=({id,title,icon,tagline,date})=>{
         return(
        
 <Card style={Styles.card}>
     <CardItem>
-<Text style={Styles.title}>Notes Name: {notesname} </Text>
+<Text style={Styles.title}>Event Name: {title} </Text>
 </CardItem>
-<Image source={{uri:sharednotes}} style={Styles.image}/>
+<Image source={{uri:icon}} style={Styles.image}/>
 <CardItem>
-<Text style={Styles.title}>shared by: {sharedperson} </Text>
-<Button transparent textStyle={{color: '#87838B'}} onPress ={this._Downloadfile}>
-          <FontAwesome5 name="download" size={24} color="red" />
-         <Text style = {{textTransform:'capitalize'}}>Download</Text>
+<Text style={Styles.title} note numberOfLines={2} >description: {tagline} </Text>  
+</CardItem>
+<CardItem>
+<Text style={Styles.title}>date: {date} </Text>
+<Button transparent textStyle={{color: '#87838B'}}>
+          <FontAwesome5 name="save" size={24} color="red" />
+         <Text style = {{textTransform:'capitalize'}}>save post</Text>
           </Button>
 </CardItem>
 <CardItem>
-<Button transparent textStyle={{color: '#87838B'}}
-
-onPress={() =>
+<Button transparent textStyle={{color: '#87838B'}}onPress={() =>
     ActionSheet.show(
       {
         options: BUTTONS,
@@ -100,16 +98,15 @@ onPress={() =>
       buttonIndex => {
         this.setState({ clicked: BUTTONS[buttonIndex] });
       }
-    )}
->
+    )}  style={Styles.buttons}>
           <FontAwesome5 name="share" size={24} color="black" />
          <Text style = {{textTransform:'capitalize'}}>share</Text>
           </Button>
-          <Button transparent textStyle={{color: '#87838B'}}>
+          <Button transparent textStyle={{color: '#87838B'}}  style={Styles.buttons}>
           <FontAwesome5 name="heart" size={24} color="black" />
          <Text style = {{textTransform:'capitalize'}}>like</Text>
           </Button>
-          <Button transparent textStyle={{color: '#87838B'}}>
+          <Button transparent textStyle={{color: '#87838B'}}  style={Styles.buttons}>
           <FontAwesome5 name="eye" size={24} color="black" />
          <Text style = {{textTransform:'capitalize'}}>View</Text>
           </Button>
@@ -121,30 +118,30 @@ onPress={() =>
     render(){ 
         if (this.state.loading){
         return (
-            <Container></Container>
+           <View></View>
           );
     }
 
         return(
 <View style={{backgroundColor:'#0E043B'}}>
-    <ScrollView>
+    <Headingbar/>
      <FlatList
-                horizontal
                 pagingEnabled={true}
                 showsHorizontalScrollIndicator={false}
-                data={noteinfo}
+                data={eventlist}
                 renderItem={({item})=>
                 <this.Listrenderer
                 id={item.id}
-                sharedperson={item.sharedperson}
-                notesname={item.notesname}
-                sharednotes={item.sharednotes}
+                title={item.title}
+                tagline={item.description}
+                icon={item.image}
+                date={item.date}
               />
             }
           keyExtractor={item => item.id}
               />
 
-</ScrollView>
+
 </View>
         );
     }
@@ -157,14 +154,17 @@ fontSize:18,
 marginRight:15
 },
 card:{
-width:300,
+width:400,
 height:500,
 },
 image:{
-    width:300,
+    width:400,
     height:250
 },
 tagline:{
 
+},
+buttons:{
+    marginRight:35,
 }
 });

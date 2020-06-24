@@ -18,10 +18,14 @@ import profile from './Components/Homestack/profile';
 import { Root } from "native-base";
 import Headingbar from './Components/common/Header';
 import Upcoming_events from './Components/common/upcomingevents';
+import Upcoming_events_copy from './Components/common/Upcomingeventscopy';
+import Notescomponent from './Components/common/notescomponentcopy';
+import Notesshared from './Components/Homestack/Notescomponent';
 import Downloadpage from './Components/Homestack/downloads';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import {AppRegistry} from 'react-native';
 import {Router, Scene} from 'react-native-router-flux';
+import DrawerContent from './Components/Rootstack/Drawercontentscreen';
 AppRegistry.registerComponent('ReactNativeAuth', () => App);
 
 class App extends Component {
@@ -42,6 +46,7 @@ class App extends Component {
       )
     } else {
     return(
+      <NavigationContainer>
       <Root>
       <Router>
         <Scene key='root'>
@@ -50,7 +55,6 @@ class App extends Component {
             hideNavBar={true}
             key='welcome page'
             title='welcome'
-            initial={!this.state.hasToken}          
             />
           <Scene
             component={Signpage}
@@ -71,14 +75,13 @@ class App extends Component {
             hideNavBar={true}
             key='Home'
             title='Home'
-            initial={this.state.hasToken}
           />
                    <Scene
             component={mydrawer}
             hideNavBar={true}
             key='drawer'
             title='drawer'
-
+initial={true}
           /> 
           <Scene
             component={Homestack}
@@ -87,9 +90,38 @@ class App extends Component {
             title='homestack'
 
           /> 
+                    <Scene
+            component={Notesshared}
+            hideNavBar={true}
+            key='note'
+            title='note'
+
+          /> 
+           <Scene
+            component={Upcoming_events_copy}
+            hideNavBar={true}
+            key='upcoming'
+            title='upcoming'
+
+          /> 
+                     <Scene
+            component={Settings}
+            hideNavBar={true}
+            key='setting'
+            title='setting'
+
+          /> 
+                               <Scene
+            component={Downloadpage}
+            hideNavBar={true}
+            key='download'
+            title='download'
+
+          /> 
         </Scene>
       </Router>
       </Root>
+      </NavigationContainer>
     )
   }
 }
@@ -97,9 +129,9 @@ class App extends Component {
 const Drawer = createDrawerNavigator();
 function mydrawer(){
   return(
-  <Drawer.Navigator initialRouteName="Home">
-  <Drawer.Screen name="Home" component={Signpage} />
-  <Drawer.Screen name="Notifications" component={Signuppage} />
+  <Drawer.Navigator initialRouteName="upcoming-events" drawerContent={props => <DrawerContent {...props}/>}>
+  <Drawer.Screen name="upcoming-events" component={Upcoming_events_copy} />
+  <Drawer.Screen name="Shared-Notes" component={Notesshared} />
 </Drawer.Navigator>
   );
 }

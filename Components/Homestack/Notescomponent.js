@@ -1,18 +1,21 @@
 import React, { Component } from 'react';
 import { Image ,StyleSheet,FlatList,ScrollView} from 'react-native';
-import { Container, Header, Content, Button, ListItem, Text, Icon, Left, Body, Right, Switch ,Title,Card,CardItem, List} from 'native-base';
-
+import { Container, Header, Content, Button, ListItem, Text, Icon, Left, Body, Right, Switch ,Title,Card,CardItem, List,ActionSheet} from 'native-base';
+import { EvilIcons,AntDesign,FontAwesome5,Entypo} from '@expo/vector-icons';
+import * as Font from 'expo-font';
+import { Ionicons } from '@expo/vector-icons';
+import Headingbar from '../common/Header';
 const noteinfo =[
     {
         id:'1',
         sharedperson:'daniel',
-        sharednotes:'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.ytimg.com%2Fvi%2F0bXVRPzqUTE%2Fmaxresdefault.jpg&f=1&nofb=1',
+        sharednotes:'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.2cXlf0nckerE9yp0PNyfsAHaDZ%26pid%3DApi&f=1',
         notesname:'javascript and its complete guide',
     },
     {
         id:'2',
         sharedperson:'raghav',
-        sharednotes:'http://rsquare2014.com/wp-content/uploads/2017/02/External-Events-banner_2.png',
+        sharednotes:'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimage.slidesharecdn.com%2Fstrategicchangeinterventionsv05-131023015437-phpapp01%2F95%2Fstrategic-change-interventions-12-638.jpg%3Fcb%3D1382493447&f=1&nofb=1',
         notesname:'structures of networking',
     },
     {
@@ -34,33 +37,84 @@ const noteinfo =[
         notesname:'Semiconductors and light emitting diode',
     },
 ]
-
+var BUTTONS = [
+    { text: "WhatsApp", icon: "logo-whatsapp", iconColor: "#2c8ef4" },
+    { text: "Facebook", icon: "logo-facebook", iconColor: "blue" },
+    { text: "Gmail", icon: "mail", iconColor: "#ea943b" },
+    { text: "Instagram", icon: "logo-instagram", iconColor: "#fa213b" },
+    { text: "Cancel", icon: "close", iconColor: "red" }
+  ];
+  var CANCEL_INDEX = 4;
 export default class Notesshared extends React.Component{
     constructor(props){
         super(props);
     }
-
+    state = {
+        loading: true
+      }
+      async componentDidMount() {
+        await Font.loadAsync({
+          'Roboto': require('native-base/Fonts/Roboto.ttf'),
+          'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
+          ...Ionicons.font,
+        })
+        this.setState({ loading: false })
+      }
     Listrenderer=({sharednotes,sharedperson,notesname,id})=>{
         return(
         
-        <List>
-<ListItem>
-    <CardItem >
-<Text style={Styles.text}>Notes Title: {notesname} </Text>
-</CardItem>
-<Card>
-<Image source={{uri:sharednotes}}  style={Styles.image} />
-</Card>
-<CardItem>
-<Text style={Styles.text}>Shared by: {sharedperson} </Text>   
-</CardItem>
-</ListItem>
-</List>
+            <Card style={Styles.card}>
+            <CardItem>
+        <Text style={Styles.title}>Notes Name: {notesname} </Text>
+        </CardItem>
+        <Image source={{uri:sharednotes}} style={Styles.image}/>
+        <CardItem>
+        <Text style={Styles.title}>shared by: {sharedperson} </Text>
+        <Button transparent textStyle={{color: '#87838B'}} onPress ={this._Downloadfile}>
+                  <FontAwesome5 name="download" size={24} color="red" />
+                 <Text style = {{textTransform:'capitalize'}}>Download</Text>
+                  </Button>
+        </CardItem>
+        <CardItem>
+        <Button transparent textStyle={{color: '#87838B'}}
+        
+        onPress={() =>
+            ActionSheet.show(
+              {
+                options: BUTTONS,
+                cancelButtonIndex: CANCEL_INDEX,
+                title: "Share to"
+              },
+              buttonIndex => {
+                this.setState({ clicked: BUTTONS[buttonIndex] });
+              }
+            )}
+       style={Styles.buttons} >
+                  <FontAwesome5 name="share" size={24} color="black" />
+                 <Text style = {{textTransform:'capitalize'}}>share</Text>
+                  </Button>
+                  <Button transparent textStyle={{color: '#87838B'}}  style={Styles.buttons}>
+                  <FontAwesome5 name="heart" size={24} color="black" />
+                 <Text style = {{textTransform:'capitalize'}}>like</Text>
+                  </Button>
+                  <Button transparent textStyle={{color: '#87838B'}}  style={Styles.buttons}>
+                  <FontAwesome5 name="eye" size={24} color="black" />
+                 <Text style = {{textTransform:'capitalize'}}>View</Text>
+                  </Button>
+        </CardItem>
+        </Card>
         );
     }
-    render(){
+    render(){ 
+        if (this.state.loading){
+        return (
+            <Container></Container>
+          );
+    }
+
         return(
 <Container>
+    <Headingbar/>
 <FlatList 
            
         data={noteinfo}
@@ -86,7 +140,16 @@ text:{
     textAlign:'center',
 },
 image:{
-    width:300,
-    height:300,
-}
+    width:400,
+    height:200,
+},
+buttons:{
+    marginRight:40,
+},
+title:{
+    textAlign:'center',
+    color:'#000',
+    fontSize:18,
+    marginRight:25
+    },
 })

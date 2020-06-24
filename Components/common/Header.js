@@ -5,6 +5,7 @@ import { EvilIcons,AntDesign,FontAwesome5,Entypo} from '@expo/vector-icons';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 import { ScrollView } from 'react-native-gesture-handler';
+import { Actions } from 'react-native-router-flux';
 var BUTTONS = [
   { text: "WhatsApp", icon: "logo-whatsapp", iconColor: "#2c8ef4" },
   { text: "Facebook", icon: "logo-facebook", iconColor: "blue" },
@@ -24,12 +25,15 @@ export default class Headingbar extends React.Component{
     _searchaction =()=>{
 this.setState=({searchenabled:!this.state.searchenabled})
     }
+    toggleDrawer = () => {
+ 
+    }
     render(){
         return(
           
             <Header>
           <Left>
-            <Button transparent>
+            <Button transparent onPress={this.toggleDrawer.bind(this)}>
               <Icon name='menu' />
             </Button>
           </Left>
