@@ -97,15 +97,15 @@ export default class  DrawerContent extends Component{
                             labelStyle={{color:'white'}}
                             label="Followers"
                             style={{backgroundColor:'black',marginTop:20}}
-                            onPress={() => Linking.openURL('https://raghav.orak.in/')}
-                        />
+                            onPress={()=>Actions.follow()}
+/>
                                                                           <DrawerItem 
                             icon={({color, size}) => (
 <SimpleLineIcons name="user-following" size={24} color="white" />                            )}
                             labelStyle={{color:'white'}}
                             label="Following"
                             style={{backgroundColor:'black',marginTop:20}}
-                            onPress={() => Linking.openURL('https://raghav.orak.in/')}
+                            onPress={()=>Actions.following()}
                         />
                         <DrawerItem 
                          icon={({color, size}) => (

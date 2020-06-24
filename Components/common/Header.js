@@ -1,11 +1,15 @@
 import React, { Component,useState } from 'react';
 import { Image ,StyleSheet,SafeAreaView,FlatList} from 'react-native';
 import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body,Drawer,View,ListItem,Right,Radio, List,Title,ActionSheet} from 'native-base';
-import { EvilIcons,AntDesign,FontAwesome5,Entypo} from '@expo/vector-icons';
 import * as Font from 'expo-font';
-import { Ionicons } from '@expo/vector-icons';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Actions } from 'react-native-router-flux';
+import { Ionicons,FontAwesome5,MaterialCommunityIcons,Feather,SimpleLineIcons,Octicons,Fontisto,FontAwesome} from '@expo/vector-icons';
+import {
+  Avatar,
+  TouchableRipple,
+  Switch
+} from 'react-native-paper';
 var BUTTONS = [
   { text: "WhatsApp", icon: "logo-whatsapp", iconColor: "#2c8ef4" },
   { text: "Facebook", icon: "logo-facebook", iconColor: "blue" },
@@ -25,15 +29,13 @@ export default class Headingbar extends React.Component{
     _searchaction =()=>{
 this.setState=({searchenabled:!this.state.searchenabled})
     }
-    toggleDrawer = () => {
- 
-    }
+
     render(){
         return(
           
             <Header>
           <Left>
-            <Button transparent onPress={this.toggleDrawer.bind(this)}>
+            <Button transparent>
               <Icon name='menu' />
             </Button>
           </Left>
@@ -57,8 +59,14 @@ this.setState=({searchenabled:!this.state.searchenabled})
     )}>
               <Icon name='share' />
             </Button>
-            <Button transparent>
-              <Icon name='settings' />
+            <Button transparent onPress={()=>Actions.profile()}>
+            <Avatar.Image 
+                                source={{
+                                    uri: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn4.iconfinder.com%2Fdata%2Ficons%2Fuser-avatar-flat-icons%2F512%2FUser_Avatar-31-512.png&f=1&nofb=1'
+                                }}
+                                size={30}
+                               
+                            />
             </Button>
           </Right>
         </Header>

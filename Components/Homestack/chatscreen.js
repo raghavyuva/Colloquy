@@ -5,7 +5,7 @@ import { EvilIcons,AntDesign,FontAwesome5,Entypo} from '@expo/vector-icons';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 import { ScrollView } from 'react-native-gesture-handler';
-
+import Headingbar from '../common/Header';
 export default class ChatTab extends React.Component{
 	constructor(props){
 		super(props);
@@ -37,27 +37,7 @@ export default class ChatTab extends React.Component{
 	render(){
 		return(
 <Container>
-<Header>
-          <Left>
-            <Button transparent>
-              <Icon name='menu' />
-            </Button>
-          </Left>
-          <Body>
-            <Title>Chat</Title>
-          </Body>
-          <Right>
-            <Button transparent>
-              <Icon name='search' />
-            </Button>
-			<Button>
-			<Icon name='share' />
-			</Button>
-            <Button transparent>
-              <Icon name='settings' />
-            </Button>
-          </Right>
-        </Header>
+<Headingbar/>
 		<Content>
 <FlatList
                 pagingEnabled={true}

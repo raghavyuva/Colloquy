@@ -5,6 +5,7 @@ import { EvilIcons,AntDesign,FontAwesome5,Entypo} from '@expo/vector-icons';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 import { ScrollView } from 'react-native-gesture-handler';
+import Headingbar from '../common/Header';
 const notificationlist_for_today =[
   {
    userpic:'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn0.iconfinder.com%2Fdata%2Ficons%2Fuser-pictures%2F100%2Fmaturewoman-3-512.png&f=1&nofb=1',
@@ -105,27 +106,7 @@ export default class notifications extends React.Component{
 
     return (
         <Container>
-      <Header>
-          <Left>
-            <Button transparent>
-              <Icon name='menu' />
-            </Button>
-          </Left>
-          <Body>
-            <Title>Notifications</Title>
-          </Body>
-          <Right>
-            <Button transparent>
-              <Icon name='search' />
-            </Button>
-            <Button transparent>
-              <Icon name='share' />
-            </Button>
-            <Button transparent>
-              <Icon name='settings' />
-            </Button>
-          </Right>
-        </Header>
+<Headingbar/>
 <Content>
 <Text style = {{color:'black'}}>Today</Text>
 <FlatList

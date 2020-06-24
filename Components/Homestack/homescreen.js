@@ -11,6 +11,7 @@ import Upcoming_events from '../common/upcomingevents';
 const { width: screenWidth } = Dimensions.get('window');
 import Notessharedcopy from '../common/notescomponentcopy';
 import Headingbar from '../common/Header';
+import { Actions } from 'react-native-router-flux';
 export default class homescreen extends React.Component{
   constructor(props){
     super(props);
@@ -27,7 +28,7 @@ export default class homescreen extends React.Component{
 <Text style={Styles.notificationtop} note numberOfLines={2}>Howdy Raghav, There's  upcoming event waiting for you take a look at it once,</Text>
 </Left>
 
-<Button>
+<Button onPress={()=>Actions.notification()}>
   <Text>view</Text>
 </Button>
 </CardItem>
@@ -49,9 +50,6 @@ export default class homescreen extends React.Component{
 <Notessharedcopy/>
 </View>
 </ScrollView>
-{/*<Footer>
-<MaintabScreen />
-</Footer>*/}
 </View>
     );
     

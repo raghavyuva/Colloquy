@@ -3,6 +3,7 @@ import { StyleSheet,FlatList,ScrollView} from 'react-native';
 import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body,Title,Right, List,ListItem,View} from 'native-base';
 import { EvilIcons,AntDesign,FontAwesome5,MaterialCommunityIcons} from '@expo/vector-icons';
 import FeedComponent from '../common/Feedscreencopy';
+import Headingbar from '../common/Header';
 const profiledetails =[
   {
 id:'1',
@@ -47,7 +48,6 @@ Listrenderer =({id,pic,user,tag,usn})=>{
 </Card>
 <Button style={styles.edit}><Text>Edit profile</Text></Button>
 
-<Button style={styles.edit} onPress={this.logoutpress}><Text>Logout</Text></Button>
 
 <Text style ={styles.recent}>Recent Posts</Text>
 
@@ -59,28 +59,8 @@ Listrenderer =({id,pic,user,tag,usn})=>{
   render() {   
     return (
       <Container>
-        <Header>
-          <Left>
-            <Button transparent>
-              <Icon name='menu' />
-            </Button>
-          </Left>
-          <Body>
-            <Title>Profile</Title>
-          </Body>
-          <Right>
-            <Button transparent>
-              <Icon name='search' />
-            </Button>
-            <Button transparent>
-              <Icon name='share' />
-            </Button>
-            <Button transparent>
-              <Icon name='settings' />
-            </Button>
-          </Right>
-        </Header>
-     
+       
+     <Headingbar/>
 <FlatList
                 pagingEnabled={true}
                 showsHorizontalScrollIndicator={false}

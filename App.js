@@ -26,6 +26,10 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import {AppRegistry} from 'react-native';
 import {Router, Scene} from 'react-native-router-flux';
 import DrawerContent from './Components/Rootstack/Drawercontentscreen';
+import Follower from './Components/common/Followers';
+import Following from './Components/common/following';
+import Addblog from './Components/Homestack/Addblog';
+import { Ionicons,FontAwesome5,MaterialCommunityIcons,Feather,SimpleLineIcons,Octicons,Fontisto,FontAwesome,MaterialIcons} from '@expo/vector-icons';
 AppRegistry.registerComponent('ReactNativeAuth', () => App);
 
 class App extends Component {
@@ -70,12 +74,6 @@ class App extends Component {
             title='user signup'
 
           />
-          <Scene
-            component={homescreen}
-            hideNavBar={true}
-            key='Home'
-            title='Home'
-          />
                    <Scene
             component={mydrawer}
             hideNavBar={true}
@@ -118,6 +116,34 @@ initial={true}
             title='download'
 
           /> 
+            <Scene
+            component={Follower}
+            hideNavBar={true}
+            key='follow'
+            title='follow'
+
+          /> 
+                  <Scene
+            component={Following}
+            hideNavBar={true}
+            key='following'
+            title='following'
+
+          /> 
+                            <Scene
+            component={profile}
+            hideNavBar={true}
+            key='profile'
+            title='profile'
+
+          /> 
+                                      <Scene
+            component={notifications}
+            hideNavBar={true}
+            key='notification'
+            title='notification'
+
+          /> 
         </Scene>
       </Router>
       </Root>
@@ -129,9 +155,8 @@ initial={true}
 const Drawer = createDrawerNavigator();
 function mydrawer(){
   return(
-  <Drawer.Navigator initialRouteName="upcoming-events" drawerContent={props => <DrawerContent {...props}/>}>
-  <Drawer.Screen name="upcoming-events" component={Upcoming_events_copy} />
-  <Drawer.Screen name="Shared-Notes" component={Notesshared} />
+  <Drawer.Navigator initialRouteName="home" drawerContent={props => <DrawerContent {...props}/>}>
+  <Drawer.Screen name="home" component={Homestack} />
 </Drawer.Navigator>
   );
 }
@@ -199,6 +224,16 @@ function Homestack(){
         ),
       }}
     />
+       <Tab.Screen
+      name="addblog"
+      component={Addblog}
+      options={{
+        tabBarLabel: 'Add post',
+        tabBarIcon: ({ color }) => (
+          <MaterialIcons name="add-circle" size={26} color={color} />
+        ),
+      }}
+    />
                        <Tab.Screen
       name="write"
       component={notifications}
@@ -219,26 +254,8 @@ function Homestack(){
         ),
       }}
     />
-   <Tab.Screen
-      name="profile"
-      component={profile}
-      options={{
-        tabBarLabel: 'Profile',
-        tabBarIcon: ({ color }) => (
-          <MaterialCommunityIcons name="account" color={color} size={26} />
-        ),
-      }}
-    />
-             <Tab.Screen
-      name="settings"
-      component={Settings}
-      options={{
-        tabBarLabel: 'settings',
-        tabBarIcon: ({ color }) => (
-          <MaterialCommunityIcons name="settings" color={color} size={26} />
-        ),
-      }}
-    />
+
+
 
 
   </Tab.Navigator>
