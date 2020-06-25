@@ -3,7 +3,7 @@ import {
     DrawerItem
 } from '@react-navigation/drawer';
 import React, { Component } from 'react';
-import { Image ,StyleSheet,FlatList,ScrollView,View,Linking} from 'react-native';
+import { Image ,StyleSheet,FlatList,ScrollView,View,Linking,AsyncStorage,Alert} from 'react-native';
 import { Container, Header, Content, Button, ListItem, Icon, Left, Body, Right,Card,CardItem, List,ActionSheet} from 'native-base';
 import * as Font from 'expo-font';
 import { Ionicons,FontAwesome5,MaterialCommunityIcons,Feather,SimpleLineIcons,Octicons,Fontisto,FontAwesome} from '@expo/vector-icons';
@@ -18,39 +18,7 @@ import {
     TouchableRipple,
     Switch
 } from 'react-native-paper';
-export default class  DrawerContent extends Component{
-    constructor(props){
-        super(props);
-    }
-    state = {
-        loading: true
-      }
-      async componentDidMount() {
-        await Font.loadAsync({
-          'Roboto': require('native-base/Fonts/Roboto.ttf'),
-          'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
-          ...Ionicons.font,
-        })
-        this.setState({ loading: false })
-      }
-      nav =()=>{
-          Actions.note();
-      }
-      nav2 =()=>{
-          Actions.upcoming();
-      }
-      nav3=()=>{
-          Actions.setting();
-      }
-      nav4=()=>{
-          Actions.download();
-      }
-    render(){
-        if (this.state.loading){
-            return (
-               <View></View>
-              );
-        }    
+export function DrawerContent(props){
     return(
         <View style={{flex:1,backgroundColor:'#0E043B'}}>
              <View style={styles.drawerContent}>
@@ -81,7 +49,7 @@ export default class  DrawerContent extends Component{
                         </View>
 
                         </View>
-                        <DrawerContentScrollView>
+                        <DrawerContentScrollView {...props}>
                         <Drawer.Section style={styles.drawerSection}>
                         <DrawerItem 
                             icon={({color, size}) => (
@@ -97,7 +65,7 @@ export default class  DrawerContent extends Component{
                             labelStyle={{color:'white'}}
                             label="Followers"
                             style={{backgroundColor:'black',marginTop:20}}
-                            onPress={()=>Actions.follow()}
+                            onPress={()=>{Actions.follow()}}
 />
                                                                           <DrawerItem 
                             icon={({color, size}) => (
@@ -114,7 +82,7 @@ export default class  DrawerContent extends Component{
                              label="Upcoming events"
                              labelStyle={{color:'white'}}
                              style={{backgroundColor:'black',marginTop:20}}
-                             onPress={this.nav2}
+                             onPress={()=>Actions.upcoming()}
                         />
                         <DrawerItem 
                             icon={({color, size}) => (
@@ -123,7 +91,7 @@ export default class  DrawerContent extends Component{
                             label="shared notes"
                             style={{backgroundColor:'black',marginTop:20}}
                             labelStyle={{color:'white'}}
-                            onPress={this.nav}
+                            onPress={()=>Actions.note()}
                         />
                         <DrawerItem 
                             icon={({color, size}) => (
@@ -133,7 +101,7 @@ export default class  DrawerContent extends Component{
                             labelStyle={{color:'white'}}
                             style={{backgroundColor:'black',marginTop:20}}
                             label="Downloads"
-                            onPress={this.nav4}
+                            onPress={()=>Actions.download()}
                         />
                         <DrawerItem 
                             icon={({color, size}) => (
@@ -142,7 +110,7 @@ export default class  DrawerContent extends Component{
                             labelStyle={{color:'white'}}
                             label="Settings"
                             style={{backgroundColor:'black',marginTop:20}}
-                            onPress={this.nav3}
+                            onPress={()=>Actions.setting()}
                         />
                         <DrawerItem 
                             icon={({color, size}) => (
@@ -198,7 +166,7 @@ export default class  DrawerContent extends Component{
                     )}
                     label="Sign Out"
                     labelStyle={{color:'white'}}
-                    onPress={() => {signOut()}}
+                    
                 />
             </Drawer.Section>
                         </View>
@@ -206,7 +174,6 @@ export default class  DrawerContent extends Component{
     </View>
     );
     }
-}
 const styles = StyleSheet.create({
     drawerContent: {
         flex: 1,

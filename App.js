@@ -25,7 +25,7 @@ import Downloadpage from './Components/Homestack/downloads';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import {AppRegistry} from 'react-native';
 import {Router, Scene} from 'react-native-router-flux';
-import DrawerContent from './Components/Rootstack/Drawercontentscreen';
+import {DrawerContent} from './Components/Rootstack/Drawercontentscreen';
 import Follower from './Components/common/Followers';
 import Following from './Components/common/following';
 import Addblog from './Components/Homestack/Addblog';
@@ -155,8 +155,14 @@ initial={true}
 const Drawer = createDrawerNavigator();
 function mydrawer(){
   return(
-  <Drawer.Navigator initialRouteName="home" drawerContent={props => <DrawerContent {...props}/>}>
+  <Drawer.Navigator  drawerContent={props => <DrawerContent {...props}/>}>
   <Drawer.Screen name="home" component={Homestack} />
+  <Drawer.Screen name="follower" component={Follower} />
+  <Drawer.Screen name="following" component={Following} />
+  <Drawer.Screen name="upcoming" component={Upcoming_events_copy} />
+  <Drawer.Screen name="setting" component={Settings} />
+  <Drawer.Screen name="note" component={Notesshared} />
+  <Drawer.Screen name="download" component={Downloadpage} />
 </Drawer.Navigator>
   );
 }
