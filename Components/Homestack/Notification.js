@@ -1,6 +1,6 @@
 import React, { Component,useState } from 'react';
 import { Image ,StyleSheet,SafeAreaView,FlatList} from 'react-native';
-import { Container, Header, Content, List, ListItem, Thumbnail, Text, Left, Body, Right, Button ,TextInput,Item,Icon,Input,Title,} from 'native-base';
+import { Container, Header, Content, List, ListItem, Thumbnail, Text, Left, Body, Right, Button ,TextInput,Item,Icon,Input,Title, View,} from 'native-base';
 import { EvilIcons,AntDesign,FontAwesome5,Entypo} from '@expo/vector-icons';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
@@ -57,6 +57,7 @@ const notificationlist_for_yesterday =[
 
 function  Listrenderer({user,tag,icon,liner,topicon}) {
     return(
+      <Content>
         <List>
       <ListItem thumbnail>
         <Left>
@@ -75,6 +76,7 @@ function  Listrenderer({user,tag,icon,liner,topicon}) {
         </Right>
       </ListItem>
     </List>
+    </Content>
     );
  }    
 
@@ -99,17 +101,18 @@ export default class notifications extends React.Component{
   render() {
     if (this.state.loading){
         return (
-            <Container></Container>
+           <View></View>
           );
     }
 
 
     return (
-        <Container>
+        <View>
 <Headingbar/>
-<Content>
+
 <Text style = {{color:'black'}}>Today</Text>
 <FlatList
+
         data={notificationlist_for_today}
      renderItem={({ item }) => ( 
             <Listrenderer
@@ -138,8 +141,8 @@ export default class notifications extends React.Component{
           )}
         keyExtractor={item => item.id}
         />
-        </Content>
-</Container>
+       
+       </View>
 
     );
 }

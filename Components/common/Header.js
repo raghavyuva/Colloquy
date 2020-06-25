@@ -25,12 +25,25 @@ export default class Headingbar extends React.Component{
     }
     state={
       searchenabled:false,
+      loading:true,
     }
     _searchaction =()=>{
 this.setState=({searchenabled:!this.state.searchenabled})
     }
-
+    async componentDidMount() {
+      await Font.loadAsync({
+        'Roboto': require('native-base/Fonts/Roboto.ttf'),
+        'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
+        ...Ionicons.font,
+      })
+      this.setState({ loading: false })
+    }
     render(){
+      if (this.state.loading) {
+      return (
+        <View></View>
+      );
+    }
         return(
           
             <Header>

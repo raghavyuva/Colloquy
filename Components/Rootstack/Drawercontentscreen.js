@@ -48,7 +48,7 @@ export default class  DrawerContent extends Component{
     render(){
         if (this.state.loading){
             return (
-                <Container></Container>
+               <View></View>
               );
         }    
     return(

@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { Image ,StyleSheet,FlatList,ScrollView} from 'react-native';
 import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body ,Title,Right} from 'native-base';
-import { EvilIcons,AntDesign,FontAwesome5,Entypo} from '@expo/vector-icons';
+import { EvilIcons,AntDesign,FontAwesome5,Entypo,Ionicons} from '@expo/vector-icons';
 import Headingbar from '../common/Header';
+import * as Font from 'expo-font';
 const bloginfo =[
     {
     userpic:'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fs.cdpn.io%2F69263%2Fprofile%2Fprofile-512.jpg%3F2&f=1&nofb=1',
@@ -54,7 +55,17 @@ export default class Blogpage extends Component {
   constructor(props){
     super(props);
 }
-
+state = {
+  loading: true
+}
+async componentDidMount() {
+  await Font.loadAsync({
+    'Roboto': require('native-base/Fonts/Roboto.ttf'),
+    'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
+    ...Ionicons.font,
+  })
+  this.setState({ loading: false })
+}
 static navigationOptions = {
   title: 'Sign up',
   headerStyle: { backgroundColor: 'white' },
@@ -111,11 +122,16 @@ Listrenderer({id,user,date,icon,description,postimage,like,comment,upvote}){
        
 }
 
-  render() {   
+  render() { 
+    if (this.state.loading){
+      return (
+        <Container></Container>
+        );
+  }     
     return (
     <Container>
       <Headingbar/>
-          <Content>
+         
         <FlatList
         data={bloginfo}
      renderItem={({ item }) => ( 
@@ -133,7 +149,6 @@ Listrenderer({id,user,date,icon,description,postimage,like,comment,upvote}){
           )}
         keyExtractor={item => item.id}
         />
-        </Content>
         </Container>
       
     );

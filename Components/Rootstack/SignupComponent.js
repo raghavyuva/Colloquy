@@ -69,7 +69,7 @@ async saveItem(item, selectedValue) {
     render(){
     if (this.state.loading){
         return (
-            <View></View>
+            <Container></Container>
           );
     }
         return(

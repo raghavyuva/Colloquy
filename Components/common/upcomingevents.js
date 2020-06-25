@@ -58,6 +58,9 @@ export default class Upcoming_events extends React.Component{
         super(props);
         this.state={};
     }
+    state={
+      loading:true,
+    }
     Listrenderer=({id,title,icon,tagline,date})=>{
         return(
        
@@ -103,8 +106,21 @@ export default class Upcoming_events extends React.Component{
 </Card>
 
         );
-    }
+    } 
+    async componentDidMount() {
+        await Font.loadAsync({
+          'Roboto': require('native-base/Fonts/Roboto.ttf'),
+          'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
+          ...Ionicons.font,
+        })
+        this.setState({ loading: false })
+      }
     render(){
+        if (this.state.loading) {
+            return (
+              <View></View>
+            );
+          }
         return(
 <View style={{backgroundColor:'#0E043B'}}>
      <FlatList

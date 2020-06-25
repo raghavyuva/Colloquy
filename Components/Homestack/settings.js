@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Image ,StyleSheet,FlatList,ScrollView} from 'react-native';
 import { Container, Header, Content, Button, ListItem, Text, Icon, Left, Body, Right, Switch ,Title} from 'native-base';
 import Headingbar from '../common/Header';
+import * as Font from 'expo-font';
+import { EvilIcons,AntDesign,FontAwesome5,MaterialCommunityIcons,Ionicons} from '@expo/vector-icons';
 const listofsettings = [
 	{
 		id:'1',
@@ -25,6 +27,17 @@ export default class Settings extends Component {
   constructor(props){
     super(props);
   }
+  state={
+    loading:true,
+  }
+    async componentDidMount() {
+        await Font.loadAsync({
+          'Roboto': require('native-base/Fonts/Roboto.ttf'),
+          'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
+          ...Ionicons.font,
+        })
+        this.setState({ loading: false })
+      }
 state={
   value:[],
 }
@@ -50,6 +63,11 @@ state={
 		);
 	}
   render() {
+    if (this.state.loading){
+      return (
+<Container></Container>
+        );
+  }  
     return (
       <Container>
 <Headingbar/>

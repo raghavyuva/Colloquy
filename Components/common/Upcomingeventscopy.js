@@ -115,6 +115,7 @@ export default class Upcoming_events_copy extends React.Component{
 
         );
     }
+    
     render(){ 
         if (this.state.loading){
         return (

@@ -4,7 +4,8 @@ import { SliderBox } from "react-native-image-slider-box";
 import Carousel, { Pagination, ParallaxImage  } from 'react-native-snap-carousel';
 import {Thumbnail, Text, Left, Body, Button ,Card,CardItem,Image,ActionSheet} from 'native-base';
 const { width: screenWidth } = Dimensions.get('window');
-import { EvilIcons,AntDesign,FontAwesome5,Entypo} from '@expo/vector-icons';
+import * as Font from 'expo-font';
+import { EvilIcons,AntDesign,FontAwesome5,Entypo,Ionicons} from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 const bloginfo =[
     {
@@ -57,11 +58,19 @@ export default class Carouselimage extends React.Component{
     super(props);
     this.state = {
       activeIndex: 0,
-      animating: false
+      animating: false,
+      loading:true,
     };
   
   }
-
+  async componentDidMount() {
+    await Font.loadAsync({
+      'Roboto': require('native-base/Fonts/Roboto.ttf'),
+      'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
+      ...Ionicons.font,
+    })
+    this.setState({ loading: false })
+  }
   renderItem({item,index,props}, parallaxProps){
     return (
         <ScrollView>
@@ -145,6 +154,11 @@ get pagination () {
 }
  
 render(){
+  if (this.state.loading) {
+    return (
+      <View></View>
+    );
+  }
     return(
     <View>
       <View style={{backgroundColor: '#0E043B', justifyContent: 'center', alignContent: 'center', alignItems: 'center'}}>

@@ -5,6 +5,7 @@ import { EvilIcons,AntDesign,FontAwesome5,Entypo} from '@expo/vector-icons';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 import { ScrollView } from 'react-native-gesture-handler';
+import Headingbar from './Header';
 const followerslist =[
   {
    iconname:'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn0.iconfinder.com%2Fdata%2Ficons%2Fuser-pictures%2F100%2Fmaturewoman-3-512.png&f=1&nofb=1',
@@ -120,17 +121,7 @@ export default class Follower extends React.Component{
 
     return (
         <Container>
-        <Header searchBar rounded style = {styles.search}>
-  <Item>
-    <Icon name="ios-search" />
-    <Input placeholder="Search your followers" />
-    <Icon name="ios-people" />
-  </Item>
-  <Button transparent>
-    <Text>Search</Text>
-  </Button>
-</Header>
-<Content>
+<Headingbar/>
 <FlatList
         data={followerslist}
      renderItem={({ item }) => ( 
@@ -143,7 +134,7 @@ export default class Follower extends React.Component{
           )}
         keyExtractor={item => item.id}
         />
-        </Content>
+
 </Container>
 
     );

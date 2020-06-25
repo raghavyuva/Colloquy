@@ -74,7 +74,7 @@ if(checkedforvalidation) {
       const uri = 'http://stackoverflow.com/questions/35531679/react-native-open-links-in-browser';
     if (this.state.loading){
         return (
-            <View></View>
+            <Container></Container>
           );
     }
         return(

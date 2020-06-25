@@ -12,9 +12,20 @@ export default class ChatTab extends React.Component{
 	}
 	state={
 		active:false,
+		loading:true,
 	}
+
+		async componentDidMount() {
+			await Font.loadAsync({
+			  'Roboto': require('native-base/Fonts/Roboto.ttf'),
+			  'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
+			  ...Ionicons.font,
+			})
+			this.setState({ loading: false })
+		  }
 	Listrenderer=({id,user,tag,time,message,pic})=>{
 		return(
+			<Content>
 			<TouchableOpacity>
 			<List>
             <ListItem avatar>
@@ -32,13 +43,19 @@ export default class ChatTab extends React.Component{
             </ListItem>
           </List>
 		  </TouchableOpacity>
+		  </Content>
 		);
 	}
 	render(){
+		if (this.state.loading){
+            return (
+                <Container></Container>
+              );
+        }
 		return(
 <Container>
 <Headingbar/>
-		<Content>
+		
 <FlatList
                 pagingEnabled={true}
                 showsHorizontalScrollIndicator={false}
@@ -55,7 +72,7 @@ export default class ChatTab extends React.Component{
             }
           keyExtractor={item => item.id}
               />
-			  </Content>
+			 
 			  <Fab
             active={this.state.active}
             direction="up"

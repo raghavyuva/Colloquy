@@ -16,7 +16,23 @@ export default class homescreen extends React.Component{
   constructor(props){
     super(props);
   }
+  state={
+    loading:true,
+}
+    async componentDidMount() {
+        await Font.loadAsync({
+          'Roboto': require('native-base/Fonts/Roboto.ttf'),
+          'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
+          ...Ionicons.font,
+        })
+        this.setState({ loading: false })
+      }
   render(){
+    if (this.state.loading){
+      return (
+         <View></View>
+        );
+  }
     return(
 <View >
  
