@@ -15,7 +15,7 @@ import Blogpage from './Components/Rootstack/feedscreen';
 import Settings from './Components/Homestack/settings';
 import notifications from './Components/Homestack/Notification';
 import profile from './Components/Homestack/profile';
-import { Root } from "native-base";
+import { Root,Spinner} from "native-base";
 import Headingbar from './Components/common/Header';
 import Upcoming_events from './Components/common/upcomingevents';
 import Upcoming_events_copy from './Components/common/Upcomingeventscopy';
@@ -28,7 +28,10 @@ import {Router, Scene} from 'react-native-router-flux';
 import {DrawerContent} from './Components/Rootstack/Drawercontentscreen';
 import Follower from './Components/common/Followers';
 import Following from './Components/common/following';
+import Privacy from './Components/common/privacy';
 import Addblog from './Components/Homestack/Addblog';
+import Terms from './Components/common/Termscondition';
+import Class from './Components/Homestack/Classroom';
 import { Ionicons,FontAwesome5,MaterialCommunityIcons,Feather,SimpleLineIcons,Octicons,Fontisto,FontAwesome,MaterialIcons} from '@expo/vector-icons';
 AppRegistry.registerComponent('ReactNativeAuth', () => App);
 
@@ -46,7 +49,7 @@ class App extends Component {
   render() {
     if (!this.state.isLoaded) {
       return (
-        <ActivityIndicator />
+        <Spinner color='#0E043B' />
       )
     } else {
     return(
@@ -144,6 +147,27 @@ initial={true}
             title='notification'
 
           /> 
+                                                <Scene
+            component={Privacy}
+            hideNavBar={true}
+            key='privacy'
+            title='privacy'
+
+          /> 
+                                              <Scene
+            component={Terms}
+            hideNavBar={true}
+            key='terms'
+            title='terms'
+
+          /> 
+                                                        <Scene
+            component={Class}
+            hideNavBar={true}
+            key='classroom'
+            title='class'
+
+          /> 
         </Scene>
       </Router>
       </Root>
@@ -162,7 +186,10 @@ function mydrawer(){
   <Drawer.Screen name="upcoming" component={Upcoming_events_copy} />
   <Drawer.Screen name="setting" component={Settings} />
   <Drawer.Screen name="note" component={Notesshared} />
+  <Drawer.Screen name="privacy" component={Privacy} />
+  <Drawer.Screen name="terms" component={Terms} />
   <Drawer.Screen name="download" component={Downloadpage} />
+  <Drawer.Screen name="classroom" component={Class} />
 </Drawer.Navigator>
   );
 }

@@ -3,6 +3,7 @@ import { Image ,StyleSheet,FlatList,ScrollView} from 'react-native';
 import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body ,Title,Right} from 'native-base';
 import { EvilIcons,AntDesign,FontAwesome5,Entypo,Ionicons} from '@expo/vector-icons';
 import * as Font from 'expo-font';
+import Headingbar from '../common/Header';
 
 const downloadablefile = [
     {
@@ -33,7 +34,21 @@ state={
         }
         return(
             <Container>
+                <Headingbar/>
+<Card>
+            <CardItem style={{backgroundColor:'red'}}>
+              <Body>
+                <Text style={{color:'white',fontSize:24,fontWeight:'bold'}}>
+                 Downloads
+                </Text>
+              </Body>
+            </CardItem>
+                <Text style={{color:'black',fontSize:18,fontWeight:'400'}}>Finished</Text>
+        
+            <Card style={{backgroundColor:'red',height:200,width:200}}>
 
+            </Card>
+          </Card>
             </Container>
         );
     }

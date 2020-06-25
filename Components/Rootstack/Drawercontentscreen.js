@@ -57,7 +57,7 @@ export function DrawerContent(props){
                             labelStyle={{color:'white'}}
                             label="Classroom"
                             style={{backgroundColor:'black',marginTop:20}}
-                            onPress={() => Linking.openURL('https://raghav.orak.in/')}
+                            onPress={() => Actions.classroom()}
                         />
                                                   <DrawerItem 
                             icon={({color, size}) => (
@@ -128,7 +128,7 @@ export function DrawerContent(props){
                             labelStyle={{color:'white'}}
                             label="privacy-policy"
                             style={{backgroundColor:'black',marginTop:20}}
-                            onPress={() => {props.navigation.navigate('SupportScreen')}}
+                            onPress={() => Actions.privacy()}
                         />
                           <DrawerItem 
                             icon={({color, size}) => (
@@ -146,7 +146,7 @@ export function DrawerContent(props){
                             labelStyle={{color:'white'}}
                             label="Terms & Conditions"
                             style={{backgroundColor:'black',marginTop:20}}
-                            onPress={() => Linking.openURL('https://raghav.orak.in/')}
+                            onPress={() => Actions.terms()}
                         />
                                                   <DrawerItem 
                             icon={({color, size}) => (
@@ -166,7 +166,7 @@ export function DrawerContent(props){
                     )}
                     label="Sign Out"
                     labelStyle={{color:'white'}}
-                    
+                   
                 />
             </Drawer.Section>
                         </View>
