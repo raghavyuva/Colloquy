@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import { StyleSheet,FlatList,ScrollView,Dimensions} from 'react-native';
-import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body,Title,Right, List,ListItem,View} from 'native-base';
+import { StyleSheet,FlatList,ScrollView,Dimensions,View} from 'react-native';
+import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Left,Body } from 'native-base';
 import { EvilIcons,AntDesign,FontAwesome5,MaterialCommunityIcons,Ionicons} from '@expo/vector-icons';
 import FeedComponent from '../common/Feedscreencopy';
 import * as Font from 'expo-font';
+import { ListItem,Avatar,Tooltip} from 'react-native-elements';
 const { width: screenWidth } = Dimensions.get('window');
 import Headingbar from '../common/Header';
+import { Actions } from 'react-native-router-flux';
 const profiledetails =[
   {
 id:'1',
@@ -36,37 +38,34 @@ logoutpress=()=>{
 }
 Listrenderer =({id,pic,user,tag,usn})=>{
   return(
-<Content>
-  <ScrollView>
-<Card style ={styles.card}>
-<List>
-  <ListItem>
-  <Thumbnail source ={{uri:pic}} large style={{width:200,height:160}}/>
-  </ListItem>
-  <ListItem>
-  <Left>
-  <Text style={styles.text}>{user}</Text> 
-  </Left>
-  </ListItem>
-  <ListItem>
-
-  <Text  style={styles.text}>{tag}</Text>
+<ScrollView>
+    <Card style={{backgroundColor:'#0E043B'}}>
+      <CardItem style={{backgroundColor:'#0E043B'}}> 
+        <Left>
+  <Avatar
+  rounded
+  size='xlarge'
+  onAccessoryPress={()=>Actions.edit()}
+  showAccessory
+  source={{
+    uri:pic
+  }}
   
-  </ListItem>
-  <ListItem>
+/>
+<Body>
+  <Text style={{color:'white',fontSize:28,fontWeight:'bold',}}>{user} </Text>
+  <Text note> {tag} </Text>
+  <Text note> {usn} </Text>
+  </Body>
+</Left>
+</CardItem>
 
-  <Text  style={styles.text}>{usn}</Text>
-  </ListItem>
-  </List>
+
 </Card>
-<Button style={styles.edit}><Text>Edit profile</Text></Button>
-
-
 <Text style ={styles.recent}>Recent Posts</Text>
 
 <FeedComponent/>
 </ScrollView>
-</Content>
   );
 }
   render() { 
@@ -76,9 +75,10 @@ Listrenderer =({id,pic,user,tag,usn})=>{
         );
   }  
     return (
-      <Container>
+    <Container>
        
      <Headingbar/>
+     <Content>
 <FlatList
                 pagingEnabled={true}
                 showsHorizontalScrollIndicator={false}
@@ -94,9 +94,9 @@ Listrenderer =({id,pic,user,tag,usn})=>{
             }
           keyExtractor={item => item.id}
               />
-           
-         
-      </Container>
+</Content>
+
+           </Container>
       
     );
   }

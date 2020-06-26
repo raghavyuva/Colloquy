@@ -33,6 +33,10 @@ import Addblog from './Components/Homestack/Addblog';
 import Terms from './Components/common/Termscondition';
 import Class from './Components/Homestack/Classroom';
 import Polling from './Components/common/Polling';
+import Privacytermsegment from './Components/common/Privacyterm';
+import Feedback from './Components/common/Feedback';
+import Chatui from './Components/common/Chatui';
+import Edition from './Components/common/Editprofile';
 import { Ionicons,FontAwesome5,MaterialCommunityIcons,Feather,SimpleLineIcons,Octicons,Fontisto,FontAwesome,MaterialIcons} from '@expo/vector-icons';
 AppRegistry.registerComponent('ReactNativeAuth', () => App);
 const { width: screenWidth } = Dimensions.get('window');
@@ -150,19 +154,13 @@ initial={true}
 
           /> 
                                                 <Scene
-            component={Privacy}
+            component={Privacytermsegment}
             hideNavBar={true}
-            key='privacy'
-            title='privacy'
+            key='segment'
+            title='segment'
 
           /> 
-                                              <Scene
-            component={Terms}
-            hideNavBar={true}
-            key='terms'
-            title='terms'
 
-          /> 
                                                         <Scene
             component={Class}
             hideNavBar={true}
@@ -177,6 +175,21 @@ initial={true}
             title='poll'
 
           /> 
+                                                              <Scene
+            component={Feedback}
+            hideNavBar={true}
+            key='report'
+            title='report'
+
+          />
+                                                                        <Scene
+            component={Edition}
+            hideNavBar={true}
+            key='edit'
+            title='edit'
+
+          />  
+
         </Scene>
       </Router>
       </Root>

@@ -29,7 +29,7 @@ state={
         }
         return(
             <Container>
-<Headingbar/>
+
 <Text style={{fontSize:24,fontWeight:'bold',textAlign:'center',backgroundColor:'yellow'}}>Privacy Policy</Text>
 <ScrollView>
 <Paragraph>

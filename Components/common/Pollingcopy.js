@@ -14,6 +14,7 @@ const polloptions = [
         option2:'No we dont want',
         num1:'100 ',
         num2:'200',
+        color:'#0E043B'
     },
     {
         id:'2',
@@ -22,6 +23,7 @@ const polloptions = [
         option2:'20000',
         num1:'100 ',
         num2:'200',
+        color:'red'
     },
     {
         id:'3',
@@ -30,6 +32,7 @@ const polloptions = [
         option2:'No we dont want',
         num1:'100 ',
         num2:'200',
+        color:"green"
     }
 ]
 export default class Pollingcopy extends React.Component{
@@ -47,16 +50,16 @@ state={
         })
         this.setState({ loading: false })
       }
-      Listrenderer=({id,op1,op2,num1,num2,question})=>{
+      Listrenderer=({id,op1,op2,num1,num2,question,color})=>{
           return(
-            <Card style={{backgroundColor:'#0E043B',borderColor:'red',height:340,width:screenWidth-20}}>
-            <CardItem style={{backgroundColor:'#0E043B'}}>
+            <Card style={{backgroundColor:color,borderColor:'red',height:340,width:screenWidth-20}}>
+            <CardItem style={{backgroundColor:color}}>
                 <FontAwesome5 name="poll" size={80} color="white" style={{marginRight:10}} />   
                  
           <Text style={{fontSize:24,color:'white'}} numberOfLines={3}>{question}</Text>
                
             </CardItem>
-            <CardItem style={{backgroundColor:'#0E043B',marginLeft:50}}>
+            <CardItem style={{backgroundColor:color,marginLeft:50}}>
                 <Left>
                     <Button style={{marginRight:20}}>
           <Text style={{color:'white'}}>{op1}</Text>
@@ -66,7 +69,7 @@ state={
                     </Button>
                 </Left>
             </CardItem>
-            <List style={{backgroundColor:'#0E043B'}}>
+            <List style={{backgroundColor:color}}>
                 <ListItem>
             <Text style={{color:'white'}}> {num1} voted for option one </Text>
             </ListItem>
@@ -96,6 +99,7 @@ state={
                op2={item.option2}
                num1={item.num1}
                num2={item.num2}
+               color={item.color}
              />
            )}
          keyExtractor={item => item.id}

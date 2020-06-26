@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import { Image ,StyleSheet,FlatList,ScrollView,View,Linking,AsyncStorage,Alert,Dimensions} from 'react-native';
 import { Container, Header, Content, Button, ListItem, Icon, Left, Body, Right,Card,CardItem, List,ActionSheet} from 'native-base';
 import * as Font from 'expo-font';
-import { Ionicons,FontAwesome5,MaterialCommunityIcons,Feather,SimpleLineIcons,Octicons,Fontisto,FontAwesome} from '@expo/vector-icons';
+import { Ionicons,FontAwesome5,MaterialCommunityIcons,Feather,SimpleLineIcons,Octicons,Fontisto,FontAwesome,MaterialIcons} from '@expo/vector-icons';
 import {Actions} from 'react-native-router-flux';
 const { width: screenWidth } = Dimensions.get('window');
 import {
@@ -135,9 +135,9 @@ export function DrawerContent(props){
 <Octicons name="mail-read" size={24} color="white" />
                             )}
                             labelStyle={{color:'white'}}
-                            label="privacy-policy"
+                            label="privacy policy and terms"
                             style={{backgroundColor:'black',marginTop:20}}
-                            onPress={() => Actions.privacy()}
+                            onPress={() => Actions.segment()}
                         />
                           <DrawerItem 
                             icon={({color, size}) => (
@@ -148,15 +148,6 @@ export function DrawerContent(props){
                             style={{backgroundColor:'black',marginTop:20}}
                             onPress={() => Linking.openURL('https://raghav.orak.in/')}
                         />
-                          <DrawerItem 
-                            icon={({color, size}) => (
-<FontAwesome name="resistance" size={24} color="white" />
-                            )}
-                            labelStyle={{color:'white'}}
-                            label="Terms & Conditions"
-                            style={{backgroundColor:'black',marginTop:20}}
-                            onPress={() => Actions.terms()}
-                        />
                                                   <DrawerItem 
                             icon={({color, size}) => (
 <FontAwesome name="telegram" size={24} color="white" />
@@ -165,6 +156,15 @@ export function DrawerContent(props){
                             label="join official channel"
                             style={{backgroundColor:'black',marginTop:20}}
                             onPress={() => Linking.openURL('https://t.me/orakin')}
+                        />
+                           <DrawerItem 
+                            icon={({color, size}) => (
+<MaterialIcons name="feedback" size={24} color="white" />
+                            )}
+                            labelStyle={{color:'white'}}
+                            label="feedback"
+                            style={{backgroundColor:'black',marginTop:20}}
+                            onPress={() => Actions.report()}
                         />
                     </Drawer.Section>
                     </DrawerContentScrollView>   

@@ -29,7 +29,6 @@ state={
         }
         return(
             <Container>
-<Headingbar/>
 <Text style={{fontSize:24,fontWeight:'bold',textAlign:'center',backgroundColor:'yellow'}}>Terms & Conditions</Text>
 <ScrollView>
 <Paragraph>

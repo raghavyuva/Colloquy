@@ -6,6 +6,7 @@ import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 import { ScrollView } from 'react-native-gesture-handler';
 import Headingbar from '../common/Header';
+import { Actions } from 'react-native-router-flux';
 const { width: screenWidth } = Dimensions.get('window');
 export default class ChatTab extends React.Component{
 	constructor(props){
@@ -26,25 +27,29 @@ export default class ChatTab extends React.Component{
 		  }
 	Listrenderer=({id,user,tag,time,message,pic})=>{
 		return(
-			<Content>
-			<TouchableOpacity>
+
+		
 			<List>
+			<TouchableOpacity onPress={()=>Actions.report()}>
             <ListItem avatar>
               <Left>
                 <Thumbnail source={{ uri: pic}} />
               </Left>
               <Body>
+				 
                 <Text>{user} </Text>
                 <Text note>{tag} </Text>
+
               </Body>
+			 
               <Right>
 			  <Text note style={{color:'green',fontSize:15,fontWeight:'bold'}}>{message}</Text>	  
 		<Text note>{time}</Text>
               </Right>
             </ListItem>
+			</TouchableOpacity>
           </List>
-		  </TouchableOpacity>
-		  </Content>
+
 		);
 	}
 	render(){
@@ -56,7 +61,7 @@ export default class ChatTab extends React.Component{
 		return(
 <Container>
 <Headingbar/>
-		
+		<Content>
 <FlatList
                 pagingEnabled={true}
                 showsHorizontalScrollIndicator={false}
@@ -73,7 +78,7 @@ export default class ChatTab extends React.Component{
             }
           keyExtractor={item => item.id}
               />
-			 
+			 </Content>
 			  <Fab
             active={this.state.active}
             direction="up"
@@ -92,6 +97,7 @@ export default class ChatTab extends React.Component{
               <Icon name="mail" />
             </Button>
           </Fab>
+
 </Container>
 		);
 	}
