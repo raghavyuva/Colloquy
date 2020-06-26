@@ -6,7 +6,7 @@ import {
   import * as Font from 'expo-font';
   import { Ionicons } from '@expo/vector-icons';
   import {Actions} from 'react-native-router-flux';
-
+  const { width: screenWidth } = Dimensions.get('window');
 export default class Welcomepage extends React.Component{
     static navigationOptions = {
         title: 'Cambridge welcomes you',

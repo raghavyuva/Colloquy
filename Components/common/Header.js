@@ -1,11 +1,12 @@
 import React, { Component,useState } from 'react';
-import { Image ,StyleSheet,SafeAreaView,FlatList} from 'react-native';
+import { Image ,StyleSheet,SafeAreaView,FlatList,Dimensions} from 'react-native';
 import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body,Drawer,View,ListItem,Right,Radio, List,Title,ActionSheet,Item,Input} from 'native-base';
 import * as Font from 'expo-font';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Actions } from 'react-native-router-flux';
 import Display from 'react-native-display';
-import { Ionicons,FontAwesome5,MaterialCommunityIcons,Feather,SimpleLineIcons,Octicons,Fontisto,FontAwesome,Entypo} from '@expo/vector-icons';
+const { width: screenWidth } = Dimensions.get('window');
+import { Ionicons,FontAwesome5,MaterialCommunityIcons,Feather,SimpleLineIcons,Octicons,Fontisto,FontAwesome,Entypo,AntDesign} from '@expo/vector-icons';
 import {
   Avatar,
   TouchableRipple,
@@ -54,7 +55,7 @@ searchaction=()=>{
         <Display enable={this.state.enable}>
           <Header>
         <Left>
-          <Button transparent>
+          <Button transparent onPress={()=>Actions.drawer()}>
             <Icon name='menu' />
           </Button>
         </Left>
@@ -99,6 +100,9 @@ searchaction=()=>{
         <Item>
           <Icon name="ios-search" />
           <Input placeholder="What you are looking for?" />
+          <Button transparent  style={{marginRight:10}} >
+          <AntDesign name="filter" size={26} color="black" />
+          </Button>
           <Button transparent  enable={this.state.enable} onPress={this.toggling}>
           <Entypo name="cross" size={26} color="black" />
           </Button>

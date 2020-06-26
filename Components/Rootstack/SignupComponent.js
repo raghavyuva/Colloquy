@@ -8,6 +8,7 @@ import {
   import { Ionicons } from '@expo/vector-icons';
   'use strict';
   import {Actions} from 'react-native-router-flux';
+  const { width: screenWidth } = Dimensions.get('window');
 export default class Signuppage extends ValidationComponent {
   static navigationOptions = {
     title: 'Sign up',

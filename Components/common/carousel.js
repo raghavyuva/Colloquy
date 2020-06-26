@@ -107,19 +107,15 @@ export default class Carouselimage extends React.Component{
             
             <Left>
               <Button transparent textStyle={{color: '#87838B'}}>
-              <EvilIcons name="comment" size={24} color="black" />
+              <EvilIcons name="comment" size={28} color="black" />
                 <Text style = {{textTransform:'capitalize'}}> {item.commentnum} </Text>
               </Button>
               <Button transparent textStyle={{color: '#87838B'}}>
-              <AntDesign name="heart" size={24} color="black" />
+              <AntDesign name="heart" size={28} color="black" />
              <Text style = {{textTransform:'capitalize'}}>{item.likenum}</Text>
               </Button>
-              <Button transparent textStyle={{color: '#87838B'}}>
-              <FontAwesome5 name="share" size={24} color="black" />
-             <Text style = {{textTransform:'capitalize'}}>share</Text>
-              </Button>
               <Button transparent>
-              <FontAwesome5 name="hand-point-up" size={24} color="black" />
+              <FontAwesome5 name="hand-point-up" size={28} color="black" />
               <Text style = {{textTransform:'capitalize'}}>{item.upvotenum}</Text>
               </Button>
             </Left>
@@ -170,7 +166,7 @@ render(){
                     loop={false}
                     sliderWidth={screenWidth}
                     sliderHeight={screenWidth}
-                    itemWidth={screenWidth - 30}
+                    itemWidth={screenWidth - 20}
                     renderItem={this.renderItem}
                     hasParallaxImages={true}
                     onSnapToItem = { index => this.setState({activeIndex:index}) } />
@@ -190,7 +186,7 @@ const styles=StyleSheet.create(
             },
             item: {
               width: screenWidth - 180,
-              height: screenWidth - 20,
+              height: screenWidth - 40,
             },
             image:{
               ...StyleSheet.absoluteFillObject,
@@ -198,7 +194,7 @@ const styles=StyleSheet.create(
              },
             imageContainer: {
                flex: 1,
-               width:350,
+               width:screenWidth-100,
                height:200,
                backgroundColor: 'white',
                borderRadius: 8,

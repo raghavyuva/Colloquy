@@ -1,11 +1,12 @@
 import React, { Component,useState } from 'react';
-import { Image ,StyleSheet,SafeAreaView,FlatList,TouchableOpacity} from 'react-native';
+import { Image ,StyleSheet,SafeAreaView,FlatList,TouchableOpacity,Dimensions} from 'react-native';
 import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body,Drawer,View,ListItem,Right,Radio, List,Title,Fab} from 'native-base';
 import { EvilIcons,AntDesign,FontAwesome5,Entypo} from '@expo/vector-icons';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 import { ScrollView } from 'react-native-gesture-handler';
 import Headingbar from '../common/Header';
+const { width: screenWidth } = Dimensions.get('window');
 export default class ChatTab extends React.Component{
 	constructor(props){
 		super(props);

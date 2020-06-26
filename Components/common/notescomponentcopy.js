@@ -5,7 +5,7 @@ import { EvilIcons,AntDesign,FontAwesome5,Entypo} from '@expo/vector-icons';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 import { ScrollView } from 'react-native-gesture-handler';
-
+const { width: screenWidth } = Dimensions.get('window');
 const noteinfo =[
     {
         id:'1',

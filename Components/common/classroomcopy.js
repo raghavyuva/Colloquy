@@ -4,6 +4,7 @@ import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Ic
 import { EvilIcons,AntDesign,FontAwesome5,Entypo,Ionicons} from '@expo/vector-icons';
 import * as Font from 'expo-font';
 import Headingbar from '../common/Header';
+import { View } from 'react-native-animatable';
 const { width: screenWidth } = Dimensions.get('window');
 const sameusn =[
     {
@@ -79,7 +80,7 @@ const sameusn =[
               <Thumbnail square source={{uri:icon}} />
             </Left>
             <Body>
-      <Text>{user}</Text>
+      <Text style={{color:'white'}}>{user}</Text>
       <Text note numberOfLines={1}>{usn}</Text>
             </Body>
             <Right>
@@ -92,7 +93,7 @@ const sameusn =[
       );
    }    
   
-  export default class Class extends React.Component{
+  export default class Classroomcopy extends React.Component{
       constructor(props){
           super(props);
       }
@@ -113,16 +114,15 @@ const sameusn =[
     render() {
       if (this.state.loading){
           return (
-              <Container></Container>
+             <View></View>
             );
       }
   
   
       return (
-          <Container>
-  <Headingbar/>
-  <Text>find your branch people from this page</Text>
+          <View>
   <FlatList
+          horizontal
           data={sameusn}
        renderItem={({ item }) => ( 
               <Listrenderer
@@ -134,8 +134,7 @@ const sameusn =[
             )}
           keyExtractor={item => item.id}
           />
-  
-  </Container>
+</View>
   
       );
   }

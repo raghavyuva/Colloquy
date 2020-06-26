@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Image ,StyleSheet,FlatList,ScrollView} from 'react-native';
+import { Image ,StyleSheet,FlatList,ScrollView,Dimensions} from 'react-native';
 import { Container, Header, Content, Button, ListItem, Text, Icon, Left, Body, Right, Switch ,Title,Card,CardItem, List,ActionSheet} from 'native-base';
 import { EvilIcons,AntDesign,FontAwesome5,Entypo} from '@expo/vector-icons';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 import Headingbar from '../common/Header';
+const { width: screenWidth } = Dimensions.get('window');
 const noteinfo =[
     {
         id:'1',

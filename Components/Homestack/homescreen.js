@@ -12,6 +12,8 @@ const { width: screenWidth } = Dimensions.get('window');
 import Notessharedcopy from '../common/notescomponentcopy';
 import Headingbar from '../common/Header';
 import { Actions } from 'react-native-router-flux';
+import Classroomcopy from '../common/classroomcopy';
+import Pollingcopy from '../common/Pollingcopy';
 export default class homescreen extends React.Component{
   constructor(props){
     super(props);
@@ -64,6 +66,14 @@ export default class homescreen extends React.Component{
 <View>
 <Text style ={Styles.heading}>Shared Notes</Text>
 <Notessharedcopy/>
+</View>
+<View>
+<Text style ={Styles.heading}>Branch People</Text>
+<Classroomcopy/>
+</View>
+<View>
+  <Text style ={Styles.heading}>Trending Polls</Text>
+  <Pollingcopy/>
 </View>
 </ScrollView>
 </View>

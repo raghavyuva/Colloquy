@@ -3,11 +3,12 @@ import {
     DrawerItem
 } from '@react-navigation/drawer';
 import React, { Component } from 'react';
-import { Image ,StyleSheet,FlatList,ScrollView,View,Linking,AsyncStorage,Alert} from 'react-native';
+import { Image ,StyleSheet,FlatList,ScrollView,View,Linking,AsyncStorage,Alert,Dimensions} from 'react-native';
 import { Container, Header, Content, Button, ListItem, Icon, Left, Body, Right,Card,CardItem, List,ActionSheet} from 'native-base';
 import * as Font from 'expo-font';
 import { Ionicons,FontAwesome5,MaterialCommunityIcons,Feather,SimpleLineIcons,Octicons,Fontisto,FontAwesome} from '@expo/vector-icons';
 import {Actions} from 'react-native-router-flux';
+const { width: screenWidth } = Dimensions.get('window');
 import {
     Avatar,
     Text,
@@ -74,6 +75,14 @@ export function DrawerContent(props){
                             label="Following"
                             style={{backgroundColor:'black',marginTop:20}}
                             onPress={()=>Actions.following()}
+                        />
+                           <DrawerItem 
+                            icon={({color, size}) => (
+<FontAwesome5 name="poll" size={24} color="white" />                            )}
+                            labelStyle={{color:'white'}}
+                            label='Polling'
+                            style={{backgroundColor:'black',marginTop:20}}
+                            onPress={()=>Actions.poll()}
                         />
                         <DrawerItem 
                          icon={({color, size}) => (

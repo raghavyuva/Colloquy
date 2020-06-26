@@ -1,9 +1,10 @@
 import React, { Component,useState } from 'react';
-import { Image ,StyleSheet,SafeAreaView,FlatList} from 'react-native';
+import { Image ,StyleSheet,SafeAreaView,FlatList,Dimensions} from 'react-native';
 import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body,Drawer,View,ListItem,Right,Radio, List} from 'native-base';
 import { EvilIcons,AntDesign,FontAwesome5,Entypo} from '@expo/vector-icons';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
+const { width: screenWidth } = Dimensions.get('window');
 import { ScrollView } from 'react-native-gesture-handler';
 const sortby =[
   {

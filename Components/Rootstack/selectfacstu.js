@@ -1,11 +1,12 @@
 import React,{Component} from 'react';
 import {
   ImageBackground,
-  SafeAreaView,StyleSheet,Dimensions,TouchableOpacity} from 'react-native';
+  SafeAreaView,StyleSheet,Dimensions,TouchableOpacity,} from 'react-native';
   import {Button,Text, View,List,ListItem} from 'native-base';
   import * as Font from 'expo-font';
   import { Ionicons } from '@expo/vector-icons';
   import { LinearGradient } from 'expo-linear-gradient';
+  const { width: screenWidth } = Dimensions.get('window');
   export default class Whoyouare extends React.Component{
     static navigationOptions = {
         title: 'position',
@@ -71,9 +72,7 @@ const styles = StyleSheet.create({
     background:{
         width:'100%',
         height:'100%',
-        flex:0.18,
-        
-        
+        flex:0.18,   
     },
     button:{
          justifyContent:'center',

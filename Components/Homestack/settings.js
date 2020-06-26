@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Image ,StyleSheet,FlatList,ScrollView} from 'react-native';
+import { Image ,StyleSheet,FlatList,ScrollView,Dimensions} from 'react-native';
 import { Container, Header, Content, Button, ListItem, Text, Icon, Left, Body, Right, Switch ,Title} from 'native-base';
 import Headingbar from '../common/Header';
 import * as Font from 'expo-font';
+const { width: screenWidth } = Dimensions.get('window');
 import { EvilIcons,AntDesign,FontAwesome5,MaterialCommunityIcons,Ionicons} from '@expo/vector-icons';
 const listofsettings = [
 	{

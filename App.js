@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { StyleSheet, Text, View,ActivityIndicator,AsyncStorage} from 'react-native';
+import { StyleSheet, Text, View,ActivityIndicator,AsyncStorage,Dimensions} from 'react-native';
 import {createAppContainer} from 'react-navigation';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { createDrawerNavigator } from '@react-navigation/drawer';
@@ -32,9 +32,10 @@ import Privacy from './Components/common/privacy';
 import Addblog from './Components/Homestack/Addblog';
 import Terms from './Components/common/Termscondition';
 import Class from './Components/Homestack/Classroom';
+import Polling from './Components/common/Polling';
 import { Ionicons,FontAwesome5,MaterialCommunityIcons,Feather,SimpleLineIcons,Octicons,Fontisto,FontAwesome,MaterialIcons} from '@expo/vector-icons';
 AppRegistry.registerComponent('ReactNativeAuth', () => App);
-
+const { width: screenWidth } = Dimensions.get('window');
 class App extends Component {
   constructor(props) {
     super(props);
@@ -75,6 +76,13 @@ class App extends Component {
             hideNavBar={true}
             key='Signup'
             title='user signup'
+
+          />
+                    <Scene
+            component={profile}
+            hideNavBar={true}
+            key='profile'
+            title='profile'
 
           />
                    <Scene
@@ -133,13 +141,7 @@ initial={true}
             title='following'
 
           /> 
-                            <Scene
-            component={profile}
-            hideNavBar={true}
-            key='profile'
-            title='profile'
 
-          /> 
                                       <Scene
             component={notifications}
             hideNavBar={true}
@@ -166,6 +168,13 @@ initial={true}
             hideNavBar={true}
             key='classroom'
             title='class'
+
+          /> 
+                                                    <Scene
+            component={Polling}
+            hideNavBar={true}
+            key='poll'
+            title='poll'
 
           /> 
         </Scene>

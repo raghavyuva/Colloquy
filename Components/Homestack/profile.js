@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { StyleSheet,FlatList,ScrollView} from 'react-native';
+import { StyleSheet,FlatList,ScrollView,Dimensions} from 'react-native';
 import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body,Title,Right, List,ListItem,View} from 'native-base';
 import { EvilIcons,AntDesign,FontAwesome5,MaterialCommunityIcons,Ionicons} from '@expo/vector-icons';
 import FeedComponent from '../common/Feedscreencopy';
 import * as Font from 'expo-font';
+const { width: screenWidth } = Dimensions.get('window');
 import Headingbar from '../common/Header';
 const profiledetails =[
   {

@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Image ,StyleSheet,FlatList,ScrollView} from 'react-native';
+import { Image ,StyleSheet,FlatList,ScrollView,Dimensions} from 'react-native';
 import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body ,Title,Right,DeckSwiper,View,ActionSheet} from 'native-base';
 import { EvilIcons,AntDesign,FontAwesome5,Entypo,Ionicons} from '@expo/vector-icons';
 import * as Font from 'expo-font';
+const { width: screenWidth } = Dimensions.get('window');
 const bloginfo =[
     {
     userpic:'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fs.cdpn.io%2F69263%2Fprofile%2Fprofile-512.jpg%3F2&f=1&nofb=1',
