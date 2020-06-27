@@ -4,6 +4,13 @@ import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Ic
 import { EvilIcons,AntDesign,FontAwesome5,Entypo,Ionicons} from '@expo/vector-icons';
 import Headingbar from '../common/Header';
 import * as Font from 'expo-font';
+import {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+} from 'react-native-popup-menu';
+ 
 const { width: screenWidth } = Dimensions.get('window');
 const bloginfo =[
     {
@@ -84,7 +91,21 @@ Listrenderer({id,user,date,icon,description,postimage,like,comment,upvote}){
             <Text note>{date} </Text>
           </Body>
           <Button style = {styles.follow}>
+          <Menu>
+      <MenuTrigger  customStyles={{color:'white',backgroundColor:'red'}} >
+      
           <Entypo name="dots-three-vertical" size={24} color="white" />
+     </MenuTrigger>
+          <MenuOptions>
+        <MenuOption onSelect={() => alert(`Save`)}  >
+          <CardItem style={{flexDirection:'row'}}>
+        <Entypo name="share" size={24} color="red" style={{marginRight:8}}/>
+        <Text>share</Text>
+        </CardItem>
+          </MenuOption>
+          </MenuOptions>
+    </Menu>
+
           </Button>
         </Left>
       </CardItem>

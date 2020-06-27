@@ -1,5 +1,5 @@
 import React, { Component,useState } from 'react';
-import { Image ,StyleSheet,SafeAreaView,FlatList,Dimensions} from 'react-native';
+import { Image ,StyleSheet,SafeAreaView,FlatList,Dimensions,Share} from 'react-native';
 import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body,Drawer,View,ListItem,Right,Radio, List,Title,ActionSheet,Item,Input} from 'native-base';
 import * as Font from 'expo-font';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -12,14 +12,12 @@ import {
   TouchableRipple,
   Switch
 } from 'react-native-paper';
-var BUTTONS = [
-  { text: "WhatsApp", icon: "logo-whatsapp", iconColor: "#2c8ef4" },
-  { text: "Facebook", icon: "logo-facebook", iconColor: "blue" },
-  { text: "Gmail", icon: "mail", iconColor: "#ea943b" },
-  { text: "Instagram", icon: "logo-instagram", iconColor: "#fa213b" },
-  { text: "Cancel", icon: "close", iconColor: "red" }
-];
-var CANCEL_INDEX = 4;
+const shareOptions = {
+  title: 'Title',
+  message: 'Message to share', // here you can send app link to playstore.
+  url: 'www.example.com',
+  subject: 'Subject'
+};
 export default class Headingbar extends React.Component{
     constructor(props){
         super(props);
@@ -32,10 +30,7 @@ export default class Headingbar extends React.Component{
     toggling=()=>{
       this.setState({enable:!this.state.enable})
       }
-
-searchaction=()=>{
-
-    }
+      onSharePress = () => Share.share(shareOptions);
     async componentDidMount() {
       await Font.loadAsync({
         'Roboto': require('native-base/Fonts/Roboto.ttf'),
@@ -66,17 +61,7 @@ searchaction=()=>{
           <Button transparent onPress={this.toggling} enable={this.state.enable}>
             <Icon name='search' />
           </Button>
-          <Button transparent onPress={() =>
-  ActionSheet.show(
-    {
-      options: BUTTONS,
-      cancelButtonIndex: CANCEL_INDEX,
-      title: "Share to"
-    },
-    buttonIndex => {
-      this.setState({ clicked: BUTTONS[buttonIndex] });
-    }
-  )}>
+          <Button transparent onPress={this.onSharePress}>
             <Icon name='share' />
           </Button>
           <Button transparent onPress={()=>Actions.profile()}>

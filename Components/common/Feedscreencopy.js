@@ -1,8 +1,14 @@
 import React, { Component } from 'react';
 import { Image ,StyleSheet,FlatList,ScrollView,Dimensions} from 'react-native';
 import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body ,Title,Right,DeckSwiper,View,ActionSheet,List,ListItem} from 'native-base';
-import { EvilIcons,AntDesign,FontAwesome5,Entypo,Ionicons} from '@expo/vector-icons';
+import { EvilIcons,AntDesign,FontAwesome5,Entypo,Ionicons,MaterialCommunityIcons} from '@expo/vector-icons';
 import * as Font from 'expo-font';
+import {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+} from 'react-native-popup-menu';
 const { width: screenWidth } = Dimensions.get('window');
 const bloginfo =[
     {
@@ -113,7 +119,26 @@ Listrenderer({id,userpic,date,username,description,postimage,likenum,upvotenum,c
             <Text note>{date} </Text>
           </Body>
           <Button style = {styles.follow}>
+          <Menu>
+      <MenuTrigger  customStyles={{color:'white',backgroundColor:'red'}} >
+      
           <Entypo name="dots-three-vertical" size={24} color="white" />
+     </MenuTrigger>
+          <MenuOptions>
+        <MenuOption onSelect={() => alert(`Save`)}  >
+          <CardItem style={{flexDirection:'row'}}>
+        <Entypo name="share" size={24} color="red" style={{marginRight:8}}/>
+        <Text>share</Text>
+        </CardItem>
+          </MenuOption>
+          <MenuOption onSelect={() => alert(`deleted`)}  >
+          <CardItem style={{flexDirection:'row'}}>
+          <MaterialCommunityIcons name="delete-forever" size={24} color="red" style={{marginRight:8}} />
+        <Text>Delete post</Text>
+        </CardItem>
+          </MenuOption>
+          </MenuOptions>
+    </Menu>
           </Button>
         </Left>
       </CardItem>
@@ -135,20 +160,6 @@ Listrenderer({id,userpic,date,username,description,postimage,likenum,upvotenum,c
           <Button transparent textStyle={{color: '#87838B'}}>
           <AntDesign name="heart" size={24} color="black" />
          <Text style = {{textTransform:'capitalize'}}>{likenum}</Text>
-          </Button>
-          <Button transparent textStyle={{color: '#87838B'}}  onPress={() =>
-    ActionSheet.show(
-      {
-        options: BUTTONS,
-        cancelButtonIndex: CANCEL_INDEX,
-        title: "Share to"
-      },
-      buttonIndex => {
-        this.setState({ clicked: BUTTONS[buttonIndex] });
-      }
-    )}>
-          <FontAwesome5 name="share" size={24} color="black" />
-         <Text style = {{textTransform:'capitalize'}}>share</Text>
           </Button>
           <Button transparent>
           <FontAwesome5 name="hand-point-up" size={24} color="black" />

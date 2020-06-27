@@ -8,6 +8,9 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Modal, Portal, Text, Button, Provider,ToggleButton  } from 'react-native-paper';
 import { View } from 'react-native-animatable';
 import { ListItem,Avatar,Tooltip} from 'react-native-elements';
+import * as ImagePicker from 'expo-image-picker';
+import Constants from 'expo-constants';
+import * as Permissions from 'expo-permissions';
 const { width: screenWidth,height:screenHeight } = Dimensions.get('window');
 const downloadablefile = [
     {
@@ -22,9 +25,39 @@ constructor(props){
 state={
     loading:true,
     checked:false,
+    image:null,
 }
   Toggler=(value)=>{
     this.setState(value === 'checked' ? 'unchecked' : 'checked');
+  }
+  _pickImage = async () => {
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+      if (!result.cancelled) {
+        this.setState({ image: result.uri });
+      }
+
+      console.log(result);
+    } catch (E) {
+      console.log(E);
+    }
+  };
+
+  getPermissionAsync = async () => {
+    if (Constants.platform.ios) {
+      const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+      if (status !== 'granted') {
+        alert('Sorry, we need camera roll permissions to make this work!');
+      }
+    }
+  };
+  componentDidMount() {
+    this.getPermissionAsync();
   }
 
     async componentDidMount() {
@@ -36,6 +69,7 @@ state={
         this.setState({ loading: false })
       }
     render(){
+      let { image } = this.state;
         if (this.state.loading){
             return (
               <View></View>
@@ -54,8 +88,12 @@ state={
   size={300}
   showAccessory
   containerStyle={{alignSelf:'center',backgroundColor:'white'}}
- title="Pic"
+  source={{
+    uri:
+      this.state.image,
+  }}
   titleStyle={{color:'black'}}
+  onAccessoryPress={this._pickImage}
 />
 <Text note style={{color:'white',textAlign:'center'}}>change the post picture by pressing accessary </Text>
               <Item stackedLabel style={{ marginTop:25,}}>

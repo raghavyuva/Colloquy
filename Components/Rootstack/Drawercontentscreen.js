@@ -20,6 +20,15 @@ import {
     Switch
 } from 'react-native-paper';
 export function DrawerContent(props){
+ const userLogout=async()=> {
+        try {
+          await AsyncStorage.removeItem('id_token');
+          Alert.alert('You are successfully logged out');
+          Actions.Authentication();
+        } catch (error) {
+          console.log('AsyncStorage error: ' + error.message);
+        }
+      }
     return(
         <View style={{flex:1,backgroundColor:'#0E043B'}}>
              <View style={styles.drawerContent}>
@@ -175,7 +184,7 @@ export function DrawerContent(props){
                     )}
                     label="Sign Out"
                     labelStyle={{color:'white'}}
-                   
+                   onPress={userLogout}
                 />
             </Drawer.Section>
                         </View>

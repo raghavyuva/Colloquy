@@ -4,6 +4,9 @@ import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Ic
 import { EvilIcons,AntDesign,FontAwesome5,Entypo,Ionicons} from '@expo/vector-icons';
 import * as Font from 'expo-font';
 import Headingbar from '../common/Header';
+import * as ImagePicker from 'expo-image-picker';
+import Constants from 'expo-constants';
+import * as Permissions from 'expo-permissions';
 import { ListItem,Avatar,Tooltip} from 'react-native-elements';
 const { width: screenWidth,height:screenHeight } = Dimensions.get('window');
 const downloadablefile = [
@@ -18,7 +21,38 @@ constructor(props){
 }
 state={
     loading:true,
+    image: null,
 }
+componentDidMount() {
+  this.getPermissionAsync();
+}
+
+getPermissionAsync = async () => {
+  if (Constants.platform.ios) {
+    const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    if (status !== 'granted') {
+      alert('Sorry, we need camera roll permissions to make this work!');
+    }
+  }
+};
+
+_pickImage = async () => {
+  try {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [5, 3],
+      quality: 1,
+    });
+    if (!result.cancelled) {
+      this.setState({ image: result.uri });
+    }
+
+    console.log(result);
+  } catch (E) {
+    console.log(E);
+  }
+};
     async componentDidMount() {
         await Font.loadAsync({
           'Roboto': require('native-base/Fonts/Roboto.ttf'),
@@ -28,6 +62,7 @@ state={
         this.setState({ loading: false })
       }
     render(){
+      let { image } = this.state;
         if (this.state.loading){
             return (
                 <Container></Container>
@@ -43,10 +78,11 @@ state={
   rounded
   size='xlarge'
   showAccessory
-  containerStyle={{alignSelf:'center'}}
+  containerStyle={{alignSelf:'center',backgroundColor:'white'}}
   source={{
-    uri:'https://randomuser.me/api/portraits/men/11.jpg'
+    uri:this.state.image
   }}
+  onAccessoryPress={this._pickImage}
   
 />
               <Item floatingLabel>

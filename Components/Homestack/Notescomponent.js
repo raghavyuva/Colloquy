@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Image ,StyleSheet,FlatList,ScrollView,Dimensions} from 'react-native';
+import { Image ,StyleSheet,FlatList,ScrollView,Dimensions,Share} from 'react-native';
 import { Container, Header, Content, Button, ListItem, Text, Icon, Left, Body, Right, Switch ,Title,Card,CardItem, List,ActionSheet} from 'native-base';
 import { EvilIcons,AntDesign,FontAwesome5,Entypo} from '@expo/vector-icons';
 import * as Font from 'expo-font';
@@ -38,14 +38,12 @@ const noteinfo =[
         notesname:'Semiconductors and light emitting diode',
     },
 ]
-var BUTTONS = [
-    { text: "WhatsApp", icon: "logo-whatsapp", iconColor: "#2c8ef4" },
-    { text: "Facebook", icon: "logo-facebook", iconColor: "blue" },
-    { text: "Gmail", icon: "mail", iconColor: "#ea943b" },
-    { text: "Instagram", icon: "logo-instagram", iconColor: "#fa213b" },
-    { text: "Cancel", icon: "close", iconColor: "red" }
-  ];
-  var CANCEL_INDEX = 4;
+const shareOptions = {
+  title: 'Title',
+  message: 'Message to share', // Note that according to the documentation at least one of "message" or "url" fields is required
+  url: 'www.example.com',
+  subject: 'Subject'
+};
 export default class Notesshared extends React.Component{
     constructor(props){
         super(props);
@@ -61,6 +59,7 @@ export default class Notesshared extends React.Component{
         })
         this.setState({ loading: false })
       }
+      onSharePress = () => Share.share(shareOptions);
     Listrenderer=({sharednotes,sharedperson,notesname,id})=>{
         return(
         
@@ -78,19 +77,7 @@ export default class Notesshared extends React.Component{
         </CardItem>
         <CardItem>
         <Button transparent textStyle={{color: '#87838B'}}
-        
-        onPress={() =>
-            ActionSheet.show(
-              {
-                options: BUTTONS,
-                cancelButtonIndex: CANCEL_INDEX,
-                title: "Share to"
-              },
-              buttonIndex => {
-                this.setState({ clicked: BUTTONS[buttonIndex] });
-              }
-            )}
-       style={Styles.buttons} >
+       style={Styles.buttons} onPress={this.onSharePress}>
                   <FontAwesome5 name="share" size={24} color="black" />
                  <Text style = {{textTransform:'capitalize'}}>share</Text>
                   </Button>

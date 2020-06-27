@@ -38,6 +38,7 @@ import Feedback from './Components/common/Feedback';
 import Chatui from './Components/common/Chatui';
 import Edition from './Components/common/Editprofile';
 import Addpoll from './Components/Homestack/Addpoll';
+import { MenuProvider } from 'react-native-popup-menu';
 import { DefaultTheme,Provider as PaperProvider } from 'react-native-paper';
 import { Ionicons,FontAwesome5,MaterialCommunityIcons,Feather,SimpleLineIcons,Octicons,Fontisto,FontAwesome,MaterialIcons} from '@expo/vector-icons';
 AppRegistry.registerComponent('ReactNativeAuth', () => App);
@@ -61,6 +62,7 @@ class App extends Component {
     } else {
     return(
       <NavigationContainer>
+        <MenuProvider>
         <PaperProvider theme={theme}>
       <Root>
       <Router>
@@ -211,6 +213,7 @@ initial={true}
       </Router>
       </Root>
       </PaperProvider>
+      </MenuProvider>
       </NavigationContainer>
     )
   }

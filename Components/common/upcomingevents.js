@@ -1,5 +1,5 @@
 import React, { Component,useState } from 'react';
-import { Image ,StyleSheet,SafeAreaView,FlatList,View,Dimensions} from 'react-native';
+import { Image ,StyleSheet,SafeAreaView,FlatList,View,Dimensions,Modal,TouchableHighlight,Alert,Share} from 'react-native';
 import { Container, Header, Content, List, ListItem, Thumbnail, Text, Left, Body, Right, Button ,TextInput,Item,Icon,Input,Card,CardItem,ActionSheet} from 'native-base';
 import { EvilIcons,AntDesign,FontAwesome5,Entypo} from '@expo/vector-icons';
 import * as Font from 'expo-font';
@@ -44,15 +44,12 @@ const eventlist =[
     }
 
 ]
-var BUTTONS = [
-    { text: "WhatsApp", icon: "logo-whatsapp", iconColor: "#2c8ef4" },
-    { text: "Facebook", icon: "logo-facebook", iconColor: "blue" },
-    { text: "Gmail", icon: "mail", iconColor: "#ea943b" },
-    { text: "Instagram", icon: "logo-instagram", iconColor: "#fa213b" },
-    { text: "Cancel", icon: "close", iconColor: "red" }
-  ];
-  var CANCEL_INDEX = 4;
-  
+const shareOptions = {
+  title: 'Title',
+  message: 'Message to share', // Note that according to the documentation at least one of "message" or "url" fields is required
+  url: 'www.example.com',
+  subject: 'Subject'
+};
 export default class Upcoming_events extends React.Component{
     constructor(props){
         super(props);
@@ -61,36 +58,29 @@ export default class Upcoming_events extends React.Component{
     state={
       loading:true,
     }
+    onSharePress = () => Share.share(shareOptions);
     Listrenderer=({id,title,icon,tagline,date})=>{
+
+      const [modalVisible, setModalVisible] = useState(false);
         return(
        
-<Card style={Styles.card}>
+<Card style={styles.card}>
     <CardItem>
-<Text style={Styles.title}>Event Name: {title} </Text>
+<Text style={styles.title}>Event Name: {title} </Text>
 </CardItem>
-<Image source={{uri:icon}} style={Styles.image}/>
+<Image source={{uri:icon}} style={styles.image}/>
 <CardItem>
-<Text style={Styles.title} note numberOfLines={2} >description: {tagline} </Text>  
+<Text style={styles.title} note numberOfLines={2} >description: {tagline} </Text>  
 </CardItem>
 <CardItem>
-<Text style={Styles.title}>date: {date} </Text>
-<Button transparent textStyle={{color: '#87838B'}}>
+<Text style={styles.title}>date: {date} </Text>
+<Button transparent textStyle={{color: '#87838B'}} >
           <FontAwesome5 name="save" size={24} color="red" />
          <Text style = {{textTransform:'capitalize'}}>save post</Text>
           </Button>
 </CardItem>
 <CardItem>
-<Button transparent textStyle={{color: '#87838B'}}onPress={() =>
-    ActionSheet.show(
-      {
-        options: BUTTONS,
-        cancelButtonIndex: CANCEL_INDEX,
-        title: "Share to"
-      },
-      buttonIndex => {
-        this.setState({ clicked: BUTTONS[buttonIndex] });
-      }
-    )}>
+<Button transparent textStyle={{color: '#87838B'}} onPress={this.onSharePress} >
           <FontAwesome5 name="share" size={24} color="black" />
          <Text style = {{textTransform:'capitalize'}}>share</Text>
           </Button>
@@ -98,11 +88,32 @@ export default class Upcoming_events extends React.Component{
           <FontAwesome5 name="heart" size={24} color="black" />
          <Text style = {{textTransform:'capitalize'}}>like</Text>
           </Button>
-          <Button transparent textStyle={{color: '#87838B'}} >
+          <Button transparent textStyle={{color: '#87838B'}} onPress={() => {
+          setModalVisible(true);
+        }}>
           <FontAwesome5 name="eye" size={24} color="black" />
          <Text style = {{textTransform:'capitalize'}}>View</Text>
           </Button>
+
 </CardItem>
+<Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          Alert.alert("Modal has been closed.");
+        }}
+      >
+
+  <TouchableHighlight
+              style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
+              onPress={() => {
+                setModalVisible(!modalVisible);
+              }}
+            >
+              <Text style={styles.textStyle}>Hide Full view</Text>
+            </TouchableHighlight>
+      </Modal>
 </Card>
 
         );
@@ -123,6 +134,7 @@ export default class Upcoming_events extends React.Component{
           }
         return(
 <View style={{backgroundColor:'#0E043B'}}>
+
      <FlatList
                 horizontal
                 pagingEnabled={true}
@@ -140,12 +152,11 @@ export default class Upcoming_events extends React.Component{
           keyExtractor={item => item.id}
               />
 
-
 </View>
         );
     }
 }
-const Styles = StyleSheet.create({
+const styles = StyleSheet.create({
 title:{
 textAlign:'center',
 color:'#000',
@@ -162,5 +173,41 @@ image:{
 },
 tagline:{
 
+},
+centeredView: {
+  flex: 1,
+  justifyContent: "center",
+  alignItems: "center",
+  marginTop: 22
+},
+modalView: {
+  margin: 20,
+  backgroundColor: "white",
+  borderRadius: 20,
+  padding: 35,
+  alignItems: "center",
+  shadowColor: "#000",
+  shadowOffset: {
+    width: 0,
+    height: 2
+  },
+  shadowOpacity: 0.25,
+  shadowRadius: 3.84,
+  elevation: 5
+},
+openButton: {
+  backgroundColor: "#F194FF",
+  borderRadius: 20,
+  padding: 10,
+  elevation: 2
+},
+textStyle: {
+  color: "white",
+  fontWeight: "bold",
+  textAlign: "center"
+},
+modalText: {
+  marginBottom: 15,
+  textAlign: "center"
 }
 });

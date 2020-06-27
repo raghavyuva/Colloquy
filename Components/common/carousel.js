@@ -5,6 +5,12 @@ import Carousel, { Pagination, ParallaxImage  } from 'react-native-snap-carousel
 import {Thumbnail, Text, Left, Body, Button ,Card,CardItem,Image,ActionSheet} from 'native-base';
 const { width: screenWidth } = Dimensions.get('window');
 import * as Font from 'expo-font';
+import {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+} from 'react-native-popup-menu';
 import { EvilIcons,AntDesign,FontAwesome5,Entypo,Ionicons} from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 const bloginfo =[
@@ -83,7 +89,20 @@ export default class Carouselimage extends React.Component{
                 <Text note>{item.date} </Text>
               </Body>
               <Button style = {styles.follow}>
-              <Entypo name="dots-three-vertical" size={24} color="white" />
+              <Menu>
+      <MenuTrigger  customStyles={{color:'white',backgroundColor:'red'}} >
+      
+          <Entypo name="dots-three-vertical" size={24} color="white" />
+     </MenuTrigger>
+          <MenuOptions>
+        <MenuOption onSelect={() => alert(`Save`)}  >
+          <CardItem style={{flexDirection:'row'}}>
+        <Entypo name="share" size={24} color="red" style={{marginRight:8}}/>
+        <Text>share</Text>
+        </CardItem>
+          </MenuOption>
+          </MenuOptions>
+    </Menu>
               </Button>
             </Left>
           </CardItem>
