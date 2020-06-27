@@ -37,6 +37,8 @@ import Privacytermsegment from './Components/common/Privacyterm';
 import Feedback from './Components/common/Feedback';
 import Chatui from './Components/common/Chatui';
 import Edition from './Components/common/Editprofile';
+import Addpoll from './Components/Homestack/Addpoll';
+import { DefaultTheme,Provider as PaperProvider } from 'react-native-paper';
 import { Ionicons,FontAwesome5,MaterialCommunityIcons,Feather,SimpleLineIcons,Octicons,Fontisto,FontAwesome,MaterialIcons} from '@expo/vector-icons';
 AppRegistry.registerComponent('ReactNativeAuth', () => App);
 const { width: screenWidth } = Dimensions.get('window');
@@ -59,6 +61,7 @@ class App extends Component {
     } else {
     return(
       <NavigationContainer>
+        <PaperProvider theme={theme}>
       <Root>
       <Router>
         <Scene key='root'>
@@ -189,10 +192,25 @@ initial={true}
             title='edit'
 
           />  
+                                                                                  <Scene
+            component={Addpoll}
+            hideNavBar={true}
+            key='polladd'
+            title='polladd'
+
+          />  
+                                                                                  <Scene
+            component={Addblog}
+            hideNavBar={true}
+            key='blogadd'
+            title='blogadd'
+
+          />  
 
         </Scene>
       </Router>
       </Root>
+      </PaperProvider>
       </NavigationContainer>
     )
   }
@@ -249,6 +267,15 @@ export default () =>{
 
 
 */
+const theme = {
+  ...DefaultTheme,
+  roundness: 2,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: '#3498db',
+    accent: '#f1c40f',
+  },
+};
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -283,7 +310,7 @@ function Homestack(){
       name="addblog"
       component={Addblog}
       options={{
-        tabBarLabel: 'Add post',
+        tabBarLabel: 'post',
         tabBarIcon: ({ color }) => (
           <MaterialIcons name="add-circle" size={26} color={color} />
         ),

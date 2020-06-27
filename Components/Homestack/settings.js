@@ -9,19 +9,27 @@ const listofsettings = [
 	{
 		id:'1',
     opname:"Airoplane mode",
-    icon:'airplane'
+    icon:'airplane',
+    tagline:'Do not recieve notifications'
   },
   {
 		id:'2',
     opname:"Dark mode",
     icon:'md-bulb',
+    tagline:'Switch between themes',
   },
   {
 		id:'3',
-    opname:"Airoplane mode",
-    icon:'wifi',
+    opname:"Hide Recent Posts",
+    icon:'md-eye',
+    tagline:'This will hide recent posts from your profile'
+  },
+  {
+		id:'4',
+    opname:"Hide Recent Polls",
+    icon:'ios-analytics',
+    tagline:'This will hide recent polls from your profile'
 	},
-
 
 ]
 export default class Settings extends Component {
@@ -43,20 +51,21 @@ state={
   value:[],
 }
 
-	Listrenderer=({opname,icon})=>{
+	Listrenderer=({opname,icon,tagline})=>{
 		return(
 			<Content>
-			<ListItem icon>
+			<ListItem icon style={{marginTop:15}}>
 			  <Left>
 				<Button style={{ backgroundColor: "#FF9501" }}>
 				  <Icon active name={icon} />
 				</Button>
 			  </Left>
 			  <Body>
-				<Text> {opname} </Text>
+				<Text style={{color:'white'}}> {opname} </Text>
+        <Text note> {tagline} </Text>
 			  </Body>
 			  <Right>
-				<Switch value={false} onValueChange={()=>this.setState({value: !this.state.value})} />
+				<Switch value={false} onValueChange={()=>this.setState({value: !this.state.value})} style={{color:"white",backgroundColor:"yellow"}} />
 			  </Right>
 			</ListItem>
 		   
@@ -70,7 +79,7 @@ state={
         );
   }  
     return (
-      <Container>
+      <Container style={{backgroundColor:'#0E043B'}}>
 <Headingbar/>
 		<FlatList
         data={listofsettings}
@@ -79,6 +88,7 @@ state={
               id={item.id}
               opname={item.opname}
               icon ={item.icon}
+              tagline={item.tagline}
             />
           )}
         keyExtractor={item => item.id}

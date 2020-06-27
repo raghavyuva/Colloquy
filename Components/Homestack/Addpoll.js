@@ -8,6 +8,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Modal, Portal, Text, Button, Provider,ToggleButton  } from 'react-native-paper';
 import { View } from 'react-native-animatable';
 import { ListItem,Avatar,Tooltip} from 'react-native-elements';
+import {ColorPicker} from 'react-native-color-picker-light';
 const { width: screenWidth,height:screenHeight } = Dimensions.get('window');
 const downloadablefile = [
     {
@@ -15,7 +16,7 @@ const downloadablefile = [
         source:''
     }
 ]
-export default class Addblog extends React.Component{
+export default class Addpoll extends React.Component{
 constructor(props){
     super(props);
 }
@@ -43,54 +44,42 @@ state={
         }
 
         return(
-<View>
-    <ScrollView>
+<View style={styles.screen}>
 <Card style={styles.card}>
-       <CardItem style={{backgroundColor:'#0E043B'}}></CardItem>
-       <Text style={styles.logo}>New Post</Text>
-        <Form>
-        <Avatar
-  
-  size={300}
-  showAccessory
-  containerStyle={{alignSelf:'center',backgroundColor:'white'}}
- title="Pic"
-  titleStyle={{color:'black'}}
-/>
-<Text note style={{color:'white',textAlign:'center'}}>change the post picture by pressing accessary </Text>
-              <Item stackedLabel style={{ marginTop:25,}}>
-             <Text style={{color:'white',}}>Type some content for your post here</Text>
-                  <CardItem style={{    
-     backgroundColor:'#0E043B'}}>
-                  
-                    <Textarea style={styles.fieldinput} rowSpan={8} bordered  />
-                    </CardItem>
-                    </Item>
-                
+<Text style={styles.logo}>New Poll</Text>
+<CardItem style={{backgroundColor:'#0E043B',marginTop:screenHeight-700,flexDirection:'column'}}>
+<Item stackedLabel>
+                    <Label style={styles.fieldtitle} > TYPE QUESTION FOR YOUR POLL</Label>
+                    <Input style={styles.fieldinput}  />
+
+                  </Item>
+                  <Item stackedLabel>
+                    <Label style={styles.fieldtitle} > TYPE OPTION 1</Label>
+                    <Input style={styles.fieldinput}  />
+
+                  </Item>
+                  <Item stackedLabel>
+                    <Label style={styles.fieldtitle} > TYPE OPTION 2</Label>
+                    <Input style={styles.fieldinput}  />
+
+                  </Item>
+                  <Item stackedLabel>
+                    <Label style={styles.fieldtitle} > TYPE backgroundColor</Label>
+                    <Input style={styles.fieldinput} placeholder="type dark colours for better experience"  />
+
+                  </Item>
                   <Item stackedLabel style={styles.submission}>
                     <Button style={styles.submit}   ><Text style={styles.submittext}>Next</Text></Button>
                   </Item>
-                  </Form>
-                  <Item style={styles.fieldtitl} >
-              <Label style={styles.fieldtitle}>Want to post a poll?  </Label>
-              <TouchableOpacity><Text style={styles.signup} onPress={()=>Actions.polladd()} >Click here</Text></TouchableOpacity>
+</CardItem>
+<Item style={styles.fieldtitl} >
+              <Label style={styles.fieldtitle}>Want to post a feed?  </Label>
+              <TouchableOpacity><Text style={styles.signup} onPress={()=>Actions.blogadd()} >Click here</Text></TouchableOpacity>
               </Item>
-              </Card>
+<Text style={{color:'white',margin:25}}>Note: Enter colour name or colour code for example : 'black' or '#000'</Text>
 
-    </ScrollView>
-    <CardItem style={{position:'absolute',bottom:0}}>
-              <ToggleButton.Row onValueChange={this.Toggler} value={this.state.checked}>
-      <ToggleButton icon="format-align-left" value="left" />
-      <ToggleButton icon="format-align-right" value="right" />
-      <ToggleButton icon="format-align-center" value="right" />
-      <ToggleButton icon="format-bold" value="right" />
-      <ToggleButton icon="format-italic" value="right" />
-      <ToggleButton icon="format-size" value="right" />
-      <ToggleButton icon="format-color-highlight" value="right" />
-      <ToggleButton icon="format-strikethrough" value="right" />
-      <ToggleButton icon="format-underline" value="right" />
-    </ToggleButton.Row>
-    </CardItem>
+ </Card>   
+
 </View>
         );
     }
@@ -103,7 +92,7 @@ const styles = StyleSheet.create({
     textAlign:'center',
     },
     logo:{
-        fontSize:24,
+        fontSize:32,
         textAlign:'center',
         color:'yellow',
     },

@@ -4,14 +4,14 @@ import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Le
 import { EvilIcons,AntDesign,FontAwesome5,MaterialCommunityIcons,Ionicons} from '@expo/vector-icons';
 import FeedComponent from '../common/Feedscreencopy';
 import * as Font from 'expo-font';
-import { ListItem,Avatar,Tooltip} from 'react-native-elements';
+import { ListItem,Avatar,Tooltip,Paragraph,Caption} from 'react-native-elements';
 const { width: screenWidth } = Dimensions.get('window');
 import Headingbar from '../common/Header';
 import { Actions } from 'react-native-router-flux';
 const profiledetails =[
   {
 id:'1',
-username:'Tarest',
+username:'John Dev',
 userpic:'https://randomuser.me/api/portraits/men/11.jpg',
 tagline:'developer, Engineering student,pro skilled Programmer,indian  geek',
 usn:'1cd15cs098'
@@ -55,11 +55,15 @@ Listrenderer =({id,pic,user,tag,usn})=>{
 <Body>
   <Text style={{color:'white',fontSize:28,fontWeight:'bold',}}>{user} </Text>
   <Text note> {tag} </Text>
-  <Text note> {usn} </Text>
   </Body>
 </Left>
-</CardItem>
 
+</CardItem>
+<CardItem style={{backgroundColor:"yellow"}}>
+<Text style={{marginRight:20,fontWeight:'bold'}}>80 following</Text>
+<Text style={{marginRight:20,fontWeight:'bold'}}>100 followers</Text>                         
+<Text style={{marginRight:20,fontWeight:'bold'}}> {usn} </Text>                           
+</CardItem>
 
 </Card>
 <Text style ={styles.recent}>Recent Posts</Text>
