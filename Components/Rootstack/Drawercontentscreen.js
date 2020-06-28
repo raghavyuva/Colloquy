@@ -19,11 +19,22 @@ import {
     TouchableRipple,
     Switch
 } from 'react-native-paper';
+var STORAGE_KEY = 'id_token';
+
 export function DrawerContent(props){
- const userLogout=async()=> {
+ /*const userLogout=async()=> {
         try {
           await AsyncStorage.removeItem('id_token');
           Alert.alert('You are successfully logged out');
+          Actions.Authentication();
+        } catch (error) {
+          console.log('AsyncStorage error: ' + error.message);
+        }
+      }*/
+  const   userLogout=async()=> {
+        try {
+          await AsyncStorage.removeItem(STORAGE_KEY);
+          Alert.alert("Logout Success!");
           Actions.Authentication();
         } catch (error) {
           console.log('AsyncStorage error: ' + error.message);

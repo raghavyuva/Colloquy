@@ -8,11 +8,6 @@ import {
   import {Actions} from 'react-native-router-flux';
   const { width: screenWidth } = Dimensions.get('window');
 export default class Welcomepage extends React.Component{
-    static navigationOptions = {
-        title: 'Cambridge welcomes you',
-        headerStyle: { backgroundColor: 'white' },
-        headerTitleStyle: { color: 'black',justifyContent:'center',textAlign:'center' },
-      };
     constructor(props){
         super(props);
     };

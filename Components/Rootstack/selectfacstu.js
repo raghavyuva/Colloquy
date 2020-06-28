@@ -8,11 +8,6 @@ import {
   import { LinearGradient } from 'expo-linear-gradient';
   const { width: screenWidth } = Dimensions.get('window');
   export default class Whoyouare extends React.Component{
-    static navigationOptions = {
-        title: 'position',
-        headerStyle: { backgroundColor: 'white' },
-        headerTitleStyle: { color: 'black',justifyContent:'center',textAlign:'center' },
-      };
     constructor(props){
         super(props);
     };

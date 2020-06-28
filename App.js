@@ -78,7 +78,7 @@ class App extends Component {
             hideNavBar={true}
             key='Authentication'
             title='Authentication'
-           
+            initial={!this.state.hasToken}
           />
           <Scene
             component={Signuppage}
@@ -99,7 +99,7 @@ class App extends Component {
             hideNavBar={true}
             key='drawer'
             title='drawer'
-initial={true}
+            initial={this.state.hasToken}
           /> 
           <Scene
             component={Homestack}

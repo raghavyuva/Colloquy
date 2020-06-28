@@ -1,7 +1,7 @@
 import React,{Component} from 'react';
 import {
   ImageBackground,
-  SafeAreaView,StyleSheet,Dimensions,FlatList,TextInput, Linking,AsyncStorage} from 'react-native';
+  SafeAreaView,StyleSheet,Dimensions,FlatList,TextInput, Linking,AsyncStorage,Alert} from 'react-native';
   import { WebView } from 'react-native-webview';
   import { Container, Header, Content, Item, Input, Button,Text, View,Thumbnail, Card,Form,Label,CardItem, Left, Right} from 'native-base';
   import * as Font from 'expo-font';
@@ -10,12 +10,9 @@ import {
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import {Actions} from 'react-native-router-flux';
 const { width: screenWidth } = Dimensions.get('window');
+var STORAGE_KEY = 'id_token';
+
 export default class Signinpage extends ValidationComponent {
-    static navigationOptions = {
-        title: 'Sign in',
-        headerStyle: { backgroundColor: 'white' },
-        headerTitleStyle: { color: 'black',textAlign:'center' },
-      };
     constructor(props){
         super(props);
       this.state = {usn:"",pass:""};
@@ -31,23 +28,24 @@ onLoginPress=()=>{
   });
   this.setState({validate:checkedforvalidation})
 if(checkedforvalidation) {
-  if (!this.state.usn || !this.state.pass) return;
-  fetch('http://192.168.225.238:3001/sessions/create', {
-    method: 'POST',
-    headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      username: this.state.usn,
-      password: this.state.pass,
-    })
-  })
-  .then((response) => response.json())
-  .then((responseData) => {
-    this.saveItem('id_token', responseData.id_token),
-    Alert.alert('Login Success!', 'Click the button to get a Chuck Norris quote!'),
-    Actions.Home();
-    })
-  .done();
-}
+      fetch("http://192.168.225.238:3001/sessions/create", {
+          method: "POST", 
+          headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+              username: this.state.usn, 
+              password: this.state.pass, 
+          })
+      })
+      .then((response) => response.json())
+      .then((responseData) => {
+          Actions.drawer();
+          this._onValueChange(STORAGE_KEY, responseData.id_token);
+      })
+      .done();
+  }
 }
 
       async componentDidMount() {
@@ -60,11 +58,11 @@ if(checkedforvalidation) {
       }
 
 
-      async saveItem(item, selectedValue) {
+      async _onValueChange(item, selectedValue) {
         try {
           await AsyncStorage.setItem(item, selectedValue);
         } catch (error) {
-          console.error('AsyncStorage error: ' + error.message);
+          console.log('AsyncStorage error: ' + error.message);
         }
       }
 
@@ -72,7 +70,6 @@ if(checkedforvalidation) {
         Actions.Signup();
       }
     render(){
-      const uri = 'http://stackoverflow.com/questions/35531679/react-native-open-links-in-browser';
     if (this.state.loading){
         return (
             <Container></Container>
@@ -110,12 +107,7 @@ if(checkedforvalidation) {
               </Item>
               <Item>
               <Right>
-              <TouchableOpacity><Text style={styles.signup} onPress={()=>{
-                return(
-                <WebView source={{ uri: 'https://reactnative.dev/' }} />
-           
-                );
-              }}>forgot password?</Text></TouchableOpacity>
+              <TouchableOpacity><Text style={styles.signup}>forgot password?</Text></TouchableOpacity>
 </Right>
               </Item>
               </Card>
