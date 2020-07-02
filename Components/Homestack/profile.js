@@ -24,6 +24,7 @@ export default class profile extends Component {
 }
 state={
   loading:true,
+  image:null,
 }
   async componentDidMount() {
       await Font.loadAsync({

@@ -47,12 +47,18 @@ _pickImage = async () => {
     if (!result.cancelled) {
       this.setState({ image: result.uri });
     }
+    const img = {
+      uri:result.uri,
+      type:result.type,
+      name:result.fileName || result.uri.substr(result.uri.lastIndexOf('/')+1),
+    };
 
-    console.log(result);
   } catch (E) {
     console.log(E);
   }
+
 };
+
     async componentDidMount() {
         await Font.loadAsync({
           'Roboto': require('native-base/Fonts/Roboto.ttf'),

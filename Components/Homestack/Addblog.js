@@ -12,20 +12,55 @@ import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 const { width: screenWidth,height:screenHeight } = Dimensions.get('window');
-const downloadablefile = [
-    {
-        id:'1',
-        source:''
-    }
-]
 export default class Addblog extends React.Component{
 constructor(props){
     super(props);
+    this.state = {postimage:"",description:"",date:"",username:"",userpic:""};
 }
 state={
     loading:true,
     checked:false,
-    image:null,
+}
+_upload=()=>{
+  if (!this.state.description || !this.state.postimage ) {
+    console.log('description and posting image  cannot be null')
+  }
+  else{
+console.log(this.state.image,this.state.date,)
+
+fetch("http://192.168.225.238:3001/blogs",{
+      method:"POST",
+      headers:{
+        'Content-Type': 'application/json'
+      },
+      body:JSON.stringify({
+        "postimage":this.state.postimage,
+        "description":this.state.description,
+        "date":this.state.date,
+        "userpic":this.state.userpic,
+        "username":this.state.username
+      })
+    })
+    .then(res=>res.json())
+    .then(async (data)=>{
+      console.log(data)
+    })
+  }
+}
+componentDidMount() {
+  var that = this;
+  var date = new Date().getDate(); //Current Date
+  var month = new Date().getMonth() + 1; //Current Month
+  var year = new Date().getFullYear(); //Current Year
+  var hours = new Date().getHours(); //Current Hours
+  var min = new Date().getMinutes(); //Current Minutes
+  var sec = new Date().getSeconds(); //Current Seconds
+  that.setState({
+    //Setting the value of the date time
+    date:
+      date + '/' + month + '/' + year + ' ' + hours + ':' + min + ':' + sec,
+  });
+
 }
   Toggler=(value)=>{
     this.setState(value === 'checked' ? 'unchecked' : 'checked');
@@ -39,7 +74,7 @@ state={
         quality: 1,
       });
       if (!result.cancelled) {
-        this.setState({ image: result.uri });
+        this.setState({ postimage: result.uri });
       }
 
       console.log(result);
@@ -69,7 +104,7 @@ state={
         this.setState({ loading: false })
       }
     render(){
-      let { image } = this.state;
+      let {postimage} = this.state;
         if (this.state.loading){
             return (
               <View></View>
@@ -90,7 +125,7 @@ state={
   containerStyle={{alignSelf:'center',backgroundColor:'white'}}
   source={{
     uri:
-      this.state.image,
+      this.state.postimage,
   }}
   titleStyle={{color:'black'}}
   onAccessoryPress={this._pickImage}
@@ -101,12 +136,12 @@ state={
                   <CardItem style={{    
      backgroundColor:'#0E043B'}}>
                   
-                    <Textarea style={styles.fieldinput} rowSpan={8} bordered  />
+                    <Textarea style={styles.fieldinput} rowSpan={8} bordered onChangeText={(description) => this.setState({description})} value={this.state.description}  />
                     </CardItem>
                     </Item>
                 
                   <Item stackedLabel style={styles.submission}>
-                    <Button style={styles.submit}   ><Text style={styles.submittext}>Next</Text></Button>
+                    <Button style={styles.submit}  onPress={this._upload} ><Text style={styles.submittext}>Post</Text></Button>
                   </Item>
                   </Form>
                   <Item style={styles.fieldtitl} >

@@ -19,7 +19,7 @@ import {
     TouchableRipple,
     Switch
 } from 'react-native-paper';
-var STORAGE_KEY = 'id_token';
+var STORAGE_KEY = 'token';
 
 export function DrawerContent(props){
  /*const userLogout=async()=> {

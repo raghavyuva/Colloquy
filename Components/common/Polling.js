@@ -3,6 +3,7 @@ import { Image ,StyleSheet,FlatList,ScrollView,Dimensions} from 'react-native';
 import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body ,Title,Right, List, ListItem} from 'native-base';
 import { EvilIcons,AntDesign,FontAwesome5,Entypo,Ionicons} from '@expo/vector-icons';
 import * as Font from 'expo-font';
+import axios from 'axios';
 import Headingbar from '../common/Header';
 const { width: screenWidth } = Dimensions.get('window');
 const polloptions = [
@@ -38,8 +39,24 @@ export default class Polling extends React.Component{
 constructor(props){
     super(props);
 }
+
 state={
     loading:true,
+
+}
+_datafetch=()=>{
+axios.get('http://192.168.225.238:3001/fetchpoll')
+.then((response)=>{
+    const data =response.data;
+    console.log('data has been recieved');
+})
+.catch(()=>{
+    alert('error in recieving data')
+})
+    
+}
+componentDidMount(){
+ console.log( this._datafetch());
 }
     async componentDidMount() {
         await Font.loadAsync({
@@ -50,6 +67,7 @@ state={
         this.setState({ loading: false })
       }
       Listrenderer=({id,op1,op2,num1,num2,question,color})=>{
+          
           return(
             <Card style={{backgroundColor:color}}>
             <CardItem style={{backgroundColor:color}}>

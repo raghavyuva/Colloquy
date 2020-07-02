@@ -28,7 +28,7 @@ onLoginPress=()=>{
   });
   this.setState({validate:checkedforvalidation})
 if(checkedforvalidation) {
-      fetch("http://192.168.225.238:3001/sessions/create", {
+    /*  fetch("http://192.168.225.238:3001/sessions/create", {
           method: "POST", 
           headers: {
               'Accept': 'application/json',
@@ -45,6 +45,28 @@ if(checkedforvalidation) {
           this._onValueChange(STORAGE_KEY, responseData.id_token);
       })
       .done();
+      */
+     fetch("http://192.168.225.238:3001/signin",{
+      method:"POST",
+      headers:{
+        'Content-Type': 'application/json'
+      },
+      body:JSON.stringify({
+        "usn":this.state.usn,
+        "pass":this.state.pass,
+      })
+    })
+    .then(res=>res.json())
+    .then(async (data)=>{
+      console.log(data)
+      try {
+      await  AsyncStorage.setItem('token',data.token)
+      Actions.drawer();
+      } catch (error) {
+        console.log('AsyncStorage error: ',error.message);
+      }
+    })
+  
   }
 }
 
@@ -58,14 +80,14 @@ if(checkedforvalidation) {
       }
 
 
-      async _onValueChange(item, selectedValue) {
+   /*   async _onValueChange(item, selectedValue) {
         try {
           await AsyncStorage.setItem(item, selectedValue);
         } catch (error) {
           console.log('AsyncStorage error: ' + error.message);
         }
       }
-
+*/
       onsignuppress=()=>{
         Actions.Signup();
       }
@@ -104,6 +126,7 @@ if(checkedforvalidation) {
               <Item style={styles.fieldtitl} >
               <Label style={styles.fieldtitle}>Don't have an account?  </Label>
               <TouchableOpacity><Text style={styles.signup} onPress={this.onsignuppress} >Sign up</Text></TouchableOpacity>
+         
               </Item>
               <Item>
               <Right>

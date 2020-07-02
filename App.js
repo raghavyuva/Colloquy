@@ -49,7 +49,7 @@ class App extends Component {
     this.state = { hasToken: false,isLoaded: false  };
   }
   componentDidMount() {
-    AsyncStorage.getItem('id_token').then((token) => {
+    AsyncStorage.getItem('token').then((token) => {
       this.setState({ hasToken: token !== null, isLoaded: true })
     });
   }
@@ -79,14 +79,16 @@ class App extends Component {
             key='Authentication'
             title='Authentication'
             initial={!this.state.hasToken}
+            back={false}
           />
           <Scene
             component={Signuppage}
             hideNavBar={true}
             key='Signup'
             title='user signup'
-
+            back={false}
           />
+          
                     <Scene
             component={profile}
             hideNavBar={true}
@@ -219,6 +221,7 @@ class App extends Component {
   }
 }
 }
+
 const Drawer = createDrawerNavigator();
 function mydrawer(){
   return(
@@ -237,6 +240,7 @@ function mydrawer(){
   );
 }
 export default App;
+
 
 /*const navigator = createStackNavigator(
   {
@@ -257,7 +261,6 @@ setting:Settings,
   initialRouteName: 'login',
   headerMode:'none',
 },
-
 );
 const AppContainer = createAppContainer(navigator);
 export default () =>{
@@ -267,8 +270,6 @@ export default () =>{
   </Root>
  );
 }
-
-
 */
 const theme = {
   ...DefaultTheme,
@@ -350,9 +351,7 @@ function Homestack(){
 
 
 /*
-
 const Stack = createStackNavigator();
-
 function Rootstack() {
   return (
     <NavigationContainer>
@@ -366,7 +365,6 @@ function Rootstack() {
     </NavigationContainer>
   )
 }
-
 export default class App extends Component {
   render() {
     return (
