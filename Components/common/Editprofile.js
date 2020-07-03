@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Image ,StyleSheet,FlatList,ScrollView,Dimensions} from 'react-native';
+import { Image ,StyleSheet,FlatList,ScrollView,Dimensions,View} from 'react-native';
 import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body ,Title,Right,Form,Item,Label,Input} from 'native-base';
 import { EvilIcons,AntDesign,FontAwesome5,Entypo,Ionicons} from '@expo/vector-icons';
 import * as Font from 'expo-font';
@@ -8,6 +8,8 @@ import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 import { ListItem,Avatar,Tooltip} from 'react-native-elements';
+import { BottomSheet } from 'react-native-btr';
+import Animated from 'react-native-reanimated';
 const { width: screenWidth,height:screenHeight } = Dimensions.get('window');
 const downloadablefile = [
     {
@@ -22,11 +24,50 @@ constructor(props){
 state={
     loading:true,
     image: null,
+    visible: false,
 }
 componentDidMount() {
   this.getPermissionAsync();
 }
+_pickImagefromCamera = async () => {
+    
+  try {
+    let result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+    if (!result.cancelled) {
+      this.setState({ postimage: result.uri });
+    }
 
+    console.log(result);
+  } catch (E) {
+    console.log(E);
+  }
+};
+_toggleBottomNavigationView = () => {
+  //Toggling the visibility state of the bottom sheet
+  this.setState({ visible: !this.state.visible });
+};
+_pickImagefromGallery = async()=>{
+try {
+  let result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.All,
+    allowsEditing: true,
+    aspect: [4, 3],
+    quality: 1,
+  });
+  if (!result.cancelled) {
+    this.setState({ postimage: result.uri });
+  }
+
+  console.log(result);
+} catch (E) {
+  console.log(E);
+}
+}
 getPermissionAsync = async () => {
   if (Constants.platform.ios) {
     const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
@@ -36,28 +77,6 @@ getPermissionAsync = async () => {
   }
 };
 
-_pickImage = async () => {
-  try {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [5, 3],
-      quality: 1,
-    });
-    if (!result.cancelled) {
-      this.setState({ image: result.uri });
-    }
-    const img = {
-      uri:result.uri,
-      type:result.type,
-      name:result.fileName || result.uri.substr(result.uri.lastIndexOf('/')+1),
-    };
-
-  } catch (E) {
-    console.log(E);
-  }
-
-};
 
     async componentDidMount() {
         await Font.loadAsync({
@@ -88,9 +107,37 @@ _pickImage = async () => {
   source={{
     uri:this.state.image
   }}
-  onAccessoryPress={this._pickImage}
+  onAccessoryPress={this._toggleBottomNavigationView}
   
 />
+<BottomSheet
+          visible={this.state.visible}
+          //setting the visibility state of the bottom shee
+          onBackButtonPress={this._toggleBottomNavigationView}
+          //Toggling the visibility state on the click of the back botton
+          onBackdropPress={this._toggleBottomNavigationView}
+          //Toggling the visibility state on the clicking out side of the sheet
+        >
+          <CardItem style={styles.bottomNavigationView}>
+          <View
+              style={{
+                flex: 1,
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+              }}>
+          <Text style={{padding: 20, fontSize: 25,color:"white" ,fontWeight:'bold'}}>
+               Select one
+              </Text>
+              <Button onPress={this._pickImagefromCamera} style={{backgroundColor:'red',}}>
+                <Text style={{color:'white',textAlign:'center'}}>turn on camera</Text>
+              </Button >
+             
+              <Button onPress={this._pickImagefromGallery} style={{backgroundColor:'red',marginTop:20}}>
+                <Text style={{color:'white',textAlign:'center'}}>open gallery</Text>
+              </Button>
+              </View>
+          </CardItem>
+          </BottomSheet>
               <Item floatingLabel>
                     <Label style={styles.fieldtitle} >University seat number</Label>
                     <Input style={styles.fieldinput}  />
@@ -159,7 +206,23 @@ const styles = StyleSheet.create({
     fieldtitl:{
       color:'#FFF',
       borderColor:null,
-    }
+    },
+    MainContainer: {
+      flex: 1,
+      margin: 2,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingTop: Platform.OS === 'ios' ? 20 : 0,
+      backgroundColor: '#E0F7FA',
+    },
+    bottomNavigationView: {
+      backgroundColor: '#0E043B',
+      width: '100%',
+      height: 250,
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderRadius:23
+    },
   });
   
   

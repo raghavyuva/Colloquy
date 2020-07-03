@@ -11,15 +11,18 @@ import { ListItem,Avatar,Tooltip} from 'react-native-elements';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
+import { BottomSheet } from 'react-native-btr';
+import Animated from 'react-native-reanimated';
 const { width: screenWidth,height:screenHeight } = Dimensions.get('window');
 export default class Addblog extends React.Component{
 constructor(props){
     super(props);
-    this.state = {postimage:"",description:"",date:"",username:"",userpic:""};
+    this.state = {postimage:null,description:"",date:"",username:"",userpic:""};
 }
 state={
     loading:true,
     checked:false,
+    visible: false,
 }
 _upload=()=>{
   if (!this.state.description || !this.state.postimage ) {
@@ -47,6 +50,7 @@ fetch("http://192.168.225.238:3001/blogs",{
     })
   }
 }
+
 componentDidMount() {
   var that = this;
   var date = new Date().getDate(); //Current Date
@@ -62,12 +66,20 @@ componentDidMount() {
   });
 
 }
+_toggleBottomNavigationView = () => {
+  //Toggling the visibility state of the bottom sheet
+  this.setState({ visible: !this.state.visible });
+};
+_dismisser =()=>{
+
+}
   Toggler=(value)=>{
     this.setState(value === 'checked' ? 'unchecked' : 'checked');
   }
-  _pickImage = async () => {
+  _pickImagefromCamera = async () => {
+    
     try {
-      let result = await ImagePicker.launchImageLibraryAsync({
+      let result = await ImagePicker.launchCameraAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.All,
         allowsEditing: true,
         aspect: [4, 3],
@@ -82,7 +94,23 @@ componentDidMount() {
       console.log(E);
     }
   };
+_pickImagefromGallery = async()=>{
+  try {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+    if (!result.cancelled) {
+      this.setState({ postimage: result.uri });
+    }
 
+    console.log(result);
+  } catch (E) {
+    console.log(E);
+  }
+}
   getPermissionAsync = async () => {
     if (Constants.platform.ios) {
       const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
@@ -128,8 +156,36 @@ componentDidMount() {
       this.state.postimage,
   }}
   titleStyle={{color:'black'}}
-  onAccessoryPress={this._pickImage}
+  onAccessoryPress={this._toggleBottomNavigationView}
 />
+<BottomSheet
+          visible={this.state.visible}
+          //setting the visibility state of the bottom shee
+          onBackButtonPress={this._toggleBottomNavigationView}
+          //Toggling the visibility state on the click of the back botton
+          onBackdropPress={this._toggleBottomNavigationView}
+          //Toggling the visibility state on the clicking out side of the sheet
+        >
+          <CardItem style={styles.bottomNavigationView}>
+          <View
+              style={{
+                flex: 1,
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+              }}>
+          <Text style={{padding: 20, fontSize: 25,color:"white" ,fontWeight:'bold'}}>
+               Select one
+              </Text>
+              <Button onPress={this._pickImagefromCamera} style={{backgroundColor:'red',}}>
+                <Text style={{color:'white'}}>turn on camera</Text>
+              </Button >
+             
+              <Button onPress={this._pickImagefromGallery} style={{backgroundColor:'red',marginTop:20}}>
+                <Text style={{color:'white'}}>open gallery</Text>
+              </Button>
+              </View>
+          </CardItem>
+          </BottomSheet>
 <Text note style={{color:'white',textAlign:'center'}}>change the post picture by pressing accessary </Text>
               <Item stackedLabel style={{ marginTop:25,}}>
              <Text style={{color:'white',}}>Type some content for your post here</Text>
@@ -174,6 +230,22 @@ const styles = StyleSheet.create({
     justifyContent:'center',
     backgroundColor:'#0E043B',
     textAlign:'center',
+    },
+    MainContainer: {
+      flex: 1,
+      margin: 2,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingTop: Platform.OS === 'ios' ? 20 : 0,
+      backgroundColor: '#E0F7FA',
+    },
+    bottomNavigationView: {
+      backgroundColor: '#0E043B',
+      width: '100%',
+      height: 250,
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderRadius:23
     },
     logo:{
         fontSize:24,

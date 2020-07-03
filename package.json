@@ -25,6 +25,7 @@
     "react-native": "https://github.com/expo/react-native/archive/sdk-37.0.1.tar.gz",
     "react-native-anchor-carousel": "^3.1.2",
     "react-native-animatable": "^1.3.3",
+    "react-native-btr": "^1.1.5",
     "react-native-carousel-control": "^2.0.1",
     "react-native-color-picker-light": "^1.0.1",
     "react-native-display": "^1.0.8",
@@ -50,6 +51,7 @@
     "react-navigation": "^4.3.9",
     "react-navigation-stack": "^2.8.2",
     "react-redux": "^7.2.0",
+    "reanimated-bottom-sheet": "^1.0.0-alpha.20",
     "redux": "^4.0.5",
     "tcomb-form-native": "^0.6.20"
   },
