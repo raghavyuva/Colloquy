@@ -6,6 +6,7 @@ import * as Font from 'expo-font';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { Ionicons } from '@expo/vector-icons';
 import Headingbar from './Header';
+import io from 'socket.io-client';
 export default class Chatui extends React.Component{
     constructor(props){
         super(props);
@@ -14,6 +15,10 @@ export default class Chatui extends React.Component{
         loading: true,
         
       }
+      componentDidMount(){
+          const socket = io('http://192.168.225.238:3001');
+      }
+     
       async componentDidMount() {
         await Font.loadAsync({
           'Roboto': require('native-base/Fonts/Roboto.ttf'),
@@ -23,6 +28,7 @@ export default class Chatui extends React.Component{
         this.setState({ loading: false })
       }
     render(){
+        console.log(io);
         if (this.state.loading){
             return (
                 <Container></Container>

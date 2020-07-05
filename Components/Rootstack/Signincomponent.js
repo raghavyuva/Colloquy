@@ -10,7 +10,7 @@ import {
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import {Actions} from 'react-native-router-flux';
 const { width: screenWidth } = Dimensions.get('window');
-var STORAGE_KEY = 'id_token';
+
 
 export default class Signinpage extends ValidationComponent {
     constructor(props){

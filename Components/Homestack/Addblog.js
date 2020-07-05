@@ -14,6 +14,22 @@ import * as Permissions from 'expo-permissions';
 import { BottomSheet } from 'react-native-btr';
 import Animated from 'react-native-reanimated';
 const { width: screenWidth,height:screenHeight } = Dimensions.get('window');
+const createFormData = (postimage, body) => {
+  const data = new FormData();
+
+  data.append("postimage", {
+    name: postimage.fileName,
+    type: postimage.type,
+    uri:
+      Platform.OS === "android" ? postimage.uri : postimage.uri.replace("file://", "")
+  });
+
+  Object.keys(body).forEach(key => {
+    data.append(key, body[key]);
+  });
+
+  return data;
+};
 export default class Addblog extends React.Component{
 constructor(props){
     super(props);
@@ -24,33 +40,18 @@ state={
     checked:false,
     visible: false,
 }
-_upload=()=>{
-  if (!this.state.description || !this.state.postimage ) {
-    console.log('description and posting image  cannot be null')
-  }
-  else{
-console.log(this.state.image,this.state.date,)
-
-fetch("http://192.168.225.238:3001/blogs",{
-      method:"POST",
-      headers:{
-        'Content-Type': 'application/json'
-      },
-      body:JSON.stringify({
-        "postimage":this.state.postimage,
-        "description":this.state.description,
-        "date":this.state.date,
-        "userpic":this.state.userpic,
-        "username":this.state.username
-      })
+handleUploadPhoto = () => {
+  fetch("http://192.168.225.238:3001/uploads", {
+    method: "POST",
+    body: createFormData(this.state.postimage, this.state.date)
+  })
+    .then(response => response.json())
+    .then(response => {
+      console.log("upload succes", response);
+      alert("Upload success!");
+ 
     })
-    .then(res=>res.json())
-    .then(async (data)=>{
-      console.log(data)
-    })
-  }
-}
-
+};
 componentDidMount() {
   var that = this;
   var date = new Date().getDate(); //Current Date
@@ -64,6 +65,7 @@ componentDidMount() {
     date:
       date + '/' + month + '/' + year + ' ' + hours + ':' + min + ':' + sec,
   });
+  console.log(this.state.date);
 
 }
 _toggleBottomNavigationView = () => {
@@ -132,7 +134,7 @@ _pickImagefromGallery = async()=>{
         this.setState({ loading: false })
       }
     render(){
-      let {postimage} = this.state;
+      let postimage = this.state;
         if (this.state.loading){
             return (
               <View></View>
@@ -197,7 +199,7 @@ _pickImagefromGallery = async()=>{
                     </Item>
                 
                   <Item stackedLabel style={styles.submission}>
-                    <Button style={styles.submit}  onPress={this._upload} ><Text style={styles.submittext}>Post</Text></Button>
+                    <Button style={styles.submit}  onPress={this.handleUploadPhoto} ><Text style={styles.submittext}>Post</Text></Button>
                   </Item>
                   </Form>
                   <Item style={styles.fieldtitl} >

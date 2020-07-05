@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Image ,StyleSheet,FlatList,ScrollView,Dimensions} from 'react-native';
+import { Image ,StyleSheet,FlatList,ScrollView,Dimensions,Share} from 'react-native';
 import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body ,Title,Right} from 'native-base';
 import { EvilIcons,AntDesign,FontAwesome5,Entypo,Ionicons} from '@expo/vector-icons';
 import Headingbar from '../common/Header';
@@ -10,7 +10,12 @@ import {
   MenuOption,
   MenuTrigger,
 } from 'react-native-popup-menu';
- 
+const shareOptions = {
+  title: 'Title',
+  message: 'Message to share', // here you can send app link to playstore.
+  url: 'www.example.com',
+  subject: 'Subject'
+};
 const { width: screenWidth } = Dimensions.get('window');
 const bloginfo =[
     {
@@ -62,10 +67,54 @@ const bloginfo =[
 export default class Blogpage extends Component {
   constructor(props){
     super(props);
+    this.Listrenderer=this.Listrenderer.bind(this);
 }
+onSharePress = () => Share.share(shareOptions);
 state = {
-  loading: true
+  loading: true,
+  likecount:0,
+  isPressed:false,
+  isupvoted:false,
+  upvotecount:0
 }
+counter=()=>{
+  var STORAGE_KEY = 'token';
+  if (STORAGE_KEY=this.state.isPressed) {
+    return;
+  }
+  else{
+  this.setState({ likecount: this.state.likecount +1});
+  this.setState({isPressed:!this.state.isPressed});
+  }
+ }
+ decrementor=()=>{
+   if (this.state.likecount==0) {
+     return;
+   } else {
+    this.setState({ likecount: this.state.likecount -1});
+    this.setState({isPressed:!this.state.isPressed});
+   }
+ 
+ }
+ upvoteincreaser=()=>{
+  var STORAGE_KEY = 'token';
+  if (STORAGE_KEY=this.state.isupvoted) {
+    return;
+  }
+  else{
+  this.setState({ upvotecount: this.state.upvotecount +2});
+  this.setState({isupvoted:!this.state.isupvoted});
+  } 
+ }
+ upvotedecreaser =()=>{
+  if (this.state.upvotecount==0) {
+    return;
+  } else {
+   this.setState({ upvotecount: this.state.upvotecount -2});
+   this.setState({isupvoted:!this.state.isupvoted});
+  }
+
+ }
 async componentDidMount() {
   await Font.loadAsync({
     'Roboto': require('native-base/Fonts/Roboto.ttf'),
@@ -97,11 +146,19 @@ Listrenderer({id,user,date,icon,description,postimage,like,comment,upvote}){
           <Entypo name="dots-three-vertical" size={24} color="white" />
      </MenuTrigger>
           <MenuOptions>
-        <MenuOption onSelect={() => alert(`Save`)}  >
-          <CardItem style={{flexDirection:'row'}}>
-        <Entypo name="share" size={24} color="red" style={{marginRight:8}}/>
-        <Text>share</Text>
+        <MenuOption   >
+          <CardItem style={{flexDirection:'row'}} >
+
+        <Entypo name="share" size={24} color="red" style={{marginRight:8}}onPress={this.onSharePress}/>
+        <Text style={{color:"red"}} onPress={this.onSharePress}>share</Text>
+  
         </CardItem>
+        <CardItem style={{flexDirection:'row'}} >
+
+<Entypo name="download" size={24} color="red" style={{marginRight:8}}/>
+<Text style={{color:"red"}} >Download</Text>
+
+</CardItem>
           </MenuOption>
           </MenuOptions>
     </Menu>
@@ -124,17 +181,13 @@ Listrenderer({id,user,date,icon,description,postimage,like,comment,upvote}){
           <EvilIcons name="comment" size={24} color="black" />
             <Text style = {{textTransform:'capitalize'}}> {comment} </Text>
           </Button>
-          <Button transparent textStyle={{color: '#87838B'}} >
+          <Button transparent textStyle={{color: '#87838B'}} onPress={this.counter}  onPressIn={this.decrementor}>
           <AntDesign name="heart" size={24} color="black" />
-         <Text style = {{textTransform:'capitalize'}}>{like}</Text>
+         <Text style = {{textTransform:'capitalize'}}>{like} likes </Text>
           </Button>
-          <Button transparent textStyle={{color: '#87838B'}}>
-          <FontAwesome5 name="share" size={24} color="black" />
-         <Text style = {{textTransform:'capitalize'}}>share</Text>
-          </Button>
-          <Button transparent>
+          <Button transparent onPress={this.upvoteincreaser}  onPressIn={this.upvotedecreaser}>
           <FontAwesome5 name="hand-point-up" size={24} color="black" />
-          <Text style = {{textTransform:'capitalize'}}>{upvote}</Text>
+          <Text style = {{textTransform:'capitalize'}}>{upvote} upvotes</Text>
           </Button>
         </Left>
       </CardItem>
@@ -156,6 +209,7 @@ Listrenderer({id,user,date,icon,description,postimage,like,comment,upvote}){
          
         <FlatList
         data={bloginfo}
+        extraData={this.state.likecount,this.state.upvotecount}
      renderItem={({ item }) => ( 
             <this.Listrenderer
               id={item.id}
@@ -167,6 +221,8 @@ Listrenderer({id,user,date,icon,description,postimage,like,comment,upvote}){
               like={item.likenum}
               comment={item.commentnum}
               upvote={item.upvotenum}
+              like={this.state.likecount}
+              upvote={this.state.upvotecount}
             />
           )}
         keyExtractor={item => item.id}

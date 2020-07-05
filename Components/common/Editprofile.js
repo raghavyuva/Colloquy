@@ -20,11 +20,13 @@ const downloadablefile = [
 export default class Edition extends React.Component{
 constructor(props){
     super(props);
+    this.state={username:"",tagline:"",postimage:null};
 }
 state={
     loading:true,
     image: null,
     visible: false,
+
 }
 componentDidMount() {
   this.getPermissionAsync();
@@ -77,7 +79,29 @@ getPermissionAsync = async () => {
   }
 };
 
-
+_upload=()=>{
+  if (!this.state.username || !this.state.tagline) {
+    console.log('required fields cannot be null')
+  }
+  else{
+console.log(this.state.username,this.state.tagline)
+fetch("http://192.168.225.238:3001/profile",{
+      method:"POST",
+      headers:{
+        'Content-Type': 'application/json'
+      },
+      body:JSON.stringify({
+        "username":this.state.username,
+        "tagline":this.state.tagline,
+        "postimage":this.state.postimage
+      })
+    })
+    .then(res=>res.json())
+    .then(async (data)=>{
+      console.log(data)
+    })
+  }
+}
     async componentDidMount() {
         await Font.loadAsync({
           'Roboto': require('native-base/Fonts/Roboto.ttf'),
@@ -87,7 +111,6 @@ getPermissionAsync = async () => {
         this.setState({ loading: false })
       }
     render(){
-      let { image } = this.state;
         if (this.state.loading){
             return (
                 <Container></Container>
@@ -105,14 +128,14 @@ getPermissionAsync = async () => {
   showAccessory
   containerStyle={{alignSelf:'center',backgroundColor:'white'}}
   source={{
-    uri:this.state.image
+    uri:this.state.postimage
   }}
   onAccessoryPress={this._toggleBottomNavigationView}
   
 />
 <BottomSheet
           visible={this.state.visible}
-          //setting the visibility state of the bottom shee
+          //setting the visibility state of the bottom sheet
           onBackButtonPress={this._toggleBottomNavigationView}
           //Toggling the visibility state on the click of the back botton
           onBackdropPress={this._toggleBottomNavigationView}
@@ -138,23 +161,18 @@ getPermissionAsync = async () => {
               </View>
           </CardItem>
           </BottomSheet>
-              <Item floatingLabel>
-                    <Label style={styles.fieldtitle} >University seat number</Label>
-                    <Input style={styles.fieldinput}  />
-
-                  </Item>
                   <Item floatingLabel>
                     <Label style={styles.fieldtitle} >User Name</Label>
-                    <Input style={styles.fieldinput}  />
+                    <Input style={styles.fieldinput} onChangeText={(username) => this.setState({username})} value={this.state.username}  returnKeyType='next' editable={true} />
 
                   </Item>
                   <Item floatingLabel>
                     <Label style={styles.fieldtitle} >Tagline</Label>
-                    <Input style={styles.fieldinput}  />
+                    <Input style={styles.fieldinput} onChangeText={(tagline) => this.setState({tagline})} value={this.state.tagline}  returnKeyType='next' editable={true} />
 
                   </Item>
                   <Item stackedLabel style={styles.submission}>
-                    <Button style={styles.submit}   ><Text style={styles.submittext}>Submit</Text></Button>
+                    <Button style={styles.submit}  onPress={this._upload} ><Text style={styles.submittext}>Submit</Text></Button>
                   </Item>
                   </Form>
               </Card>

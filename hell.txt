@@ -1,0 +1,34 @@
+list of work to be done!
+
+1) sharing notes ui 
+2)sharing notes functionality
+3)like,comment,upvote functionality
+4)sharing option, enabling link,
+5)upcoming events adding from server side and displaying in user end,
+6)profile updating after editing profile,
+7)blog adding to server,
+8)blog displaying to user end,
+9)poll display in user end,
+10)poll ui updating,
+
+{ in next update
+11)chat screen,
+12)chat functionality,
+}
+
+13)notification display to user in navbar and notification page
+14)rendering classroom people according to usn,
+15)feedback updating and recieving in database,
+16)followers display, and following display,
+17)display only to user that who has liked his post,
+18)comments are public
+19)liked ui,
+20)commented ui,
+21)onclick enlarge size of the post,
+22)settings functionality,
+
+{final touch
+23)display no internet vector image,
+24)logo of college,
+25)fix name to app,
+}

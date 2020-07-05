@@ -332,7 +332,7 @@ function Homestack(){
     />
                        <Tab.Screen
       name="chat"
-      component={ChatTab}
+      component={Chatui}
       options={{
         tabBarLabel: 'chat',
         tabBarIcon: ({ color }) => (

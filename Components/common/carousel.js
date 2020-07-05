@@ -1,5 +1,5 @@
 import React,{useState}from 'react';
-import { Dimensions, StyleSheet,View,FlatList,ScrollView,} from 'react-native';
+import { Dimensions, StyleSheet,View,FlatList,ScrollView,Animated, PanResponder, Platform} from 'react-native';
 import { SliderBox } from "react-native-image-slider-box";
 import Carousel, { Pagination, ParallaxImage  } from 'react-native-snap-carousel';
 import {Thumbnail, Text, Left, Body, Button ,Card,CardItem,Image,ActionSheet} from 'native-base';
@@ -62,12 +62,17 @@ const bloginfo =[
 export default class Carouselimage extends React.Component{
   constructor(props) {
     super(props);
+    this.renderItem=this.renderItem.bind(this);
     this.state = {
       activeIndex: 0,
       animating: false,
       loading:true,
+    
     };
   
+  }
+  state={
+    likecount:0
   }
   async componentDidMount() {
     await Font.loadAsync({
@@ -77,6 +82,7 @@ export default class Carouselimage extends React.Component{
     })
     this.setState({ loading: false })
   }
+
   renderItem({item,index,props}, parallaxProps){
     return (
         <ScrollView>
@@ -129,9 +135,9 @@ export default class Carouselimage extends React.Component{
               <EvilIcons name="comment" size={28} color="black" />
                 <Text style = {{textTransform:'capitalize'}}> {item.commentnum} </Text>
               </Button>
-              <Button transparent textStyle={{color: '#87838B'}}>
+              <Button transparent textStyle={{color: '#87838B'}} >
               <AntDesign name="heart" size={28} color="black" />
-             <Text style = {{textTransform:'capitalize'}}>{item.likenum}</Text>
+    <Text style = {{textTransform:'capitalize'}}> likes</Text>
               </Button>
               <Button transparent>
               <FontAwesome5 name="hand-point-up" size={28} color="black" />
@@ -188,7 +194,9 @@ render(){
                     itemWidth={screenWidth - 20}
                     renderItem={this.renderItem}
                     hasParallaxImages={true}
-                    onSnapToItem = { index => this.setState({activeIndex:index}) } />
+                    onSnapToItem = { index => this.setState({activeIndex:index}) } 
+                    extraData={this.state.likecount}
+                    />
       </View>
      </View>
     )
@@ -219,6 +227,14 @@ const styles=StyleSheet.create(
                borderRadius: 8,
                alignSelf:'center',
                marginBottom: Platform.select({ ios: 0, android: 1 }), 
+        },
+        modal: {
+          alignItems: "center",
+          justifyContent: "center",
+        },
+        modalContainer: {
+          width: "90%",
+          height: "60%",
         },
     }
 )

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component,useState} from 'react';
 import { Image ,StyleSheet,FlatList,ScrollView,Dimensions} from 'react-native';
 import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body ,Title,Right,DeckSwiper,View,ActionSheet,List,ListItem} from 'native-base';
 import { EvilIcons,AntDesign,FontAwesome5,Entypo,Ionicons,MaterialCommunityIcons} from '@expo/vector-icons';
@@ -85,29 +85,28 @@ const polloptions = [
       color:"green"
   }
 ]
-var BUTTONS = [
-  { text: "WhatsApp", icon: "logo-whatsapp", iconColor: "#2c8ef4" },
-  { text: "Facebook", icon: "logo-facebook", iconColor: "blue" },
-  { text: "Gmail", icon: "mail", iconColor: "#ea943b" },
-  { text: "Instagram", icon: "logo-instagram", iconColor: "#fa213b" },
-  { text: "Cancel", icon: "close", iconColor: "red" }
-];
-var CANCEL_INDEX = 4;
+
 
 export default class FeedComponent extends Component {
   constructor(props){
     super(props);
-    this.state={};
+
 }
 state={
   loading:true,
+  likecount:0
 }
 static navigationOptions = {
   title: 'Sign up',
   headerStyle: { backgroundColor: 'white' },
   headerTitleStyle: { color: 'black',textAlign:'center' },
 };
+counter=()=>{
+
+  this.setState({ likecount: this.state.likecount +1});
+ }
 Listrenderer({id,userpic,date,username,description,postimage,likenum,upvotenum,comment}){
+
     return(
     
     <Card style={styles.card}>
@@ -157,9 +156,9 @@ Listrenderer({id,userpic,date,username,description,postimage,likenum,upvotenum,c
           <EvilIcons name="comment" size={24} color="black" />
             <Text style = {{textTransform:'capitalize'}}> {comment} </Text>
           </Button>
-          <Button transparent textStyle={{color: '#87838B'}}>
+          <Button transparent textStyle={{color: '#87838B'}} onPress={this.counter}>
           <AntDesign name="heart" size={24} color="black" />
-         <Text style = {{textTransform:'capitalize'}}>{likenum}</Text>
+         <Text style = {{textTransform:'capitalize'}}>  </Text>
           </Button>
           <Button transparent>
           <FontAwesome5 name="hand-point-up" size={24} color="black" />
@@ -227,6 +226,7 @@ async componentDidMount() {
             dataSource={bloginfo}
             renderItem={this.Listrenderer}
             keyExtractor={item => item.id}
+            extraData={this.state.likecount}
     />
   </Container>
   <Container style={{marginTop:140}}>

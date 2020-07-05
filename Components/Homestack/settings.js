@@ -29,6 +29,12 @@ const listofsettings = [
     opname:"Hide Recent Polls",
     icon:'ios-analytics',
     tagline:'This will hide recent polls from your profile'
+  },
+  {
+		id:'5',
+    opname:"Anonymous Poll",
+    icon:'user-secret',
+    tagline:'people wont come to know  '
 	},
 
 ]
@@ -65,7 +71,7 @@ state={
         <Text note> {tagline} </Text>
 			  </Body>
 			  <Right>
-				<Switch value={false} onValueChange={()=>this.setState({value: !this.state.value})} style={{color:"white",backgroundColor:"yellow"}} />
+				<Switch value={false} onValueChange={()=>this.setState({value: !this.state.value})} style={{color:"white",backgroundColor:"green"}} />
 			  </Right>
 			</ListItem>
 		   
