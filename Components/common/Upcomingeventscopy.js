@@ -56,10 +56,34 @@ export default class Upcoming_events_copy extends React.Component{
     constructor(props){
         super(props);
         this.state={};
+        this.Listrenderer=this.Listrenderer.bind(this);
     }
     state = {
-        loading: true
+        loading: true,
+        likecount:0,
+        isPressed:false,
+        isupvoted:false,
+        upvotecount:0
       }
+      counter=()=>{
+        var STORAGE_KEY = 'token';
+        if (STORAGE_KEY=this.state.isPressed) {
+          return;
+        }
+        else{
+        this.setState({ likecount: this.state.likecount +1});
+        this.setState({isPressed:!this.state.isPressed});
+        }
+       }
+       decrementor=()=>{
+         if (this.state.likecount==0) {
+           return;
+         } else {
+          this.setState({ likecount: this.state.likecount -1});
+          this.setState({isPressed:!this.state.isPressed});
+         }
+       
+       }
       onSharePress = () => Share.share(shareOptions);
       async componentDidMount() {
         await Font.loadAsync({
@@ -69,7 +93,7 @@ export default class Upcoming_events_copy extends React.Component{
         })
         this.setState({ loading: false })
       }
-    Listrenderer=({id,title,icon,tagline,date})=>{
+    Listrenderer=({id,title,icon,tagline,date,like})=>{
         return(
        
 <Card style={Styles.card}>
@@ -93,9 +117,9 @@ export default class Upcoming_events_copy extends React.Component{
           <FontAwesome5 name="share" size={24} color="black" />
          <Text style = {{textTransform:'capitalize'}}>share</Text>
           </Button>
-          <Button transparent textStyle={{color: '#87838B'}}  style={Styles.buttons}>
+          <Button transparent textStyle={{color: '#87838B'}}  style={Styles.buttons} onPress={this.counter}  onPressIn={this.decrementor}>
           <FontAwesome5 name="heart" size={24} color="black" />
-         <Text style = {{textTransform:'capitalize'}}>like</Text>
+        <Text style = {{textTransform:'capitalize'}}>{like}like</Text>
           </Button>
           <Button transparent textStyle={{color: '#87838B'}}  style={Styles.buttons}>
           <FontAwesome5 name="eye" size={24} color="black" />
@@ -117,7 +141,7 @@ export default class Upcoming_events_copy extends React.Component{
         return(
 <View style={{backgroundColor:'#0E043B'}}>
     <Headingbar/>
-     <FlatList
+     <FlatList extraData={this.state.likecount}
                 pagingEnabled={true}
                 showsHorizontalScrollIndicator={false}
                 data={eventlist}
@@ -128,6 +152,7 @@ export default class Upcoming_events_copy extends React.Component{
                 tagline={item.description}
                 icon={item.image}
                 date={item.date}
+                like={this.state.likecount}
               />
             }
           keyExtractor={item => item.id}

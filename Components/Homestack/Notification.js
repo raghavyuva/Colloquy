@@ -6,6 +6,7 @@ import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 import { ScrollView } from 'react-native-gesture-handler';
 import Headingbar from '../common/Header';
+import { Actions } from 'react-native-router-flux';
 const { width: screenWidth } = Dimensions.get('window');
 const notificationlist_for_today =[
   {
@@ -71,7 +72,7 @@ function  Listrenderer({user,tag,icon,liner,topicon}) {
     <Text note numberOfLines={1}>{tag}</Text>
         </Body>
         <Right>
-          <Button transparent>
+          <Button transparent onPress={()=>Actions.likedpeople()}>
             <Text style = {styles.view}>View</Text>
           </Button>
         </Right>

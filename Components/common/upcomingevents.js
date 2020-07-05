@@ -53,13 +53,37 @@ const shareOptions = {
 export default class Upcoming_events extends React.Component{
     constructor(props){
         super(props);
+        this.Listrenderer=this.Listrenderer.bind(this);
         this.state={};
     }
     state={
       loading:true,
+      likecount:0,
+      isPressed:false,
+      isupvoted:false,
+      upvotecount:0
     }
+    counter=()=>{
+      var STORAGE_KEY = 'token';
+      if (STORAGE_KEY=this.state.isPressed) {
+        return;
+      }
+      else{
+      this.setState({ likecount: this.state.likecount +1});
+      this.setState({isPressed:!this.state.isPressed});
+      }
+     }
+     decrementor=()=>{
+       if (this.state.likecount==0) {
+         return;
+       } else {
+        this.setState({ likecount: this.state.likecount -1});
+        this.setState({isPressed:!this.state.isPressed});
+       }
+     
+     }
     onSharePress = () => Share.share(shareOptions);
-    Listrenderer=({id,title,icon,tagline,date})=>{
+    Listrenderer=({id,title,icon,tagline,date,like,})=>{
 
       const [modalVisible, setModalVisible] = useState(false);
         return(
@@ -84,9 +108,9 @@ export default class Upcoming_events extends React.Component{
           <FontAwesome5 name="share" size={24} color="black" />
          <Text style = {{textTransform:'capitalize'}}>share</Text>
           </Button>
-          <Button transparent textStyle={{color: '#87838B'}}>
+          <Button transparent textStyle={{color: '#87838B'}} onPress={this.counter}  onPressIn={this.decrementor}>
           <FontAwesome5 name="heart" size={24} color="black" />
-         <Text style = {{textTransform:'capitalize'}}>like</Text>
+         <Text style = {{textTransform:'capitalize'}}>{like} like</Text>
           </Button>
           <Button transparent textStyle={{color: '#87838B'}} onPress={() => {
           setModalVisible(true);
@@ -135,7 +159,7 @@ export default class Upcoming_events extends React.Component{
         return(
 <View style={{backgroundColor:'#0E043B'}}>
 
-     <FlatList
+     <FlatList extraData={this.state.likecount}
                 horizontal
                 pagingEnabled={true}
                 showsHorizontalScrollIndicator={false}
@@ -147,6 +171,8 @@ export default class Upcoming_events extends React.Component{
                 tagline={item.description}
                 icon={item.image}
                 date={item.date}
+                like={this.state.likecount}
+            
               />
             }
           keyExtractor={item => item.id}

@@ -54,10 +54,11 @@ export default class Settings extends Component {
         this.setState({ loading: false })
       }
 state={
-  value:[],
+  value:true,
 }
 
 	Listrenderer=({opname,icon,tagline})=>{
+    
 		return(
 			<Content>
 			<ListItem icon style={{marginTop:15}}>
@@ -71,7 +72,7 @@ state={
         <Text note> {tagline} </Text>
 			  </Body>
 			  <Right>
-				<Switch value={false} onValueChange={()=>this.setState({value: !this.state.value})} style={{color:"white",backgroundColor:"green"}} />
+				<Switch value={this.state.value} onValueChange={()=>this.setState({value: !this.state.value})} style={{color:"red",backgroundColor:"#0E043B"}} trackColor='red'/>
 			  </Right>
 			</ListItem>
 		   

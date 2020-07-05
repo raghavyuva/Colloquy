@@ -39,8 +39,10 @@ import Chatui from './Components/common/Chatui';
 import Edition from './Components/common/Editprofile';
 import Addpoll from './Components/Homestack/Addpoll';
 import { MenuProvider } from 'react-native-popup-menu';
+import Development from './Components/common/development';
 import { DefaultTheme,Provider as PaperProvider } from 'react-native-paper';
 import { Ionicons,FontAwesome5,MaterialCommunityIcons,Feather,SimpleLineIcons,Octicons,Fontisto,FontAwesome,MaterialIcons} from '@expo/vector-icons';
+import Peopleliked from './Components/common/peopleliked';
 AppRegistry.registerComponent('ReactNativeAuth', () => App);
 const { width: screenWidth } = Dimensions.get('window');
 class App extends Component {
@@ -55,6 +57,7 @@ class App extends Component {
   }
 
   render() {
+
     if (!this.state.isLoaded) {
       return (
         <Spinner color='#0E043B' />
@@ -158,6 +161,13 @@ class App extends Component {
             hideNavBar={true}
             key='notification'
             title='notification'
+
+          /> 
+                                                <Scene
+            component={Peopleliked}
+            hideNavBar={true}
+            key='likedpeople'
+            title='likedpeople'
 
           /> 
                                                 <Scene
@@ -332,7 +342,7 @@ function Homestack(){
     />
                        <Tab.Screen
       name="chat"
-      component={Chatui}
+      component={Development}
       options={{
         tabBarLabel: 'chat',
         tabBarIcon: ({ color }) => (
