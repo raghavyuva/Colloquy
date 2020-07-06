@@ -160,6 +160,7 @@ _pickImagefromGallery = async()=>{
   titleStyle={{color:'black'}}
   onAccessoryPress={this._toggleBottomNavigationView}
 />
+
 <BottomSheet
           visible={this.state.visible}
           //setting the visibility state of the bottom shee
@@ -208,7 +209,7 @@ _pickImagefromGallery = async()=>{
               </Item>
               </Card>
 
-    </ScrollView>
+    </ScrollView>{/*
     <CardItem style={{position:'absolute',bottom:0}}>
               <ToggleButton.Row onValueChange={this.Toggler} value={this.state.checked}>
       <ToggleButton icon="format-align-left" value="left" />
@@ -222,6 +223,7 @@ _pickImagefromGallery = async()=>{
       <ToggleButton icon="format-underline" value="right" />
     </ToggleButton.Row>
     </CardItem>
+    */}
 </View>
         );
     }
