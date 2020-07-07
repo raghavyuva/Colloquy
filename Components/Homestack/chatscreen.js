@@ -6,7 +6,7 @@ import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 import { ScrollView } from 'react-native-gesture-handler';
 import Headingbar from '../common/Header';
-import { Actions } from 'react-native-router-flux';
+//import { Actions } from 'react-native-router-flux';
 const { width: screenWidth } = Dimensions.get('window');
 export default class ChatTab extends React.Component{
 	constructor(props){
@@ -30,7 +30,7 @@ export default class ChatTab extends React.Component{
 
 		
 			<List>
-			<TouchableOpacity onPress={()=>Actions.report()}>
+			<TouchableOpacity /*onPress={()=>Actions.report()}*/ onPress={this.props.navigation.navigate('feedback')}>
             <ListItem avatar>
               <Left>
                 <Thumbnail source={{ uri: pic}} />

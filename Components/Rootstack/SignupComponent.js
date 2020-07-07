@@ -7,7 +7,7 @@ import {
   import ValidationComponent from 'react-native-form-validator';
   import { Ionicons } from '@expo/vector-icons';
   'use strict';
-  import {Actions} from 'react-native-router-flux';
+ // import {Actions} from 'react-native-router-flux';
   const { width: screenWidth } = Dimensions.get('window');
   var STORAGE_KEY = 'id_token';
  
@@ -93,9 +93,9 @@ onSignupPress=async()=>{
         })
         this.setState({ loading: false })
       }
-      onloginpress=()=>{
+    /*  onloginpress=()=>{
         Actions.Authentication();
-      }
+      }*/
     render(){
     if (this.state.loading){
         return (
@@ -145,7 +145,7 @@ onSignupPress=async()=>{
                     <Button style={styles.submit}  onPress={this.onSignupPress} ><Text style={styles.submittext}>sign up</Text></Button>
                   </Item>
                   <Item stackedLabel style={styles.submission}>
-                    <Button style={styles.submit} onPress={this.onloginpress}  ><Text style={styles.submittext}>SIGN IN</Text></Button>
+                    <Button style={styles.submit} /*onPress={this.onloginpress}  */><Text style={styles.submittext}>SIGN IN</Text></Button>
                   </Item>
               </Form>
               </Card>

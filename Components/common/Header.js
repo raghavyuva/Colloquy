@@ -3,8 +3,9 @@ import { Image ,StyleSheet,SafeAreaView,FlatList,Dimensions,Share} from 'react-n
 import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body,Drawer,View,ListItem,Right,Radio, List,Title,ActionSheet,Item,Input} from 'native-base';
 import * as Font from 'expo-font';
 import { ScrollView } from 'react-native-gesture-handler';
-import { Actions } from 'react-native-router-flux';
+//import { Actions } from 'react-native-router-flux';
 import Display from 'react-native-display';
+console.disableYellowBox=true;
 const { width: screenWidth } = Dimensions.get('window');
 import { Ionicons,FontAwesome5,MaterialCommunityIcons,Feather,SimpleLineIcons,Octicons,Fontisto,FontAwesome,Entypo,AntDesign} from '@expo/vector-icons';
 import {
@@ -21,7 +22,6 @@ const shareOptions = {
 export default class Headingbar extends React.Component{
     constructor(props){
         super(props);
-        this.state={};
         this.state = {enable: true,};
     }
     state={
@@ -39,7 +39,7 @@ export default class Headingbar extends React.Component{
       })
       this.setState({ loading: false })
     }
-    render(){
+    render=()=>{
       if (this.state.loading) {
       return (
         <View></View>
@@ -50,7 +50,10 @@ export default class Headingbar extends React.Component{
         <Display enable={this.state.enable}>
           <Header>
         <Left>
-          <Button transparent onPress={()=>Actions.drawer()}>
+          <Button transparent /*onPress={()=>Actions.drawer()}*/ onPress={()=>{
+             console.log(this.props.navigation);
+
+            this.props.navigation.openDrawer()} }>
             <Icon name='menu' />
           </Button>
         </Left>
@@ -64,7 +67,7 @@ export default class Headingbar extends React.Component{
           <Button transparent onPress={this.onSharePress}>
             <Icon name='share' />
           </Button>
-          <Button transparent onPress={()=>Actions.profile()}>
+          <Button transparent /*onPress={()=>Actions.profile()}*/ onPress={()=>this.props.navigation.navigate('profile')}>
           <Avatar.Image 
                               source={{
                                   uri: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn4.iconfinder.com%2Fdata%2Ficons%2Fuser-avatar-flat-icons%2F512%2FUser_Avatar-31-512.png&f=1&nofb=1'

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Image ,StyleSheet,FlatList,ScrollView,Dimensions,TextInput,TouchableOpacity} from 'react-native';
 import { EvilIcons,AntDesign,FontAwesome5,Entypo,Ionicons} from '@expo/vector-icons';
 import * as Font from 'expo-font';
-import { Actions } from 'react-native-router-flux';
+//import { Actions } from 'react-native-router-flux';
 import { Container, Header, Content, Card, CardItem, Thumbnail,Icon, Left, Body ,Title,Right,Form,Item,Label,Input,Textarea} from 'native-base';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Modal, Portal, Text, Button, Provider,ToggleButton  } from 'react-native-paper';
@@ -205,7 +205,7 @@ _pickImagefromGallery = async()=>{
                   </Form>
                   <Item style={styles.fieldtitl} >
               <Label style={styles.fieldtitle}>Want to post a poll?  </Label>
-              <TouchableOpacity><Text style={styles.signup} onPress={()=>Actions.polladd()} >Click here</Text></TouchableOpacity>
+              <TouchableOpacity><Text style={styles.signup}/* onPress={()=>Actions.polladd()}*/ onPress={()=>this.props.navigation.navigate('external', { screen: 'polladd' })} >Click here</Text></TouchableOpacity>
               </Item>
               </Card>
 

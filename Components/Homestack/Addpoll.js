@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Image ,StyleSheet,FlatList,ScrollView,Dimensions,TextInput,TouchableOpacity} from 'react-native';
 import { EvilIcons,AntDesign,FontAwesome5,Entypo,Ionicons} from '@expo/vector-icons';
 import * as Font from 'expo-font';
-import { Actions } from 'react-native-router-flux';
+//import { Actions } from 'react-native-router-flux';
 import { Container, Header, Content, Card, CardItem, Thumbnail,Icon, Left, Body ,Title,Right,Form,Item,Label,Input,Textarea} from 'native-base';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Modal, Portal, Text, Button, Provider,ToggleButton  } from 'react-native-paper';
@@ -93,7 +93,7 @@ fetch("http://192.168.225.238:3001/polls",{
 </CardItem>
 <Item style={styles.fieldtitl} >
               <Label style={styles.fieldtitle}>Want to post a feed?  </Label>
-              <TouchableOpacity><Text style={styles.signup} onPress={()=>Actions.blogadd()} >Click here</Text></TouchableOpacity>
+              <TouchableOpacity><Text style={styles.signup} /*onPress={()=>Actions.blogadd()}*/ onPress={()=>this.props.navigation.navigate('Home', { screen: 'addblog' })}>Click here</Text></TouchableOpacity>
               </Item>
 <Text style={{color:'white',margin:25}}>Note: Enter colour name or colour code for example : 'black' or '#000'</Text>
 

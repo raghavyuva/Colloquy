@@ -32,3 +32,196 @@ list of work to be done!
 25)fix name to app,
 }
 
+
+
+
+
+
+
+
+const Drawer = createDrawerNavigator();
+function mydrawer(){
+  return(
+  <Drawer.Navigator  drawerContent={props => <DrawerContent {...props}/>}>
+  <Drawer.Screen name="follower" component={Follower} />
+  <Drawer.Screen name="following" component={Following} />
+  <Drawer.Screen name="upcoming" component={Upcoming_events_copy} />
+  <Drawer.Screen name="setting" component={Settings} />
+  <Drawer.Screen name="note" component={Notesshared} />
+  <Drawer.Screen name="privacy" component={Privacy} />
+  <Drawer.Screen name="terms" component={Terms} />
+  <Drawer.Screen name="download" component={Downloadpage} />
+  <Drawer.Screen name="classroom" component={Class} />
+</Drawer.Navigator>
+  );
+  }
+
+
+/*const navigator = createStackNavigator(
+  {
+welcome:Welcomepage,
+login:Signpage,
+signup:Signuppage,
+who:Whoyouare,
+home:homescreen,
+chat:ChatTab,
+feed:Blogpage,
+bell:notifications, 
+pro:profile,
+upcoming:Upcoming_events,
+header:Headingbar,
+setting:Settings,
+  },
+{
+  initialRouteName: 'login',
+  headerMode:'none',
+},
+);
+const AppContainer = createAppContainer(navigator);
+export default () =>{
+ 
+ return(<Root>
+    <AppContainer />
+  </Root>
+ );
+}
+*/
+
+
+const Tab = createMaterialBottomTabNavigator();
+
+function Homestack(){
+  return(
+    <Tab.Navigator
+    initialRouteName="Home"
+    activeColor="yellow"
+    barStyle={{ backgroundColor: '#0E043B' }}
+    >
+    <Tab.Screen
+      name="Home"
+      component={homescreen}
+      options={{
+        tabBarLabel: 'Home',
+        tabBarIcon: ({ color }) => (
+          <MaterialCommunityIcons name="pentagon-outline" color={color} size={26} />
+        ),
+      }}
+    />
+    <Tab.Screen
+      name="Feed"
+      component={Blogpage}
+      options={{
+        tabBarLabel: 'Feed',
+        tabBarIcon: ({ color }) => (
+          <MaterialCommunityIcons name="menu" color={color} size={26} />
+        ),
+      }}
+    />
+       <Tab.Screen
+      name="addblog"
+      component={Addblog}
+      options={{
+        tabBarLabel: 'post',
+        tabBarIcon: ({ color }) => (
+          <MaterialIcons name="add-circle" size={26} color={color} />
+        ),
+      }}
+    />
+                       <Tab.Screen
+      name="write"
+      component={notifications}
+      options={{
+        tabBarLabel: 'bell',
+        tabBarIcon: ({ color }) => (
+          <FontAwesome5 name="bell" color={color} size={26} />
+        ),
+      }}
+    />
+                       <Tab.Screen
+      name="chat"
+      component={Development}
+      options={{
+        tabBarLabel: 'chat',
+        tabBarIcon: ({ color }) => (
+          <MaterialIcons name="chat" color={color} size={26} />
+        ),
+      }}
+    />
+
+
+
+
+  </Tab.Navigator>
+  );
+}
+
+
+function External(){
+  return(
+<Stack.Navigator>
+<Stack.Screen name="profile" component={profile} />
+<Stack.Screen name="edit" component={Edition} />
+<Stack.Screen name="polladd" component={Addpoll} />
+<Stack.Screen name="feedback" component={Feedback} />
+<Stack.Screen name="likedpeople" component={Peopleliked} />
+<Stack.Screen name="classroom" component={Class} />
+<Stack.Screen name="segment" component={Privacytermsegment} />
+<Stack.Screen name="poll" component={Polling} />
+</Stack.Navigator>
+  );
+}
+
+const Stack = createStackNavigator();
+function Rootstack() {
+  const scheme = useColorScheme();
+  return (
+    <AppearanceProvider>
+    <NavigationContainer  theme={scheme === 'dark' ? DarkTheme : DefaultTheme} > 
+         <MenuProvider>
+      <Stack.Navigator headerMode='false' >
+      <Stack.Screen name="Auth" component={Authstack} /> 
+        <Stack.Screen name="home" component={Homestack} /> 
+        <Stack.Screen name="drawer" component={mydrawer} /> 
+        <Stack.Screen name="external" component={External} /> 
+      </Stack.Navigator>
+      </MenuProvider>
+    </NavigationContainer>
+    </AppearanceProvider>
+  )
+}
+function Authstack(){
+  return(
+<Stack.Navigator>
+<Stack.Screen name="login" component={Signpage} />
+        <Stack.Screen name="signup" component={Signuppage} /> 
+        <Stack.Screen name="welcome" component={Welcomepage} /> 
+        <Stack.Screen name="who" component={Whoyouare} /> 
+</Stack.Navigator>
+  );
+}
+export default class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasToken: false,isLoaded: false  };
+  }
+  componentDidMount() {
+    AsyncStorage.getItem('token').then((token) => {
+      this.setState({ hasToken: token !== null, isLoaded: true })
+    });
+  }
+
+  render(){
+  if (!this.state.isLoaded) {
+    return (
+      <Spinner color='#0E043B' />
+    )
+  } else {
+    
+    return (
+      <Root>
+        <Rootstack />
+      </Root>
+    )
+  }
+}
+}

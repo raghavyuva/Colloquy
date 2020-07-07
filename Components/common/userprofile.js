@@ -7,7 +7,7 @@ import * as Font from 'expo-font';
 import { ListItem,Avatar,Tooltip,Paragraph,Caption} from 'react-native-elements';
 const { width: screenWidth } = Dimensions.get('window');
 import Headingbar from '../common/Header';
-import { Actions } from 'react-native-router-flux';
+//import { Actions } from 'react-native-router-flux';
 const profiledetails =[
   {
 id:'1',
@@ -46,7 +46,7 @@ Listrenderer =({id,pic,user,tag,usn})=>{
   <Avatar
   rounded
   size='xlarge'
-  onAccessoryPress={()=>Actions.edit()}
+  onAccessoryPress={this.props.navigation.navigate('edit')}
   showAccessory
   source={{
     uri:pic

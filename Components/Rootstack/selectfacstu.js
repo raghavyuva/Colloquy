@@ -38,7 +38,7 @@ import {
     <Text style={styles.selection}>select who you are</Text>
     <ListItem>
     
-<TouchableOpacity style = {styles.button} onPress={()=>this.props.navigation.navigate('home') }>
+<TouchableOpacity style = {styles.button} onPress={()=>this.props.navigation.navigate('login') }>
 <LinearGradient
           colors={['#4B480F', '#EE2EB9',]}
           style={{ padding: 15, alignItems: 'center', borderRadius: 5 }}>

@@ -8,7 +8,7 @@ import {
   import ValidationComponent from 'react-native-form-validator';
   import { Ionicons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import {Actions} from 'react-native-router-flux';
+//import {Actions} from 'react-native-router-flux';
 const { width: screenWidth } = Dimensions.get('window');
 
 
@@ -61,7 +61,8 @@ if(checkedforvalidation) {
       console.log(data)
       try {
       await  AsyncStorage.setItem('token',data.token)
-      Actions.drawer();
+    //  Actions.drawer();
+    this.props.navigation.navigate('home');
       } catch (error) {
         console.log('AsyncStorage error: ',error.message);
       }
@@ -88,8 +89,9 @@ if(checkedforvalidation) {
         }
       }
 */
-      onsignuppress=()=>{
-        Actions.Signup();
+     onsignuppress=()=>{
+      //  Actions.Signup();
+      this.props.navigation.navigate('signup');
       }
     render(){
     if (this.state.loading){

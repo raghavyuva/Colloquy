@@ -7,7 +7,7 @@ import { Image ,StyleSheet,FlatList,ScrollView,View,Linking,AsyncStorage,Alert,D
 import { Container, Header, Content, Button, ListItem, Icon, Left, Body, Right,Card,CardItem, List,ActionSheet} from 'native-base';
 import * as Font from 'expo-font';
 import { Ionicons,FontAwesome5,MaterialCommunityIcons,Feather,SimpleLineIcons,Octicons,Fontisto,FontAwesome,MaterialIcons} from '@expo/vector-icons';
-import {Actions} from 'react-native-router-flux';
+//import {Actions} from 'react-native-router-flux';
 const { width: screenWidth } = Dimensions.get('window');
 import {
     Avatar,
@@ -20,7 +20,7 @@ import {
     Switch
 } from 'react-native-paper';
 var STORAGE_KEY = 'token';
-
+console.disableYellowBox=true
 export function DrawerContent(props){
  /*const userLogout=async()=> {
         try {
@@ -35,7 +35,9 @@ export function DrawerContent(props){
         try {
           await AsyncStorage.removeItem(STORAGE_KEY);
           Alert.alert("Logout Success!");
-          Actions.Authentication();
+         // Actions.Authentication();
+         
+         props.navigation.navigate('Auth', { screen: 'login' })
         } catch (error) {
           console.log('AsyncStorage error: ' + error.message);
         }
@@ -78,7 +80,8 @@ export function DrawerContent(props){
                             labelStyle={{color:'white'}}
                             label="Classroom"
                             style={{backgroundColor:'black',marginTop:20}}
-                            onPress={() => Actions.classroom()}
+                            //onPress={() => Actions.classroom()}
+                           onPress={()=>props.navigation.navigate('external', { screen: 'classroom' })}
                         />
                                                   <DrawerItem 
                             icon={({color, size}) => (
@@ -86,7 +89,8 @@ export function DrawerContent(props){
                             labelStyle={{color:'white'}}
                             label="Followers"
                             style={{backgroundColor:'black',marginTop:20}}
-                            onPress={()=>{Actions.follow()}}
+                            //onPress={()=>{Actions.follow()}}
+                            onPress={()=>props.navigation.navigate('external', { screen: 'follower' })}
 />
                                                                           <DrawerItem 
                             icon={({color, size}) => (
@@ -94,7 +98,8 @@ export function DrawerContent(props){
                             labelStyle={{color:'white'}}
                             label="Following"
                             style={{backgroundColor:'black',marginTop:20}}
-                            onPress={()=>Actions.following()}
+                           // onPress={()=>Actions.following()}
+                           onPress={()=>props.navigation.navigate('external', { screen: 'following' })}
                         />
                            <DrawerItem 
                             icon={({color, size}) => (
@@ -102,7 +107,8 @@ export function DrawerContent(props){
                             labelStyle={{color:'white'}}
                             label='Polling'
                             style={{backgroundColor:'black',marginTop:20}}
-                            onPress={()=>Actions.poll()}
+                           // onPress={()=>Actions.poll()}
+                           onPress={()=>props.navigation.navigate('external', { screen: 'poll' })}
                         />
                         <DrawerItem 
                          icon={({color, size}) => (
@@ -111,7 +117,8 @@ export function DrawerContent(props){
                              label="Upcoming events"
                              labelStyle={{color:'white'}}
                              style={{backgroundColor:'black',marginTop:20}}
-                             onPress={()=>Actions.upcoming()}
+                            // onPress={()=>Actions.upcoming()}
+                            onPress={()=>props.navigation.navigate('external', { screen: 'upcoming' })}
                         />
                         <DrawerItem 
                             icon={({color, size}) => (
@@ -120,7 +127,8 @@ export function DrawerContent(props){
                             label="shared notes"
                             style={{backgroundColor:'black',marginTop:20}}
                             labelStyle={{color:'white'}}
-                            onPress={()=>Actions.note()}
+                           // onPress={()=>Actions.note()}
+                           onPress={()=>props.navigation.navigate('external', { screen: 'note' })}
                         />
                         <DrawerItem 
                             icon={({color, size}) => (
@@ -130,7 +138,8 @@ export function DrawerContent(props){
                             labelStyle={{color:'white'}}
                             style={{backgroundColor:'black',marginTop:20}}
                             label="Downloads"
-                            onPress={()=>Actions.download()}
+                           // onPress={()=>Actions.download()}
+                           onPress={()=>props.navigation.navigate('external', { screen: 'download' })}
                         />
                         <DrawerItem 
                             icon={({color, size}) => (
@@ -139,7 +148,8 @@ export function DrawerContent(props){
                             labelStyle={{color:'white'}}
                             label="Settings"
                             style={{backgroundColor:'black',marginTop:20}}
-                            onPress={()=>Actions.setting()}
+                           // onPress={()=>Actions.setting()}
+                           onPress={()=>props.navigation.navigate('external', { screen: 'setting' })}
                         />
                         <DrawerItem 
                             icon={({color, size}) => (
@@ -149,6 +159,7 @@ export function DrawerContent(props){
                             label="Support"
                             style={{backgroundColor:'black',marginTop:20}}
                             onPress={() => Linking.openURL('https://cambridge.edu.in')}
+                            
                         />
                                                 <DrawerItem 
                             icon={({color, size}) => (
@@ -157,7 +168,8 @@ export function DrawerContent(props){
                             labelStyle={{color:'white'}}
                             label="privacy policy and terms"
                             style={{backgroundColor:'black',marginTop:20}}
-                            onPress={() => Actions.segment()}
+                           // onPress={() => Actions.segment()}
+                           onPress={()=>props.navigation.navigate('external', { screen: 'segment' })}
                         />
                           <DrawerItem 
                             icon={({color, size}) => (
@@ -166,7 +178,8 @@ export function DrawerContent(props){
                             labelStyle={{color:'white'}}
                             label="Hire-Helper"
                             style={{backgroundColor:'black',marginTop:20}}
-                            onPress={() => Linking.openURL('https://raghav.orak.in/')}
+                           onPress={() => Linking.openURL('https://raghav.orak.in/')}
+                        
                         />
                                                   <DrawerItem 
                             icon={({color, size}) => (
@@ -176,6 +189,7 @@ export function DrawerContent(props){
                             label="join official channel"
                             style={{backgroundColor:'black',marginTop:20}}
                             onPress={() => Linking.openURL('https://t.me/orakin')}
+                        
                         />
                            <DrawerItem 
                             icon={({color, size}) => (
@@ -184,7 +198,8 @@ export function DrawerContent(props){
                             labelStyle={{color:'white'}}
                             label="feedback"
                             style={{backgroundColor:'black',marginTop:20}}
-                            onPress={() => Actions.report()}
+                           // onPress={() => Actions.report()}
+                           onPress={()=>props.navigation.navigate('external', { screen: 'feedback' })}
                         />
                     </Drawer.Section>
                     </DrawerContentScrollView>   
@@ -195,7 +210,7 @@ export function DrawerContent(props){
                     )}
                     label="Sign Out"
                     labelStyle={{color:'white'}}
-                   onPress={userLogout}
+                  onPress={userLogout}
                 />
             </Drawer.Section>
                         </View>

@@ -5,7 +5,7 @@ import {
   import { Container, Header, Content, Item, Input, Button,Text, View ,CheckBox,ListItem,Body,AppLoading} from 'native-base';
   import * as Font from 'expo-font';
   import { Ionicons } from '@expo/vector-icons';
-  import {Actions} from 'react-native-router-flux';
+ // import {Actions} from 'react-native-router-flux';
   const { width: screenWidth } = Dimensions.get('window');
 export default class Welcomepage extends React.Component{
     constructor(props){
@@ -23,7 +23,7 @@ export default class Welcomepage extends React.Component{
         this.setState({ loading: false })
       }
          onstepinpress=()=>{
-          Actions.Authentication();
+         this.props.navigation.navigate('who');
          }
     render(){
     if (this.state.loading){
