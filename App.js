@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, ActivityIndicator, AsyncStorage, Dimensions } from 'react-native';
-import { createAppContainer ,} from 'react-navigation';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
-
-
 import { NavigationContainer, DarkTheme, DefaultTheme } from '@react-navigation/native';
 import Welcomepage from './Components/Rootstack/Welcomecomponent';
 import Signpage from './Components/Rootstack/Signincomponent';
@@ -43,7 +40,8 @@ import Development from './Components/common/development';
 import { AppearanceProvider, useColorScheme } from 'react-native-appearance';
 import { Ionicons, FontAwesome5, MaterialCommunityIcons, Feather, SimpleLineIcons, Octicons, Fontisto, FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import Peopleliked from './Components/common/peopleliked';
-console.disableYellowBox=true;
+import SplashScreen from './Components/Rootstack/Splashscreen';
+console.disableYellowBox = true;
 const storagekey = 'token';
 const Tab = createMaterialBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -76,13 +74,14 @@ function HomeScreen() {
     <Tab.Navigator
       initialRouteName="Home"
       activeColor="yellow"
-      barStyle={{ backgroundColor: '#0E043B' }}
+
     >
       <Tab.Screen
         name="Home" initialRouteName="Home"
         component={homescreen}
         options={{
           tabBarLabel: 'Home',
+          tabBarColor: '#0E043B',
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="pentagon-outline" color={color} size={26} />
           ),
@@ -93,6 +92,7 @@ function HomeScreen() {
         component={Blogpage}
         options={{
           tabBarLabel: 'Feed',
+          tabBarColor: 'red',
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="menu" color={color} size={26} />
           ),
@@ -103,6 +103,7 @@ function HomeScreen() {
         component={Addblog}
         options={{
           tabBarLabel: 'post',
+          tabBarColor: 'green',
           tabBarIcon: ({ color }) => (
             <MaterialIcons name="add-circle" size={26} color={color} />
           ),
@@ -113,6 +114,7 @@ function HomeScreen() {
         component={notifications}
         options={{
           tabBarLabel: 'bell',
+          tabBarColor: '#F99124',
           tabBarIcon: ({ color }) => (
             <FontAwesome5 name="bell" color={color} size={26} />
           ),
@@ -123,6 +125,7 @@ function HomeScreen() {
         component={Development}
         options={{
           tabBarLabel: 'chat',
+          tabBarColor: 'purple',
           tabBarIcon: ({ color }) => (
             <MaterialIcons name="chat" color={color} size={26} />
           ),
@@ -137,47 +140,49 @@ function HomeScreen() {
 }
 function Authstack() {
   return (
-    <Stack.Navigator navigation={this.props.navigation}>
+    <Stack.Navigator >
       <Stack.Screen name="login" component={Signpage} />
       <Stack.Screen name="signup" component={Signuppage} />
       <Stack.Screen name="welcome" component={Welcomepage} />
       <Stack.Screen name="who" component={Whoyouare} />
-
     </Stack.Navigator>
   );
 }
 
-export default class App extends Component{
-  constructor(props){
+export default class App extends Component {
+  constructor(props) {
     super(props);
-    this.state = { hasToken: false,isLoaded: false  };
+    this.state = { hasToken: false, isLoaded: false };
+  }
+  state = {
+    darkmode: false,
   }
   componentDidMount() {
     AsyncStorage.getItem('token').then((token) => {
       this.setState({ hasToken: token !== null, isLoaded: true })
     });
   }
-  render(){
-    console.log(this.props);
+  render() {
     if (!this.state.isLoaded) {
       return (
-        <Spinner color='#0E043B' />
-      )
+        <SplashScreen />
+      );
     } else {
-  return (
-    <AppearanceProvider>
-      <MenuProvider>
-      <NavigationContainer >
-        <Drawer.Navigator drawerContent={props => <DrawerContent {...props}/>}>
-          <Drawer.Screen name="Home" component={HomeScreen} />
-          <Drawer.Screen name="Auth" component={Authstack} />
-          <Drawer.Screen name="external" component={External} />
-          <Drawer.Screen name="header" component={Headingbar} />
-        </Drawer.Navigator>
-      </NavigationContainer>
-      </MenuProvider>
-    </AppearanceProvider>
-  )
-}
-}
+      return (
+        <AppearanceProvider>
+          <MenuProvider>
+            <NavigationContainer>
+              <Drawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
+                <Drawer.Screen name="Home" component={HomeScreen} />
+                <Drawer.Screen name="Auth" component={Authstack} />
+                <Drawer.Screen name="external" component={External} />
+                <Drawer.Screen name="header" component={Headingbar} />
+              </Drawer.Navigator>
+
+            </NavigationContainer>
+          </MenuProvider>
+        </AppearanceProvider>
+      )
+    }
+  }
 }

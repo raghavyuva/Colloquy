@@ -62,7 +62,7 @@ if(checkedforvalidation) {
       try {
       await  AsyncStorage.setItem('token',data.token)
     //  Actions.drawer();
-    this.props.navigation.navigate('home');
+    this.props.navigation.navigate('Home');
       } catch (error) {
         console.log('AsyncStorage error: ',error.message);
       }

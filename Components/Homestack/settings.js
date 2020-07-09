@@ -1,51 +1,50 @@
-import React, { Component } from 'react';
-import { Image ,StyleSheet,FlatList,ScrollView,Dimensions} from 'react-native';
-import { Container, Header, Content, Button, ListItem, Text, Icon, Left, Body, Right, Switch ,Title} from 'native-base';
-import Headingbar from '../common/Header';
+import React, { Component,useState } from 'react';
+import { Image ,StyleSheet,SafeAreaView,FlatList,Dimensions,Share} from 'react-native';
+import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body,Drawer,View,ListItem,Right,Radio, List,Title,ActionSheet,Item,Input} from 'native-base';
 import * as Font from 'expo-font';
+import { ScrollView } from 'react-native-gesture-handler';
+//import { Actions } from 'react-native-router-flux';
+import Display from 'react-native-display';
+import { NavigationContainer, DarkTheme, DefaultTheme } from '@react-navigation/native';
+import Headingbar from '../common/Header';
+import { useTheme } from '@react-navigation/native';
 const { width: screenWidth } = Dimensions.get('window');
-import { EvilIcons,AntDesign,FontAwesome5,MaterialCommunityIcons,Ionicons} from '@expo/vector-icons';
-const listofsettings = [
-	{
-		id:'1',
-    opname:"Airoplane mode",
-    icon:'airplane',
-    tagline:'Do not recieve notifications'
-  },
-  {
-		id:'2',
-    opname:"Dark mode",
-    icon:'md-bulb',
-    tagline:'Switch between themes',
-  },
-  {
-		id:'3',
-    opname:"Hide Recent Posts",
-    icon:'md-eye',
-    tagline:'This will hide recent posts from your profile'
-  },
-  {
-		id:'4',
-    opname:"Hide Recent Polls",
-    icon:'ios-analytics',
-    tagline:'This will hide recent polls from your profile'
-  },
-  {
-		id:'5',
-    opname:"Anonymous Poll",
-    icon:'user-secret',
-    tagline:'people wont come to know  '
-	},
+import { Ionicons,FontAwesome5,MaterialCommunityIcons,Feather,SimpleLineIcons,Octicons,Fontisto,FontAwesome,Entypo,AntDesign} from '@expo/vector-icons';
+import {
+  Avatar,
+  TouchableRipple,
+  Switch
+} from 'react-native-paper';
 
-]
-export default class Settings extends Component {
-  constructor(props){
-    super(props);
-  }
-  state={
-    loading:true,
-  }
-    async componentDidMount() {
+const SetTheme = ({ setTheme }) => {
+  const theme = useTheme()
+
+  React.useEffect(() => {
+      setTheme(theme)
+      return () => null
+  },[])
+
+  return null
+}
+export default class Settings extends React.Component{
+    constructor(props){
+        super(props);
+    }
+
+    state={
+        loading:true,
+        airplane:false,
+        darkmode:false,
+        recent:false,
+        poll:false,
+        theme: undefined
+      }
+      setTheme = theme => {
+        this.setState({theme})
+    }
+
+
+      async componentDidMount() {
         await Font.loadAsync({
           'Roboto': require('native-base/Fonts/Roboto.ttf'),
           'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
@@ -53,54 +52,77 @@ export default class Settings extends Component {
         })
         this.setState({ loading: false })
       }
-state={
-  value:true,
-}
-
-	Listrenderer=({opname,icon,tagline})=>{
-    
-		return(
-			<Content>
-			<ListItem icon style={{marginTop:15}}>
-			  <Left>
-				<Button style={{ backgroundColor: "#FF9501" }}>
-				  <Icon active name={icon} />
-				</Button>
-			  </Left>
-			  <Body>
-				<Text style={{color:'white'}}> {opname} </Text>
-        <Text note> {tagline} </Text>
-			  </Body>
-			  <Right>
-				<Switch value={this.state.value} onValueChange={()=>this.setState({value: !this.state.value})} style={{color:"red",backgroundColor:"#0E043B"}} trackColor='red'/>
-			  </Right>
-			</ListItem>
-		   
-		  </Content>
-		);
-	}
-  render() {
-    if (this.state.loading){
-      return (
-<Container></Container>
+    render(){
+        if (this.state.loading) {
+            return (
+              <Container></Container>
+            );
+          }
+        return(
+<Container>
+  <Headingbar/>
+<Content>
+    <ListItem icon style={{marginTop:15}}>
+      <Left>
+        <Button style={{ backgroundColor:  "#FF9501"  }}>
+          <Icon active name="airplane" />
+        </Button>
+      </Left>
+      <Body>
+        <Text style={{color:'red'}}> Airoplane mode </Text>
+<Text note> Do not recieve notifications </Text>
+      </Body>
+      <Right>
+        <Switch value={this.state.airplane} onValueChange={()=>this.setState({airplane: !this.state.airplane})}/>
+      </Right>
+    </ListItem>
+    <ListItem icon style={{marginTop:15}}>
+      <Left>
+        <Button style={{ backgroundColor: "#FF9501" }}>
+          <Icon active name="md-bulb" />
+        </Button>
+      </Left>
+      <Body>
+        <Text style={{color:'red'}}> Dark Mode </Text>
+<Text note> Switch between themes </Text>
+      </Body>
+      <Right>
+        <Switch value={this.state.darkmode} onValueChange={()=>this.setState({darkmode: !this.state.darkmode})}/>
+      </Right>
+    </ListItem>
+    <ListItem icon style={{marginTop:15,height:60}}>
+      <Left>
+        <Button style={{ backgroundColor: "#FF9501" }}>
+          <Icon active name="md-eye" />
+        </Button>
+      </Left>
+      <Body >
+        <Text style={{color:'red'}}> Hide Recent Posts </Text>
+<Text note numberOfLines={2}> This will hide recent posts</Text>
+      </Body>
+      <Right>
+        <Switch value={this.state.recent} onValueChange={()=>this.setState({recent: !this.state.recent})}/>
+      </Right>
+    </ListItem>
+    <ListItem icon style={{marginTop:15,height:60}}>
+      <Left>
+        <Button style={{ backgroundColor: "#FF9501" }}>
+          <Icon active name="user-secret" />
+        </Button>
+      </Left>
+      <Body >
+        <Text style={{color:'red'}}>Anonymous Poll</Text>
+<Text note numberOfLines={2}>people wont come to know</Text>
+      </Body>
+      <Right>
+        <Switch value={this.state.poll} onValueChange={()=>this.setState({poll: !this.state.poll})}/>
+      </Right>
+    </ListItem>
+  </Content>
+</Container>
         );
-  }  
-    return (
-      <Container style={{backgroundColor:'#0E043B'}}>
-<Headingbar/>
-		<FlatList
-        data={listofsettings}
-     renderItem={({ item }) => ( 
-            <this.Listrenderer
-              id={item.id}
-              opname={item.opname}
-              icon ={item.icon}
-              tagline={item.tagline}
-            />
-          )}
-        keyExtractor={item => item.id}
-        />
-      </Container>
-    );
-  }
+    }
 }
+const styles = StyleSheet.create({
+
+});

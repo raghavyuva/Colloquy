@@ -42,6 +42,26 @@ _pickImagefromCamera = async () => {
     });
     if (!result.cancelled) {
       this.setState({ postimage: result.uri });
+      const data = new FormData();
+      data.append('name', 'avatar');
+      data.append('fileData', {
+       uri : result.uri,
+       type: result.type,
+       name: result.fileName
+      });
+      const config = {
+       method: 'POST',
+       headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'multipart/form-data',
+       },
+       body: data,
+      };
+     fetch("http://192.168.225.238:3001" + "upload", config)
+      .then((checkStatusAndGetJSONResponse)=>{       
+        console.log(checkStatusAndGetJSONResponse);
+      }).catch((err)=>{console.log(err)});
+     
     }
 
     console.log(result);
