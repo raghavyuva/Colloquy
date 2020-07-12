@@ -3,13 +3,13 @@ list of work to be done!
 1) sharing notes ui 
 2)sharing notes functionality
 3)like,upvote functionality #############
-4)sharing option, enabling link,
+
 5)upcoming events adding from server side and displaying in user end,
 6)profile updating after editing profile,
 7)blog adding to server,
 8)blog displaying to user end,
-9)poll display in user end,
-10)poll ui updating,
+9)poll display in user end,########################
+10)poll ui updating,##################
 
 { in next update#####################
 11)chat screen,
@@ -30,6 +30,7 @@ list of work to be done!
 23)display no internet vector image,
 24)logo of college,###################
 25)fix name to app,
+4)sharing option, enabling link,
 }
 
 

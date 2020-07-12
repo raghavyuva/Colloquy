@@ -64,7 +64,7 @@ export default class Headingbar extends React.Component {
               <Button transparent onPress={this.onSharePress}>
                 <Icon name='share' />
               </Button>
-              <Button transparent /*onPress={()=>Actions.profile()}*/ onPress={() => this.props.navigation.navigate('profile')}>
+              <Button transparent /*onPress={()=>Actions.profile()}*/ onPress={()=>this.props.navigation.navigate('external', { screen: 'profile' })}>
                 <Avatar.Image
                   source={{
                     uri: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn4.iconfinder.com%2Fdata%2Ficons%2Fuser-avatar-flat-icons%2F512%2FUser_Avatar-31-512.png&f=1&nofb=1'

@@ -17,20 +17,24 @@ const downloadablefile = [
         source:''
     }
 ]
+var data = new FormData()
+data.append('postimage')
 export default class Edition extends React.Component{
 constructor(props){
     super(props);
     this.state={username:"",tagline:"",postimage:null};
 }
+
 state={
     loading:true,
     image: null,
     visible: false,
-
+    data:null,
 }
 componentDidMount() {
   this.getPermissionAsync();
 }
+
 _pickImagefromCamera = async () => {
     
   try {
@@ -42,28 +46,7 @@ _pickImagefromCamera = async () => {
     });
     if (!result.cancelled) {
       this.setState({ postimage: result.uri });
-      const data = new FormData();
-      data.append('name', 'avatar');
-      data.append('fileData', {
-       uri : result.uri,
-       type: result.type,
-       name: result.fileName
-      });
-      const config = {
-       method: 'POST',
-       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'multipart/form-data',
-       },
-       body: data,
-      };
-     fetch("http://192.168.225.238:3001" + "upload", config)
-      .then((checkStatusAndGetJSONResponse)=>{       
-        console.log(checkStatusAndGetJSONResponse);
-      }).catch((err)=>{console.log(err)});
-     
     }
-
     console.log(result);
   } catch (E) {
     console.log(E);
@@ -104,21 +87,19 @@ _upload=()=>{
     console.log('required fields cannot be null')
   }
   else{
+    this.setState({data:this.state.postimage + this.state.tagline + this.state.username});
 console.log(this.state.username,this.state.tagline)
-fetch("http://192.168.225.238:3001/profile",{
+fetch("http://192.168.225.238:3001/newpost",{
+      
       method:"POST",
       headers:{
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/form-data'
       },
-      body:JSON.stringify({
-        "username":this.state.username,
-        "tagline":this.state.tagline,
-        "postimage":this.state.postimage
-      })
+      body:JSON.stringify(this.state.data)
     })
     .then(res=>res.json())
-    .then(async (data)=>{
-      console.log(data)
+    .then(async (document)=>{
+      console.log(document)
     })
   }
 }

@@ -19,7 +19,6 @@ import {
     TouchableRipple,
     Switch
 } from 'react-native-paper';
-var STORAGE_KEY = 'token';
 console.disableYellowBox=true
 export function DrawerContent(props){
  /*const userLogout=async()=> {
@@ -33,11 +32,9 @@ export function DrawerContent(props){
       }*/
   const   userLogout=async()=> {
         try {
-          await AsyncStorage.removeItem(STORAGE_KEY);
+          await AsyncStorage.removeItem('token');
           Alert.alert("Logout Success!");
-         // Actions.Authentication();
-         
-         props.navigation.navigate('Auth', { screen: 'login' })
+         this.props.navigation.navigate('Auth', { screen: 'login' })
         } catch (error) {
           console.log('AsyncStorage error: ' + error.message);
         }

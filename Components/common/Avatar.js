@@ -1,10 +1,10 @@
 import React from 'react';
-import { Dimensions,StyleSheet,View,FlatList,ScrollView,TouchableOpacity,} from 'react-native';
+import { Dimensions,StyleSheet,View,FlatList,ScrollView,TouchableOpacity} from 'react-native';
 import { Card, Image, Avatar } from 'react-native-elements';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
-import {Text, CardItem} from 'native-base';
-
+import {Text, CardItem,Button} from 'native-base';
+import axios from 'axios';
 const { width: screenWidth } = Dimensions.get('window');
 
 const followerslist =[
@@ -80,10 +80,31 @@ export default class Avatarcommon  extends React.Component{
   
   state = {
     data: {},
-    loading: true
+    loading: true,
+    renderdata:{}
   }
 
+async componentDidMount(){
+await axios.get('http://192.168.225.238:3001/follow')
+.then((response) => {
+JSON.stringify(this.setState(this.state.renderdata=response.data))
+    console.log('data has been recieved');
+})
+.catch(() => {
+    alert('error in recieving data');
+})
+}
+_datafetch = () => {
+  axios.get('http://192.168.225.238:3001/follow')
+      .then((response) => {
+      JSON.stringify(this.setState(this.state.renderdata=response.data))
+          console.log('data has been recieved');
+      })
+      .catch(() => {
+          alert('error in recieving data')
+      })
 
+}
 
   async componentDidMount() {
     await Font.loadAsync({
@@ -112,7 +133,11 @@ Listrenderer=({id,user,tag,icon})=>{
         <Text style={styles.title}>
         {user} 
         </Text>
+        <Text style={styles.title}>
+        {tag} 
+        </Text>
     </View>
+    
     </Card>
   </CardItem> 
     );  
@@ -125,16 +150,20 @@ Listrenderer=({id,user,tag,icon})=>{
     }
         return(
             <View style={styles.screen}>
+                           <Button onPress={this._datafetch} transparent style={{flexDirection:'row',justifyContent:'flex-start',backgroundColor:"yellow"}}>
+                <Ionicons name="md-refresh-circle" size={32} color="black" />
+                    <Text style={{textTransform:'capitalize'}}>refresh</Text>
+                    </Button>
               <FlatList
                 horizontal
                 pagingEnabled={true}
                 showsHorizontalScrollIndicator={false}
-                data={followerslist}
+                data={Object.values(this.state.renderdata)}
                 renderItem={({item})=>
                 <this.Listrenderer
                 id={item.id}
                 user={item.username}
-                tag={item.tagline}
+                tag={item.usn}
                 icon={item.iconname}
               />
             }

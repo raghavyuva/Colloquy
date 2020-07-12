@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Image ,StyleSheet,FlatList,ScrollView,Dimensions,Share} from 'react-native';
 import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body ,Title,Right} from 'native-base';
-import { EvilIcons,AntDesign,FontAwesome5,Entypo,Ionicons} from '@expo/vector-icons';
+import { EvilIcons,AntDesign,FontAwesome5,Entypo,Ionicons,FontAwesome} from '@expo/vector-icons';
 import Headingbar from '../common/Header';
 import * as Font from 'expo-font';
 import {
@@ -181,12 +181,26 @@ Listrenderer({id,user,date,icon,description,postimage,like,comment,upvote}){
           <EvilIcons name="comment" size={24} color="black" />
             <Text style = {{textTransform:'capitalize'}}> {comment} </Text>
           </Button>
+
           <Button transparent textStyle={{color: '#87838B'}} onPress={this.counter}  onPressIn={this.decrementor}>
-          <AntDesign name="heart" size={24} color="black" />
+            {this.state.isPressed==true?(
+              <AntDesign name="heart" size={24} color="black" />
+            ):
+            (
+              <AntDesign name="hearto" size={24} color="black" />
+            )
+          
+          }
+          
          <Text style = {{textTransform:'capitalize'}}>{like} likes </Text>
           </Button>
           <Button transparent onPress={this.upvoteincreaser}  onPressIn={this.upvotedecreaser}>
-          <FontAwesome5 name="hand-point-up" size={24} color="black" />
+            {this.state.isupvoted==true?(
+  <FontAwesome5 name="hand-point-up" size={24} color="black" />
+            ):(
+              <FontAwesome name="hand-o-down" size={24} color="black" />
+            )}
+        
           <Text style = {{textTransform:'capitalize'}}>{upvote} upvotes</Text>
           </Button>
         </Left>

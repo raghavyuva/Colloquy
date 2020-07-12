@@ -21,6 +21,8 @@ export default class Polling extends React.Component {
         loading: true,
         renderdata:{},
         dataloaded:false,
+        votecount:0,
+        isPressed:false,
 
     }
     _datafetch = () => {
@@ -34,8 +36,48 @@ export default class Polling extends React.Component {
             })
 
     }
+    _upload = () => {
+        if (!this.state.votecount) {
+          console.log('required fields cannot be null')
+        }
+        else {
+        
+          fetch("http://192.168.225.238:3001/polls", {
+            method: "POST",
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "votecount":this.state.votecount
+            })
+          })
+            .then(res => res.json())
+            .then(async (data) => {
+              console.log(data)
+            })
+            alert('success')
+        }
+      }
     componentDidMount() {
         console.log(data);
+    }
+    _votehandler=()=>{
+        var STORAGE_KEY = 'token';
+        if (STORAGE_KEY=this.state.votecount) {
+            return;
+          }
+          else{
+          this.setState({votecount: this.state.votecount +1});
+          this.setState({isPressed:!this.state.isPressed});
+          }
+    }
+    _votedecreasor=()=>{
+        if (this.state.votecount==0) {
+            return;
+          } else {
+           this.setState({votecount: this.state.votecount -1});
+           this.setState({isPressed:!this.state.isPressed});
+          }
     }
     async componentDidMount() {
         await Font.loadAsync({
@@ -69,14 +111,14 @@ export default class Polling extends React.Component {
     </Menu>
                     </Button>
                     </CardItem>
-                    <Text style={{ fontSize: 24, color: 'white' }} note numberOfLines={3}>{question}</Text>
+                    <Text style={{ fontSize: 24, color: 'white' }} note>{question}</Text>
                 <CardItem style={{ backgroundColor: color, marginLeft: 50 }}>
                     <Left>
-                        <Button style={{ marginRight: 20,backgroundColor:opcolor}}>
-                            <Text style={{ color: 'white' }}>{op1}</Text>
+                        <Button style={{ marginRight: 20,backgroundColor:opcolor}} onPress={this._votehandler} onPressIn={this._votedecreasor}>
+                            <Text style={{ color: 'white' }} >{op1}</Text>
                         </Button>
                         <Button style={{backgroundColor:opcolor}}>
-                            <Text style={{ color: 'white' }}>{op2} </Text>
+                            <Text style={{ color: 'white' }} >{op2} </Text>
                         </Button>
                     </Left>
                 </CardItem>

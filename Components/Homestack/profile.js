@@ -47,7 +47,7 @@ export default class profile extends Component {
                 rounded
                 size='xlarge'
                 //onAccessoryPress={()=>Actions.edit()}
-                onAccessoryPress={this.props.navigation.navigate('edit')}
+                onAccessoryPress={()=>this.props.navigation.navigate('external', { screen: 'edit' })}
                 showAccessory
                 source={{
                   uri: pic
