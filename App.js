@@ -40,8 +40,8 @@ import Development from './Components/common/development';
 import { AppearanceProvider, useColorScheme } from 'react-native-appearance';
 import { Ionicons, FontAwesome5, MaterialCommunityIcons, Feather, SimpleLineIcons, Octicons, Fontisto, FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import Peopleliked from './Components/common/peopleliked';
-import SplashScreen  from './Components/Rootstack/Splashscreen';
-console.disableYellowBox=true;
+import SplashScreen from './Components/Rootstack/Splashscreen';
+console.disableYellowBox = true;
 const storagekey = 'token';
 const Tab = createMaterialBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -75,14 +75,14 @@ function HomeScreen() {
     <Tab.Navigator
       initialRouteName="Home"
       activeColor="yellow"
-     
+
     >
       <Tab.Screen
         name="Home" initialRouteName="Home"
         component={homescreen}
         options={{
           tabBarLabel: 'Home',
-          tabBarColor:'#0E043B',
+          tabBarColor: '#0E043B',
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="pentagon-outline" color={color} size={26} />
           ),
@@ -93,7 +93,7 @@ function HomeScreen() {
         component={Blogpage}
         options={{
           tabBarLabel: 'Feed',
-          tabBarColor:'red',
+          tabBarColor: 'red',
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="menu" color={color} size={26} />
           ),
@@ -104,7 +104,7 @@ function HomeScreen() {
         component={Addblog}
         options={{
           tabBarLabel: 'post',
-          tabBarColor:'green',
+          tabBarColor: 'green',
           tabBarIcon: ({ color }) => (
             <MaterialIcons name="add-circle" size={26} color={color} />
           ),
@@ -115,7 +115,7 @@ function HomeScreen() {
         component={notifications}
         options={{
           tabBarLabel: 'bell',
-          tabBarColor:'#F99124',
+          tabBarColor: '#F99124',
           tabBarIcon: ({ color }) => (
             <FontAwesome5 name="bell" color={color} size={26} />
           ),
@@ -126,7 +126,7 @@ function HomeScreen() {
         component={Edition}
         options={{
           tabBarLabel: 'chat',
-          tabBarColor:'purple',
+          tabBarColor: 'purple',
           tabBarIcon: ({ color }) => (
             <MaterialIcons name="chat" color={color} size={26} />
           ),
@@ -150,45 +150,45 @@ function Authstack() {
   );
 }
 
-export default class App extends Component{
-  constructor(props){
+export default class App extends Component {
+  constructor(props) {
     super(props);
-    this.state = { hasToken: false,isLoaded: false  };
+    this.state = { hasToken: false, isLoaded: false };
   }
-  state={
-    darkmode:false,
+  state = {
+    darkmode: false,
   }
   componentDidMount() {
     AsyncStorage.getItem('token').then((token) => {
       this.setState({ hasToken: token !== null, isLoaded: true })
     });
   }
-  render(){
+  render() {
     if (!this.state.isLoaded) {
       return (
-<SplashScreen/>        
+        <SplashScreen />
       );
     } else {
-  return (
-    <AppearanceProvider>
-      <MenuProvider>
-      <NavigationContainer>
-        {this.state.hasToken == null ? (
-           <Stack.Navigator >
-              <Stack.Screen name="Auth" component={Authstack} />
-           </Stack.Navigator>
-        ):(
-        <Drawer.Navigator drawerContent={props => <DrawerContent {...props}/>}>
-        <Drawer.Screen name="Home" component={HomeScreen} />
+      return (
+        <AppearanceProvider>
+          <MenuProvider>
+            <NavigationContainer>
+              {this.state.hasToken == null ? (
+                <Stack.Navigator >
+                  <Stack.Screen name="Auth" component={Authstack} />
+                </Stack.Navigator>
+              ) : (
+                  <Drawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
+                    <Drawer.Screen name="Home" component={HomeScreen} />
 
-          <Drawer.Screen name="external" component={External} />
-       
-        </Drawer.Navigator>
-        )}
-      </NavigationContainer>
-      </MenuProvider>
-    </AppearanceProvider>
-  )
-}
-}
+                    <Drawer.Screen name="external" component={External} />
+
+                  </Drawer.Navigator>
+                )}
+            </NavigationContainer>
+          </MenuProvider>
+        </AppearanceProvider>
+      )
+    }
+  }
 }
