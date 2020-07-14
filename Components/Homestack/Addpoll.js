@@ -25,7 +25,7 @@ export default class Addpoll extends React.Component {
     }
     else {
       console.log(this.state.question, this.state.op1, this.state.op2, this.state.backgcolor,this.state.opcolor)
-      fetch("http://192.168.225.238:3001/polls", {
+      fetch("http://192.168.43.19:3001/polls", {
         method: "POST",
         headers: {
           'Content-Type': 'application/json'

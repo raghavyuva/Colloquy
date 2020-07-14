@@ -53,7 +53,7 @@ onSignupPress=async()=>{
     })
     .done();*/
     console.log(this.state.usn,this.state.pass,this.state.num,this.state.email,this.state.username);
-    fetch("http://192.168.225.238:3001/signup",{
+    fetch("http://192.168.43.19:3001/signup",{
       method:"POST",
       headers:{
         'Content-Type': 'application/json'

@@ -100,7 +100,7 @@ function HomeScreen() {
       />
       <Tab.Screen
         name="addblog"
-        component={Addblog}
+        component={Addpoll}
         options={{
           tabBarLabel: 'post',
           tabBarColor: 'green',

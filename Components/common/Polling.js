@@ -24,7 +24,7 @@ export default class Polling extends React.Component {
 
     }
     _datafetch = () => {
-        axios.get('http://192.168.225.238:3001/poll')
+        axios.get('http://192.168.43.19:3001/poll')
             .then((response) => {
             JSON.stringify(this.setState(this.state.renderdata=response.data))
                 console.log('data has been recieved');
