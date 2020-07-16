@@ -3,7 +3,7 @@ import { Image ,StyleSheet,FlatList,ScrollView,Dimensions,View} from 'react-nati
 import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body ,Title,Right,Form,Item,Label,Input} from 'native-base';
 import { EvilIcons,AntDesign,FontAwesome5,Entypo,Ionicons} from '@expo/vector-icons';
 import * as Font from 'expo-font';
-import Headingbar from '../common/Header';
+import Headingbar from '../Homestack/Header';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';

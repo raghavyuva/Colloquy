@@ -3,7 +3,7 @@ import { Image ,StyleSheet,FlatList,ScrollView,Dimensions} from 'react-native';
 import { Container, Header, Tab, Tabs, TabHeading, Icon, Text } from 'native-base';
 import { EvilIcons,AntDesign,FontAwesome5,Entypo,Ionicons} from '@expo/vector-icons';
 import * as Font from 'expo-font';
-import Headingbar from '../common/Header';
+import Headingbar from '../Homestack/Header';
 import Terms from '../common/Termscondition';
 import Privacy from './privacy';
 const { width: screenWidth } = Dimensions.get('window');
@@ -36,12 +36,12 @@ state={
         }
         return(
             <Container>
-     <Headingbar hasTabs/>
-        <Tabs>
-          <Tab heading={ <TabHeading><FontAwesome5 name="readme" size={28} color="white" /><Text>Terms & conditions</Text></TabHeading>}>
+     
+        <Tabs >
+          <Tab heading={ <TabHeading style={{backgroundColor:"red"}}><FontAwesome5 name="readme" size={28} color="white" /><Text>Terms & conditions</Text></TabHeading>}>
             <Terms/>
           </Tab>
-          <Tab heading={ <TabHeading><FontAwesome5 name="user-lock" size={28} color="white" /><Text>Privacy-policy</Text></TabHeading>}>
+          <Tab heading={ <TabHeading style={{backgroundColor:"green"}}><FontAwesome5 name="user-lock" size={28} color="white" /><Text>Privacy-policy</Text></TabHeading>}>
             <Privacy/>
           </Tab>
         </Tabs>

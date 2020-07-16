@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Image ,StyleSheet,FlatList,ScrollView,Dimensions,Share} from 'react-native';
-import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body ,Title,Right} from 'native-base';
+import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body,View, Drawer,ListItem, Right, Radio, List, Title, ActionSheet, Item, Input } from 'native-base';
 import { EvilIcons,AntDesign,FontAwesome5,Entypo,Ionicons,FontAwesome} from '@expo/vector-icons';
-import Headingbar from '../common/Header';
+import Headingbar from '../Homestack/Header';
 import * as Font from 'expo-font';
 import {
   Menu,
@@ -10,6 +10,11 @@ import {
   MenuOption,
   MenuTrigger,
 } from 'react-native-popup-menu';
+import {
+  Avatar,
+  TouchableRipple,
+  Switch
+} from 'react-native-paper';
 const shareOptions = {
   title: 'Title',
   message: 'Message to share', // here you can send app link to playstore.
@@ -75,7 +80,8 @@ state = {
   likecount:0,
   isPressed:false,
   isupvoted:false,
-  upvotecount:0
+  upvotecount:0,
+  search_bar_enabled:false,
 }
 counter=()=>{
   var STORAGE_KEY = 'token';
@@ -122,6 +128,9 @@ async componentDidMount() {
     ...Ionicons.font,
   })
   this.setState({ loading: false })
+}
+toggling=()=>{
+  this.setState({search_bar_enabled:!this.state.search_bar_enabled});
 }
 static navigationOptions = {
   title: 'Sign up',
@@ -219,7 +228,59 @@ Listrenderer({id,user,date,icon,description,postimage,like,comment,upvote}){
   }     
     return (
     <Container>
-      <Headingbar/>
+      <View>
+        {this.state.search_bar_enabled==false?(
+           <>
+      <Header>
+      
+     
+      <Left>
+        <Button transparent  onPress={() => { this.props.navigation.openDrawer() }}>
+          <Icon name='menu' />
+        </Button>
+      </Left>
+      <Body>
+        <Title>CITECH (b'lore)</Title>
+      </Body>
+      <Right>
+        <Button transparent onPress={this.toggling} >
+          <Icon name='search' />
+        </Button>
+        <Button transparent onPress={this.onSharePress}>
+          <Icon name='share' />
+        </Button>
+        <Button transparent onPress={()=>this.props.navigation.navigate('external', { screen: 'profile' })}>
+          <Avatar.Image
+            source={{
+              uri: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn4.iconfinder.com%2Fdata%2Ficons%2Fuser-avatar-flat-icons%2F512%2FUser_Avatar-31-512.png&f=1&nofb=1'
+            }}
+            size={30}
+
+          />
+        </Button>
+      </Right>
+      </Header>
+      </>
+     
+      ):(
+        <Header searchBar rounded >
+        <Item>
+          <Icon name="ios-search" />
+          <Input placeholder="What you are looking for?" />
+          <Button transparent style={{ marginRight: 10 }} >
+            <AntDesign name="filter" size={26} color="black" />
+          </Button>
+          <Button transparent enable={this.state.enable} onPress={this.toggling}>
+            <Entypo name="cross" size={26} color="black" />
+          </Button>
+        </Item>
+        <Button transparent>
+          <Text>Search</Text>
+        </Button>
+      </Header>
+      ) 
+  }
+    </View>
          
         <FlatList
         data={bloginfo}

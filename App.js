@@ -15,7 +15,7 @@ import Settings from './Components/Homestack/settings';
 import notifications from './Components/Homestack/Notification';
 import profile from './Components/Homestack/profile';
 import { Root, Spinner } from "native-base";
-import Headingbar from './Components/common/Header';
+import Headingbar from './Components/Homestack/Header';
 import Upcoming_events from './Components/common/upcomingevents';
 import Upcoming_events_copy from './Components/common/Upcomingeventscopy';
 import Notescomponent from './Components/common/notescomponentcopy';
@@ -66,6 +66,8 @@ function External() {
       <Stack.Screen name="terms" component={Terms} />
       <Stack.Screen name="download" component={Downloadpage} />
       <Stack.Screen name="header" component={Headingbar} />
+      <Stack.Screen name="logi" component={Signpage} />
+      
     </Stack.Navigator>
   );
 }
@@ -123,7 +125,7 @@ function HomeScreen() {
       />
       <Tab.Screen
         name="chat"
-        component={Edition}
+        component={Development}
         options={{
           tabBarLabel: 'chat',
           tabBarColor: 'purple',
@@ -141,15 +143,25 @@ function HomeScreen() {
 }
 function Authstack() {
   return (
-    <Stack.Navigator >
+    <Stack.Navigator headerMode='none' >
       <Stack.Screen name="login" component={Signpage} />
       <Stack.Screen name="signup" component={Signuppage} />
       <Stack.Screen name="welcome" component={Welcomepage} />
       <Stack.Screen name="who" component={Whoyouare} />
+      <Stack.Screen name="drawer" component={Drawernav} />
     </Stack.Navigator>
   );
 }
 
+function Drawernav(){
+  return(
+    <Drawer.Navigator drawerContent={props => <DrawerContent {...props} />} drawerPosition='left' drawerType='front'>
+    <Drawer.Screen name="Home" component={HomeScreen} />
+
+    <Drawer.Screen name="external" component={External} />
+  </Drawer.Navigator>
+  );
+}
 export default class App extends Component {
   constructor(props) {
     super(props);
@@ -173,18 +185,16 @@ export default class App extends Component {
         <AppearanceProvider>
           <MenuProvider>
             <NavigationContainer>
-              {this.state.hasToken == null ? (
-                <Stack.Navigator >
+            <Stack.Navigator headerMode='none'>
+              {this.state.hasToken == false ? (
+                <>
                   <Stack.Screen name="Auth" component={Authstack} />
-                </Stack.Navigator>
+                 
+                  </>
               ) : (
-                  <Drawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
-                    <Drawer.Screen name="Home" component={HomeScreen} />
-
-                    <Drawer.Screen name="external" component={External} />
-
-                  </Drawer.Navigator>
+                <Stack.Screen name="drawerr" component={Drawernav} />
                 )}
+                </Stack.Navigator>
             </NavigationContainer>
           </MenuProvider>
         </AppearanceProvider>

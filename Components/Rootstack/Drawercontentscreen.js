@@ -34,7 +34,7 @@ export function DrawerContent(props){
         try {
           await AsyncStorage.removeItem('token');
           Alert.alert("Logout Success!");
-         this.props.navigation.navigate('Auth', { screen: 'login' })
+         props.navigation.navigate('login');
         } catch (error) {
           console.log('AsyncStorage error: ' + error.message);
         }

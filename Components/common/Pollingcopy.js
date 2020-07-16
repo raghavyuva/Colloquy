@@ -3,7 +3,7 @@ import { Image ,StyleSheet,FlatList,ScrollView,Dimensions} from 'react-native';
 import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body ,Title,Right, List, ListItem} from 'native-base';
 import { EvilIcons,AntDesign,FontAwesome5,Entypo,Ionicons} from '@expo/vector-icons';
 import * as Font from 'expo-font';
-import Headingbar from '../common/Header';
+import Headingbar from '../Homestack/Header';
 import { View } from 'react-native-animatable';
 const { width: screenWidth } = Dimensions.get('window');
 const polloptions = [

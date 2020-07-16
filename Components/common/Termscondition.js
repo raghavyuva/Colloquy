@@ -3,7 +3,7 @@ import { Image ,StyleSheet,FlatList,ScrollView,Dimensions} from 'react-native';
 import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body ,Title,Right} from 'native-base';
 import { EvilIcons,AntDesign,FontAwesome5,Entypo,Ionicons} from '@expo/vector-icons';
 import * as Font from 'expo-font';
-import Headingbar from './Header';
+import Headingbar from '../Homestack/Header';
 import { Paragraph } from 'react-native-paper';
 const { width: screenWidth } = Dimensions.get('window');
 export default class Terms  extends React.Component{

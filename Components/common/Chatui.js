@@ -5,7 +5,7 @@ import { EvilIcons,AntDesign,FontAwesome5,Entypo,MaterialCommunityIcons,FontAwes
 import * as Font from 'expo-font';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { Ionicons } from '@expo/vector-icons';
-import Headingbar from './Header';
+import Headingbar from '../Homestack/Header';
 import io from 'socket.io-client';
 export default class Chatui extends React.Component{
     constructor(props){

@@ -60,7 +60,7 @@ if(checkedforvalidation) {
       try {
       await  AsyncStorage.setItem('token',data.token)
     //  Actions.drawer();
-    this.props.navigation.navigate('Home');
+   this.props.navigation.navigate('drawer');
       } catch (error) {
         console.log('AsyncStorage error: ',error.message);
       }
@@ -106,12 +106,12 @@ if(checkedforvalidation) {
         <Form>
               <Item floatingLabel>
                     <Label style={styles.fieldtitle} >University seat number</Label>
-                    <Input style={styles.fieldinput} onChangeText={(usn) => this.setState({usn})} value={this.state.usn} ref='usn' returnKeyType='next' editable={true} />
+                    <Input style={styles.fieldinput} onChangeText={(usn) => this.setState({usn})} value={this.state.usn}  />
                     {this.isFieldInError('usn') && this.getErrorsInField('usn').map(errorMessage => <Text>{errorMessage}</Text>) }
                   </Item>
                   <Item  floatingLabel>
                     <Label style={styles.fieldtitle}>Password</Label>
-                    <Input style={styles.fieldinput}onChangeText={(pass) => this.setState({pass})} value={this.state.pass} secureTextEntry={true} editable={true} ref='pass' returnKeyType='next' />
+                    <Input style={styles.fieldinput}onChangeText={(pass) => this.setState({pass})} value={this.state.pass} secureTextEntry={true}  />
                     {this.isFieldInError('pass') && this.getErrorsInField('pass').map(errorMessage => <Text>{errorMessage}</Text>) }
    
                   </Item>

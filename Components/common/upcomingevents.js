@@ -1,6 +1,11 @@
 import React, { Component,useState } from 'react';
-import { Image ,StyleSheet,SafeAreaView,FlatList,View,Dimensions,Modal,TouchableHighlight,Alert,Share} from 'react-native';
-import { Container, Header, Content, List, ListItem, Thumbnail, Text, Left, Body, Right, Button ,TextInput,Item,Icon,Input,Card,CardItem,ActionSheet} from 'native-base';
+import { Image ,StyleSheet,SafeAreaView,FlatList,Dimensions,Modal,TouchableHighlight,Alert,Share} from 'react-native';
+import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, Drawer, View, ListItem, Right, Radio, List, Title, ActionSheet, Item, Input } from 'native-base';
+import {
+  Avatar,
+  TouchableRipple,
+  Switch
+} from 'react-native-paper';
 import { EvilIcons,AntDesign,FontAwesome5,Entypo} from '@expo/vector-icons';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
@@ -62,6 +67,9 @@ export default class Upcoming_events extends React.Component{
       isPressed:false,
       isupvoted:false,
       upvotecount:0
+    }
+    toggling=()=>{
+      this.setState({search_bar_enabled:!this.state.search_bar_enabled});
     }
     counter=()=>{
       var STORAGE_KEY = 'token';
@@ -157,8 +165,7 @@ export default class Upcoming_events extends React.Component{
             );
           }
         return(
-<View style={{backgroundColor:'#0E043B'}}>
-
+<View style={{backgroundColor:'#0E043B'}}> 
      <FlatList extraData={this.state.likecount}
                 horizontal
                 pagingEnabled={true}
