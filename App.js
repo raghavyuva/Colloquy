@@ -21,6 +21,7 @@ import Upcoming_events_copy from './Components/common/Upcomingeventscopy';
 import Notescomponent from './Components/common/notescomponentcopy';
 import Notesshared from './Components/Homestack/Notescomponent';
 import Downloadpage from './Components/Homestack/downloads';
+import AnimatedSplash from "react-native-animated-splash-screen";
 //import { Router, Scene } from 'react-native-router-flux';
 import { DrawerContent } from './Components/Rootstack/Drawercontentscreen';
 import Follower from './Components/common/Followers';
@@ -67,7 +68,7 @@ function External() {
       <Stack.Screen name="download" component={Downloadpage} />
       <Stack.Screen name="header" component={Headingbar} />
       <Stack.Screen name="logi" component={Signpage} />
-      
+
     </Stack.Navigator>
   );
 }
@@ -153,13 +154,13 @@ function Authstack() {
   );
 }
 
-function Drawernav(){
-  return(
+function Drawernav() {
+  return (
     <Drawer.Navigator drawerContent={props => <DrawerContent {...props} />} drawerPosition='left' drawerType='front'>
-    <Drawer.Screen name="Home" component={HomeScreen} />
+      <Drawer.Screen name="Home" component={HomeScreen} />
 
-    <Drawer.Screen name="external" component={External} />
-  </Drawer.Navigator>
+      <Drawer.Screen name="external" component={External} />
+    </Drawer.Navigator>
   );
 }
 export default class App extends Component {
@@ -178,23 +179,31 @@ export default class App extends Component {
   render() {
     if (!this.state.isLoaded) {
       return (
-        <SplashScreen />
+        <AnimatedSplash
+        translucent={true}
+        isLoaded={this.state.isLoaded}
+        logoImage={require("./assets/citech.jpg")}
+        backgroundColor={'#0E043B'}
+        logoHeight={400}
+        logoWidht={400}
+      >
+      </AnimatedSplash>
       );
     } else {
       return (
         <AppearanceProvider>
           <MenuProvider>
             <NavigationContainer>
-            <Stack.Navigator headerMode='none'>
-              {this.state.hasToken == false ? (
-                <>
-                  <Stack.Screen name="Auth" component={Authstack} />
-                 
+              <Stack.Navigator headerMode='none'>
+                {this.state.hasToken == false ? (
+                  <>
+                    <Stack.Screen name="Auth" component={Authstack} />
+
                   </>
-              ) : (
-                <Stack.Screen name="drawerr" component={Drawernav} />
-                )}
-                </Stack.Navigator>
+                ) : (
+                    <Stack.Screen name="drawerr" component={Drawernav} />
+                  )}
+              </Stack.Navigator>
             </NavigationContainer>
           </MenuProvider>
         </AppearanceProvider>

@@ -10,6 +10,7 @@ import * as Permissions from 'expo-permissions';
 import { ListItem,Avatar,Tooltip} from 'react-native-elements';
 import { BottomSheet } from 'react-native-btr';
 import Animated from 'react-native-reanimated';
+import Axios from 'axios';
 const { width: screenWidth,height:screenHeight } = Dimensions.get('window');
 const downloadablefile = [
     {
@@ -17,8 +18,7 @@ const downloadablefile = [
         source:''
     }
 ]
-var data = new FormData()
-data.append('postimage')
+
 export default class Edition extends React.Component{
 constructor(props){
     super(props);
@@ -82,25 +82,19 @@ getPermissionAsync = async () => {
   }
 };
 
-_upload=()=>{
-  if (!this.state.username || !this.state.tagline) {
+_upload = () => {
+  if (!this.state.username || !this.state.tagline || !this.state.postimage) {
     console.log('required fields cannot be null')
   }
-  else{
-    this.setState({data:this.state.postimage + this.state.tagline + this.state.username});
-console.log(this.state.username,this.state.tagline)
-fetch("http://192.168.225.238:3001/newpost",{
-      
-      method:"POST",
-      headers:{
-        'Content-Type': 'application/form-data'
-      },
-      body:JSON.stringify(this.state.data)
-    })
-    .then(res=>res.json())
-    .then(async (document)=>{
-      console.log(document)
-    })
+  else {
+    const uploaddata = new FormData();
+    uploaddata.append("username", this.state.username);
+    uploaddata.append("tagline", this.state.tagline);
+    uploaddata.append("postimage", this.state.postimage);
+    console.log(this.state.username, this.state.tagline)
+    Axios.post("http://192.168.225.238:3001/profile", uploaddata)
+      .then(res => console.log(res))
+      .catch(err => console.log(err));
   }
 }
     async componentDidMount() {
