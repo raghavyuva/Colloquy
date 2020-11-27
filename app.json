@@ -4,9 +4,9 @@
     "slug": "cracker",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/cit.png",
+    "icon": "./assets/favicon.png",
     "splash": {
-      "image": "./assets/cit.png",
+      "image": "./assets/favicon.png",
       "resizeMode": "contain",
       "backgroundColor": "#000000"
     },
@@ -19,8 +19,12 @@
     "ios": {
       "supportsTablet": true
     },
+    "android": {
+      "useNextNotificationsApi": true
+    },
     "web": {
       "favicon": "./assets/favicon.png"
     }
   }
 }
+ 

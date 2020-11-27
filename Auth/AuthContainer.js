@@ -8,7 +8,7 @@ const Stack = createStackNavigator();
 const AuthContainer = () => {
   return (
     <Stack.Navigator initialRouteName="welcome" headerMode="none">
-              <Stack.Screen name="welcome" component={Welcomepage} />
+      <Stack.Screen name="welcome" component={Welcomepage} />
       <Stack.Screen name="login" component={Login} />
       <Stack.Screen name="signup" component={Signuppage} />
     </Stack.Navigator>

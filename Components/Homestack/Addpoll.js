@@ -25,24 +25,7 @@ export default class Addpoll extends React.Component {
     }
     else {
       console.log(this.state.question, this.state.op1, this.state.op2, this.state.backgcolor,this.state.opcolor)
-      fetch("http://192.168.225.238:3001/polls", {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          "question": this.state.question,
-          "op1": this.state.op1,
-          "op2": this.state.op2,
-          "backgcolor": this.state.backgcolor,
-          "opcolor":this.state.opcolor
-        })
-      })
-        .then(res => res.json())
-        .then(async (data) => {
-          console.log(data)
-        })
-        alert('success')
+      
     }
   }
   Toggler = (value) => {
@@ -102,19 +85,19 @@ export default class Addpoll extends React.Component {
             <TouchableOpacity><Text style={styles.signup} /*onPress={()=>Actions.blogadd()}*/ onPress={() => this.props.navigation.navigate('Home', { screen: 'addblog' })}>Click here</Text></TouchableOpacity>
           </Item>
           <Text style={{ color: 'white', margin: 25 }}>Note: Enter colour name or colour code for example : 'black' or '#000'</Text>
-
         </Card>
-
       </View>
     );
   }
 }
+
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
     justifyContent: 'center',
     backgroundColor: '#0E043B',
     textAlign: 'center',
+    marginTop:50
   },
   logo: {
     fontSize: 32,

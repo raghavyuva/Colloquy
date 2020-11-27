@@ -1,260 +1,359 @@
-import React, { Component } from 'react';
-import { StyleSheet, FlatList, ScrollView, Dimensions, Share } from 'react-native';
-import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, Drawer, View, Right, Radio, List, Title, ActionSheet, Item, Input, Form, Label } from 'native-base';
-import { EvilIcons, AntDesign, FontAwesome5, MaterialCommunityIcons, Ionicons, Entypo } from '@expo/vector-icons';
-import FeedComponent from '../common/Feedscreencopy';
-import * as Font from 'expo-font';
-import { ListItem, Avatar as Avatarr, Tooltip, Paragraph, Caption } from 'react-native-elements';
+import React, { Component } from 'react'
 import {
-  Avatar,
-  TouchableRipple,
-  Switch
-} from 'react-native-paper';
-const { width: screenWidth } = Dimensions.get('window');
-import Headingbar from './Header';
-import Fire from '../../Fire';
-import firebase from 'firebase';
-const firestore= require("firebase/firestore");
-//import { Actions } from 'react-native-router-flux';
-const profiledetails = [
-  {
-    id: '1',
-    username: 'John Dev',
-    userpic: 'https://randomuser.me/api/portraits/men/11.jpg',
-    tagline: 'developer, Engineering student,pro skilled Programmer,indian  geek',
-    usn: '1cd15cs098'
-  }
-]
-const shareOptions = {
-  title: 'Title',
-  message: 'Message to share', // here you can send app link to playstore.
-  url: 'www.example.com',
-  subject: 'Subject'
-};
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Dimensions,
+  ImageBackground,
+  Image,
+  AsyncStorage,
+  ActivityIndicator,
+  Alert
+} from 'react-native'
+import { Container, CardItem, Left, Button, Fab, Icon } from 'native-base';
+import { Col, Row, Grid } from 'react-native-easy-grid';
+import Carousel from 'react-native-anchor-carousel';
+import Header from '../Homestack/Header';
+const { width } = Dimensions.get('window');
+import { EvilIcons, AntDesign, FontAwesome5, MaterialIcons } from '@expo/vector-icons';
+import { URL } from '../../config';
+import { connect } from 'react-redux';
 
-export default class profile extends Component {
-  constructor(props) {
-    super(props);
-  }
-  state = {
-    loading: true,
-    image: null,
-    search_bar_enabled: false,
-    following: false,
-    resumeuploaded: false,
-  }
-  async componentDidMount() {
-    await Font.loadAsync({
-      'Roboto': require('native-base/Fonts/Roboto.ttf'),
-      'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
-      ...Ionicons.font,
-    })
-    this.setState({ loading: false })
-  }
-  logoutpress = () => {
 
-  }
-  _resumeuploader = () => {
-    this.setState({ resumeuploaded: !this.state.resumeuploaded })
-  }
-  _followhandler = () => {
-    var STORAGE_KEY = 'token';
-    this.setState({ following: !this.state.following })
-  }
-  _unfollowhandler = () => {
-    var STORAGE_KEY = 'token';
-    this.setState({ following: !this.state.following })
-  }
-  _uploadedresume_handler = () => {
 
+const mapStateToProps = state => {
+  return {
+    profile: state.profile
   }
-async componentDidMount(){
-  var database = firebase.database();
-  var userId = firebase.auth().currentUser.uid;
-  return firebase.database().ref('/users/' + userId).once('value').then(function(snapshot) {
-    var username = (snapshot.val() && snapshot.val().username) || 'Anonymous';
-    // ...
-  });
 }
-  toggling = () => {
-    this.setState({ search_bar_enabled: !this.state.search_bar_enabled });
+class profile extends Component {
+
+
+
+
+  state = {
+    Data: null,
+    loading: true,
+    active: false,
   }
-  onSharePress = () => Share.share(shareOptions);
-  Listrenderer = ({ id, pic, user, tag, usn }) => {
+
+
+
+
+  renderItem = ({ item, index }) => {
+    const { uri, title, content } = item;
     return (
-      <ScrollView>
-        <Card style={{ backgroundColor: '#0E043B' }}>
-          <CardItem style={{ backgroundColor: '#0E043B' }}>
+      <TouchableOpacity
+        activeOpacity={1}
+        style={styles.item}
+        onPress={() => this.props.navigation.navigate('external', { screen: 'view', params: { item: item } })}
+      >
+        <ImageBackground
+          source={{ uri: item.photo }}
+          style={styles.imageBackground}
+        >
+          <View style={styles.rightTextContainer}>
+            <TouchableOpacity onPress={() => this.DeletePost(item)}>
+              <MaterialIcons name="delete" size={24} color="white" />
+            </TouchableOpacity>
+          </View>
+        </ImageBackground>
+        <View style={styles.lowerContainer}>
+          <Text style={styles.titleText}>{item.caption}</Text>
+          <Text style={styles.contentText}>{content}</Text>
+          <CardItem style={{ backgroundColor: "#fc5185" }} >
             <Left>
-              <Avatarr
-                rounded
-                size='xlarge'
-                //onAccessoryPress={()=>Actions.edit()}
-                onAccessoryPress={() => this.props.navigation.navigate('external', { screen: 'edit' })}
-                showAccessory
-                source={require('../../assets/citech.jpg')}
-
-              />
-              <Body>
-                <Text style={{ color: 'white', fontSize: 28, fontWeight: 'bold', }}></Text>
-                <Text note> {tag} </Text>
-              </Body>
+              <Button transparent textStyle={{ color: '#87838B' }}>
+                <EvilIcons name="comment" size={28} color="black" />
+                <Text style={{ textTransform: 'capitalize' }}>  </Text>
+              </Button>
+              <Button transparent textStyle={{ color: '#87838B' }} >
+                <AntDesign name="heart" size={28} color="black" />
+                <Text style={{ textTransform: 'capitalize' }}> likes</Text>
+              </Button>
+              <Button transparent>
+                <FontAwesome5 name="hand-point-up" size={28} color="black" />
+                <Text style={{ textTransform: 'capitalize' }}>50</Text>
+              </Button>
             </Left>
-
           </CardItem>
-          <CardItem style={{ backgroundColor: "yellow" }}>
-            <Text style={{ marginRight: 20, fontWeight: 'bold' }}>80 following</Text>
-            <Text style={{ marginRight: 20, fontWeight: 'bold' }}>100 followers</Text>
-            <Text style={{ marginRight: 20, fontWeight: 'bold' }}> {usn} </Text>
-          </CardItem>
-          <CardItem style={{ backgroundColor: "black", justifyContent: 'center', alignSelf: "center" }} >
-            {this.state.following == false ? (
-              <Button style={{ backgroundColor: 'red' }} onPress={this._followhandler}><Text style={{ fontWeight: 'bold', textAlign: 'center' }}>follow</Text></Button>
-            ) : (
-                <Button style={{ backgroundColor: 'red' }} onPress={this._unfollowhandler}><Text style={{ fontWeight: 'bold', textAlign: 'center' }} >unfollow</Text></Button>
-              )}
-            {this.state.resumeuploaded == true ?
-              (
-                <Button onPress={this._uploadedresume_handler}>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
 
-                  <Text>My Resume</Text>
-                </Button>
-              ) :
-              (
-                <Button onPress={this._resumeuploader}>
-                  <Text >upload Resume</Text>
 
-                </Button>
-              )}
-          </CardItem>
-        </Card>
-        <Text style={styles.recent}>Recent Posts</Text>
 
-        <FeedComponent />
-      </ScrollView>
+
+
+
+  fetching = async () => {
+    try {
+      await AsyncStorage.getItem('userName').then(userName => {
+        AsyncStorage.getItem('userToken').then(token => {
+          const Listener = fetch(`${URL.url}` + `/user/${userName}`, {
+            headers: {
+              'Authorization': 'Bearer ' + `${token}`,
+            }
+          })
+            .then((response) => response.json())
+            .then((responseJson) => {
+              this.setState({ Data: responseJson });
+              // console.log(this.state.Data.user);
+            })
+        })
+      })
+
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+
+  componentDidMount = () => {
+    this.fetching()
+    setTimeout(() => {
+      this.setState({ loading: false });
+    }, 2000);
+  }
+
+
+  DeletePost = async (item) => {
+    Alert.alert(
+      'Delete Post',
+      'Are you sure you want to delete this post?,once deleted cannot be retrieved',
+      [
+        { text: 'Cancel', onPress: () => console.warn('NO Pressed'), style: 'cancel' },
+        {
+          text: 'YES', onPress: () =>
+            AsyncStorage.getItem('userToken').then(token => {
+              fetch(`${URL.url}` + `/post/${item._id}`, {
+                method: 'Delete',
+                headers: {
+                  'Authorization': 'Bearer ' + `${token}`,
+                  'Content-Type': "application/json",
+                },
+              }).then(res => res.json()).then((resp) => {
+                console.log(resp);
+              })
+            })
+        }
+      ]
     );
   }
+
+
+
+  UNSAFE_componentWillMount = () => {
+    this.fetching();
+  }
+
+
   render() {
+
+
     if (this.state.loading) {
       return (
-        <Container></Container>
+        <View style={{ justifyContent: "center", alignSelf: 'center', flex: 1 }}>
+          <ActivityIndicator size={50} color='red' />
+        </View>
       );
     }
+
+
     return (
-      <Container>
-
-        <View>
-          {this.state.search_bar_enabled == false ? (
-            <>
-              <Header>
-
-
-                <Left>
-                  <Button transparent onPress={() => { this.props.navigation.openDrawer() }}>
-                    <Icon name='menu' />
-                  </Button>
-                </Left>
-                <Body>
-                  <Title>CITECH (b'lore)</Title>
-                </Body>
-                <Right>
-                  <Button transparent onPress={this.toggling} >
-                    <Icon name='search' />
-                  </Button>
-                  <Button transparent onPress={this.onSharePress}>
-                    <Icon name='share' />
-                  </Button>
-                  <Button transparent onPress={() => this.props.navigation.navigate('profile')}>
-                    <Avatar.Image
-                      source={{
-                        uri: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn4.iconfinder.com%2Fdata%2Ficons%2Fuser-avatar-flat-icons%2F512%2FUser_Avatar-31-512.png&f=1&nofb=1'
-                      }}
-                      size={30}
-
-                    />
-                  </Button>
-                </Right>
-              </Header>
-            </>
-
-          ) : (
-              <Header searchBar rounded >
-                <Item>
-                  <Icon name="ios-search" />
-                  <Input placeholder="What you are looking for?" />
-                  <Button transparent style={{ marginRight: 10 }} >
-                    <AntDesign name="filter" size={26} color="black" />
-                  </Button>
-                  <Button transparent enable={this.state.enable} onPress={this.toggling}>
-                    <Entypo name="cross" size={26} color="black" />
-                  </Button>
-                </Item>
-                <Button transparent>
-                  <Text>Search</Text>
-                </Button>
-              </Header>
-            )
-          }
-        </View>
-        <Content>
-          <FlatList
-            pagingEnabled={true}
-            showsHorizontalScrollIndicator={false}
-            data={profiledetails}
-            renderItem={({ item }) =>
-              <this.Listrenderer
-                id={item.id}
-                user={item.username}
-                tag={item.tagline}
-                pic={item.userpic}
-                usn={item.usn}
+      <Container style={{ backgroundColor: "#f0f0f0" }}>
+        <Header {...this.props} />
+        <View style={styles.mainscreen}>
+          <Grid style={styles.mainscreen}>
+            <Row style={styles.row1}>
+              <Image
+                source={{ uri: this.state.Data.user.userphoto }}
+                style={{
+                  height: 150,
+                  width: 150,
+                  borderRadius: 20,
+                  alignSelf: "center",
+                  marginVertical: 20
+                }}
               />
-            }
-            keyExtractor={item => item.id}
+            </Row>
+            <Row style={styles.row2}>
+              <Text style={styles.txt1}>
+                {this.state.Data.user.username}
+              </Text>
+            </Row>
+            <Row style={styles.row3}>
+              {this.state.Data.user.tagline == null ? (
+                <Text style={styles.txt2}>
+                  {this.state.Data.user.email}
+                </Text>
+              ) : (
+                  <Text style={styles.txt2}>
+                    {this.state.Data.user.tagline}
+                  </Text>
+                )}
+
+            </Row>
+            <Row>
+              <View style={{
+                flexDirection: "row",
+                alignSelf: "center",
+                marginTop: -10
+              }}>
+                <View>
+                  <Text style={{
+                    fontWeight: "bold",
+                    fontSize: 15,
+                    color: "#f0f0f0",
+                    alignSelf: "center"
+                  }}>{this.state.Data.userposts.length}</Text>
+                  <Text style={{
+                    fontWeight: '500',
+                    fontSize: 16,
+                    color: "#9ca1a2",
+                    alignSelf: "center"
+                  }}>
+                    posts
+                                </Text>
+                </View>
+
+                <View style={{ marginHorizontal: 40 }}>
+                  <Text style={{
+                    fontWeight: "bold",
+                    fontSize: 15,
+                    color: "#f0f0f0",
+                    alignSelf: "center"
+                  }}>{this.state.Data.user.followers.length}</Text>
+                  <Text style={{
+                    fontWeight: '500',
+                    fontSize: 16,
+                    color: "#9ca1a2",
+                    alignSelf: "center"
+                  }}>
+                    followers
+                                </Text>
+                </View>
+                <View>
+                  <Text style={{
+                    fontWeight: "bold",
+                    fontSize: 15,
+                    color: "#f0f0f0",
+                    alignSelf: "center"
+                  }}>{this.state.Data.user.following.length}</Text>
+                  <Text style={{
+                    fontWeight: '500',
+                    fontSize: 16,
+                    color: "#9ca1a2",
+                    alignSelf: "center"
+                  }}>
+                    following
+                                </Text>
+                </View>
+              </View>
+            </Row>
+          </Grid>
+        </View>
+        <View>
+          <Carousel
+            style={styles.carousel}
+            data={this.state.Data.userposts}
+            renderItem={this.renderItem}
+            itemWidth={0.7 * width}
+            inActiveOpacity={0.3}
+            containerWidth={width - 10}
+            ref={(c) => {
+              this.numberCarousel = c;
+            }}
           />
-        </Content>
-
+        </View>
+        <Fab
+          active={this.state.active}
+          direction="up"
+          containerStyle={{}}
+          style={{ backgroundColor: '#5067FF', }}
+          position="bottomRight"
+          onPress={() => this.props.navigation.navigate('edit')}>
+          <EvilIcons name="pencil" size={24} />
+        </Fab>
       </Container>
-
     );
   }
 }
-
+export default connect(mapStateToProps)(profile);
 const styles = StyleSheet.create({
-  header: {
-    backgroundColor: '#223343'
+  mainscreen: {
+    height: "40%",
+    backgroundColor: "#000",
+    borderBottomLeftRadius: 50,
+    borderBottomRightRadius: 50,
+    paddingHorizontal: 40,
   },
-  feeds: {
-    color: "#FFF",
-    fontSize: 26,
-  },
-  card: {
-    justifyContent: 'center',
-    alignSelf: 'center',
-    width: 400,
-    height: 400,
-    alignItems: 'center',
-    backgroundColor: '#0E043B',
-  },
-  follow: {
-    backgroundColor: 'red'
-  },
-  text: {
-    color: "#FFF"
-  },
-  edit: {
-    borderRadius: 2,
-    justifyContent: 'center',
-    backgroundColor: 'black',
-    width: 400,
+  row1: {
+    marginTop: 100,
     alignSelf: 'center'
   },
-  recent: {
-    fontSize: 26,
-    backgroundColor: '#0E043B',
-    marginTop: 10,
-    color: "#FFF"
+  row2: {
+    marginTop: 40,
+    alignSelf: "center"
+  },
+  row3: {
+    marginTop: -20,
+    alignSelf: "center"
+  },
+  txt1: {
+    fontSize: 22,
+    color: "#f0f0f0",
+    alignSelf: "center",
+    fontWeight: 'bold'
+  },
+  txt2: {
+    fontSize: 18,
+    color: "#f0f0f0",
+    alignSelf: "center",
+    fontWeight: '500'
+  },
+  carousel: {
+    height: '50%',
+    backgroundColor: "#f0f0f0",
+    paddingTop: 30,
+  },
+  item: {
+    borderWidth: 2,
+    backgroundColor: '#000',
+    borderRadius: 5,
+    borderColor: '#fc5185',
+    elevation: 3,
+    flex: 2
+  },
+  imageBackground: {
+    backgroundColor: '#fc5185',
+    borderWidth: 5,
+    borderColor: '#fc5185',
+    flex: 1
+  },
+  rightTextContainer: {
+    marginLeft: 'auto',
+    marginRight: -2,
+    backgroundColor: 'rgba(49, 49, 51,0.5)',
+    padding: 3,
+    marginTop: 3,
+    borderTopLeftRadius: 5,
+    borderBottomLeftRadius: 5
+  },
+  rightText: { color: 'white' },
+  lowerContainer: {
+    margin: 10
+  },
+  titleText: {
+    fontWeight: 'bold',
+    fontSize: 18,
+    color: "#fff"
+  },
+  contentText: {
+    fontSize: 12,
+    color: "#fff"
   }
-
 })

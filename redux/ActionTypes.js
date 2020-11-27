@@ -1,0 +1,6 @@
+export const POSTS_LOADING = 'POSTS_LOADING';
+export const ADD_POSTS = 'ADD_POSTS';
+export const POSTS_FAILED = 'POSTS_FAILED';
+export const PROFILE_LOADING = 'PROFILE_LOADING';
+export const PROFILE_FAILED = 'PROFILE_FAILED';
+export const ADD_PROFILE = 'ADD_PROFILE';
