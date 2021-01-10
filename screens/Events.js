@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { Text, StyleSheet, View, Image, Dimensions, ImageBackground, FlatList } from 'react-native'
+import { Text, StyleSheet, View, Dimensions, ImageBackground, FlatList } from 'react-native'
 import Eventcard from '../components/Eventcard'
 import Header from '../components/Header';
-const { width, height } = Dimensions.get('window');
-import { Button } from 'native-base';
+const { width, } = Dimensions.get('window');
 import { Config } from '../config';
 import { DataLayerValue } from '../Context/DataLayer';
 

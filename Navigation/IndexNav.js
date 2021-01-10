@@ -1,9 +1,8 @@
-import React, { useContext, useState, useEffect, } from "react";
+import React, {  useEffect, } from "react";
 import {
     NavigationContainer,
 } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack'
-import { ActivityIndicator, View, ToastAndroid } from "react-native";
+import {  View, ToastAndroid } from "react-native";
 import NetInfo from '@react-native-community/netinfo';
 import Drawernav from "./Homenav";
 import AuthNav from "./AuthNav";

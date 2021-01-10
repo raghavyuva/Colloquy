@@ -1,7 +1,6 @@
 import React from 'react'
-import { Text, StyleSheet, View, Image, Dimensions, ImageBackground, } from 'react-native'
+import { Text, View, Dimensions,  } from 'react-native'
 const { width, height } = Dimensions.get('window');
-import { Button } from 'native-base';
 import { LinearGradient } from 'expo-linear-gradient';
 
 import Headingbar from '../components/Header';
@@ -38,8 +37,6 @@ const Notes = (props) => {
                                  marginLeft: 10, marginBottom: 8, borderWidth: 2, borderColor: "#b2b2b2b2", justifyContent: 'center' ,
                                  borderRadius:10
                                  }}
-                                 start={0.1,0.2}
-                                 end={0.5,0.6}
                                  >
                                 <View style={{ justifyContent: 'center', alignSelf: 'center' }}>
                                     <Text style={{ fontSize: 20, fontWeight: 'bold', color: "white", textAlign: "center" }} >{ele.course} </Text>

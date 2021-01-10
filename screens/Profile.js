@@ -1,27 +1,20 @@
 
-import React, { Component, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
     StyleSheet,
     Text,
-    TouchableOpacity,
     View,
     Dimensions,
-    ImageBackground,
     Image,
     FlatList
 } from 'react-native'
-import { Container, CardItem, Left, Button, Fab, Icon } from 'native-base';
-import { Col, Row, Grid } from 'react-native-easy-grid';
-import Carousel from 'react-native-snap-carousel';
+import {  Fab, } from 'native-base';
 const { width, height } = Dimensions.get('window');
-import { EvilIcons, AntDesign, FontAwesome5, MaterialIcons } from '@expo/vector-icons';
-import Pcarsl from '../components/Pcarsl';
+import { MaterialIcons } from '@expo/vector-icons';
 import { DataLayerValue } from '../Context/DataLayer';
-import Header from '../components/Header';
 import { Config } from '../config'
 import LottieView from 'lottie-react-native';
 import Postcard from '../components/Postcard';
-import { ScrollView } from 'react-native-gesture-handler';
 import Headingbar from '../components/Header';
 
 const Profile = (props) => {
@@ -149,11 +142,10 @@ const Profile = (props) => {
                         </Fab>
                     </View>
                 }
-                ref={(ref) => { flatListRef = ref; }}
                 renderItem={({ item }) => {
                     return (
                         <Postcard item={item} {...props} />
-                    );
+                    )
                 }}
                 keyExtractor={(item, index) => index.toString()}
                 data={user.userposts}

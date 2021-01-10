@@ -3,7 +3,7 @@ import reducer, { DataLayer, initialState } from './Context/DataLayer'
 import IndexNavigator from './Navigation/IndexNav'
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
-import { ActivityIndicator, View, ToastAndroid } from "react-native";
+import {  View,  } from "react-native";
 import LottieView from 'lottie-react-native';
 import NetInfo from '@react-native-community/netinfo';
 import { MenuProvider } from 'react-native-popup-menu';

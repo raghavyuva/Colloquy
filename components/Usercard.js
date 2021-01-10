@@ -1,15 +1,10 @@
-import React, { Component, useState,useEffect } from 'react';
-import { Image, StyleSheet, SafeAreaView, FlatList, Dimensions, Share, AsyncStorage } from 'react-native';
-import { Container, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, Drawer, View, ListItem, Right, Radio, List, Title, ActionSheet, Item, Input } from 'native-base';
-import { EvilIcons, AntDesign, FontAwesome5, Entypo } from '@expo/vector-icons';
-import * as Font from 'expo-font';
-import { Ionicons } from '@expo/vector-icons';
-import { ScrollView } from 'react-native-gesture-handler';
+import React, { useState,useEffect } from 'react';
+import { Image, StyleSheet } from 'react-native';
+import {  Thumbnail, Text, Button,  Left, Body,  ListItem, Right, List, } from 'native-base';
 import { DataLayerValue } from '../Context/DataLayer';
 import { Config } from '../config';
-const { width: screenWidth } = Dimensions.get('window');
 const Usercard = (props) => {
-    const [{ userToken, followerslist, UserId }, dispatch] = DataLayerValue()
+    const [{ userToken,  }, dispatch] = DataLayerValue()
     const [name, setname] = useState('');
     useEffect(() => {
         setname(props.name)

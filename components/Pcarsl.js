@@ -1,5 +1,5 @@
 
-import React, { Component, useState } from 'react'
+import React, {  useState } from 'react'
 import {
     StyleSheet,
     Text,
@@ -7,12 +7,9 @@ import {
     View,
     Dimensions,
     ImageBackground,
-    Image,
-    ActivityIndicator,
     Alert
 } from 'react-native'
-import { Container, CardItem, Left, Button, Fab, Icon } from 'native-base';
-const { width } = Dimensions.get('window');
+import {  CardItem, Left, Button, } from 'native-base';
 import { EvilIcons, AntDesign, FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { DataLayerValue } from '../Context/DataLayer';
 import { Config } from '../config';

@@ -1,34 +1,24 @@
 
-import React, { Component, useState, useEffect } from 'react'
+import React, {  useState, useEffect } from 'react'
 import {
     StyleSheet,
     Text,
-    TouchableOpacity,
     View,
     Dimensions,
-    ImageBackground,
     Image,
     FlatList
 } from 'react-native'
-import { Container, CardItem, Left, Button, Fab, Icon } from 'native-base';
-import { Col, Row, Grid } from 'react-native-easy-grid';
-import Carousel from 'react-native-snap-carousel';
-const { width, height } = Dimensions.get('window');
-import { EvilIcons, AntDesign, FontAwesome5, MaterialIcons } from '@expo/vector-icons';
-import Pcarsl from '../components/Pcarsl';
+import {  Button,  } from 'native-base';
+const {  height } = Dimensions.get('window');
 import { DataLayerValue } from '../Context/DataLayer';
-import Header from '../components/Header';
 import { Config } from '../config'
 import LottieView from 'lottie-react-native';
 import Postcard from '../components/Postcard';
-import { ScrollView } from 'react-native-gesture-handler';
 import Headingbar from '../components/Header';
 
 const UserProfile = (props) => {
-    const [{ userToken, UserId, user, otherprofile }, dispatch] = DataLayerValue()
+    const [{ userToken,  user, otherprofile }, dispatch] = DataLayerValue()
     const [load, setload] = useState(true);
-    const [active, setactive] = useState(false)
-    const [refresh, setrefresh] = useState(false)
     const GoTo_top_function = () => {
 
         flatListRef.scrollToOffset({ animated: true, offset: 0 });
@@ -43,12 +33,11 @@ const UserProfile = (props) => {
             })
                 .then((response) => response.json())
                 .then((responseJson) => {
-
                     dispatch({
                         type: "PROFILEOFOTHER",
                         data: responseJson
                     })
-                    setload(false)
+                    setload(false) 
                 })
         } catch (e) {
             console.log(e);
@@ -56,7 +45,49 @@ const UserProfile = (props) => {
     }
     useEffect(() => {
         fetching(props.route.params.thread)
-    }, [otherprofile])
+    }, []) 
+    const followuser = () => {
+        try {
+            fetch(`${Config.url}`+`/follow`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': 'Bearer '+`${userToken}`,
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify({
+                    followid: otherprofile.user._id
+                })
+            }).then(res => res.json()).then((resp) => {
+                fetching(otherprofile.user._id)
+            })
+        }
+        catch (error) {
+            console.log('error', error)
+        }
+    }
+    const unfollow = () => {
+
+        try {
+            fetch(`${Config.url}`+`/unfollow`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': 'Bearer ' + `${userToken}`,
+                    'Content-type': 'application/json'
+                },
+               
+                body: JSON.stringify({
+                    followid: otherprofile.user._id
+                })
+            })
+                .then((response) => response.json())
+                .then((responseJson) => {
+                    fetching(otherprofile.user._id);
+                }).catch((err)=>{alert(err);})
+        } catch (error) {
+            alert(error);
+        }
+    }
+
     if (load) {
         return (
             <View style={{ justifyContent: "center", flex: 1, backgroundColor: '#0E043B' }}>
@@ -134,7 +165,21 @@ const UserProfile = (props) => {
                                     color: "#f0f0f0",
                                 }}>{otherprofile.user.following.length} Following</Text>
                             </View>
+                            
                         </View>
+                        {user.user.following.includes(otherprofile.user._id)? (
+                            <View style={{  position: 'absolute', bottom: 30, marginHorizontal: 20,right:10 }}>
+                    <Button style={styles.follow} onPress={unfollow}>
+                    <Text style={{justifyContent:'center',alignSelf:'center',color:'white'}}>Un Friend</Text>
+                    </Button>
+                    </View>
+                ) : (
+                    <View style={{ position: 'absolute', bottom: 30, marginHorizontal: 20 ,right:10}}>
+                        <Button style={styles.follow} onPress ={followuser} >
+                            <Text style={{justifyContent:'center',alignSelf:'center',color:'white'}}>Be Friend</Text>
+                        </Button>
+                        </View>
+                    )}
                     </View>
                 }
                 ref={(ref) => { flatListRef = ref; }}
@@ -218,5 +263,11 @@ const styles = StyleSheet.create({
     contentText: {
         fontSize: 12,
         color: "#fff"
-    }
+    },
+    follow: {
+        backgroundColor: '#5067FF',
+        width:100,
+        justifyContent:'center',
+        alignSelf:'center'
+    },
 })

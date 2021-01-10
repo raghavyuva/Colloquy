@@ -1,9 +1,9 @@
-import React, { Component, useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { Text, StyleSheet, View, TouchableOpacity, ImageBackground, Dimensions,  } from 'react-native'
 import Carousel from 'react-native-snap-carousel';
 import { Config } from '../config';
 const { width, height } = Dimensions.get('window');
-import { Container, CardItem, Left, Button, Fab, Icon, Right } from 'native-base';
+import {  Button, } from 'native-base';
 
 import { MaterialCommunityIcons, SimpleLineIcons } from '@expo/vector-icons';
 import { DataLayerValue } from '../Context/DataLayer';

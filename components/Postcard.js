@@ -229,6 +229,7 @@ const Postcard = (props) => {
             alert(error);
         }
     }
+    
     return (
         <TouchableOpacity
             activeOpacity={1}
@@ -236,14 +237,13 @@ const Postcard = (props) => {
             onPress={() => NavigateFull(props.item)}
             onLongPress={() => { downloadFile(props.item) }}
         >
-            <CardItem style={{ flexDirection: 'row', backgroundColor: '#03000c', margin: 0, padding: 0 }}>
+            <CardItem style={{ flexDirection: 'row', backgroundColor: '#0e072b', margin: 0, padding: 0 }}>
                 <TouchableOpacity onPress={() => {
                     if (props.item.postedBy._id == UserId) {
                         props.navigation.navigate('external', { screen: 'profile' })
                     } else {
                         props.navigation.navigate('external', { screen: 'userpro', params: { thread: props.item.postedBy._id } })
                     }
-
                 }}>
                     <Image
                         source={{ uri: props.item.postedBy.userphoto }}
@@ -252,9 +252,8 @@ const Postcard = (props) => {
                 </TouchableOpacity>
                 <Body style={{ margin: 10 }}>
                     <Text style={{ color: "white", fontWeight: "500", fontSize: 18, }} numberOfLines={1}>{props.item.postedBy.username}</Text>
-                    <Text style={{ color: "white", fontWeight: "500", fontSize: 10, }} numberOfLines={1}>1 day ago</Text>
+                    <Text style={{ color: "white", fontWeight: "500", fontSize: 10, }} numberOfLines={1}>{props.item.createdAt.substring(0,10)}</Text>
                 </Body>
-
                 <Right>
                     <TouchableOpacity>
                         <Menu >
@@ -299,7 +298,7 @@ const Postcard = (props) => {
             <View style={styles.lowerContainer}>
                 <Text style={styles.titleText}></Text>
                 <Text style={styles.contentText} numberOfLines={2}>{props.item.caption} </Text>
-                <CardItem style={{ backgroundColor: "#03000c", margin: 0, padding: 0 }} >
+                <CardItem style={{ backgroundColor: "#0e072b", margin: 0, padding: 0 }} >
                     <Left>
                         <Button transparent>
                             {props.item.votes.includes(UserId) ?
@@ -389,15 +388,14 @@ const styles = StyleSheet.create({
         paddingTop: 30,
     },
     item: {
-        borderWidth: 0.2,
-        backgroundColor: '#03000c',
-        borderColor: '#656466',
+        borderWidth: 2,
+        backgroundColor: '#0e072b',
+        borderColor: '#251661',
         margin: 1,
         marginBottom: 10
-
     },
     imageBackground: {
-        backgroundColor: '#03000c',
+        backgroundColor: '#0e072b',
         width: "100%",
         height: 350,
         alignSelf: "center",

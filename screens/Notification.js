@@ -1,9 +1,6 @@
-import React, { Component, useState, useEffect } from 'react';
-import { Image, StyleSheet, SafeAreaView, FlatList, Dimensions, Share } from 'react-native';
-import { Container, Content, List, ListItem, Thumbnail, Text, Left, Body, Right, Button, TextInput, Item, Icon, Input, Title, View, } from 'native-base';
-import { EvilIcons, AntDesign, FontAwesome5, Entypo } from '@expo/vector-icons';
-import * as Font from 'expo-font';
-import { Ionicons } from '@expo/vector-icons';
+import React, {  useState, useEffect } from 'react';
+import {  StyleSheet,  FlatList, } from 'react-native';
+import {  View, } from 'native-base';
 import Header from '../components/Header';
 import { DataLayerValue } from '../Context/DataLayer'
 import { Config } from '../config';

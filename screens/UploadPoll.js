@@ -1,12 +1,6 @@
-import React, { Component,useState } from 'react';
-import { Image, StyleSheet, FlatList, ScrollView, Dimensions,  TextInput, KeyboardAvoidingView } from 'react-native';
-import { EvilIcons, Ionicons, FontAwesome, AntDesign } from '@expo/vector-icons';
-import * as Font from 'expo-font';
-import { Header, Right, Button, Text, View, Fab, Icon, Left, Container } from 'native-base';
-import * as ImagePicker from 'expo-image-picker';
-import Constants from 'expo-constants';
-import * as Permissions from 'expo-permissions';
-import { Config } from '../config';
+import React, { useState } from 'react';
+import {  StyleSheet, Dimensions,  TextInput, KeyboardAvoidingView } from 'react-native';
+import { Header, Right, Button, Text, View,} from 'native-base';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 const UploadPoll = (props) => {

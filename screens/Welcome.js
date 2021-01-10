@@ -1,8 +1,7 @@
 import React from 'react'
 import { StyleSheet, Dimensions, Image } from 'react-native'
-const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
+const { width: screenWidth,  } = Dimensions.get('window');
 import { Button, Text, View, } from 'native-base';
-import * as Svg from 'react-native-svg';
 const Welcome = (props) => {
     const onstepinpress = () => {
         props.navigation.navigate('login');

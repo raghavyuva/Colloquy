@@ -1,8 +1,6 @@
-import React, { Component,useState,useEffect } from 'react';
-import { Image, StyleSheet, FlatList, ScrollView, Dimensions, View, Alert, AsyncStorage } from 'react-native';
-import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, Title, Right, Form, Item, Label, Input } from 'native-base';
-import { EvilIcons, AntDesign, FontAwesome5, Entypo, Ionicons } from '@expo/vector-icons';
-import * as Font from 'expo-font';
+import React, { useState,useEffect } from 'react';
+import { StyleSheet,  Dimensions, View, Alert,} from 'react-native';
+import { Container,  Card, CardItem,  Text, Button, Form, Item, Label, Input } from 'native-base';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
@@ -11,7 +9,7 @@ import { BottomSheet } from 'react-native-btr';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Config } from '../config';
 import { DataLayerValue } from '../Context/DataLayer';
-const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
+const { height: screenHeight } = Dimensions.get('window');
 const EditProfile = () => {
     const [image, setimage] = useState('');
     const [body, setbody] = useState('');

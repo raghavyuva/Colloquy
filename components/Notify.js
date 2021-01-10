@@ -1,13 +1,11 @@
-import React, { Component, useState } from 'react';
-import { Image, StyleSheet, SafeAreaView, FlatList, Dimensions, Share } from 'react-native';
-import { Container,Content, List, ListItem, Thumbnail, Text, Left, Body, Right, Button, TextInput, Item, Icon, Input, Title, View, } from 'native-base';
-import { EvilIcons, AntDesign, FontAwesome5, Entypo } from '@expo/vector-icons';
-import * as Font from 'expo-font';
-import { Ionicons } from '@expo/vector-icons';
+import React from 'react';
+import {  StyleSheet, } from 'react-native';
+import { List, ListItem, Thumbnail, Text, Left, Body, } from 'native-base';
+import { EvilIcons,} from '@expo/vector-icons';
 import { ScrollView } from 'react-native-gesture-handler';
 const Notify = (props) => {
     return (
-        <ScrollView>
+        <ScrollView style={{backgroundColor:"#0E043B"}}>
             <List>
                 <ListItem thumbnail>
                     <Left>
@@ -15,10 +13,10 @@ const Notify = (props) => {
                                             <EvilIcons name={'heart' } size={14} color="green" />
                     </Left>
                     <Body>
-                        <Text>
+                        <Text style={{color:"white"}}>
                         {props.item.Title}
                         </Text>
-                        <Text note numberOfLines={2}>{props.item.caption}</Text>
+                        <Text note numberOfLines={2} style={{color:"white"}} >{props.item.caption}</Text>
                     </Body>
                 </ListItem>
             </List>

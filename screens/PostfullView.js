@@ -1,10 +1,8 @@
-import React, { Component, useState, useEffect } from 'react'
-import { StyleSheet, TouchableOpacity, Image, FlatList, ImageBackground, Dimensions, Modal, ActivityIndicator, ScrollView, KeyboardAvoidingView, LogBox, } from 'react-native'
+import React, {  useState, } from 'react'
+import { StyleSheet,Image, FlatList, KeyboardAvoidingView, } from 'react-native'
 import { CardItem, Text, Button, Left, View, Input, Item, Label, Body, Right, } from 'native-base';
-import { EvilIcons, AntDesign, FontAwesome, Ionicons, Feather } from '@expo/vector-icons';
 import { DataLayerValue } from '../Context/DataLayer';
 import Postcard from '../components/Postcard';
-const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 import { Config } from '../config';
 import Headingbar from '../components/Header';
 const PostfullView = (props) => {

@@ -3,8 +3,8 @@ import {
     DrawerItem
 } from '@react-navigation/drawer';
 import React, { useState } from 'react';
-import { StyleSheet, View, Linking, Alert, Dimensions } from 'react-native';
-import { FontAwesome5, MaterialCommunityIcons, Feather, SimpleLineIcons, Octicons, Fontisto, FontAwesome, MaterialIcons, AntDesign } from '@expo/vector-icons';
+import { StyleSheet, View, Linking, } from 'react-native';
+import { FontAwesome5, MaterialCommunityIcons,  SimpleLineIcons, Octicons, FontAwesome, MaterialIcons, AntDesign } from '@expo/vector-icons';
 import {
     Title,
     Caption,

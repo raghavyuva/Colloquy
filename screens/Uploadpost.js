@@ -1,8 +1,6 @@
-import React, { Component, useEffect, useState } from 'react';
-import { Image, StyleSheet, FlatList, ScrollView, Dimensions, TextInput, KeyboardAvoidingView, Linking, Modal, TouchableHighlight } from 'react-native';
-import { EvilIcons, Ionicons, FontAwesome, AntDesign } from '@expo/vector-icons';
-import * as Font from 'expo-font';
-import { Header, Right, Button, Text, View, Fab, Icon, Left, Container } from 'native-base';
+import React, { useEffect, useState } from 'react';
+import { Image, StyleSheet, FlatList, Dimensions, TextInput, Linking,} from 'react-native';
+import { Header, Right, Button, Text, View, } from 'native-base';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
@@ -19,7 +17,6 @@ const Uploadpost = (props) => {
     const [{ userToken, EventData }, dispatch] = DataLayerValue()
     const [active, setactive] = useState(false);
     const [loaclimages, setloaclimages] = useState('');
-    const [modalVisible, setModalVisible] = useState(false);
     const [first, setfirst] = useState('https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.rZ6B0kNwWbL9IIbN90iAvgHaEK%26pid%3DApi&f=1')
     const _upload = async () => {
         if (!postimage) {
@@ -131,16 +128,13 @@ const Uploadpost = (props) => {
     return (
         <View style={styles.screen}>
             <Header style={styles.Header}>
-                <Button onPress={() => props.navigation.navigate('external', { screen: 'polladd' })} transparent>
-                    <Text style={styles.fieldtitle}>Create Poll ?</Text>
-                </Button>
                 <Right>
                     <Button onPress={_upload} transparent>
                         <Text>Post</Text>
                     </Button>
                 </Right>
             </Header>
-            <View style={{ justifyContent: "center", }}>
+            <View style={active ?styles.focused:styles.blurred }>
                 <Image
                     source={{
                         uri:
@@ -148,65 +142,29 @@ const Uploadpost = (props) => {
                     }}
                     style={styles.logo}
                 />
-                <Fab
-                    active={active}
-                    direction="up"
-                    containerStyle={{}}
-                    style={{ backgroundColor: '#974455' }}
-                    position="bottomRight"
-                    onPress={() => setModalVisible(true)}>
-                    <EvilIcons name="pencil" size={24} />
+                <TextInput style={active ? styles.inputonfocus : styles.inputonblur} placeholder='Write some content here' placeholderTextColor='#bcbcbc'
+                    onChangeText={(body) => setbody(body)} value={body}
+                    onFocus={() => setactive(true)}
+                    onBlur={() => setactive(false)}
+                />
+            </View>
+            <View style={{ borderTopLeftRadius: 50, borderTopRightRadius: 50, borderWidth: 2, borderColor: 'white', }}>
+                <FlatList
+                    ref={(ref) => { flatListRef = ref; }}
+                    renderItem={({ item }) => {
+                        return (
+                            <TouchableOpacity onPress={() => setfirst(item)} style={{ borderRadius: 5, borderColor: 'grey', margin: 2 }}>
+                                <Image style={{ width: 200, height: 200, borderRadius: 5 }} source={{ uri: item.uri }} />
+                            </TouchableOpacity>
+                        );
+                    }}
+                    keyExtractor={(item, index) => index.toString()}
+                    data={loaclimages}
+                    numColumns={2}
+                    style={{ marginBottom: 80, marginTop: 18, margin: 10, borderRadius: 5 }}
+                />
+            </View>
 
-                </Fab>
-            </View>
-            <FlatList
-                ref={(ref) => { flatListRef = ref; }}
-                renderItem={({ item }) => {
-                    return (
-                        <TouchableOpacity onPress={() => setfirst(item)}>
-                            <Image style={{ width: 200, height: 200 }} source={{ uri: item.uri }} />
-                        </TouchableOpacity>
-                    );
-                }}
-                keyExtractor={(item, index) => index.toString()}
-                data={loaclimages}
-                numColumns={2}
-                style={{ margin: 5, marginRight: 10, marginBottom: 80 }}
-            />
-            <View style={styles.centeredView}>
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={modalVisible}
-                    onRequestClose={() => {
-                        Alert.alert("Modal has been closed.");
-                    }}
-                  
-                >
-                    <View style={styles.centeredView}>
-                        <View style={styles.modalView}>
-                        <TextInput style={styles.input} placeholder='Write some content here' placeholderTextColor='red'
-            onChangeText={(body) => setbody(body)} value={body} />
-                        </View>
-                        <TouchableHighlight
-                                style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
-                                onPress={() => {
-                                    setModalVisible(!modalVisible);
-                                }}
-                            >
-                                <Text style={styles.textStyle}>Hide Modal</Text>
-                            </TouchableHighlight>
-                    </View>
-                </Modal>
-                <TouchableHighlight
-                    style={styles.openButton}
-                    onPress={() => {
-                        setModalVisible(true);
-                    }}
-                >
-                    <Text style={styles.textStyle}>Show Modal</Text>
-                </TouchableHighlight>
-            </View>
         </View>
     )
 }
@@ -219,7 +177,7 @@ const styles = StyleSheet.create({
     },
     logo: {
         width: 400,
-        height: 300,
+        height: screenHeight / 3,
         alignSelf: 'center',
     },
     Header: {
@@ -241,56 +199,31 @@ const styles = StyleSheet.create({
         borderWidth: 0.3,
         borderColor: "#c5c5c5"
     },
-    input: {
-        width: 200,
+    inputonblur: {
+        width: screenWidth,
         height: 51,
-        paddingLeft: 5,
-        alignSelf: "center"
+        paddingLeft: 15,
+        alignSelf: "center",
+        backgroundColor: '#1e2a78'
+
+    },
+    inputonfocus: {
+        width: screenWidth,
+        height: 251,
+        paddingLeft: 15,
+        alignSelf: "center",
+        backgroundColor: '#1e2a78'
     },
     fieldtitle: {
         color: 'white',
         borderBottomWidth: 2,
         borderBottomColor: 'red',
     },
-    centeredView: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        marginTop: 22,
-        backgroundColor:'#1e2a78'
+    focused:{
+        height:screenHeight/2
     },
-    modalView: {
-        margin: 20,
-        backgroundColor: "white",
-        borderRadius: 20,
-        padding: 35,
-        alignItems: "center",
-        shadowColor: "green",
-        shadowOffset: {
-            width: 0,
-            height: 2
-        },
-        shadowOpacity: 0.5,
-        shadowRadius: 3.84,
-        elevation: 5,
-        height:300,
-        width:300,
-        backgroundColor:'#1e2a78'
-    },
-    openButton: {
-        backgroundColor: "#F194FF",
-        borderRadius: 20,
-        padding: 10,
-        elevation: 2
-    },
-    textStyle: {
-        color: "white",
-        fontWeight: "bold",
-        textAlign: "center"
-    },
-    modalText: {
-        marginBottom: 15,
-        textAlign: "center"
+    blurred:{
+        height:screenHeight/3
     }
 });
 

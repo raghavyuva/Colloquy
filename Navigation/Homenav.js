@@ -1,6 +1,6 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
-import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, View, ListItem, Right, Radio, List, Title, ActionSheet, Item, Input } from 'native-base';
+import {  View, } from 'native-base';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
 import { FontAwesome5, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
@@ -27,7 +27,6 @@ import { Config } from '../config';
 import { DataLayerValue } from '../Context/DataLayer';
 import LottieView from 'lottie-react-native';
 import Notes from '../screens/Notes';
-import Pdf from '../components/Pdf';
 
 const Tab = createMaterialBottomTabNavigator();
 const Stack = createStackNavigator();

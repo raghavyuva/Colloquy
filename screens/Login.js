@@ -1,7 +1,7 @@
-import React, { useState, useContext } from "react";
-import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput, Dimensions } from 'react-native';
+import React, { useState, } from "react";
+import { StyleSheet, Text, View,TouchableOpacity, TextInput, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
+const { height: screenHeight } = Dimensions.get('window');
 import { Config } from '../config';
 import { DataLayerValue } from "../Context/DataLayer";
 import * as SecureStore from 'expo-secure-store';

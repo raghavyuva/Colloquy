@@ -4,17 +4,12 @@ import Header from '../components/Header';
 import Postcard from '../components/Postcard';
 import { DataLayerValue } from '../Context/DataLayer';
 import { Config } from '../config';
-import * as MediaLibrary from 'expo-media-library';
-import * as FileSystem from 'expo-file-system';
 import * as Permissions from 'expo-permissions';
-import * as Font from 'expo-font';
 import * as Notifications from 'expo-notifications';
-import Stories from '../components/Stories';
 
 const Home = (props) => {
     const [{ userToken, postData }, dispatch] = DataLayerValue();
     const [Notify, setNotify] = useState('');
-    const [NotifyToken, setNotifyToken] = useState(null);
     const [refresh, setrefresh] = useState(false);
     const fetching = () => {
         setrefresh(true);
