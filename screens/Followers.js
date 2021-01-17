@@ -34,7 +34,7 @@ useEffect(() => {
     }
 }, [])
     return (
-        <Container>
+        <Container style={{backgroundColor:'#0b032b'}}>
         <Header {...props} />
         <FlatList
           data={followerslist}

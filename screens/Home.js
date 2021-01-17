@@ -29,11 +29,13 @@ const Home = (props) => {
             })
     }
     useEffect(() => {
+        let IsMounted = true;
         requestUserPermission();
         registerForPushNotifications();
         Notifications.addNotificationReceivedListener(_handleNotification);
         fetching();
         return () => {
+            IsMounted = false;
         }
     }, [])
     const _handleNotification = notification => {
@@ -57,25 +59,25 @@ const Home = (props) => {
     }
     const registerForPushNotifications = async () => {
         const token = await Notifications.getExpoPushTokenAsync();
-            try {
-                fetch(`${Config.url}` + `/notifytoken`, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': 'Bearer ' + `${userToken}`,
-                        'Content-Type': "application/json",
-                    },
-                    body: JSON.stringify({
-                        notifytoken: token.data
-                    })
-                }).then(res => res.json()).then((resp) => {
+        try {
+            fetch(`${Config.url}` + `/notifytoken`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': 'Bearer ' + `${userToken}`,
+                    'Content-Type': "application/json",
+                },
+                body: JSON.stringify({
+                    notifytoken: token.data
                 })
-                console.log('token sent',token.data);
-            } catch (error) {
-                alert(error);
-                console.log(error);
-            }
+            }).then(res => res.json()).then((resp) => {
+            })
+            console.log('token sent', token.data);
+        } catch (error) {
+            alert(error);
+            console.log(error);
+        }
     };
-    
+
     const GoTo_top_function = () => {
 
         flatListRef.scrollToOffset({ animated: true, offset: 0 });
@@ -84,7 +86,7 @@ const Home = (props) => {
     return (
         <SafeAreaView style={{ backgroundColor: '#0b032b' }}>
             <Header {...props} />
-            
+
             <FlatList
                 ref={(ref) => { flatListRef = ref; }}
                 renderItem={({ item }) => {
@@ -97,7 +99,7 @@ const Home = (props) => {
                 onEndReached={fetching && GoTo_top_function}
                 scrollEnabled
                 onScrollAnimationEnd
-                scrollToOverflowEnabled 
+                scrollToOverflowEnabled
                 onEndReachedThreshold={0}
                 style={{ marginBottom: 50 }}
                 refreshing={refresh}

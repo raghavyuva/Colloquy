@@ -3,17 +3,15 @@ import reducer, { DataLayer, initialState } from './Context/DataLayer'
 import IndexNavigator from './Navigation/IndexNav'
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
-import {  View,  } from "react-native";
+import { View, } from "react-native";
 import LottieView from 'lottie-react-native';
 import NetInfo from '@react-native-community/netinfo';
-import { MenuProvider } from 'react-native-popup-menu';
-
 function App() {
   const [loading, setLoading] = useState(true);
   const [connected, setconnected] = useState(false)
   useEffect(() => {
     Font.loadAsync({
-      Roboto: require('native-base/Fonts/Roboto.ttf'),    
+      Roboto: require('native-base/Fonts/Roboto.ttf'),
       Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf'),
       ...Ionicons.font,
     });
@@ -50,9 +48,7 @@ function App() {
   }
   return (
     <DataLayer initialState={initialState} reducer={reducer}>
-      <MenuProvider>
-        <IndexNavigator />
-      </MenuProvider>
+      <IndexNavigator />
     </DataLayer>
   )
 }

@@ -35,15 +35,15 @@ const Events = (props) => {
             })
     }
     return (
-        <View style={{ backgroundColor: "#e5e5e5" }}>
+        <View style={{ backgroundColor: "#0b032b" }}>
             <Header {...props} />
             <View style={styles.top}>
                 <ImageBackground
-                    source={{ uri: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.2NG_xGmUqmfARWSKWZiWKAHaD0%26pid%3DApi&f=1" }}
+                    source={require('../assets/event.png')}
                     style={{ width: width, height: "100%" }}
                 >
                     <View style={{ position: "absolute", bottom: 0 }}>
-                        <Text style={{ fontSize: 24, fontWeight: 'bold', color: "white" }}>5 Upcoming {'\n'}Events Listed</Text>
+                        <Text style={{ fontSize: 24, fontWeight: 'bold', color: "black" }}>5 Upcoming Events Listed</Text>
                     </View>
                 </ImageBackground>
             </View>

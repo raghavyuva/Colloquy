@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, Dimensions, Image } from 'react-native'
-const { width: screenWidth,  } = Dimensions.get('window');
+const { width: screenWidth, } = Dimensions.get('window');
 import { Button, Text, View, } from 'native-base';
 const Welcome = (props) => {
     const onstepinpress = () => {

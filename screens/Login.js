@@ -1,15 +1,21 @@
 import React, { useState, } from "react";
-import { StyleSheet, Text, View,TouchableOpacity, TextInput, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 const { height: screenHeight } = Dimensions.get('window');
 import { Config } from '../config';
 import { DataLayerValue } from "../Context/DataLayer";
 import * as SecureStore from 'expo-secure-store';
+import { Button } from "native-base";
+import * as Google from "expo-google-app-auth";
 
 const Login = ({ navigation }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [{ userToken }, dispatch] = DataLayerValue()
+    const [lname, setlname] = useState('');
+    const [photo, setphoto] = useState('');
+    const [dob, setdob] = useState('');
+    const [fname, setfname] = useState('');
     const onsignin = () => {
         if (!email || !password) {
             alert("input fields cannot be as empty as like that")
@@ -36,8 +42,32 @@ const Login = ({ navigation }) => {
                     SecureStore.setItemAsync('UserId', responseData.user._id)
                     setEmail(null);
                     setPassword(null);
-                })
+                }) 
                 .done();
+        }
+    }
+    const Googlesingin = async() => {
+        try {
+            const result = await Google.logInAsync({
+                androidClientId:'885939654496-oe5b3cgmfgpjfm6udhuvs87tt4k23e0j.apps.googleusercontent.com',
+                iosClientId:'885939654496-5u9so9k574i6f0eef8tagnjnkr22b22a.apps.googleusercontent.com',
+                scopes: ["profile", "email"],
+                redirectUrl:'https://localhost.com/'
+            });
+            console.log(result)
+            if (result.type === "success") {
+                console.log(result.user);
+                setEmail(result.user.email);
+                setfname(result.user.familyName);
+                setlname(result.user.givenName);
+                setphoto(result.user.photoUrl);
+                return result.accessToken;
+            } else {
+                return { cancelled: true };
+            }
+        } catch (e) {
+            alert(e);
+            return { error: true };
         }
     }
     return (
@@ -82,6 +112,11 @@ const Login = ({ navigation }) => {
                         }}>
                             <Text style={styles.link}> Register</Text>
                         </TouchableOpacity>
+                        <Button onPress={Googlesingin}>
+                            <Text>
+                                Signin With Google
+                                </Text>
+                        </Button>
                     </View>
                 </View>
 

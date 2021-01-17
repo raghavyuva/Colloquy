@@ -1,5 +1,5 @@
 
-import React, {  useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
     StyleSheet,
     Text,
@@ -8,8 +8,8 @@ import {
     Image,
     FlatList
 } from 'react-native'
-import {  Button,  } from 'native-base';
-const {  height } = Dimensions.get('window');
+import { Button, } from 'native-base';
+const { height ,width} = Dimensions.get('window');
 import { DataLayerValue } from '../Context/DataLayer';
 import { Config } from '../config'
 import LottieView from 'lottie-react-native';
@@ -17,7 +17,7 @@ import Postcard from '../components/Postcard';
 import Headingbar from '../components/Header';
 
 const UserProfile = (props) => {
-    const [{ userToken,  user, otherprofile }, dispatch] = DataLayerValue()
+    const [{ userToken, user, otherprofile }, dispatch] = DataLayerValue()
     const [load, setload] = useState(true);
     const GoTo_top_function = () => {
 
@@ -37,7 +37,7 @@ const UserProfile = (props) => {
                         type: "PROFILEOFOTHER",
                         data: responseJson
                     })
-                    setload(false) 
+                    setload(false)
                 })
         } catch (e) {
             console.log(e);
@@ -45,13 +45,13 @@ const UserProfile = (props) => {
     }
     useEffect(() => {
         fetching(props.route.params.thread)
-    }, []) 
+    }, [])
     const followuser = () => {
         try {
-            fetch(`${Config.url}`+`/follow`, {
+            fetch(`${Config.url}` + `/follow`, {
                 method: 'PUT',
                 headers: {
-                    'Authorization': 'Bearer '+`${userToken}`,
+                    'Authorization': 'Bearer ' + `${userToken}`,
                     'Content-type': 'application/json'
                 },
                 body: JSON.stringify({
@@ -68,13 +68,13 @@ const UserProfile = (props) => {
     const unfollow = () => {
 
         try {
-            fetch(`${Config.url}`+`/unfollow`, {
+            fetch(`${Config.url}` + `/unfollow`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': 'Bearer ' + `${userToken}`,
                     'Content-type': 'application/json'
                 },
-               
+
                 body: JSON.stringify({
                     followid: otherprofile.user._id
                 })
@@ -82,7 +82,7 @@ const UserProfile = (props) => {
                 .then((response) => response.json())
                 .then((responseJson) => {
                     fetching(otherprofile.user._id);
-                }).catch((err)=>{alert(err);})
+                }).catch((err) => { alert(err); })
         } catch (error) {
             alert(error);
         }
@@ -103,8 +103,8 @@ const UserProfile = (props) => {
     return (
         <View style={{ backgroundColor: "#0b032b", }}>
             <Headingbar {...props} />
-            <FlatList
-                ListHeaderComponent={
+            {otherprofile.userposts[0] == null ? (
+                <View style={{flex:1,backgroundColor:'#fbfff9'}}>
                     <View style={styles.mainscreen}>
                         <View style={{ flexDirection: 'row' }}>
                             <Image
@@ -165,38 +165,125 @@ const UserProfile = (props) => {
                                     color: "#f0f0f0",
                                 }}>{otherprofile.user.following.length} Following</Text>
                             </View>
-                            
+
                         </View>
-                        {user.user.following.includes(otherprofile.user._id)? (
-                            <View style={{  position: 'absolute', bottom: 30, marginHorizontal: 20,right:10 }}>
-                    <Button style={styles.follow} onPress={unfollow}>
-                    <Text style={{justifyContent:'center',alignSelf:'center',color:'white'}}>Un Friend</Text>
-                    </Button>
+                        {user.user.following.includes(otherprofile.user._id) ? (
+                            <View style={{ position: 'absolute', bottom: 30, marginHorizontal: 20, right: 10 }}>
+                                <Button style={styles.follow} onPress={unfollow}>
+                                    <Text style={{ justifyContent: 'center', alignSelf: 'center', color: 'white' }}>Un Friend</Text>
+                                </Button>
+                            </View>
+                        ) : (
+                                <View style={{ position: 'absolute', bottom: 30, marginHorizontal: 20, right: 10 }}>
+                                    <Button style={styles.follow} onPress={followuser} >
+                                        <Text style={{ justifyContent: 'center', alignSelf: 'center', color: 'white' }}>Be Friend</Text>
+                                    </Button>
+                                </View>
+                            )}
+                      
                     </View>
-                ) : (
-                    <View style={{ position: 'absolute', bottom: 30, marginHorizontal: 20 ,right:10}}>
-                        <Button style={styles.follow} onPress ={followuser} >
-                            <Text style={{justifyContent:'center',alignSelf:'center',color:'white'}}>Be Friend</Text>
-                        </Button>
-                        </View>
-                    )}
-                    </View>
-                }
-                ref={(ref) => { flatListRef = ref; }}
-                renderItem={({ item }) => {
-                    return (
-                        <Postcard item={item} {...props} />
-                    );
-                }}
-                keyExtractor={(item, index) => index.toString()}
-                data={otherprofile.userposts}
-                onEndReached={fetching && GoTo_top_function}
-                scrollEnabled
-                onScrollAnimationEnd
-                scrollToOverflowEnabled
-                onEndReachedThreshold={0}
-                style={{ marginBottom: 50 }}
-            />
+                    <Image
+                            source={require('../assets/emptyy.png')}
+                            style={{ width: width, height: height / 1.7, alignSelf: 'center' ,}}
+                        />
+                </View>
+            ) : (
+                    <FlatList
+                        ListHeaderComponent={
+                            <View style={styles.mainscreen}>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <Image
+                                        source={{ uri: otherprofile.user.userphoto }}
+                                        style={{
+                                            height: 150,
+                                            width: 150,
+                                            borderRadius: 20,
+                                            marginVertical: 30,
+                                            marginHorizontal: 10
+                                        }}
+                                    />
+                                    <View>
+                                        <View style={{ marginTop: 50 }}>
+                                            <Text style={styles.txt1}>
+                                                {otherprofile.user.username}
+                                            </Text>
+                                        </View>
+                                        <View style={{ width: 250, marginRight: 10 }}>
+                                            {otherprofile.user.tagline == null ? (
+                                                <Text style={styles.txt2}>
+                                                    {otherprofile.user.email}
+                                                </Text>
+                                            ) : (
+                                                    <Text style={styles.txt2}>
+                                                        {otherprofile.user.tagline}
+                                                    </Text>
+                                                )}
+                                        </View>
+                                    </View>
+                                </View>
+                                <View style={{ position: 'absolute', bottom: 60, marginHorizontal: 20 }}>
+                                    <Text style={styles.txt2}>
+                                        {otherprofile.user.email}
+                                    </Text>
+                                </View>
+                                <View style={{ flexDirection: 'row', position: 'absolute', bottom: 30, marginHorizontal: 20 }}>
+                                    <View style={{ marginRight: 5 }}>
+                                        <Text style={{
+                                            fontWeight: "bold",
+                                            fontSize: 15,
+                                            color: "#f0f0f0",
+                                        }}>{otherprofile.userposts.length} Posts</Text>
+                                    </View>
+                                    <View style={{ marginRight: 5 }}>
+                                        <Text style={{
+                                            fontWeight: "bold",
+                                            fontSize: 15,
+                                            color: "#f0f0f0",
+                                        }}>{otherprofile.user.followers.length} Followers</Text>
+
+                                    </View>
+
+                                    <View style={{ marginRight: 5 }}>
+                                        <Text style={{
+                                            fontWeight: "bold",
+                                            fontSize: 15,
+                                            color: "#f0f0f0",
+                                        }}>{otherprofile.user.following.length} Following</Text>
+                                    </View>
+
+                                </View>
+                                {user.user.following.includes(otherprofile.user._id) ? (
+                                    <View style={{ position: 'absolute', bottom: 30, marginHorizontal: 20, right: 10 }}>
+                                        <Button style={styles.follow} onPress={unfollow}>
+                                            <Text style={{ justifyContent: 'center', alignSelf: 'center', color: 'white' }}>Un Friend</Text>
+                                        </Button>
+                                    </View>
+                                ) : (
+                                        <View style={{ position: 'absolute', bottom: 30, marginHorizontal: 20, right: 10 }}>
+                                            <Button style={styles.follow} onPress={followuser} >
+                                                <Text style={{ justifyContent: 'center', alignSelf: 'center', color: 'white' }}>Be Friend</Text>
+                                            </Button>
+                                        </View>
+                                    )}
+                            </View>
+                        }
+                        ref={(ref) => { flatListRef = ref; }}
+                        renderItem={({ item }) => {
+                            return (
+                                <Postcard item={item} {...props} />
+                            );
+                        }}
+                        keyExtractor={(item, index) => index.toString()}
+                        data={otherprofile.userposts}
+                        onEndReached={fetching && GoTo_top_function}
+                        scrollEnabled
+                        onScrollAnimationEnd
+                        scrollToOverflowEnabled
+                        onEndReachedThreshold={0}
+                        style={{ marginBottom: 50 }}
+                    />
+                )}
+
         </View>
     )
 }
@@ -266,8 +353,8 @@ const styles = StyleSheet.create({
     },
     follow: {
         backgroundColor: '#5067FF',
-        width:100,
-        justifyContent:'center',
-        alignSelf:'center'
+        width: 100,
+        justifyContent: 'center',
+        alignSelf: 'center'
     },
 })

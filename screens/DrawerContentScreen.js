@@ -3,16 +3,10 @@ import {
     DrawerItem
 } from '@react-navigation/drawer';
 import React, { useState } from 'react';
-import { StyleSheet, View, Linking, } from 'react-native';
-import { FontAwesome5, MaterialCommunityIcons,  SimpleLineIcons, Octicons, FontAwesome, MaterialIcons, AntDesign } from '@expo/vector-icons';
-import {
-    Title,
-    Caption,
-    Drawer,
-} from 'react-native-paper';
+import { StyleSheet, View, Linking, Text } from 'react-native';
+import { FontAwesome5, MaterialCommunityIcons, SimpleLineIcons, Octicons, FontAwesome, MaterialIcons, AntDesign } from '@expo/vector-icons';
 import { DataLayerValue } from '../Context/DataLayer';
 import * as SecureStore from 'expo-secure-store';
-
 export function DrawerContent(props) {
     const [{ userToken }, dispatch] = DataLayerValue()
     const [activebar, setactivebar] = useState(true);
@@ -58,13 +52,13 @@ export function DrawerContent(props) {
                     <View style={{ flexDirection: 'row', marginTop: 15 }}>
 
                         <View style={{ marginLeft: 15, flexDirection: 'column' }}>
-                            <Title style={styles.title}>Primish</Title>
-                            <Caption style={styles.caption}>Unleash your potential</Caption>
+                            <Text style={styles.title}>Primish</Text>
+                            <Text style={styles.caption}>Unleash your potential</Text>
                         </View>
                     </View>
                 </View>
                 <DrawerContentScrollView {...props}>
-                    <Drawer.Section style={styles.drawerSection}>
+                    <View style={styles.drawerSection}>
                         <DrawerItem
                             icon={({ color, size }) => (
                                 <AntDesign name="home" size={24} color="white" />)}
@@ -108,19 +102,17 @@ export function DrawerContent(props) {
                             focused={activebar2}
                             activeBackgroundColor='#2e235e'
                         />
-                         <DrawerItem
+                        <DrawerItem
                             icon={({ color, size }) => (
-                                <SimpleLineIcons name="user-following" size={24} color="white" />)}
+                                <MaterialCommunityIcons name="pen" size={24} color="white" />)}
                             labelStyle={{ color: 'white' }}
-                            label="Notes"
+                            label="Mock Interview"
                             style={{ marginTop: 20 }}
                             onPress={() => {
                                 props.navigation.navigate('external', { screen: 'notes' })
-                               
                             }}
-                           
                         />
-                       
+
                         <DrawerItem
                             icon={({ color, size }) => (
                                 <MaterialCommunityIcons name="feature-search" size={24} color="white" />
@@ -194,9 +186,9 @@ export function DrawerContent(props) {
                             focused={activebar6}
                             activeBackgroundColor='#2e235e'
                         />
-                    </Drawer.Section>
+                    </View>
                 </DrawerContentScrollView>
-                <Drawer.Section style={styles.bottomDrawerSection}>
+                <View style={styles.bottomDrawerSection}>
                     <DrawerItem
                         icon={({ color, size }) => (
                             <MaterialCommunityIcons name="exit-to-app" size={24} color="white" />
@@ -205,7 +197,7 @@ export function DrawerContent(props) {
                         labelStyle={{ color: 'white' }}
                         onPress={() => signOut()}
                     />
-                </Drawer.Section>
+                </View>
             </View>
 
         </View>

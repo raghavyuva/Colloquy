@@ -8,7 +8,7 @@ import {
     Image,
     FlatList
 } from 'react-native'
-import {  Fab, } from 'native-base';
+import { Fab, } from 'native-base';
 const { width, height } = Dimensions.get('window');
 import { MaterialIcons } from '@expo/vector-icons';
 import { DataLayerValue } from '../Context/DataLayer';
@@ -68,96 +68,185 @@ const Profile = (props) => {
     return (
         <View style={{ backgroundColor: "#0b032b", }}>
             <Headingbar {...props} />
-            <FlatList
-                ListHeaderComponent={
-                    <View style={styles.mainscreen}>
-                        <View style={{ flexDirection: 'row' }}>
-                            <Image
-                                source={{ uri: user.user.userphoto }}
-                                style={{
-                                    height: 150,
-                                    width: 150,
-                                    borderRadius: 20,
-                                    marginVertical: 30,
-                                    marginHorizontal: 10
-                                }}
-                            />
-                            <View>
-                                <View style={{ marginTop: 50 }}>
-                                    <Text style={styles.txt1}>
-                                        {user.user.username}
-                                    </Text>
+            {user.userposts[0] == null ? (
+                <>
+                    <View style={{ flex: 1, backgroundColor: '#fbfff9' }}>
+
+                        <View style={styles.mainscreen}>
+                            <Fab
+                                active={active}
+                                direction="up"
+                                containerStyle={{}}
+                                style={{ backgroundColor: '#5067FF', }}
+                                position="bottomRight"
+                                onPress={() => props.navigation.navigate('edit')}>
+                                <MaterialIcons name="settings" size={24} color="black" />
+                            </Fab>
+                            <View style={{ flexDirection: 'row' }}>
+                                <Image
+                                    source={{ uri: user.user.userphoto }}
+                                    style={{
+                                        height: 150,
+                                        width: 150,
+                                        borderRadius: 20,
+                                        marginVertical: 30,
+                                        marginHorizontal: 10
+                                    }}
+                                />
+                                <View>
+                                    <View style={{ marginTop: 50 }}>
+                                        <Text style={styles.txt1}>
+                                            {user.user.username}
+                                        </Text>
+                                    </View>
+                                    <View style={{ width: 250, marginRight: 10 }}>
+                                        {user.user.tagline == null ? (
+                                            <Text style={styles.txt2}>
+                                                {user.user.email}
+                                            </Text>
+                                        ) : (
+                                                <Text style={styles.txt2}>
+                                                    {user.user.tagline}
+                                                </Text>
+                                            )}
+                                    </View>
                                 </View>
-                                <View style={{ width: 250, marginRight: 10 }}>
-                                    {user.user.tagline == null ? (
+                            </View>
+                            <View style={{ position: 'absolute', bottom: 60, marginHorizontal: 20 }}>
+                                <Text style={styles.txt2}>
+                                    {user.user.email}
+                                </Text>
+                            </View>
+                            <View style={{ flexDirection: 'row', position: 'absolute', bottom: 30, marginHorizontal: 20 }}>
+                                <View style={{ marginRight: 5 }}>
+                                    <Text style={{
+                                        fontWeight: "bold",
+                                        fontSize: 15,
+                                        color: "#f0f0f0",
+                                    }}>{user.userposts.length} Posts</Text>
+                                </View>
+                                <View style={{ marginRight: 5 }}>
+                                    <Text style={{
+                                        fontWeight: "bold",
+                                        fontSize: 15,
+                                        color: "#f0f0f0",
+                                    }}>{user.user.followers.length} Followers</Text>
+
+                                </View>
+
+                                <View style={{ marginRight: 5 }}>
+                                    <Text style={{
+                                        fontWeight: "bold",
+                                        fontSize: 15,
+                                        color: "#f0f0f0",
+                                    }}>{user.user.following.length} Following</Text>
+                                </View>
+
+                            </View>
+
+
+                        </View>
+                        <Image
+                            source={require('../assets/emptyy.png')}
+                            style={{ width: width, height: height / 1.7, alignSelf: 'center' }}
+                        />
+                    </View>
+                </>
+            ) : (
+                    <>
+                        <FlatList
+                            ListHeaderComponent={
+                                <View style={styles.mainscreen}>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <Image
+                                            source={{ uri: user.user.userphoto }}
+                                            style={{
+                                                height: 150,
+                                                width: 150,
+                                                borderRadius: 20,
+                                                marginVertical: 30,
+                                                marginHorizontal: 10
+                                            }}
+                                        />
+                                        <View>
+                                            <View style={{ marginTop: 50 }}>
+                                                <Text style={styles.txt1}>
+                                                    {user.user.username}
+                                                </Text>
+                                            </View>
+                                            <View style={{ width: 250, marginRight: 10 }}>
+                                                {user.user.tagline == null ? (
+                                                    <Text style={styles.txt2}>
+                                                        {user.user.email}
+                                                    </Text>
+                                                ) : (
+                                                        <Text style={styles.txt2}>
+                                                            {user.user.tagline}
+                                                        </Text>
+                                                    )}
+                                            </View>
+                                        </View>
+                                    </View>
+                                    <View style={{ position: 'absolute', bottom: 60, marginHorizontal: 20 }}>
                                         <Text style={styles.txt2}>
                                             {user.user.email}
                                         </Text>
-                                    ) : (
-                                            <Text style={styles.txt2}>
-                                                {user.user.tagline}
-                                            </Text>
-                                        )}
+                                    </View>
+                                    <View style={{ flexDirection: 'row', position: 'absolute', bottom: 30, marginHorizontal: 20 }}>
+                                        <View style={{ marginRight: 5 }}>
+                                            <Text style={{
+                                                fontWeight: "bold",
+                                                fontSize: 15,
+                                                color: "#f0f0f0",
+                                            }}>{user.userposts.length} Posts</Text>
+                                        </View>
+                                        <View style={{ marginRight: 5 }}>
+                                            <Text style={{
+                                                fontWeight: "bold",
+                                                fontSize: 15,
+                                                color: "#f0f0f0",
+                                            }}>{user.user.followers.length} Followers</Text>
+
+                                        </View>
+
+                                        <View style={{ marginRight: 5 }}>
+                                            <Text style={{
+                                                fontWeight: "bold",
+                                                fontSize: 15,
+                                                color: "#f0f0f0",
+                                            }}>{user.user.following.length} Following</Text>
+                                        </View>
+                                    </View>
+                                    <Fab
+                                        active={active}
+                                        direction="up"
+                                        containerStyle={{}}
+                                        style={{ backgroundColor: '#5067FF', }}
+                                        position="bottomRight"
+                                        onPress={() => props.navigation.navigate('edit')}>
+                                        <MaterialIcons name="settings" size={24} color="black" />
+                                    </Fab>
                                 </View>
-                            </View>
-                        </View>
-                        <View style={{ position: 'absolute', bottom: 60, marginHorizontal: 20 }}>
-                            <Text style={styles.txt2}>
-                                {user.user.email}
-                            </Text>
-                        </View>
-                        <View style={{ flexDirection: 'row', position: 'absolute', bottom: 30, marginHorizontal: 20 }}>
-                            <View style={{ marginRight: 5 }}>
-                                <Text style={{
-                                    fontWeight: "bold",
-                                    fontSize: 15,
-                                    color: "#f0f0f0",
-                                }}>{user.userposts.length} Posts</Text>
-                            </View>
-                            <View style={{ marginRight: 5 }}>
-                                <Text style={{
-                                    fontWeight: "bold",
-                                    fontSize: 15,
-                                    color: "#f0f0f0",
-                                }}>{user.user.followers.length} Followers</Text>
+                            }
+                            renderItem={({ item }) => {
+                                return (
+                                    <Postcard item={item} {...props} />
+                                )
+                            }}
+                            keyExtractor={(item, index) => index.toString()}
+                            data={user.userposts}
+                            onEndReached={fetching && GoTo_top_function}
+                            scrollEnabled
+                            onScrollAnimationEnd
+                            scrollToOverflowEnabled
+                            onEndReachedThreshold={0}
+                            refreshing={refresh}
+                            onRefresh={fetching}
+                            style={{ marginBottom: 50 }}
+                        />
+                    </>
+                )}
 
-                            </View>
-
-                            <View style={{ marginRight: 5 }}>
-                                <Text style={{
-                                    fontWeight: "bold",
-                                    fontSize: 15,
-                                    color: "#f0f0f0",
-                                }}>{user.user.following.length} Following</Text>
-                            </View>
-                        </View>
-                        <Fab
-                            active={active}
-                            direction="up"
-                            containerStyle={{}}
-                            style={{ backgroundColor: '#5067FF', }}
-                            position="bottomRight"
-                            onPress={() => props.navigation.navigate('edit')}>
-                            <MaterialIcons name="settings" size={24} color="black" />
-                        </Fab>
-                    </View>
-                }
-                renderItem={({ item }) => {
-                    return (
-                        <Postcard item={item} {...props} />
-                    )
-                }}
-                keyExtractor={(item, index) => index.toString()}
-                data={user.userposts}
-                onEndReached={fetching && GoTo_top_function}
-                scrollEnabled
-                onScrollAnimationEnd
-                scrollToOverflowEnabled
-                onEndReachedThreshold={0}
-                refreshing={refresh}
-                onRefresh={fetching}
-                style={{ marginBottom: 50 }}
-            />
         </View>
     )
 }

@@ -4,7 +4,6 @@ import { Container,  Card, CardItem,  Text, Button, Form, Item, Label, Input } f
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
-import { Avatar } from 'react-native-paper';
 import { BottomSheet } from 'react-native-btr';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Config } from '../config';
@@ -108,11 +107,7 @@ const EditProfile = () => {
                 <Text style={styles.logo}>Edit your profile</Text>
                 <Form>
                     <TouchableOpacity onPress={_toggleBottomNavigationView}>
-                        <Avatar.Image
-                            source={{ uri: postimage }}
-                            size={100}
-                            style={{ alignSelf: "center" }}
-                        />
+                      
                     </TouchableOpacity>
 
                     <BottomSheet

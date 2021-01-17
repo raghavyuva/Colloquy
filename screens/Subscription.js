@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react'
-import { SafeAreaView, FlatList } from 'react-native'
+import { SafeAreaView, FlatList, View } from 'react-native'
 import Header from '../components/Header';
 import Postcard from '../components/Postcard';
 import { DataLayerValue } from '../Context/DataLayer';
 import { Config } from '../config';
+import LottieView from 'lottie-react-native';
+
 const Home = (props) => {
     const [{ userToken, subscribeddata }, dispatch] = DataLayerValue();
-    const [refresh, setrefresh] = useState(false)
+    const [refresh, setrefresh] = useState(false);
+    const [load, setload] = useState(true);
     const fetching = () => {
         setrefresh(true);
         fetch(`${Config.url}` + `/subscription`, {
@@ -26,11 +29,26 @@ const Home = (props) => {
     }
     useEffect(() => {
         fetching();
+        setTimeout(() => {
+            setload(false)
+        }, 2000);
         return () => {
         }
     }, [])
     const GoTo_top_function = () => {
         flatListRef.scrollToOffset({ animated: true, offset: 0 });
+    }
+    if (load) {
+        return (
+            <View style={{ justifyContent: "center", flex: 1, backgroundColor: '#0E043B' }}>
+                <LottieView
+                    loop={true}
+                    autoPlay={true}
+                    source={require('../animation/5328-loading-11.json')}
+                    style={{ width: 400, height: 400 }}
+                />
+            </View>
+        );
     }
     return (
         <SafeAreaView style={{ backgroundColor: '#000' }}>

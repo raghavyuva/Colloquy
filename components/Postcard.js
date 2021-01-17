@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
-import { StyleSheet, TouchableOpacity, Image, FlatList, ImageBackground, Dimensions, Modal, SafeAreaView, Share, Alert, ToastAndroid,Platform } from 'react-native';
+import React, { useEffect, useState } from 'react'
+import { StyleSheet, TouchableOpacity, Image, FlatList, ImageBackground, Dimensions, Modal, SafeAreaView, Share, Alert, ToastAndroid, Platform } from 'react-native';
 import { CardItem, Text, Button, Left, View, Right, Body, Item, Input } from 'native-base';
 import { MaterialIcons, AntDesign, MaterialCommunityIcons, Entypo } from '@expo/vector-icons';
 import * as MediaLibrary from 'expo-media-library';
@@ -7,17 +7,13 @@ import * as FileSystem from 'expo-file-system';
 import * as Permissions from 'expo-permissions';
 import { Config } from '../config';
 const { width, height } = Dimensions.get('window');
-import * as Notifications from 'expo-notifications';
 import { DataLayerValue } from '../Context/DataLayer';
 import LottieView from 'lottie-react-native';
-import {
-    Menu,
-    MenuOptions,
-    MenuOption,
-    MenuTrigger,
-} from 'react-native-popup-menu';
 const Postcard = (props) => {
-    const [{ userToken, UserId }, dispatch] = DataLayerValue()
+    const [{ userToken, UserId }, dispatch] = DataLayerValue();
+    const [active, setactive] = useState(false);
+    const [commenttext, setcommenttext] = useState('');
+
     useEffect(() => {
         return () => {
         }
@@ -63,7 +59,7 @@ const Postcard = (props) => {
             const asset = await MediaLibrary.createAssetAsync(fileUri)
             await MediaLibrary.createAlbumAsync("Primish", asset, false)
             openPhotos(fileUri)
-        }else{
+        } else {
             alert('provide permission');
         }
     }
@@ -229,7 +225,7 @@ const Postcard = (props) => {
             alert(error);
         }
     }
-    
+
     return (
         <TouchableOpacity
             activeOpacity={1}
@@ -252,41 +248,25 @@ const Postcard = (props) => {
                 </TouchableOpacity>
                 <Body style={{ margin: 10 }}>
                     <Text style={{ color: "white", fontWeight: "500", fontSize: 18, }} numberOfLines={1}>{props.item.postedBy.username}</Text>
-                    <Text style={{ color: "white", fontWeight: "500", fontSize: 10, }} numberOfLines={1}>{props.item.createdAt.substring(0,10)}</Text>
+                    <Text style={{ color: "white", fontWeight: "500", fontSize: 10, }} numberOfLines={1}>{props.item.createdAt.substring(0, 10)}</Text>
                 </Body>
                 <Right>
-                    <TouchableOpacity>
-                        <Menu >
-                            <MenuTrigger customStyles={{}} >
-                                <Entypo name="dots-three-vertical" size={28} color="red" />
-                            </MenuTrigger>
-                            <MenuOptions optionsContainerStyle={{ backgroundColor: '#0E043B' }}>
-                                <MenuOption onSelect={() => {
-                                    Share.share({
-                                        url: `${props.item.photo}`,
-                                        title: `${props.item.postedBy.userName}`,
-                                        message: `${props.item.caption}`,
-                                    })
-                                }}  >
-                                    <View style={{ flexDirection: 'row' }}>
-                                        <MaterialCommunityIcons name="share-outline" size={28} color="white" />
-                                        <Text style={{ color: 'white' }}>Share Post</Text>
-                                    </View>
-                                </MenuOption>
-                                {props.item.postedBy._id == UserId ? (
-                                    <MenuOption onSelect={() => DeletePost(props.item)}>
-                                        <View style={{ flexDirection: 'row' }}>
-                                            <MaterialIcons name="delete" size={24} color="white" />
-                                            <Text style={{ color: 'white' }}>Delete Post</Text>
-                                        </View>
-
-                                    </MenuOption>
-                                ) : (
-                                        <View></View>
-                                    )}
-                            </MenuOptions>
-                        </Menu>
-                    </TouchableOpacity>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                        <TouchableOpacity onPress={() => {
+                            Share.share({
+                                url: `${props.item.photo}`,
+                                title: `${props.item.postedBy.userName}`,
+                                message: `${props.item.caption}`,
+                            })
+                        }}>
+                            <MaterialCommunityIcons name="share-outline" size={28} color="white" />
+                        </TouchableOpacity>
+                        {props.item.postedBy._id == UserId ? (
+                            <MaterialIcons name="delete" size={24} color="white" />
+                        ) : (
+                                <View></View>
+                            )}
+                    </View>
                 </Right>
 
             </CardItem>
@@ -349,7 +329,10 @@ const Postcard = (props) => {
                             }
                             <Text style={{ textTransform: 'capitalize', color: 'white' }}>{props.item.likes.length} {props.item.likes.length > 1 ? 'likes' : "like"}</Text>
                         </Button>
-                        <Button transparent textStyle={{ color: '#87838B' }}>
+                        <Button transparent textStyle={{ color: '#87838B' }} onPress={() => {
+                            setactive(!active)
+                            setcommenttext('');
+                        }}>
                             <LottieView
                                 loop={false}
                                 autoPlay={true}
@@ -363,6 +346,24 @@ const Postcard = (props) => {
                         </Button>
                     </Left>
                 </CardItem>
+                {
+                    active ? (
+                        <Item style={{ backgroundColor: '#0e072b' }}>
+                            <Input style={styles.fieldinpu}
+                                value={commenttext}
+                                onChangeText={(t) => setcommenttext(t)}
+                                placeholder='Add a comment' placeholderTextColor='#bababa'
+
+                            />
+                            <Button transparent style={{ borderRadius: 8 }} >
+                                <Text style={{ textTransform: 'capitalize', color: '#fff' }}>comment</Text>
+                            </Button>
+                        </Item>
+                    ) : (
+                            <View>
+                            </View>
+                        )
+                }
             </View>
         </TouchableOpacity>
     )
@@ -427,4 +428,7 @@ const styles = StyleSheet.create({
         height: 100,
         borderRadius: 50,
     },
+    fieldinpu: {
+        color: '#fff'
+    }
 })

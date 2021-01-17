@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Image, StyleSheet, FlatList, Dimensions, TextInput, Linking,} from 'react-native';
+import { Image, StyleSheet, FlatList, Dimensions, TextInput, Linking, KeyboardAvoidingView, } from 'react-native';
 import { Header, Right, Button, Text, View, } from 'native-base';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 import { Config } from '../config';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { DataLayerValue } from '../Context/DataLayer';
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 import * as MediaLibrary from 'expo-media-library';
@@ -126,7 +126,7 @@ const Uploadpost = (props) => {
         }
     }
     return (
-        <View style={styles.screen}>
+        <KeyboardAvoidingView style={styles.screen}>
             <Header style={styles.Header}>
                 <Right>
                     <Button onPress={_upload} transparent>
@@ -134,7 +134,7 @@ const Uploadpost = (props) => {
                     </Button>
                 </Right>
             </Header>
-            <View style={active ?styles.focused:styles.blurred }>
+            <View>
                 <Image
                     source={{
                         uri:
@@ -142,13 +142,12 @@ const Uploadpost = (props) => {
                     }}
                     style={styles.logo}
                 />
-                <TextInput style={active ? styles.inputonfocus : styles.inputonblur} placeholder='Write some content here' placeholderTextColor='#bcbcbc'
+                <TextInput style={styles.inputonblur} placeholder='Write some content here' placeholderTextColor='#bcbcbc'
                     onChangeText={(body) => setbody(body)} value={body}
-                    onFocus={() => setactive(true)}
-                    onBlur={() => setactive(false)}
+                          
                 />
             </View>
-            <View style={{ borderTopLeftRadius: 50, borderTopRightRadius: 50, borderWidth: 2, borderColor: 'white', }}>
+            <View style={{ borderTopLeftRadius: 30, borderTopRightRadius: 30, borderWidth: 2, borderColor: 'grey', }}>
                 <FlatList
                     ref={(ref) => { flatListRef = ref; }}
                     renderItem={({ item }) => {
@@ -161,11 +160,11 @@ const Uploadpost = (props) => {
                     keyExtractor={(item, index) => index.toString()}
                     data={loaclimages}
                     numColumns={2}
-                    style={{ marginBottom: 80, marginTop: 18, margin: 10, borderRadius: 5 }}
+                    style={{ marginBottom: 0, marginTop: 18, margin: 10, borderRadius: 5 }}
                 />
             </View>
 
-        </View>
+        </KeyboardAvoidingView>
     )
 }
 
@@ -176,8 +175,8 @@ const styles = StyleSheet.create({
         height: screenHeight
     },
     logo: {
-        width: 400,
-        height: screenHeight / 3,
+        width:screenWidth,
+        height: screenHeight / 2.4,
         alignSelf: 'center',
     },
     Header: {
@@ -197,33 +196,25 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginBottom: 10,
         borderWidth: 0.3,
-        borderColor: "#c5c5c5"
+        borderColor: "grey"
     },
     inputonblur: {
         width: screenWidth,
         height: 51,
         paddingLeft: 15,
         alignSelf: "center",
-        backgroundColor: '#1e2a78'
-
-    },
-    inputonfocus: {
-        width: screenWidth,
-        height: 251,
-        paddingLeft: 15,
-        alignSelf: "center",
-        backgroundColor: '#1e2a78'
+        color:'white'
     },
     fieldtitle: {
         color: 'white',
         borderBottomWidth: 2,
         borderBottomColor: 'red',
     },
-    focused:{
-        height:screenHeight/2
+    focused: {
+        height: screenHeight / 2
     },
-    blurred:{
-        height:screenHeight/3
+    blurred: {
+        height: screenHeight / 2,
     }
 });
 

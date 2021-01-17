@@ -63,7 +63,7 @@ const Usercard = (props) => {
                 <Thumbnail square source={{ uri: props.item.userphoto }} />
             </Left>
             <Body>
-                <Text>{props.item.username}</Text>
+                <Text style={{color:'white'}}>{props.item.username}</Text>
                 <Text note numberOfLines={1}>{props.item.tagline}</Text>
             </Body>
             <Right>
@@ -89,7 +89,7 @@ const Usercard = (props) => {
                     <Thumbnail square source={{ uri: props.item.userphoto }} />
                 </Left>
                 <Body>
-                    <Text>{props.item.username}</Text>
+                    <Text style={{color:'white'}}>{props.item.username}</Text>
                     <Text note numberOfLines={1}>{props.item.tagline}</Text>
                 </Body>
                 <Right>
