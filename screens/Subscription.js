@@ -5,6 +5,7 @@ import Postcard from '../components/Postcard';
 import { DataLayerValue } from '../Context/DataLayer';
 import { Config } from '../config';
 import LottieView from 'lottie-react-native';
+import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
 
 const Home = (props) => {
     const [{ userToken, subscribeddata }, dispatch] = DataLayerValue();
@@ -35,12 +36,14 @@ const Home = (props) => {
         return () => {
         }
     }, [])
+    const {colors} = useTheme();
+
     const GoTo_top_function = () => {
         flatListRef.scrollToOffset({ animated: true, offset: 0 });
     }
     if (load) {
         return (
-            <View style={{ justifyContent: "center", flex: 1, backgroundColor: '#0E043B' }}>
+            <View style={{ justifyContent: "center", flex: 1, backgroundColor: colors.background }}>
                 <LottieView
                     loop={true}
                     autoPlay={true}
@@ -51,7 +54,7 @@ const Home = (props) => {
         );
     }
     return (
-        <SafeAreaView style={{ backgroundColor: '#000' }}>
+        <SafeAreaView >
             <Header {...props} />
             <FlatList
                 ref={(ref) => { flatListRef = ref; }}

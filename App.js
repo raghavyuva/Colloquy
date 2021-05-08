@@ -6,9 +6,14 @@ import { Ionicons } from '@expo/vector-icons';
 import { View, } from "react-native";
 import LottieView from 'lottie-react-native';
 import NetInfo from '@react-native-community/netinfo';
+
+import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
+
 function App() {
   const [loading, setLoading] = useState(true);
-  const [connected, setconnected] = useState(false)
+  const [connected, setconnected] = useState(false);
+  const {colors} = useTheme();
+
   useEffect(() => {
     Font.loadAsync({
       Roboto: require('native-base/Fonts/Roboto.ttf'),
@@ -24,7 +29,7 @@ function App() {
   }, [])
   if (loading) {
     return (
-      <View style={{ justifyContent: "center", flex: 1, backgroundColor: '#0E043B' }}>
+      <View style={{ justifyContent: "center", flex: 1, backgroundColor: colors.background}}>
         <LottieView
           loop={true}
           autoPlay={true}
@@ -36,7 +41,7 @@ function App() {
   }
   if (connected == false) {
     return (
-      <View style={{ justifyContent: "center", alignSelf: 'center', flex: 1, backgroundColor: '#0E043B' }}>
+      <View style={{ justifyContent: "center", alignSelf: 'center', flex: 1, backgroundColor: colors.background }}>
         <LottieView
           loop={true}
           autoPlay={true}

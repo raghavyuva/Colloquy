@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, TouchableOpacity, Image, FlatList, ImageBackground, Dimensions, Modal, SafeAreaView, Share, Alert, ToastAndroid, Platform } from 'react-native';
+import { StyleSheet, TouchableOpacity, Image, FlatList, ImageBackground, Dimensions, Modal, SafeAreaView, Share, Alert, ToastAndroid, Platform, } from 'react-native';
 import { CardItem, Text, Button, Left, View, Right, Body, Item, Input } from 'native-base';
 import { MaterialIcons, AntDesign, MaterialCommunityIcons, Entypo } from '@expo/vector-icons';
 import * as MediaLibrary from 'expo-media-library';
@@ -9,15 +9,23 @@ import { Config } from '../config';
 const { width, height } = Dimensions.get('window');
 import { DataLayerValue } from '../Context/DataLayer';
 import LottieView from 'lottie-react-native';
+import * as Sharing from 'expo-sharing';
+import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
+
 const Postcard = (props) => {
     const [{ userToken, UserId }, dispatch] = DataLayerValue();
     const [active, setactive] = useState(false);
     const [commenttext, setcommenttext] = useState('');
-
+    const [selectedImage, setSelectedImage] = React.useState(null);
+    const { colors } = useTheme();
+    styles(colors)
     useEffect(() => {
+        let IsMounted = true;
         return () => {
+            IsMounted = false;
         }
     }, [])
+
     const downloadFile = (item) => {
         Alert.alert(
             'Download Post',
@@ -111,6 +119,7 @@ const Postcard = (props) => {
                     postData: responseJson
                 })
             })
+
         fetch(`${Config.url}` + `/savednotification`, {
             headers: {
                 'Authorization': 'Bearer ' + `${userToken}`,
@@ -225,15 +234,17 @@ const Postcard = (props) => {
             alert(error);
         }
     }
-
+    const onGotoWhodid = (item) => {
+        props.navigation.navigate('external', { screen: 'wholiked', params: { item: item } })
+    }
     return (
         <TouchableOpacity
             activeOpacity={1}
-            style={styles.item}
+            style={styles(colors).item}
             onPress={() => NavigateFull(props.item)}
             onLongPress={() => { downloadFile(props.item) }}
         >
-            <CardItem style={{ flexDirection: 'row', backgroundColor: '#0e072b', margin: 0, padding: 0 }}>
+            <CardItem style={styles(colors).cardcontainer}>
                 <TouchableOpacity onPress={() => {
                     if (props.item.postedBy._id == UserId) {
                         props.navigation.navigate('external', { screen: 'profile' })
@@ -243,42 +254,45 @@ const Postcard = (props) => {
                 }}>
                     <Image
                         source={{ uri: props.item.postedBy.userphoto }}
-                        style={{ width: 60, height: 60, borderRadius: 100, margin: 5, borderWidth: 2, borderColor: "#17b978" }}
+                        style={styles(colors).Image}
                     />
                 </TouchableOpacity>
                 <Body style={{ margin: 10 }}>
-                    <Text style={{ color: "white", fontWeight: "500", fontSize: 18, }} numberOfLines={1}>{props.item.postedBy.username}</Text>
-                    <Text style={{ color: "white", fontWeight: "500", fontSize: 10, }} numberOfLines={1}>{props.item.createdAt.substring(0, 10)}</Text>
+                    <Text style={styles(colors).top} numberOfLines={1}>{props.item.postedBy.username}</Text>
+                    <Text style={styles(colors).capt} numberOfLines={1}>{props.item.createdAt.substring(0, 10)}</Text>
                 </Body>
                 <Right>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-around', backgroundColor: colors.card }}>
                         <TouchableOpacity onPress={() => {
                             Share.share({
                                 url: `${props.item.photo}`,
                                 title: `${props.item.postedBy.userName}`,
                                 message: `${props.item.caption}`,
                             })
+
                         }}>
-                            <MaterialCommunityIcons name="share-outline" size={28} color="white" />
+                            <MaterialCommunityIcons name="share-outline" size={32} color={colors.primary} />
                         </TouchableOpacity>
-                        {props.item.postedBy._id == UserId ? (
-                            <MaterialIcons name="delete" size={24} color="white" />
-                        ) : (
+                        <TouchableOpacity onPress={() => DeletePost(props.item)}>
+                            {props.item.postedBy._id == UserId ? (
+                                <MaterialCommunityIcons name="delete" size={24} color={colors.primary} />
+                            ) : (
                                 <View></View>
                             )}
+                        </TouchableOpacity>
+
                     </View>
                 </Right>
 
             </CardItem>
             <Image
                 source={{ uri: props.item.photo }}
-                style={styles.imageBackground}
+                style={styles(colors).imageBackground}
             >
             </Image>
-            <View style={styles.lowerContainer}>
-                <Text style={styles.titleText}></Text>
-                <Text style={styles.contentText} numberOfLines={2}>{props.item.caption} </Text>
-                <CardItem style={{ backgroundColor: "#0e072b", margin: 0, padding: 0 }} >
+            <View style={styles(colors).lowerContainer}>
+                <Text style={styles(colors).contentText} numberOfLines={2}>{props.item.caption} </Text>
+                <CardItem style={{ margin: 0, padding: 0, backgroundColor: colors.card }} >
                     <Left>
                         <Button transparent>
                             {props.item.votes.includes(UserId) ?
@@ -305,9 +319,9 @@ const Postcard = (props) => {
                                     </TouchableOpacity>
                                 )
                             }
-                            <Text style={{ textTransform: 'capitalize', color: 'white' }}>{props.item.votes.length} vote</Text>
+                            <Text style={styles(colors).likecomtext}>{props.item.votes.length} vote</Text>
                         </Button>
-                        <Button transparent textStyle={{ color: '#87838B' }} >
+                        <Button transparent  >
                             {props.item.likes.includes(UserId) ?
                                 (<TouchableOpacity onPress={() => {
                                     onUnlIKE(props.item);
@@ -323,13 +337,15 @@ const Postcard = (props) => {
                                     <TouchableOpacity onPress={() => {
                                         onlIKE(props.item);
                                     }}>
-                                        <MaterialCommunityIcons name="heart-outline" size={28} color="red" />
+                                        <MaterialCommunityIcons name="heart-outline" size={28} color={Config.primary} />
                                     </TouchableOpacity>
                                 )
                             }
-                            <Text style={{ textTransform: 'capitalize', color: 'white' }}>{props.item.likes.length} {props.item.likes.length > 1 ? 'likes' : "like"}</Text>
+                            <Text style={{ textTransform: 'capitalize', color: colors.text }}
+                                onPress={() => onGotoWhodid(props.item)}
+                            >{props.item.likes.length} {props.item.likes.length > 1 ? 'likes' : "like"}</Text>
                         </Button>
-                        <Button transparent textStyle={{ color: '#87838B' }} onPress={() => {
+                        <Button transparent onPress={() => {
                             setactive(!active)
                             setcommenttext('');
                         }}>
@@ -339,17 +355,17 @@ const Postcard = (props) => {
                                 style={{ width: 50, height: 50 }}
                                 source={require('../animation/3070-loader-design-for-messages.json')}
                             />
-                            <Text style={{ textTransform: 'capitalize', color: 'white' }}>{props.item.comments.length} </Text>
+                            <Text style={{ textTransform: 'capitalize', color: colors.text }}>{props.item.comments.length} </Text>
                         </Button>
                         <Button style={{}} onPress={() => { downloadFile(props.item) }} transparent>
-                            <AntDesign name="download" size={24} color="white" style={{ textAlign: 'right' }} />
+                            <AntDesign name="download" size={24} color={colors.primary} style={{ textAlign: 'right' }} />
                         </Button>
                     </Left>
                 </CardItem>
                 {
                     active ? (
-                        <Item style={{ backgroundColor: '#0e072b' }}>
-                            <Input style={styles.fieldinpu}
+                        <Item style={{}}>
+                            <Input style={styles(colors).fieldinpu}
                                 value={commenttext}
                                 onChangeText={(t) => setcommenttext(t)}
                                 placeholder='Add a comment' placeholderTextColor='#bababa'
@@ -360,43 +376,43 @@ const Postcard = (props) => {
                             </Button>
                         </Item>
                     ) : (
-                            <View>
-                            </View>
-                        )
+                        <View>
+                        </View>
+                    )
                 }
             </View>
         </TouchableOpacity>
-    )
-}
 
+    )
+
+}
 export default Postcard
-const styles = StyleSheet.create({
+const styles = (color) => StyleSheet.create({
     txt1: {
         fontSize: 22,
-        color: "#f0f0f0",
+        color: color.primarytext,
         alignSelf: "center",
         fontWeight: 'bold'
     },
     txt2: {
         fontSize: 18,
-        color: "#f0f0f0",
+        color: color.text,
         alignSelf: "center",
         fontWeight: '800'
     },
+    top: { color: color.text, fontWeight: "bold", fontSize: 15, },
     carousel: {
         height: '50%',
-        backgroundColor: "#f0f0f0",
-        paddingTop: 30,
+        paddingTop: 0,
     },
     item: {
-        borderWidth: 2,
-        backgroundColor: '#0e072b',
-        borderColor: '#251661',
+        borderWidth: 0.8,
+        borderColor: color.border,
         margin: 1,
         marginBottom: 10
     },
     imageBackground: {
-        backgroundColor: '#0e072b',
+
         width: "100%",
         height: 350,
         alignSelf: "center",
@@ -405,7 +421,7 @@ const styles = StyleSheet.create({
     rightTextContainer: {
         marginLeft: 'auto',
         marginRight: -2,
-        backgroundColor: 'rgba(49, 49, 51,0.5)',
+
         padding: 3,
         marginTop: 3,
         borderTopLeftRadius: 5,
@@ -413,22 +429,36 @@ const styles = StyleSheet.create({
     },
     rightText: { color: 'white' },
     lowerContainer: {
-        margin: 0
+        margin: 0,
+        borderWidth: 1,
+        borderColor: color.border,
+        backgroundColor: color.card
     },
     titleText: {
     },
     contentText: {
         fontSize: 12,
-        color: "#b0b0b0",
+        color: color.text,
         marginLeft: 10
     },
     animation: {
-        backgroundColor: "red",
+
         width: 100,
         height: 100,
         borderRadius: 50,
     },
     fieldinpu: {
         color: '#fff'
-    }
+    },
+    cardcontainer: {
+        flexDirection: 'row',
+        margin: 0,
+        padding: 0,
+        borderWidth: 1,
+        borderColor: color.border,
+        backgroundColor: color.card
+    },
+    capt: { color: color.text, fontWeight: "500", fontSize: 10, },
+    Image: { width: 60, height: 60, borderRadius: 100, margin: 5, borderWidth: 2, borderColor: color.border },
+    likecomtext: { textTransform: 'capitalize', color: color.text }
 })

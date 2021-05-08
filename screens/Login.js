@@ -16,6 +16,8 @@ const Login = ({ navigation }) => {
     const [photo, setphoto] = useState('');
     const [dob, setdob] = useState('');
     const [fname, setfname] = useState('');
+    const [pass, setpass] = useState('');
+    const [emailby, setemailby] = useState('');
     const onsignin = () => {
         if (!email || !password) {
             alert("input fields cannot be as empty as like that")
@@ -33,34 +35,73 @@ const Login = ({ navigation }) => {
             })
                 .then((response) => response.json())
                 .then((responseData) => {
-                    dispatch({
-                        type: 'LOGIN',
-                        token: responseData.token,
-                        id: responseData.user._id
-                    })
-                    SecureStore.setItemAsync('userToken', responseData.token);
-                    SecureStore.setItemAsync('UserId', responseData.user._id)
-                    setEmail(null);
-                    setPassword(null);
-                }) 
+                    if (responseData.message == 'Auth successfull') {
+                        dispatch({
+                            type: 'LOGIN',
+                            token: responseData.token,
+                            id: responseData.user._id
+                        })
+                        SecureStore.setItemAsync('userToken', responseData.token);
+                        SecureStore.setItemAsync('UserId', responseData.user._id)
+                        setEmail(null);
+                        setPassword(null);
+                    }
+                    else {
+                        alert(responseData.message);
+                    }
+                })
                 .done();
         }
     }
-    const Googlesingin = async() => {
+    const Loginwith = () => {
+        try {
+            fetch(`${Config.url}` + `/login`, {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: emailby,
+                    password: pass
+                })
+            })
+                .then((response) => response.json())
+                .then((responseData) => {
+                    console.log(responseData);
+                    if (responseData.message == 'Auth successfull') {
+                        dispatch({
+                            type: 'LOGIN',
+                            token: responseData.token,
+                            id: responseData.user._id
+                        })
+                        SecureStore.setItemAsync('userToken', responseData.token);
+                        SecureStore.setItemAsync('UserId', responseData.user._id)
+                        setemailby(null);
+                        setpass(null);
+                    }
+                    else {
+                        alert(responseData.message);
+                    }
+                })
+                .done();
+        } catch (error) {
+            alert(error)
+        }
+    }
+    const Googlesingin = async () => {
         try {
             const result = await Google.logInAsync({
-                androidClientId:'885939654496-oe5b3cgmfgpjfm6udhuvs87tt4k23e0j.apps.googleusercontent.com',
-                iosClientId:'885939654496-5u9so9k574i6f0eef8tagnjnkr22b22a.apps.googleusercontent.com',
+                androidClientId: Config.Android,
+                iosClientId: Config.IOS,
                 scopes: ["profile", "email"],
-                redirectUrl:'https://localhost.com/'
             });
             console.log(result)
             if (result.type === "success") {
                 console.log(result.user);
-                setEmail(result.user.email);
-                setfname(result.user.familyName);
-                setlname(result.user.givenName);
-                setphoto(result.user.photoUrl);
+                setemailby(result.user.email);
+                setpass(result.user.id);
+                Loginwith();
                 return result.accessToken;
             } else {
                 return { cancelled: true };
@@ -112,15 +153,23 @@ const Login = ({ navigation }) => {
                         }}>
                             <Text style={styles.link}> Register</Text>
                         </TouchableOpacity>
-                        <Button onPress={Googlesingin}>
-                            <Text>
-                                Signin With Google
-                                </Text>
-                        </Button>
+
                     </View>
+
                 </View>
 
             </View>
+            <Button style={{
+                backgroundColor: '#5B86E5',
+                justifyContent: 'center',
+                alignSelf: "center",
+                width: 210,
+                marginTop: 10
+            }}
+                onPress={Googlesingin}
+            >
+                <Text style={{ color: 'white' }}>Sign In With Google</Text>
+            </Button>
         </View>
     );
 };

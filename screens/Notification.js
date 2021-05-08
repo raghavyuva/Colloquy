@@ -6,11 +6,13 @@ import { DataLayerValue } from '../Context/DataLayer'
 import { Config } from '../config';
 import Notify from '../components/Notify';
 import LottieView from 'lottie-react-native';
+import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
 
 const Notification = (props) => {
     const [{ userToken, notifylist, UserId }, dispatch] = DataLayerValue();
     const [refresh, setrefresh] = useState(false)
     const [load, setload] = useState(true);
+    const {colors} = useTheme();
     useEffect(() => {
         fetching();
         setTimeout(() => {
@@ -22,13 +24,16 @@ const Notification = (props) => {
     }, [])
     const fetching = () => {
         try {
-            const Listener = fetch(`${Config.url}` + `/savednotification`, {
+            console.log(`${Config.url}` + `/savednotification`,)
+            fetch(`${Config.url}` + `/savednotification`, {
                 headers: {
                     'Authorization': 'Bearer ' + `${userToken}`,
-                }
+                },
+                method: 'GET'
             })
                 .then((response) => response.json())
                 .then((responseJson) => {
+                    console.log(responseJson)
                     dispatch({
                         type: "NOTIFYLIST",
                         data: responseJson
@@ -44,7 +49,7 @@ const Notification = (props) => {
     
     if (load) {
         return (
-            <View style={{ justifyContent: "center", flex: 1, backgroundColor: '#0E043B' }}>
+            <View style={{ justifyContent: "center", flex: 1, backgroundColor: colors.background }}>
                 <LottieView
                     loop={true}
                     autoPlay={true}
@@ -80,19 +85,6 @@ const Notification = (props) => {
 }
 
 export default Notification
-const styles = StyleSheet.create({
-    header: {
-        backgroundColor: '#0E043B',
-    },
-    feeds: {
-        color: "#FFF",
-        fontSize: 26,
-        marginTop: 10
-    },
-    follow: {
-        backgroundColor: '#053e42'
-    },
-    view: {
-        color: '#053e42'
-    }
+const styles =(colors)=> StyleSheet.create({
+
 })

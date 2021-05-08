@@ -84,7 +84,7 @@ const Home = (props) => {
 
     }
     return (
-        <SafeAreaView style={{ backgroundColor: '#0b032b' }}>
+        <SafeAreaView >  
             <Header {...props} />
 
             <FlatList

@@ -6,21 +6,29 @@ import {
 } from 'react-native-paper';
 import { DataLayerValue } from '../Context/DataLayer';
 import {  MaterialIcons } from '@expo/vector-icons';
+import { Config } from '../config';
+import { useFonts } from 'expo-font';
 
 const Headingbar = (props) => {
     const [{  user }, dispatch] = DataLayerValue()
     const [load, setload] = useState(true)
+    const [loaded] = useFonts({
+        Montserrat: require('../assets/Pacifico/Pacifico-Regular.ttf'),
+    });
+    if (!loaded) {
+        return null;
+    }
     return (
         <SafeAreaView>
             <View>
-                <Header style={{ backgroundColor: '#0E043B' }}>
+                <Header style={{ backgroundColor: Config.secondary}}>
                     <Left>
                         <Button transparent onPress={() => { props.navigation.openDrawer() }}>
                             <Icon name='menu' />
                         </Button>
                     </Left>
-                    <Body>
-                        <Title>Primish</Title>
+                    <Body> 
+                        <Title style={{ fontFamily: 'Montserrat',fontSize: 25,}}>Primish</Title>
                     </Body>
                     <Right>
                         <Button transparent  >

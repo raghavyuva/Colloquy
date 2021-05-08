@@ -22,13 +22,15 @@
         "googleSignIn":{
           "reservedClientId":"com.googleusercontent.apps.885939654496-5u9so9k574i6f0eef8tagnjnkr22b22a"
         }
-      }
+      },
+      "userInterfaceStyle": "automatic"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "userInterfaceStyle": "automatic"
     },
     "web": {
       "favicon": "./assets/favicon.png"

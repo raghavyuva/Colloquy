@@ -1,85 +1,109 @@
-import React, { useEffect } from 'react'
-import { Text, StyleSheet, View, TouchableOpacity, ImageBackground, Dimensions,  } from 'react-native'
+import React from 'react'
+import { Audio, Video } from 'expo-av';
 import Carousel from 'react-native-snap-carousel';
-import { Config } from '../config';
+import { Text, StyleSheet, View, TouchableOpacity, ImageBackground, Dimensions, Image } from 'react-native'
 const { width, height } = Dimensions.get('window');
-import {  Button, } from 'native-base';
-
 import { MaterialCommunityIcons, SimpleLineIcons } from '@expo/vector-icons';
-import { DataLayerValue } from '../Context/DataLayer';
-const Explore = () => {
-    const [{ userToken, ExploreData }, dispatch] = DataLayerValue()
+import { Button, } from 'native-base';
+import LottieView from 'lottie-react-native';
 
-    const fetching = async () => {
-        try {
-            const Listener = fetch(`${Config.url}` + `/allusers`, {
-                headers: {
-                    'Authorization': 'Bearer ' + `${userToken}`,
-                }
-            }).then((response) => response.json())
-                .then((responseJson) => {
-                    dispatch({
-                        type: "EXPLOREDATA",
-                        data: responseJson
-                    })
-                })
-        } catch (e) {
-            console.log(e);
+const api = [
+    {
+        id: 0,
+        video: 'https://player.vimeo.com/external/426694466.sd.mp4?s=05ae02363ecc932334b4396e8edf1f67a412e5fa&profile_id=139&oauth2_token_id=57447761',
+        poster: 'https://images.pexels.com/photos/3130392/pexels-photo-3130392.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
+        user: {
+            username: 'whinderssonnunes',
+            description: 'Como nasceu o passinho do TikTok',
+            music: 'som original',
+            avatar: 'https://images.pexels.com/photos/2087954/pexels-photo-2087954.png?auto=compress&cs=tinysrgb&dpr=1&w=500'
+        },
+        count: {
+            like: '1.1M',
+            comment: '4080',
+            share: '2800'
+        }
+    },
+    {
+        id: 0,
+        video: 'https://player.vimeo.com/external/484854769.sd.mp4?s=2c4d4231b550e633c0d79755483722bee9710fae&profile_id=165&oauth2_token_id=57447761',
+        poster: 'https://images.pexels.com/photos/3130392/pexels-photo-3130392.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
+        user: {
+            username: 'whinderssonnunes',
+            description: 'Como nasceu o passinho do TikTok',
+            music: 'som original',
+            avatar: 'https://images.pexels.com/photos/2087954/pexels-photo-2087954.png?auto=compress&cs=tinysrgb&dpr=1&w=500'
+        },
+        count: {
+            like: '1.1M',
+            comment: '4080',
+            share: '2800'
+        }
+    },
+    {
+        id: 1,
+        video: 'https://player.vimeo.com/external/426217695.hd.mp4?s=350d6ecc750b1a67a217b985016d8d75b3132cba&profile_id=169&oauth2_token_id=57447761',
+        poster: 'https://images.pexels.com/photos/3130392/pexels-photo-3130392.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
+        user: {
+            username: 'whinderssonnunes',
+            description: 'Como nasceu o passinho do TikTok',
+            music: 'som original',
+            avatar: 'https://images.pexels.com/photos/2087954/pexels-photo-2087954.png?auto=compress&cs=tinysrgb&dpr=1&w=500'
+        },
+        count: {
+            like: '1.1M',
+            comment: '4080',
+            share: '2800'
+        }
+    },
+    {
+        id: 1,
+        video: 'https://player.vimeo.com/external/437122153.sd.mp4?s=cf9f4cf0a46a41b8ae0172f004422900f5bc25ce&profile_id=165&oauth2_token_id=57447761',
+        poster: 'https://images.pexels.com/photos/2087954/pexels-photo-2087954.png?auto=compress&cs=tinysrgb&dpr=1&w=500',
+        user: {
+            username: 'luismariz',
+            description:
+                'é que eu fui chutar o balde e tinha concreto dentro #foryoupage #fyp',
+            music: 'som original',
+            avatar: 'https://images.pexels.com/photos/2087954/pexels-photo-2087954.png?auto=compress&cs=tinysrgb&dpr=1&w=500'
+        },
+        count: {
+            like: '380K',
+            comment: '2388',
+            share: '535'
         }
     }
+]
 
-    useEffect(() => {
-        fetching();
-        return () => {
-        }
-    }, [])
+const Explore = () => {
     const _renderItem = ({ item, index }) => {
+        console.log(item)
         return (
-            <View style={{ flex: 1 }}>
-                <ImageBackground source={{ uri: item.userphoto }} style={{ width: width, height: height, flex: 0.9 }} >
-                    <View style={{ margin: 20, flexDirection: 'row', justifyContent: 'space-between' }}>
-                        <TouchableOpacity>
-                            <SimpleLineIcons name="user" size={30} color="blue" />
-                        </TouchableOpacity>
-                        <TouchableOpacity>
-                            <MaterialCommunityIcons name="dots-vertical" size={30} color="blue" />
-                        </TouchableOpacity>
-                    </View>
-                    <View style={{ justifyContent: 'space-between', position: 'absolute', bottom: 10, flexDirection: 'row' }}>
-
-                    </View>
-                </ImageBackground>
+            <View style={{ flex: 1,backgroundColor:'black' }}>
+                <Video
+                    rate={1.0}
+                    volume={1.0}
+                    isMuted={false}
+                    posterSource={{ uri: item.poster }}
+                    source={{ uri: item.video }}
+                    resizeMode='cover'
+                    style={{ width: width, height: height-30, flex: 1, position: 'absolute' }}
+                    shouldPlay={true}
+                />
+                <Image
+                    source={{ uri: item.poster }}
+                    style={{ width: 60, height: 60, borderRadius: 100, margin: 5, borderWidth: 2, borderColor: "#17b978" }}
+                />
                 <View style={styles.mainscreen}>
-                    <View style={{ margin: 30 }}>
-                        <Text style={{ fontSize: 24, fontWeight: 'bold', }}>{item.username}</Text>
-                        <Text style={{ fontSize: 18, fontWeight: '100', }}>{item.tagline}</Text>
-                    </View>
-                    <Button style={{
-                        marginTop: 30, marginRight: 30, width: 100,
-                        justifyContent: 'center', borderWidth: 2, borderColor: 'red',
-                        borderRadius: 15
-                    }}
-                        transparent
-                    >
-                        <Text style={{ textAlign: 'center', color: 'red' }}>Follow</Text>
-                    </Button>
-                    <View style={{ position: 'absolute', bottom: 10, }}>
-                        <View style={{ flexDirection: "row", justifyContent: 'space-between' }}>
-                            <View style={{ marginRight: 100, marginLeft: 10 }}>
-                                <Text style={styles.titleText}>{item.followers.length}</Text>
-                                <Text style={styles.txt1}>followers</Text>
-                            </View>
-                            <View style={{ marginRight: 70, }}>
-                                <Text style={styles.titleText}>28 </Text>
-                                <Text style={styles.txt1}>posts</Text>
-                            </View>
-                            <View style={{ marginRight: 0 }}>
-                                <Text style={styles.titleText}>{item.following.length} </Text>
-                                <Text style={styles.txt1}>following</Text>
-                            </View>
-                        </View>
-
-                    </View>
+                    <TouchableOpacity>
+                    <LottieView
+                                        loop={false}
+                                        autoPlay={true}
+                                        autoSize
+                                        source={require('../animation/4607-like-animation.json')}
+                                    />
+                        <Text style={{ color: 'white' }}>{item.count.like}</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         );
@@ -87,11 +111,13 @@ const Explore = () => {
     return (
         <View style={{ flex: 1 }}>
             <Carousel
-                ref={(c) => { _carousel = c; }}
-                data={ExploreData}
+                data={api}
                 renderItem={_renderItem}
                 sliderWidth={400}
                 itemWidth={400}
+                layout='tinder'
+                autoplay
+                loop
             />
         </View>
     )
@@ -100,13 +126,11 @@ const Explore = () => {
 export default Explore
 const styles = StyleSheet.create({
     mainscreen: {
-        backgroundColor: "#fff",
-        flex: 0.3,
         width: width,
-        borderTopStartRadius: 50,
-        borderTopEndRadius: 50,
         flexDirection: "row",
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        bottom: 10,
+        position: 'absolute'
     },
     row1: {
         marginTop: 100,

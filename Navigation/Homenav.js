@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
-import {  View, } from 'native-base';
+import { View, } from 'native-base';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
 import { FontAwesome5, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
@@ -27,6 +27,8 @@ import { Config } from '../config';
 import { DataLayerValue } from '../Context/DataLayer';
 import LottieView from 'lottie-react-native';
 import Notes from '../screens/Notes';
+import WhoLiked from '../screens/WhoLiked';
+import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
 
 const Tab = createMaterialBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -49,7 +51,7 @@ function External() {
             <Stack.Screen name="events" component={Events} />
             <Stack.Screen name='chat' component={Chat} />
             <Stack.Screen name='notes' component={Notes} />
-
+            <Stack.Screen name='wholiked' component={WhoLiked} />
         </Stack.Navigator>
     );
 }
@@ -60,24 +62,24 @@ function HomeScreen() {
             initialRouteName="Home"
             activeColor="yellow"
             shifting={false}
-            barStyle={{ backgroundColor: '#0E043B' }}
+            barStyle={{ backgroundColor: Config.secondary }}
         >
             <Tab.Screen
                 name="Home" initialRouteName="Home"
                 component={Home}
                 options={{
                     tabBarLabel: 'Home',
-                    tabBarColor: '#0E043B',
+                    tabBarColor: Config.secondary,
                     tabBarIcon: ({ color }) => (
                         <MaterialCommunityIcons name="pentagon-outline" color={color} size={26} />
                     ),
                 }}
             />
             <Tab.Screen
-                name="Feed"
+                name="subscribed"
                 component={Subscription}
                 options={{
-                    tabBarLabel: 'Feed',
+                    tabBarLabel: 'subscribed',
                     tabBarColor: 'red',
                     tabBarIcon: ({ color }) => (
                         <MaterialCommunityIcons name="menu" color={color} size={26} />
@@ -124,6 +126,7 @@ function HomeScreen() {
 function Drawernav() {
     const [load, setload] = useState(true);
     const [{ userToken, isLoading, UserId }, dispatch] = DataLayerValue();
+    const {colors} = useTheme();
 
     const fetching = async () => {
         try {
@@ -153,7 +156,7 @@ function Drawernav() {
     }, [])
     if (load) {
         return (
-            <View style={{ justifyContent: "center", flex: 1, backgroundColor: '#0E043B' }}>
+            <View style={{ justifyContent: "center", flex: 1, backgroundColor: colors.background }}>
                 <LottieView
                     loop={true}
                     autoPlay={true}

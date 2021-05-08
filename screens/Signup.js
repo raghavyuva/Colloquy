@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View,TouchableOpacity, TextInput, Dimensions, SafeAreaView, } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, Dimensions, SafeAreaView, } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 const { height: screenHeight } = Dimensions.get('window');
 import { Config } from '../config';
 import * as SecureStore from 'expo-secure-store';
 import { DataLayerValue } from '../Context/DataLayer';
+import * as Google from "expo-google-app-auth";
+import { Button } from "native-base";
 
 const Signup = ({ navigation }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [age, setAge] = useState("");
     const [username, setUsername] = useState("");
-    const [usn, setusn] = useState('');
+    const [userphoto, setuserphoto] = useState('');
     const [{ userToken }, dispatch] = DataLayerValue();
     const onsignup = () => {
         if (!email || !password || !age || !username) {
@@ -29,23 +31,28 @@ const Signup = ({ navigation }) => {
                     password: password,
                     age: age,
                     username: username,
-                    usn: usn
+                    userphoto: userphoto
                 })
             })
                 .then((response) => response.json())
                 .then((responseData) => {
-                    dispatch({
-                        type: 'REGISTER',
-                        token: responseData.token,
-                        id: responseData.user._id
-                    })
-                    SecureStore.setItemAsync('userToken', responseData.token);
-                    SecureStore.setItemAsync('UserId', responseData.user._id)
-                    setEmail(null);
-                    setPassword(null);
-                    setAge(null);
-                    setUsername(null);
-                    setusn(null);
+                    console.log(responseData);
+                    if (responseData.message == 'signed up successfully') {
+                        dispatch({
+                            type: 'REGISTER',
+                            token: responseData.token,
+                            id: responseData.user._id
+                        })
+                        SecureStore.setItemAsync('userToken', responseData.token);
+                        SecureStore.setItemAsync('UserId', responseData.user._id)
+                        setEmail(null);
+                        setPassword(null);
+                        setAge(null);
+                        setUsername(null);
+                        setuserphoto(null);
+                    } else {
+                        alert(responseData.message);
+                    }
                 })
                 .done();
         }
@@ -55,6 +62,70 @@ const Signup = ({ navigation }) => {
         var randomstring = Math.random().toString(36).slice(-9);
         setPassword(randomstring);
     }
+    const Registerwith = () => {
+        try {
+            fetch(`${Config.url}` + `/signup`, {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password,
+                    age: age,
+                    username: username,
+                    userphoto: userphoto
+                })
+            })
+                .then((response) => response.json())
+                .then((responseData) => {
+                    console.log(responseData);
+                    if (responseData.message == 'signed up successfully') {
+                        dispatch({
+                            type: 'REGISTER',
+                            token: responseData.token,
+                            id: responseData.user._id
+                        })
+                        SecureStore.setItemAsync('userToken', responseData.token);
+                        SecureStore.setItemAsync('UserId', responseData.user._id)
+                        setEmail(null);
+                        setPassword(null);
+                        setAge(null);
+                        setUsername(null);
+                        setuserphoto(null);
+                    } else {
+                        alert(responseData.message);
+                    }
+                })
+                .done();
+        } catch (error) {
+            alert(error)
+        }
+    }
+    const Googlesignup = async () => {
+        try {
+            const result = await Google.logInAsync({
+                androidClientId: Config.Android,
+                iosClientId: Config.IOS,
+                scopes: ["profile", "email"],
+            });
+            if (result.type === "success") {
+                setEmail(result.user.email);
+                setPassword(result.user.id);
+                setAge(25);
+                setuserphoto(result.user.photoUrl);
+                setUsername(result.user.name);
+                Registerwith();
+                return result.accessToken;
+            } else {
+                return { cancelled: true };
+            }
+        } catch (e) {
+            alert(e);
+            return { error: true };
+        }
+    }
     return (
         <SafeAreaView>
             <View style={styles.main}>
@@ -62,34 +133,28 @@ const Signup = ({ navigation }) => {
                 <View style={styles.middle}>
                     <Text style={{ marginTop: 20, color: Config.light }}>Email</Text>
                     <TextInput
-                    style={{ borderBottomColor: "#fff", borderBottomWidth: 1, width: "100%", paddingLeft: 10, paddingBottom: 10, paddingRight: 10, fontSize: 18, color: "#fff", }}
+                        style={{ borderBottomColor: "#fff", borderBottomWidth: 1, width: "100%", paddingLeft: 10, paddingBottom: 10, paddingRight: 10, fontSize: 18, color: "#fff", }}
                         value={email}
                         onChangeText={(useremail) => setEmail(useremail)}
                     ></TextInput>
                     <Text style={{ marginTop: 20, color: Config.light }}>Password</Text>
                     <TextInput
-                        style={{ borderBottomColor: Config.light, borderBottomWidth: 1, width: "100%", paddingLeft: 10, paddingBottom: 10, paddingRight: 10, fontSize: 18,color: "#fff", }}
+                        style={{ borderBottomColor: Config.light, borderBottomWidth: 1, width: "100%", paddingLeft: 10, paddingBottom: 10, paddingRight: 10, fontSize: 18, color: "#fff", }}
                         value={password}
                         onChangeText={(userPassword) => setPassword(userPassword)}
                     ></TextInput>
                     <TouchableOpacity style={{ marginTop: 10, alignItems: "center" }} onPress={generatepass}><Text style={{ color: "#b3b3b3" }}>Generate Password?</Text></TouchableOpacity>
                     <Text style={{ marginTop: 20, color: Config.light }}>User Name</Text>
-                    <TextInput style={{ borderBottomColor: Config.light, borderBottomWidth: 1, width: "100%", paddingLeft: 10, paddingBottom: 10, paddingRight: 10, fontSize: 18 ,color: "#fff",}}
+                    <TextInput style={{ borderBottomColor: Config.light, borderBottomWidth: 1, width: "100%", paddingLeft: 10, paddingBottom: 10, paddingRight: 10, fontSize: 18, color: "#fff", }}
                         value={username}
                         onChangeText={(username) => setUsername(username)}
                     ></TextInput>
                     <Text style={{ marginTop: 20, color: Config.light }}>Age</Text>
                     <TextInput
-                        style={{ borderBottomColor: Config.light, borderBottomWidth: 1, width: "100%", paddingLeft: 10, paddingBottom: 10, paddingRight: 10, fontSize: 18,color: "#fff", }}
+                        style={{ borderBottomColor: Config.light, borderBottomWidth: 1, width: "100%", paddingLeft: 10, paddingBottom: 10, paddingRight: 10, fontSize: 18, color: "#fff", }}
                         value={age}
                         onChangeText={(userage) => setAge(userage)}
                         keyboardType='number-pad'
-                    ></TextInput>
-                    <Text style={{ marginTop: 20, color: Config.light }}>Usn</Text>
-                    <TextInput
-                        style={{ borderBottomColor: Config.light, borderBottomWidth: 1, width: "100%", paddingLeft: 10, paddingBottom: 10, paddingRight: 10, fontSize: 18,color: "#fff", }}
-                        value={usn}
-                        onChangeText={(userusn) => setusn(userusn)}
                     ></TextInput>
                 </View>
                 <View style={styles.bottom}>
@@ -119,6 +184,17 @@ const Signup = ({ navigation }) => {
                         </View>
                     </View>
                 </View>
+                <Button style={{
+                    backgroundColor: '#5B86E5',
+                    justifyContent: 'center',
+                    alignSelf: "center",
+                    width: 210,
+                    marginTop: 10
+                }}
+                    onPress={Googlesignup}
+                >
+                    <Text style={{ color: 'white' }}>Sign Up With Google</Text>
+                </Button>
             </View>
         </SafeAreaView>
     );

@@ -5,16 +5,20 @@ import { DataLayerValue } from '../Context/DataLayer';
 import Postcard from '../components/Postcard';
 import { Config } from '../config';
 import Headingbar from '../components/Header';
+import { useTheme } from '@react-navigation/native';
+import { color } from 'react-native-reanimated';
 const PostfullView = (props) => {
     const [{ userToken, fullview }, dispatch] = DataLayerValue();
     const [commenttext, setcommenttext] = useState('');
+    const { colors } = useTheme();
+    
     const commentui = ({ item, index }) => {
         return (
-            <CardItem style={{ backgroundColor: "#000", borderBottomWidth: 0.2, borderBottomColor: 'grey' }}>
+            <CardItem style={{ backgroundColor: colors.card, borderBottomWidth: 0.2, borderBottomColor: colors.border}}>
                 <Left>
                     <Body>
-                        <Text style={{ color: 'grey' }} >{item.postedBy.username}</Text>
-                        <Text style={{ fontSize: 18, color: "white", }}>{item.text}</Text>
+                        <Text style={{ color: colors.text }} >{item.postedBy.username}</Text>
+                        <Text style={{ fontSize: 18, color: colors.text, }}>{item.text}</Text>
                     </Body>
                     <Image
                         source={{ uri: fullview.postedBy.userphoto }}
@@ -83,7 +87,7 @@ const PostfullView = (props) => {
         }
     }
     return (
-        <KeyboardAvoidingView style={styles.screen}>
+        <KeyboardAvoidingView style={styles(colors).screen}>
             <Headingbar {...props}/>
             <FlatList
                 ListHeaderComponent={
@@ -93,13 +97,13 @@ const PostfullView = (props) => {
                 keyExtractor={(item) => item._id}
                 data={fullview.comments}
             />
-            <Item style={{ backgroundColor: '#4c4c4c' }}>
-                <Input style={styles.fieldinpu}
+            <Item style={{ backgroundColor:colors.border }}>
+                <Input style={styles(colors).fieldinpu}
                     value={commenttext}
                     onChangeText={(t) => setcommenttext(t)}
-                    placeholder='Add a comment' placeholderTextColor='#bababa' />
+                    placeholder='Add a comment' placeholderTextColor={colors.text}/>
                 <Button transparent style={{ borderRadius: 8 }} onPress={comment}>
-                    <Text style={{ textTransform: 'capitalize', color: '#fff' }}>comment</Text>
+                    <Text style={{ textTransform: 'capitalize', color: colors.text}}>comment</Text>
                 </Button>
             </Item>
         </KeyboardAvoidingView>
@@ -108,36 +112,36 @@ const PostfullView = (props) => {
 }
 
 export default PostfullView
-const styles = StyleSheet.create({
+const styles =(color)=> StyleSheet.create({
     screen: {
         justifyContent: 'center',
-        backgroundColor: 'black',
+        backgroundColor: color.card,
         flex: 1
     },
     txt1: {
         fontSize: 22,
-        color: "#f0f0f0",
+        color:color.text,
         alignSelf: "center",
         fontWeight: 'bold'
     },
     txt2: {
         fontSize: 18,
-        color: "#f0f0f0",
+        color: color.text,
         alignSelf: "center",
         fontWeight: '800'
     },
     carousel: {
-        backgroundColor: "#f0f0f0",
+        backgroundColor: color.card,
         paddingTop: 30,
     },
     item: {
         borderWidth: 2,
-        backgroundColor: '#000',
-        borderRadius: 1,
-        borderColor: 'grey',
+        backgroundColor: color.card,
+        borderRadius: 1, 
+        borderColor: color.border,
     },
     imageBackground: {
-        backgroundColor: '#482ff7',
+        backgroundColor: color.secondary,
         width: 300,
         height: 300,
         alignSelf: "center",
@@ -146,26 +150,26 @@ const styles = StyleSheet.create({
     rightTextContainer: {
         marginLeft: 'auto',
         marginRight: -2,
-        backgroundColor: 'rgba(49, 49, 51,0.5)',
+        backgroundColor: color.card,
         padding: 3,
         marginTop: 3,
         borderTopLeftRadius: 5,
         borderBottomLeftRadius: 5
     },
-    rightText: { color: 'white' },
+    rightText: { color: color.text },
     lowerContainer: {
         margin: 0
     },
     titleText: {
         fontWeight: 'bold',
         fontSize: 18,
-        color: "#fff"
+        color: color.text,
     },
     contentText: {
         fontSize: 12,
-        color: "#fff"
+        color:color.text
     },
     fieldinpu: {
-        color: '#fff'
+        color: color.text
     }
 })

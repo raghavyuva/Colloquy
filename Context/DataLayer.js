@@ -27,15 +27,22 @@ export const initialState = {
     notifylist:null,
     user:null,
     otherprofile:null,
+    defdarktheme: true,
 };
 const reducer = (state, action) => {
     switch (action.type) {
+        case 'THEME':
+            return {
+            ...state,
+            defdarktheme:action.data
+            };
         case 'RETRIEVE_TOKEN':
             return {
                 ...state,
                 userToken: action.token, 
                 UserId:action.id,
                 isLoading: false,
+
             };
         case 'LOGIN':
             return {

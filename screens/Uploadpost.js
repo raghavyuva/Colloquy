@@ -9,15 +9,36 @@ import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { DataLayerValue } from '../Context/DataLayer';
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 import * as MediaLibrary from 'expo-media-library';
-
+import Base64 from 'Base64';
 const Uploadpost = (props) => {
     const [image, setimage] = useState('');
     const [body, setbody] = useState('');
     const [postimage, setpostimage] = useState('https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.rZ6B0kNwWbL9IIbN90iAvgHaEK%26pid%3DApi&f=1')
     const [{ userToken, EventData }, dispatch] = DataLayerValue()
-    const [active, setactive] = useState(false);
+    const [activepermission, setactivepermission] = useState(false);
     const [loaclimages, setloaclimages] = useState('');
     const [first, setfirst] = useState('https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.rZ6B0kNwWbL9IIbN90iAvgHaEK%26pid%3DApi&f=1')
+    const getPermissionAsync = async () => {
+        if (Constants.platform.android || Constants.platform.ios) {
+            const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+            setactivepermission(status)
+            if (status !== 'granted') {
+                alert('Sorry, we need camera roll permissions to make this work!');
+                console.log(status)
+            }
+        }
+        const media = await MediaLibrary.getAssetsAsync({
+            mediaType: MediaLibrary.MediaType.photo,
+        });
+        setloaclimages(media.assets)
+        setfirst(media.assets[0].uri);
+        encode();
+    }
+    const encode = () => {
+        const encoded = Base64.btoa(first);
+        console.log(encoded)
+        setpostimage(encoded);
+    }
     const _upload = async () => {
         if (!postimage) {
             alert('no photo selected to post');
@@ -52,118 +73,62 @@ const Uploadpost = (props) => {
             })
         }
     }
-    const _pickImagefromCamera = async () => {
-        try {
-            let result = await ImagePicker.launchCameraAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.All,
-                allowsEditing: true,
-                quality: 1,
-                base64: true,
-                aspect: [4, 3],
-            });
-
-            if (!result.cancelled) {
-                const { uri, base64 } = result
-                setpostimage(uri);
-                setimage(base64)
-            }
-        } catch (E) {
-            console.log(E);
-        }
-    };
-    const _pickImagefromGallery = async () => {
-        try {
-            let result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.All,
-                allowsEditing: true,
-                quality: 1,
-                base64: true,
-                aspect: [4, 3],
-            });
-            if (!result.cancelled) {
-                const { uri, base64 } = result
-                setpostimage(uri);
-                setimage(base64)
-            }
-        } catch (E) {
-            console.log(E);
-        }
-    }
-    const getPermissionAsync = async () => {
-        const media = await MediaLibrary.getAssetsAsync({
-            mediaType: MediaLibrary.MediaType.photo,
-        });
-        setloaclimages(media.assets)
-        setfirst(media.assets[0]);
-        if (Constants.platform.ios) {
-            const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-            if (status !== 'granted') {
-                alert('Sorry, we need camera roll permissions to make this work!');
-            }
-            const { stt } = await MediaLibrary.requestPermissionsAsync(Permissions.CAMERA);
-            if (stt !== 'granted') {
-                alert('Sorry, we need camera permissions to make this work!');
-            }
-        }
-
-    }
     useEffect(() => {
         getPermissionAsync();
         return () => {
-
         }
     }, [])
-    const openPhotos = (uri) => {
-        switch (Platform.OS) {
-            case "ios":
-                Linking.openURL("photos-redirect://");
-                break;
-            case "android":
-                Linking.openURL("content://media/internal/images/media");
-                break;
-            default:
-                console.log("Could not open gallery app");
-        }
-    }
     return (
         <KeyboardAvoidingView style={styles.screen}>
             <Header style={styles.Header}>
                 <Right>
-                    <Button onPress={_upload} transparent>
+                    <Button transparent onPress={_upload}>
                         <Text>Post</Text>
                     </Button>
                 </Right>
             </Header>
-            <View>
-                <Image
-                    source={{
-                        uri:
-                            first.uri
-                    }}
-                    style={styles.logo}
-                />
-                <TextInput style={styles.inputonblur} placeholder='Write some content here' placeholderTextColor='#bcbcbc'
-                    onChangeText={(body) => setbody(body)} value={body}
-                          
-                />
-            </View>
-            <View style={{ borderTopLeftRadius: 30, borderTopRightRadius: 30, borderWidth: 2, borderColor: 'grey', }}>
-                <FlatList
-                    ref={(ref) => { flatListRef = ref; }}
-                    renderItem={({ item }) => {
-                        return (
-                            <TouchableOpacity onPress={() => setfirst(item)} style={{ borderRadius: 5, borderColor: 'grey', margin: 2 }}>
-                                <Image style={{ width: 200, height: 200, borderRadius: 5 }} source={{ uri: item.uri }} />
-                            </TouchableOpacity>
-                        );
-                    }}
-                    keyExtractor={(item, index) => index.toString()}
-                    data={loaclimages}
-                    numColumns={2}
-                    style={{ marginBottom: 0, marginTop: 18, margin: 10, borderRadius: 5 }}
-                />
-            </View>
+            {activepermission == 'granted' ? (
+                <>
+                    <View>
+                        <Image
+                            source={{
+                                uri:
+                                    first
+                            }}
+                            style={styles.logo}
+                        />
+                        <TextInput style={styles.inputonblur} placeholder='Write some content here' placeholderTextColor='#bcbcbc'
+                            onChangeText={(body) => setbody(body)} value={body}
 
+                        />
+                    </View>
+                    <View style={{ borderTopLeftRadius: 30, borderTopRightRadius: 30, borderWidth: 2, borderColor: 'grey', }}>
+                        <FlatList
+                            ref={(ref) => { flatListRef = ref; }}
+                            renderItem={({ item }) => {
+                                return (
+                                    <TouchableOpacity onPress={() => {
+                                        setfirst(item.uri)
+                                        encode();
+                                    }} style={{ borderRadius: 5, borderColor: 'grey', margin: 2 }}>
+                                        <Image style={{ width: 200, height: 200, borderRadius: 5 }} source={{ uri: item.uri }} />
+                                    </TouchableOpacity>
+                                );
+                            }}
+                            keyExtractor={(item, index) => index.toString()}
+                            data={loaclimages}
+                            numColumns={2}
+                            style={{ marginBottom: 500, marginTop: 18, margin: 10, borderRadius: 5 }}
+                        />
+                    </View>
+                </>
+            ) : (
+                    <>
+                        <View style={{ justifyContent: "center", flex: 1, backgroundColor: 'black' }}>
+                            <Text style={{ color: "white" }}>We Need Camera Roll Permissions To Make this work</Text>
+                        </View>
+                    </>
+                )}
         </KeyboardAvoidingView>
     )
 }
@@ -175,7 +140,7 @@ const styles = StyleSheet.create({
         height: screenHeight
     },
     logo: {
-        width:screenWidth,
+        width: screenWidth,
         height: screenHeight / 2.4,
         alignSelf: 'center',
     },
@@ -203,7 +168,7 @@ const styles = StyleSheet.create({
         height: 51,
         paddingLeft: 15,
         alignSelf: "center",
-        color:'white'
+        color: 'white'
     },
     fieldtitle: {
         color: 'white',

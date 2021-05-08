@@ -3,21 +3,32 @@ import {
     DrawerItem
 } from '@react-navigation/drawer';
 import React, { useState } from 'react';
-import { StyleSheet, View, Linking, Text } from 'react-native';
+import { StyleSheet, View, Linking, TouchableOpacity, Switch } from 'react-native';
 import { FontAwesome5, MaterialCommunityIcons, SimpleLineIcons, Octicons, FontAwesome, MaterialIcons, AntDesign } from '@expo/vector-icons';
 import { DataLayerValue } from '../Context/DataLayer';
 import * as SecureStore from 'expo-secure-store';
+import { Config } from '../config';
+import { Text } from 'native-base';
+import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
+import { useFonts } from 'expo-font';
+
 export function DrawerContent(props) {
-    const [{ userToken }, dispatch] = DataLayerValue()
+    const [{ userToken, defdarktheme }, dispatch] = DataLayerValue()
     const [activebar, setactivebar] = useState(true);
     const [cnt, setcnt] = useState(0);
-    const [activebar1, setactivebar1] = useState(false)
-    const [activebar2, setactivebar2] = useState(false)
-    const [activebar3, setactivebar3] = useState(false)
-    const [activebar4, setactivebar4] = useState(false)
-    const [activebar5, setactivebar5] = useState(false)
-    const [activebar6, setactivebar6] = useState(false)
-
+    const [toggle, setToggle] = useState(true);
+    const toggleFunction = () => {
+        setToggle(!toggle);
+        dispatch({ type: 'THEME', data: !defdarktheme })
+    };
+    const { colors } = useTheme();
+    const [load, setload] = useState(true)
+    const [loaded] = useFonts({
+        Montserrat: require('../assets/Pacifico/Pacifico-Regular.ttf'),
+    });
+    if (!loaded) {
+        return null;
+    }
     const signOut = () => {
         SecureStore.deleteItemAsync('userToken');
         SecureStore.deleteItemAsync('User');
@@ -25,89 +36,67 @@ export function DrawerContent(props) {
             type: 'LOGOUT',
         })
     }
-    const ChangeBar = (itm) => {
-        switch (itm) {
-            case 0: setactivebar(true); setactivebar1(false); setactivebar2(false); setactivebar3(false); setactivebar4(false); setactivebar5(false); setactivebar6(false);
-                break;
-            case 1: setactivebar(false); setactivebar1(true); setactivebar2(false); setactivebar3(false); setactivebar4(false); setactivebar5(false); setactivebar6(false);
-                break;
-            case 2: setactivebar(false); setactivebar1(false); setactivebar2(true); setactivebar3(false); setactivebar4(false); setactivebar5(false); setactivebar6(false);
-                break;
-            case 3: setactivebar(false); setactivebar1(false); setactivebar2(false); setactivebar3(true); setactivebar4(false); setactivebar5(false); setactivebar6(false);
-                break;
-            case 4: setactivebar(false); setactivebar1(false); setactivebar2(false); setactivebar3(false); setactivebar4(true); setactivebar5(false); setactivebar6(false);
-                break;
-            case 5: setactivebar(false); setactivebar1(false); setactivebar2(false); setactivebar3(false); setactivebar4(false); setactivebar5(true); setactivebar6(false);
-                break;
-            case 6: setactivebar(false); setactivebar1(false); setactivebar2(false); setactivebar3(false); setactivebar4(false); setactivebar5(false); setactivebar6(true);
-                break;
-            default: setactivebar(true); setactivebar1(false); setactivebar2(false); setactivebar3(false); setactivebar4(false); setactivebar5(false); setactivebar6(false);
-                break;
-        }
-    }
     return (
-        <View style={{ flex: 1, backgroundColor: '#0E043B' }}>
-            <View style={styles.drawerContent}>
-                <View style={styles.userInfoSection}>
+        <View style={styles(colors).container}>
+            <View style={styles(colors).drawerContent}>
+                <View style={styles(colors).userInfoSection}>
                     <View style={{ flexDirection: 'row', marginTop: 15 }}>
 
                         <View style={{ marginLeft: 15, flexDirection: 'column' }}>
-                            <Text style={styles.title}>Primish</Text>
-                            <Text style={styles.caption}>Unleash your potential</Text>
+                            <Text style={styles(colors).title}>Primish</Text>
+                            <Text style={styles(colors).caption}>Unleash your potential</Text>
                         </View>
                     </View>
                 </View>
                 <DrawerContentScrollView {...props}>
-                    <View style={styles.drawerSection}>
+                    <View style={styles(colors).drawerSection}>
                         <DrawerItem
                             icon={({ color, size }) => (
-                                <AntDesign name="home" size={24} color="white" />)}
-                            labelStyle={{ color: 'white' }}
+                                <AntDesign name="home" size={24} color={colors.primary} />)}
+                            labelStyle={{ color: colors.text }}
                             label="Home"
-                            style={{ marginTop: 20 }}
+                            style={styles(colors).bar}
                             onPress={
                                 () => {
 
                                     props.navigation.navigate('external', { screen: 'Home' })
-                                    ChangeBar(0)
+
                                 }
                             }
-                            focused={activebar}
-                            activeBackgroundColor='#2e235e'
+
                         />
                         <DrawerItem
                             icon={({ color, size }) => (
-                                <SimpleLineIcons name="user-follow" size={24} color="white" />)}
-                            labelStyle={{ color: 'white' }}
+                                <SimpleLineIcons name="user-follow" size={24} color={colors.primary} />)}
+                            labelStyle={{ color: colors.text }}
                             label="Followers"
-                            style={{ marginTop: 20 }}
+                            style={styles(colors).bar}
                             onPress={() => {
-                                ChangeBar(1)
+
                                 props.navigation.navigate('external', { screen: 'follower' })
 
                             }}
-                            focused={activebar1}
-                            activeBackgroundColor='#2e235e'
+
+
                         />
                         <DrawerItem
                             icon={({ color, size }) => (
-                                <SimpleLineIcons name="user-following" size={24} color="white" />)}
-                            labelStyle={{ color: 'white' }}
+                                <SimpleLineIcons name="user-following" size={24} color={colors.primary} />)}
+                            labelStyle={{ color: colors.text }}
                             label="Following"
-                            style={{ marginTop: 20 }}
+                            style={styles(colors).bar}
                             onPress={() => {
                                 props.navigation.navigate('external', { screen: 'following' })
-                                ChangeBar(2)
+
                             }}
-                            focused={activebar2}
-                            activeBackgroundColor='#2e235e'
+
                         />
                         <DrawerItem
                             icon={({ color, size }) => (
-                                <MaterialCommunityIcons name="pen" size={24} color="white" />)}
-                            labelStyle={{ color: 'white' }}
+                                <MaterialCommunityIcons name="pen" size={24} color={colors.primary} />)}
+                            labelStyle={{ color: colors.text }}
                             label="Mock Interview"
-                            style={{ marginTop: 20 }}
+                            style={styles(colors).bar}
                             onPress={() => {
                                 props.navigation.navigate('external', { screen: 'notes' })
                             }}
@@ -115,95 +104,102 @@ export function DrawerContent(props) {
 
                         <DrawerItem
                             icon={({ color, size }) => (
-                                <MaterialCommunityIcons name="feature-search" size={24} color="white" />
+                                <MaterialCommunityIcons name="feature-search" size={24} color={colors.primary} />
                             )}
                             label="Events"
-                            labelStyle={{ color: 'white' }}
-                            style={{ marginTop: 20 }}
+                            labelStyle={{ color: colors.text }}
+                            style={styles(colors).bar}
                             onPress={() => {
                                 props.navigation.navigate('external', { screen: 'events' })
-                                ChangeBar(4)
+
                             }}
-                            focused={activebar4}
                             activeBackgroundColor='#2e235e'
                         />
                         <DrawerItem
                             icon={({ color, size }) => (
-                                <SimpleLineIcons name="support" size={24} color="white" />
+                                <SimpleLineIcons name="support" size={24} color={colors.primary} />
                             )}
-                            labelStyle={{ color: 'white' }}
+                            labelStyle={{ color: colors.text }}
                             label="Support"
-                            style={{ marginTop: 20 }}
+                            style={styles(colors).bar}
                             onPress={() => Linking.openURL('https://guidemic.in')}
 
                         />
                         <DrawerItem
                             icon={({ color, size }) => (
-                                <Octicons name="mail-read" size={24} color="white" />
+                                <Octicons name="mail-read" size={24} color={colors.primary} />
                             )}
-                            labelStyle={{ color: 'white' }}
+                            labelStyle={{ color: colors.text }}
                             label="Terms"
-                            style={{ marginTop: 20 }}
+                            style={styles(colors).bar}
                             onPress={() => {
                                 props.navigation.navigate('external', { screen: 'segment' })
-                                ChangeBar(5)
+
                             }
                             }
-                            focused={activebar5}
-                            activeBackgroundColor='#2e235e'
+
+
                         />
                         <DrawerItem
                             icon={({ color, size }) => (
-                                <FontAwesome5 name="hire-a-helper" size={24} color="white" />
+                                <FontAwesome5 name="hire-a-helper" size={24} color={colors.primary} />
                             )}
-                            labelStyle={{ color: 'white' }}
+                            labelStyle={{ color: colors.text }}
                             label="Hire Helper"
-                            style={{ marginTop: 20 }}
+                            style={styles(colors).bar}
                             onPress={() => Linking.openURL('https://raghav.orak.in/')}
 
                         />
                         <DrawerItem
                             icon={({ color, size }) => (
-                                <FontAwesome name="telegram" size={24} color="white" />
+                                <FontAwesome name="telegram" size={24} color={colors.primary} />
                             )}
-                            labelStyle={{ color: 'white' }}
+                            labelStyle={{ color: colors.text }}
                             label="Join Channel"
-                            style={{ marginTop: 20 }}
+                            style={styles(colors).bar}
                             onPress={() => Linking.openURL('https://t.me/orakin')}
 
                         />
                         <DrawerItem
                             icon={({ color, size }) => (
-                                <MaterialIcons name="feedback" size={24} color="white" />
+                                <MaterialIcons name="feedback" size={24} color={colors.primary} />
                             )}
-                            labelStyle={{ color: 'white' }}
+                            labelStyle={{ color: colors.text }}
                             label="Feedback"
-                            style={{ marginTop: 20 }}
+                            style={styles(colors).bar}
                             onPress={() => {
                                 props.navigation.navigate('external', { screen: 'feedback' })
-                                ChangeBar(6)
+
                             }}
-                            focused={activebar6}
-                            activeBackgroundColor='#2e235e'
+
                         />
                     </View>
                 </DrawerContentScrollView>
-                <View style={styles.bottomDrawerSection}>
+                <View style={{ flexDirection: 'row' ,justifyContent:'space-between',}}>
+                        <Text style={{ color: colors.text }}>{toggle ? "Light Theme" : 'Dark Theme'}</Text>
+                        <Switch
+                            trackColor={{ false: 'red', true: 'purple' }}
+                            thumbColor={colors.primary}
+                            ios_backgroundColor="gray"
+                            onValueChange={toggleFunction}
+                            value={toggle}
+                        />
+                    </View>
+                <View style={defdarktheme?styles(colors).bottomDrawerSection:styles(colors).botmsect}>
                     <DrawerItem
                         icon={({ color, size }) => (
-                            <MaterialCommunityIcons name="exit-to-app" size={24} color="white" />
+                            <MaterialCommunityIcons name="exit-to-app" size={24} color={colors.primary} />
                         )}
                         label="Sign Out"
-                        labelStyle={{ color: 'white' }}
+                        labelStyle={{ color: colors.text ,}}
                         onPress={() => signOut()}
                     />
                 </View>
             </View>
-
         </View>
     );
 }
-const styles = StyleSheet.create({
+const styles=(colors)=> StyleSheet.create({
     drawerContent: {
         flex: 1,
     },
@@ -211,11 +207,17 @@ const styles = StyleSheet.create({
         fontSize: 28,
         marginTop: 15,
         fontWeight: 'bold',
-        color: '#f3f169',
+        color: 'blue',
+        fontFamily:'Montserrat'
     },
+    container:
+    {
+        flex: 1,
+    }
+    ,
     caption: {
         fontSize: 14,
-        color: '#f3f',
+        color: colors.text,
     },
     userInfoSection: {
         paddingLeft: 20,
@@ -239,8 +241,15 @@ const styles = StyleSheet.create({
     },
     bottomDrawerSection: {
         marginBottom: 15,
-        borderTopColor: 'yellow',
-        borderTopWidth: 3
+        borderTopColor:'yellow',
+        borderTopWidth: 2,
+
+    },
+    botmsect:{
+        marginBottom: 15,
+        borderTopColor:'black',
+        borderTopWidth: 2,
+
     },
     preference: {
         flexDirection: 'row',
@@ -249,6 +258,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
     },
     label: {
-        color: "white"
-    }
+        color: Config.texticons
+    },
+    bar: { marginTop: 20, backgroundColor: colors.card,borderColor: colors.border,borderWidth:2}
 })

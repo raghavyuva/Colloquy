@@ -35,7 +35,7 @@ const Events = (props) => {
             })
     }
     return (
-        <View style={{ backgroundColor: "#0b032b" }}>
+        <View >
             <Header {...props} />
             <View style={styles.top}>
                 <ImageBackground
@@ -60,7 +60,7 @@ const Events = (props) => {
                 onScrollAnimationEnd
                 scrollToOverflowEnabled
                 onEndReachedThreshold={0}
-                style={{ marginBottom: 50 }}
+                style={{ marginBottom: 60 }}
                 refreshing={refresh}
                 onRefresh={fetching}
             />
