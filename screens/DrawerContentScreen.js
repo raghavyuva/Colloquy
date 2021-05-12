@@ -3,7 +3,7 @@ import {
     DrawerItem
 } from '@react-navigation/drawer';
 import React, { useState } from 'react';
-import { StyleSheet, View, Linking, TouchableOpacity, Switch } from 'react-native';
+import { StyleSheet, View, Linking, TouchableOpacity, Switch,Dimensions } from 'react-native';
 import { FontAwesome5, MaterialCommunityIcons, SimpleLineIcons, Octicons, FontAwesome, MaterialIcons, AntDesign } from '@expo/vector-icons';
 import { DataLayerValue } from '../Context/DataLayer';
 import * as SecureStore from 'expo-secure-store';
@@ -11,6 +11,8 @@ import { Config } from '../config';
 import { Text } from 'native-base';
 import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
+const { width, height } = Dimensions.get('window');
+import {  Divider,  } from 'react-native-paper';
 
 export function DrawerContent(props) {
     const [{ userToken, defdarktheme }, dispatch] = DataLayerValue()
@@ -95,13 +97,12 @@ export function DrawerContent(props) {
                             icon={({ color, size }) => (
                                 <MaterialCommunityIcons name="pen" size={24} color={colors.primary} />)}
                             labelStyle={{ color: colors.text }}
-                            label="Mock Interview"
+                            label="Interview"
                             style={styles(colors).bar}
                             onPress={() => {
                                 props.navigation.navigate('external', { screen: 'notes' })
                             }}
                         />
-
                         <DrawerItem
                             icon={({ color, size }) => (
                                 <MaterialCommunityIcons name="feature-search" size={24} color={colors.primary} />
@@ -113,8 +114,8 @@ export function DrawerContent(props) {
                                 props.navigation.navigate('external', { screen: 'events' })
 
                             }}
-                            activeBackgroundColor='#2e235e'
                         />
+                       
                         <DrawerItem
                             icon={({ color, size }) => (
                                 <SimpleLineIcons name="support" size={24} color={colors.primary} />
@@ -175,16 +176,6 @@ export function DrawerContent(props) {
                         />
                     </View>
                 </DrawerContentScrollView>
-                <View style={{ flexDirection: 'row' ,justifyContent:'space-between',}}>
-                        <Text style={{ color: colors.text }}>{toggle ? "Light Theme" : 'Dark Theme'}</Text>
-                        <Switch
-                            trackColor={{ false: 'red', true: 'purple' }}
-                            thumbColor={colors.primary}
-                            ios_backgroundColor="gray"
-                            onValueChange={toggleFunction}
-                            value={toggle}
-                        />
-                    </View>
                 <View style={defdarktheme?styles(colors).bottomDrawerSection:styles(colors).botmsect}>
                     <DrawerItem
                         icon={({ color, size }) => (
@@ -202,12 +193,13 @@ export function DrawerContent(props) {
 const styles=(colors)=> StyleSheet.create({
     drawerContent: {
         flex: 1,
+
     },
     title: {
         fontSize: 28,
         marginTop: 15,
         fontWeight: 'bold',
-        color: 'blue',
+        color: 'white',
         fontFamily:'Montserrat'
     },
     container:
@@ -260,5 +252,5 @@ const styles=(colors)=> StyleSheet.create({
     label: {
         color: Config.texticons
     },
-    bar: { marginTop: 20, backgroundColor: colors.card,borderColor: colors.border,borderWidth:2}
+    bar: { marginTop: 10, backgroundColor: colors.card,}
 })

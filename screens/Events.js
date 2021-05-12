@@ -5,13 +5,20 @@ import Header from '../components/Header';
 const { width, } = Dimensions.get('window');
 import { Config } from '../config';
 import { DataLayerValue } from '../Context/DataLayer';
+import LottieView from 'lottie-react-native';
+import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
 
 const Events = (props) => {
     const [{ userToken, EventData }, dispatch] = DataLayerValue()
     const [refresh, setrefresh] = useState(false)
+    const [load, setload] = useState(true);
+    const {colors} = useTheme();
 
     useEffect(() => {
         fetching()
+        setTimeout(() => {
+            setload(false);
+          }, 2000); 
         return () => {
         }
     }, [])
@@ -34,19 +41,21 @@ const Events = (props) => {
                 setrefresh(false);
             })
     }
+    if (load) { 
+        return (
+          <View style={{ justifyContent: "center", flex: 1, backgroundColor:colors.background }}>
+            <LottieView
+              loop={true}
+              autoPlay={true}
+              source={require('../animation/5328-loading-11.json')}
+              style={{ width: 400, height: 400 }}
+            />
+          </View>
+        )
+      }
     return (
         <View >
             <Header {...props} />
-            <View style={styles.top}>
-                <ImageBackground
-                    source={require('../assets/event.png')}
-                    style={{ width: width, height: "100%" }}
-                >
-                    <View style={{ position: "absolute", bottom: 0 }}>
-                        <Text style={{ fontSize: 24, fontWeight: 'bold', color: "black" }}>5 Upcoming Events Listed</Text>
-                    </View>
-                </ImageBackground>
-            </View>
             <FlatList
                 ref={(ref) => { flatListRef = ref; }}
                 renderItem={({ item }) => {
@@ -60,7 +69,7 @@ const Events = (props) => {
                 onScrollAnimationEnd
                 scrollToOverflowEnabled
                 onEndReachedThreshold={0}
-                style={{ marginBottom: 60 }}
+                style={{ }}
                 refreshing={refresh}
                 onRefresh={fetching}
             />

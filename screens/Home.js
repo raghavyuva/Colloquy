@@ -93,7 +93,7 @@ const Home = (props) => {
                     return (
                         <Postcard item={item} {...props} />
                     );
-                }}
+                }} 
                 keyExtractor={(item, index) => index.toString()}
                 data={postData}
                 onEndReached={fetching && GoTo_top_function}

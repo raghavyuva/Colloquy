@@ -41,7 +41,21 @@ const Following = (props) => {
 
     }
   }, [])
-  if (load) {
+  if (followinglist == 0 || followinglist == null) {
+    return(
+      <View style={{ flex: 1, backgroundColor: colors.background,}}>
+                <Header {...props} />
+                <View style={{ justifyContent: 'center',alignSelf: 'center',flex: 1}}>
+                <Image
+                    source={{uri:'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fcdn.onlinewebfonts.com%2Fsvg%2Fimg_412721.png&f=1&nofb=1'}}
+                    style={{ width: width, height: 400, alignSelf: 'center', marginLeft: 2,justifyContent: 'center', }}
+                />
+                </View>
+              
+            </View>
+    )
+  }
+  if (load) { 
     return (
       <View style={{ justifyContent: "center", flex: 1, backgroundColor:colors.background }}>
         <LottieView

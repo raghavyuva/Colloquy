@@ -11,12 +11,19 @@ import { DataLayerValue } from '../Context/DataLayer';
 import LottieView from 'lottie-react-native';
 import * as Sharing from 'expo-sharing';
 import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
+import { Menu, Divider, Provider } from 'react-native-paper';
 
 const Postcard = (props) => {
     const [{ userToken, UserId }, dispatch] = DataLayerValue();
     const [active, setactive] = useState(false);
     const [commenttext, setcommenttext] = useState('');
     const [selectedImage, setSelectedImage] = React.useState(null);
+    const [votecount, setvotecount] = useState([]);
+    const [visible, setVisible] = React.useState(false);
+
+    const openMenu = () => setVisible(true);
+
+    const closeMenu = () => setVisible(false);
     const { colors } = useTheme();
     styles(colors)
     useEffect(() => {
@@ -237,152 +244,158 @@ const Postcard = (props) => {
     const onGotoWhodid = (item) => {
         props.navigation.navigate('external', { screen: 'wholiked', params: { item: item } })
     }
-    return (
-        <TouchableOpacity
-            activeOpacity={1}
-            style={styles(colors).item}
-            onPress={() => NavigateFull(props.item)}
-            onLongPress={() => { downloadFile(props.item) }}
-        >
-            <CardItem style={styles(colors).cardcontainer}>
-                <TouchableOpacity onPress={() => {
-                    if (props.item.postedBy._id == UserId) {
-                        props.navigation.navigate('external', { screen: 'profile' })
-                    } else {
-                        props.navigation.navigate('external', { screen: 'userpro', params: { thread: props.item.postedBy._id } })
-                    }
-                }}>
-                    <Image
-                        source={{ uri: props.item.postedBy.userphoto }}
-                        style={styles(colors).Image}
-                    />
-                </TouchableOpacity>
-                <Body style={{ margin: 10 }}>
-                    <Text style={styles(colors).top} numberOfLines={1}>{props.item.postedBy.username}</Text>
-                    <Text style={styles(colors).capt} numberOfLines={1}>{props.item.createdAt.substring(0, 10)}</Text>
-                </Body>
-                <Right>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-around', backgroundColor: colors.card }}>
-                        <TouchableOpacity onPress={() => {
-                            Share.share({
-                                url: `${props.item.photo}`,
-                                title: `${props.item.postedBy.userName}`,
-                                message: `${props.item.caption}`,
-                            })
-
-                        }}>
-                            <MaterialCommunityIcons name="share-outline" size={32} color={colors.primary} />
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => DeletePost(props.item)}>
-                            {props.item.postedBy._id == UserId ? (
-                                <MaterialCommunityIcons name="delete" size={24} color={colors.primary} />
-                            ) : (
-                                <View></View>
-                            )}
-                        </TouchableOpacity>
-
-                    </View>
-                </Right>
-
-            </CardItem>
-            <Image
-                source={{ uri: props.item.photo }}
-                style={styles(colors).imageBackground}
-            >
-            </Image>
-            <View style={styles(colors).lowerContainer}>
-                <Text style={styles(colors).contentText} numberOfLines={2}>{props.item.caption} </Text>
-                <CardItem style={{ margin: 0, padding: 0, backgroundColor: colors.card }} >
-                    <Left>
-                        <Button transparent>
-                            {props.item.votes.includes(UserId) ?
-                                (<TouchableOpacity onPress={() => {
-                                    onVotecancell(props.item)
-                                }}>
-                                    <LottieView
-                                        loop={false}
-                                        autoPlay={true}
-                                        autoSize
-                                        source={require('../animation/3982-thumbs-up.json')}
-                                    />
-                                </TouchableOpacity>
-                                ) : (
-                                    <TouchableOpacity onPress={() => {
-                                        onVote(props.item);
-                                    }}>
-                                        <LottieView
-                                            loop={false}
-                                            autoPlay={true}
-                                            autoSize
-                                            source={require('../animation/3983-thumbs-down.json')}
-                                        />
-                                    </TouchableOpacity>
-                                )
-                            }
-                            <Text style={styles(colors).likecomtext}>{props.item.votes.length} vote</Text>
-                        </Button>
-                        <Button transparent  >
-                            {props.item.likes.includes(UserId) ?
-                                (<TouchableOpacity onPress={() => {
-                                    onUnlIKE(props.item);
-                                }}>
-                                    <LottieView
-                                        loop={false}
-                                        autoPlay={true}
-                                        autoSize
-                                        source={require('../animation/4607-like-animation.json')}
-                                    />
-                                </TouchableOpacity>
-                                ) : (
-                                    <TouchableOpacity onPress={() => {
-                                        onlIKE(props.item);
-                                    }}>
-                                        <MaterialCommunityIcons name="heart-outline" size={28} color={Config.primary} />
-                                    </TouchableOpacity>
-                                )
-                            }
-                            <Text style={{ textTransform: 'capitalize', color: colors.text }}
-                                onPress={() => onGotoWhodid(props.item)}
-                            >{props.item.likes.length} {props.item.likes.length > 1 ? 'likes' : "like"}</Text>
-                        </Button>
-                        <Button transparent onPress={() => {
-                            setactive(!active)
-                            setcommenttext('');
-                        }}>
-                            <LottieView
-                                loop={false}
-                                autoPlay={true}
-                                style={{ width: 50, height: 50 }}
-                                source={require('../animation/3070-loader-design-for-messages.json')}
-                            />
-                            <Text style={{ textTransform: 'capitalize', color: colors.text }}>{props.item.comments.length} </Text>
-                        </Button>
-                        <Button style={{}} onPress={() => { downloadFile(props.item) }} transparent>
-                            <AntDesign name="download" size={24} color={colors.primary} style={{ textAlign: 'right' }} />
-                        </Button>
-                    </Left>
-                </CardItem>
-                {
-                    active ? (
-                        <Item style={{}}>
-                            <Input style={styles(colors).fieldinpu}
-                                value={commenttext}
-                                onChangeText={(t) => setcommenttext(t)}
-                                placeholder='Add a comment' placeholderTextColor='#bababa'
-
-                            />
-                            <Button transparent style={{ borderRadius: 8 }} >
-                                <Text style={{ textTransform: 'capitalize', color: '#fff' }}>comment</Text>
-                            </Button>
-                        </Item>
-                    ) : (
-                        <View>
-                        </View>
-                    )
-                }
+    if (props.item == null || undefined) {
+        return (
+            <View style={{ justifyContent: "center", flex: 1, backgroundColor: colors.background }}>
+                <Image
+                    source={require('../assets/emptyy.png')}
+                    style={{ width: width, height: height, alignSelf: 'center' }}
+                />
             </View>
-        </TouchableOpacity>
+        )
+    }
+    if (props.item.length <= 0) {
+        return (
+            <View style={{ justifyContent: "center", flex: 1, backgroundColor: colors.background }}>
+                <Image
+                    source={require('../assets/emptyy.png')}
+                    style={{ width: width, height: height, alignSelf: 'center' }}
+                />
+            </View>
+        )
+    }
+    return (
+        <Provider>
 
+            <TouchableOpacity
+                activeOpacity={1}
+                style={styles(colors).item}
+                onPress={() => NavigateFull(props.item)}
+                onLongPress={() => { downloadFile(props.item) }}
+            >
+                <CardItem style={styles(colors).cardcontainer}>
+                    <TouchableOpacity onPress={() => {
+                        if (props.item.postedBy._id == UserId) {
+                            props.navigation.navigate('external', { screen: 'profile' })
+                        } else {
+                            props.navigation.navigate('external', { screen: 'userpro', params: { thread: props.item.postedBy._id } })
+                        }
+                    }}>
+                        <Image
+                            source={{ uri: props.item.postedBy.userphoto }}
+                            style={styles(colors).Image}
+                        />
+                    </TouchableOpacity>
+                    <Body style={{ margin: 10 }}>
+                        <Text style={styles(colors).top} numberOfLines={1}>{props.item.postedBy.username}</Text>
+                        <Text style={styles(colors).capt} numberOfLines={1}>{props.item.createdAt.substring(0, 10)}</Text>
+                    </Body>
+                    <Right>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', backgroundColor: colors.card }}>
+                            <TouchableOpacity >
+                               
+                            </TouchableOpacity>
+                            <Menu
+                                visible={visible}
+                                onDismiss={closeMenu}
+                                anchor={<Button onPress={openMenu} transparent><MaterialCommunityIcons name="dots-vertical" size={24} color={colors.text} /></Button>}>
+                                <Menu.Item onPress={() => {
+                                Share.share({
+                                    url: `${props.item.photo}`,
+                                    title: `${props.item.postedBy.userName}`,
+                                    message: `${props.item.caption}`,
+                                })
+                            }} title="share" />
+                                    <Menu.Item onPress={() => { downloadFile(props.item) }}  title="Download Image" />
+
+                             {props.item.postedBy._id == UserId ? (
+                                    <Menu.Item onPress={() => DeletePost(props.item)} title="Delete" />
+                                ) : (
+                                    <View></View>
+                                )}
+                              
+                                <Divider />
+                            </Menu>
+                        </View>
+                    </Right>
+                </CardItem>
+                <Image
+                    source={{ uri: props.item.photo }}
+                    style={styles(colors).imageBackground}
+                >
+                </Image>
+                <View style={styles(colors).lowerContainer}>
+              
+                    <CardItem style={{ backgroundColor: colors.card, padding: 0, margin: 0, flexDirection:'column'}} >
+                    <Text style={styles(colors).contentText} numberOfLines={2}>{props.item.caption} </Text>
+                        <Left>
+                            <Button transparent>
+                                {props.item.votes.includes(UserId) ?
+                                    (<TouchableOpacity onPress={() => {
+                                        onVotecancell(props.item)
+                                    }}>
+                                        <MaterialIcons name="thumb-up-alt" size={24} color={colors.text} />
+                                    </TouchableOpacity>
+                                    ) : (
+                                        <TouchableOpacity onPress={() => {
+                                            onVote(props.item);
+                                        }}>
+                                            <MaterialIcons name="thumb-down-alt" size={24} color={colors.text} />
+                                        </TouchableOpacity>
+                                    )
+                                }
+                                <Text style={styles(colors).likecomtext}>{props.item.votes.length} vote</Text>
+                            </Button>
+                            <Button transparent  >
+                                {props.item.likes.includes(UserId) ?
+                                    (<TouchableOpacity onPress={() => {
+                                        onUnlIKE(props.item);
+                                    }}>
+                                        <MaterialCommunityIcons name="cards-heart" size={24} color='#ff1493' />
+                                    </TouchableOpacity>
+                                    ) : (
+                                        <TouchableOpacity onPress={() => {
+                                            onlIKE(props.item);
+                                        }}>
+                                            <MaterialCommunityIcons name="heart-outline" size={28} color={colors.text} />
+                                        </TouchableOpacity>
+                                    )
+                                }
+                                <Text style={{ textTransform: 'capitalize', color: colors.text }}
+                                    onPress={() => onGotoWhodid(props.item)}
+                                >{props.item.likes.length} {props.item.likes.length > 1 ? 'likes' : "like"}</Text>
+                            </Button>
+                            <Button transparent onPress={() => {
+                                setactive(!active)
+                                setcommenttext('');
+                            }}>
+                                <MaterialIcons name="comment" size={24} color={colors.text} />
+                                <Text style={{ textTransform: 'capitalize', color: colors.text }}>{props.item.comments.length} </Text>
+                            </Button>
+                        </Left>
+                    </CardItem>
+                   
+                    {
+                        active ? (
+                            <Item style={{}}>
+                                <Input style={styles(colors).fieldinpu}
+                                    value={commenttext}
+                                    onChangeText={(t) => setcommenttext(t)}
+                                    placeholder='Add a comment' placeholderTextColor='#bababa'
+
+                                />
+                                <Button transparent style={{ borderRadius: 8 }} >
+                                    <Text style={{ textTransform: 'capitalize', color: '#fff' }}>comment</Text>
+                                </Button>
+                            </Item>
+                        ) : (
+                            <View>
+                            </View>
+                        )
+                    }
+                </View>
+            </TouchableOpacity>
+        </Provider>
     )
 
 }
@@ -406,22 +419,23 @@ const styles = (color) => StyleSheet.create({
         paddingTop: 0,
     },
     item: {
-        borderWidth: 0.8,
-        borderColor: color.border,
-        margin: 1,
-        marginBottom: 10
+        marginBottom: 5,
+        shadowColor: color.text,
+        shadowOffset: { width: 2, height: 2 },
+        shadowOpacity: 1,
+        shadowRadius: 3,
+        elevation: 3,
+        margin: 0.2
     },
     imageBackground: {
-
         width: "100%",
-        height: 350,
+        height: height / 2.6,
         alignSelf: "center",
         marginTop: 0,
     },
     rightTextContainer: {
         marginLeft: 'auto',
         marginRight: -2,
-
         padding: 3,
         marginTop: 3,
         borderTopLeftRadius: 5,
@@ -429,17 +443,16 @@ const styles = (color) => StyleSheet.create({
     },
     rightText: { color: 'white' },
     lowerContainer: {
-        margin: 0,
-        borderWidth: 1,
-        borderColor: color.border,
-        backgroundColor: color.card
+        backgroundColor: color.card,
     },
     titleText: {
     },
     contentText: {
-        fontSize: 12,
+        fontSize: 14,
         color: color.text,
-        marginLeft: 10
+        marginLeft: 1,
+        marginTop: 0,
+        paddingTop: 0
     },
     animation: {
 
@@ -459,6 +472,6 @@ const styles = (color) => StyleSheet.create({
         backgroundColor: color.card
     },
     capt: { color: color.text, fontWeight: "500", fontSize: 10, },
-    Image: { width: 60, height: 60, borderRadius: 100, margin: 5, borderWidth: 2, borderColor: color.border },
+    Image: { width: 60, height: 60, borderRadius: 14, margin: 5 },
     likecomtext: { textTransform: 'capitalize', color: color.text }
 })

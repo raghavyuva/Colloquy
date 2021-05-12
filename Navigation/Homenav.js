@@ -57,12 +57,13 @@ function External() {
 }
 
 function HomeScreen() {
+    const {colors} = useTheme();
     return (
         <Tab.Navigator
             initialRouteName="Home"
-            activeColor="yellow"
+            activeColor={colors.text}
             shifting={false}
-            barStyle={{ backgroundColor: Config.secondary }}
+            barStyle={{ backgroundColor: colors.background }}
         >
             <Tab.Screen
                 name="Home" initialRouteName="Home"

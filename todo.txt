@@ -2,8 +2,8 @@ message feature
 search
 upload post page
 explore page
-settings page
 mock interview section
-events backend
 feedback page fetch request
-google signin
+who and all liked?
+fast response to the animation request
+upload post animation as well as other features

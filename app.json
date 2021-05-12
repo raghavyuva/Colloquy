@@ -4,7 +4,7 @@
     "slug": "Primish",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/log.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -18,9 +18,9 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "config":{
-        "googleSignIn":{
-          "reservedClientId":"com.googleusercontent.apps.885939654496-5u9so9k574i6f0eef8tagnjnkr22b22a"
+      "config": {
+        "googleSignIn": {
+          "reservedClientId": "com.googleusercontent.apps.885939654496-5u9so9k574i6f0eef8tagnjnkr22b22a"
         }
       },
       "userInterfaceStyle": "automatic"
@@ -30,7 +30,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "userInterfaceStyle": "automatic"
+      "userInterfaceStyle": "automatic",
+      "package": "com.primish"
     },
     "web": {
       "favicon": "./assets/favicon.png"

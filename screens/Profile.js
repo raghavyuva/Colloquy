@@ -157,7 +157,7 @@ const Profile = (props) => {
             })
         }).then(res => res.json()).then((resp) => {
             console.log(resp);
-            alert(resp);
+            alert(resp.message);
         })
     }
     useEffect(() => {
@@ -184,18 +184,9 @@ const Profile = (props) => {
             <Headingbar {...props} />
             {user.userposts[0] == null ? (
                 <>
-                    <View style={{ flex: 1, backgroundColor:colors.primary }}>
+                    <View style={{ flex: 1,backgroundColor:colors.primary }}>
 
                         <View style={styles(colors).mainscreen}>
-                            <Fab
-                                active={active}
-                                direction="up"
-                                containerStyle={{}}
-                                style={{ backgroundColor: colors.primary, }}
-                                position="bottomRight"
-                                onPress={() => props.navigation.navigate('edit')}>
-                                <MaterialIcons name="settings" size={24} color={colors.primary}/>
-                            </Fab>
                             <View style={{ flexDirection: 'row' }}>
                                 <Image
                                     source={{ uri: user.user.userphoto }}
@@ -256,14 +247,24 @@ const Profile = (props) => {
                                 </View>
 
                             </View>
-
-
+                            <Fab
+                                    active={active}
+                                    direction="up"
+                                    style={{ backgroundColor: colors.primary, }}
+                                    position='bottomRight'
+                                    onPress={_toggleBottomNavigationView}>
+                                    <MaterialIcons name="edit" size={24} color={colors.primary} />
+                                </Fab>
+                          
                         </View>
+
                         <Image
                             source={require('../assets/emptyy.png')}
                             style={{ width: width, height: height / 1.7, alignSelf: 'center' }}
                         />
+                      
                     </View>
+                    
                 </>
             ) : (
                 <>
@@ -339,7 +340,6 @@ const Profile = (props) => {
                                             >
                                                 <Text style={{ color: colors.text}}>Submit</Text>
                                             </Button>
-
                                         </View>
                                         <Button style={{
                                             backgroundColor: colors.card,
