@@ -15,9 +15,7 @@ const Notification = (props) => {
     const {colors} = useTheme();
     useEffect(() => {
         fetching();
-        setTimeout(() => {
-            setload(false)
-        }, 2000);
+       
         return () => {
 
         }
@@ -38,6 +36,7 @@ const Notification = (props) => {
                         type: "NOTIFYLIST",
                         data: responseJson
                     })
+                    setload(false);
                 })
         } catch (e) {
             console.log(e);

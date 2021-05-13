@@ -151,9 +151,6 @@ function Drawernav() {
     }
     useEffect(() => {
         fetching()
-        setTimeout(() => {
-            setload(false)
-        }, 2000);
     }, [])
     if (load) {
         return (

@@ -12,7 +12,7 @@ import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
 const Followers = (props) => {
   const [{ userToken, followerslist, UserId }, dispatch] = DataLayerValue()
   const [load, setload] = useState(true);
-  const {colors} = useTheme();
+  const { colors } = useTheme();
   const fetching = async () => {
     try {
       const Listener = fetch(`${Config.url}` + `/followerslist`, {
@@ -26,37 +26,36 @@ const Followers = (props) => {
             type: "FOLLOWERSLIST",
             data: responseJson
           })
+          setload(false);
         })
     } catch (e) {
       console.log(e);
     }
   }
   useEffect(() => {
+    let IsMounted = true;
     fetching();
-    setTimeout(() => {
-      setload(false);
-    }, 2000);
     return () => {
-
+      IsMounted = false;
     }
   }, [])
   if (followerslist == 0 || followerslist == null) {
-    return(
-      <View style={{ flex: 1, backgroundColor: colors.background,}}>
-                <Header {...props} />
-                <View style={{ justifyContent: 'center',alignSelf: 'center',flex: 1}}>
-                <Image
-                    source={{uri:'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fcdn.onlinewebfonts.com%2Fsvg%2Fimg_412721.png&f=1&nofb=1'}}
-                    style={{ width: width, height: 400, alignSelf: 'center', marginLeft: 2,justifyContent: 'center', }}
-                />
-                </View>
-              
-            </View>
+    return (
+      <View style={{ flex: 1, backgroundColor: colors.background, }}>
+        <Header {...props} />
+        <View style={{ justifyContent: 'center', alignSelf: 'center', flex: 1 }}>
+          <Image
+            source={{ uri: 'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fcdn.onlinewebfonts.com%2Fsvg%2Fimg_412721.png&f=1&nofb=1' }}
+            style={{ width: width, height: 400, alignSelf: 'center', marginLeft: 2, justifyContent: 'center', }}
+          />
+        </View>
+
+      </View>
     )
   }
   if (load) {
     return (
-      <View style={{ justifyContent: "center", flex: 1, backgroundColor:colors.card }}>
+      <View style={{ justifyContent: "center", flex: 1, backgroundColor: colors.card }}>
         <LottieView
           loop={true}
           autoPlay={true}
@@ -67,7 +66,7 @@ const Followers = (props) => {
     )
   }
   return (
-    <Container style={{ backgroundColor:colors.background}}>
+    <Container style={{ backgroundColor: colors.background }}>
       <Header {...props} />
       {followerslist[0] != null ? (
         <FlatList
@@ -80,11 +79,11 @@ const Followers = (props) => {
           keyExtractor={item => item._id}
         />
       ) : (
-          <Image
-            source={require('../assets/emptyy.png')}
-            style={{ width: width, height: height, alignSelf: 'center' }}
-          />
-        )}
+        <Image
+          source={require('../assets/emptyy.png')}
+          style={{ width: width, height: height, alignSelf: 'center' }}
+        />
+      )}
 
 
     </Container>

@@ -161,11 +161,12 @@ const Profile = (props) => {
         })
     }
     useEffect(() => {
+        let IsMounted = true;
         fetching()
         getPermissionAsync();
-        setTimeout(() => {
-            setload(false)
-        }, 2000);
+        return () => {
+            IsMounted = false;
+        }
     }, [])
     if (load) {
         return (
@@ -210,7 +211,7 @@ const Profile = (props) => {
                                                 {user.user.email}
                                             </Text>
                                         ) : (
-                                            <Text style={styles(colors).txt2}>
+                                            <Text style={styles(colors).txt2} numberOfLines={4} note>
                                                 {user.user.tagline}
                                             </Text>
                                         )}
@@ -471,8 +472,8 @@ const styles = (colors) =>StyleSheet.create({
     txt2: {
         fontSize: 16,
         color: colors.text,
-        alignSelf: 'flex-start',
-        opacity: 0.9
+        opacity: 0.9,
+        width: 200
     },
     carousel: {
         height: '50%',

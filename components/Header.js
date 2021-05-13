@@ -6,14 +6,13 @@ import {
 } from 'react-native-paper';
 import { DataLayerValue } from '../Context/DataLayer';
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
-import { Config } from '../config';
 import { useFonts } from 'expo-font';
-import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
+import { useTheme } from '@react-navigation/native';
 
 const Headingbar = (props) => {
     const [{ user, defdarktheme }, dispatch] = DataLayerValue()
-    const [load, setload] = useState(true)
     const [toggle, setToggle] = useState(true);
+    const { colors } = useTheme();
     const toggleFunction = () => {
         setToggle(!toggle);
         dispatch({ type: 'THEME', data: !defdarktheme })
@@ -24,8 +23,6 @@ const Headingbar = (props) => {
     if (!loaded) {
         return null;
     }
-    const { colors } = useTheme();
-
     return (
         <SafeAreaView>
             <View>
@@ -46,28 +43,43 @@ const Headingbar = (props) => {
                                 <Ionicons name="md-moon-sharp" size={24} color={colors.text} />
                             )}
                         </Button>
-                        <Button transparent  >
-                            <Icon name='search' style={{ color: colors.text }} />
-                        </Button>
-                        <Button transparent onPress={() => props.navigation.navigate('external', { screen: 'profile' })}>
-                            {user == null || user == undefined || user.length == 0 ? (
-                                <>
-                                    <View>
+                        {props.route.name === 'Home' ? (
+                            <Button transparent  >
+                                <Icon name='search' style={{ color: colors.text }} />
+                            </Button>
+                        ) : (
+                            <View>
+                            </View>
+                        )}
+                        {props.route.name == 'profile' ? (
+                            <View>
 
-                                    </View>
-                                </>
-                            ) : (
-                                <>
-                                    <Avatar.Image
-                                        source={{
-                                            uri: user.user.userphoto
-                                        }}
-                                        size={30}
-                                        style={{ borderRadius: 14 }}
-                                    />
-                                </>
-                            )}
-                        </Button>
+                            </View>
+                        ) : (
+                            <Button transparent onPress={() => props.navigation.navigate('external', { screen: 'profile' })}>
+                                {user == null || user == undefined || user.length == 0 ? (
+                                    <>
+                                        <View>
+
+                                        </View>
+                                    </>
+                                ) : (
+                                    <>
+
+                                        <Avatar.Image
+                                            source={{
+                                                uri: user.user.userphoto
+                                            }}
+                                            size={30}
+                                            style={{ borderRadius: 14 }}
+                                        />
+
+                                    </>
+                                )}
+                            </Button>
+                        )
+                        }
+
                     </Right>
                 </Header>
             </View>

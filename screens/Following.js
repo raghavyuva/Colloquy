@@ -27,6 +27,7 @@ const Following = (props) => {
             type: "FOLLOWINGLIST",
             data: responseJson
           })
+          setload(false);
         })
     } catch (e) {
       console.log(e);
@@ -34,9 +35,7 @@ const Following = (props) => {
   }
   useEffect(() => {
     fetching();
-    setTimeout(() => {
-      setload(false);
-    }, 2000);
+   
     return () => {
 
     }

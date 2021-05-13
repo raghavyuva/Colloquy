@@ -16,15 +16,8 @@ import {  Divider,  } from 'react-native-paper';
 
 export function DrawerContent(props) {
     const [{ userToken, defdarktheme }, dispatch] = DataLayerValue()
-    const [activebar, setactivebar] = useState(true);
-    const [cnt, setcnt] = useState(0);
-    const [toggle, setToggle] = useState(true);
-    const toggleFunction = () => {
-        setToggle(!toggle);
-        dispatch({ type: 'THEME', data: !defdarktheme })
-    };
+
     const { colors } = useTheme();
-    const [load, setload] = useState(true)
     const [loaded] = useFonts({
         Montserrat: require('../assets/Pacifico/Pacifico-Regular.ttf'),
     });

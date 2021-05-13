@@ -16,9 +16,7 @@ const Events = (props) => {
 
     useEffect(() => {
         fetching()
-        setTimeout(() => {
-            setload(false);
-          }, 2000); 
+        
         return () => {
         }
     }, [])
@@ -39,6 +37,7 @@ const Events = (props) => {
                     eventdata: responseJson
                 })
                 setrefresh(false);
+                setload(false);
             })
     }
     if (load) { 

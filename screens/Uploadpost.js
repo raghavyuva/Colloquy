@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Image, StyleSheet, FlatList, Dimensions, TextInput, Linking, KeyboardAvoidingView, } from 'react-native';
-import { Header, Right, Button, Text, View, } from 'native-base';
+import { Image, StyleSheet, FlatList, Dimensions, SafeAreaView, Text } from 'react-native';
+import { Card, Input, Fab, CardItem } from 'native-base';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
@@ -9,7 +9,12 @@ import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { DataLayerValue } from '../Context/DataLayer';
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 import * as MediaLibrary from 'expo-media-library';
+import Header from '../components/Header';
 import Base64 from 'Base64';
+import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
+import { MaterialIcons } from '@expo/vector-icons';
+import MultiSelect from 'react-native-multiple-select';
+
 const Uploadpost = (props) => {
     const [image, setimage] = useState('');
     const [body, setbody] = useState('');
@@ -17,6 +22,9 @@ const Uploadpost = (props) => {
     const [{ userToken, EventData }, dispatch] = DataLayerValue()
     const [activepermission, setactivepermission] = useState(false);
     const [loaclimages, setloaclimages] = useState('');
+    const [active, setactive] = useState(false)
+    const [selectedItems, setselectedItems] = useState([]);
+    const { colors } = useTheme();
     const [first, setfirst] = useState('https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.rZ6B0kNwWbL9IIbN90iAvgHaEK%26pid%3DApi&f=1')
     const getPermissionAsync = async () => {
         if (Constants.platform.android || Constants.platform.ios) {
@@ -34,6 +42,7 @@ const Uploadpost = (props) => {
         setfirst(media.assets[0].uri);
         encode();
     }
+
     const encode = () => {
         const encoded = Base64.btoa(first);
         console.log(encoded)
@@ -73,67 +82,98 @@ const Uploadpost = (props) => {
             })
         }
     }
+    const onSelectedItemsChange = selectedItems => {
+        setselectedItems(selectedItems)
+    };
     useEffect(() => {
         getPermissionAsync();
         return () => {
         }
     }, [])
     return (
-        <KeyboardAvoidingView style={styles.screen}>
-            <Header style={styles.Header}>
-                <Right>
-                    <Button transparent onPress={_upload}>
-                        <Text>Post</Text>
-                    </Button>
-                </Right>
-            </Header>
-            {activepermission == 'granted' ? (
-                <>
-                    <View>
-                        <Image
-                            source={{
-                                uri:
-                                    first
-                            }}
-                            style={styles.logo}
-                        />
-                        <TextInput style={styles.inputonblur} placeholder='Write some content here' placeholderTextColor='#bcbcbc'
-                            onChangeText={(body) => setbody(body)} value={body}
+        <SafeAreaView style={{ flex: 1 }}>
+            <Header {...props} />
+            <ScrollView keyboardShouldPersistTaps>
 
-                        />
-                    </View>
-                    <View style={{ borderTopLeftRadius: 30, borderTopRightRadius: 30, borderWidth: 2, borderColor: 'grey', }}>
-                        <FlatList
-                            ref={(ref) => { flatListRef = ref; }}
-                            renderItem={({ item }) => {
-                                return (
-                                    <TouchableOpacity onPress={() => {
-                                        setfirst(item.uri)
-                                        encode();
-                                    }} style={{ borderRadius: 5, borderColor: 'grey', margin: 2 }}>
-                                        <Image style={{ width: 200, height: 200, borderRadius: 5 }} source={{ uri: item.uri }} />
-                                    </TouchableOpacity>
-                                );
-                            }}
-                            keyExtractor={(item, index) => index.toString()}
-                            data={loaclimages}
-                            numColumns={2}
-                            style={{ marginBottom: 500, marginTop: 18, margin: 10, borderRadius: 5 }}
-                        />
-                    </View>
-                </>
-            ) : (
-                    <>
-                        <View style={{ justifyContent: "center", flex: 1, backgroundColor: 'black' }}>
-                            <Text style={{ color: "white" }}>We Need Camera Roll Permissions To Make this work</Text>
-                        </View>
-                    </>
-                )}
-        </KeyboardAvoidingView>
+                <Card style={{ backgroundColor: colors.card, padding: 0, margin: 5, height: screenHeight / 5, borderColor: colors.border }}>
+                    <Input style={{ color: colors.text }} placeholder="Type Description" />
+                </Card>
+                <Card style={{ backgroundColor: colors.card, padding: 0, margin: 5, height: screenHeight / 4, borderColor: colors.border }}>
+                    <FlatList
+                        ref={(ref) => { flatListRef = ref; }}
+                        renderItem={({ item }) => {
+                            return (
+                                <TouchableOpacity>
+                                    <Card style={{ backgroundColor: colors.card, padding: 0, borderColor: colors.border }}>
+                                        <Image style={{ width: 200, height: screenHeight / 4, }} source={{ uri: item.uri }} />
+                                    </Card>
+                                </TouchableOpacity>
+                            );
+                        }}
+                        keyExtractor={(item, index) => index.toString()}
+                        data={loaclimages}
+                        horizontal
+                    />
+                </Card>
+
+                <Card style={{ backgroundColor: colors.card, padding: 0, margin: 5, borderColor: colors.border }}>
+                    <TouchableOpacity>
+                        <CardItem style={{ backgroundColor: colors.background, justifyContent: 'space-between' }}>
+                            <Text style={{ color: colors.text, fontSize: 18, fontWeight: 'bold', }}>
+                                Location  .
+                </Text>
+                            <MaterialIcons name="add-location" size={24} color={colors.primary} />
+                        </CardItem>
+                    </TouchableOpacity>
+                </Card>
+
+                <Card style={{ backgroundColor: colors.card, padding: 0, margin: 5, borderColor: colors.border }}>
+                    <TouchableOpacity>
+                        <CardItem style={{ backgroundColor: colors.background, justifyContent: 'space-between' }}>
+                            <Text style={{ color: colors.text, fontSize: 18, fontWeight: 'bold', }}>
+                                Category   .
+                </Text>
+                            <MaterialIcons name="category" size={24} color={colors.primary} />
+                        </CardItem>
+                    </TouchableOpacity>
+                </Card>
+                <Card style={{ backgroundColor: colors.card, padding: 0, }} keyboardShouldPersistTaps>
+                    <MultiSelect
+                        items={items}
+                        uniqueKey="id"
+                        onSelectedItemsChange={onSelectedItemsChange}
+                        selectedItems={selectedItems}
+                        selectText="Select Tags"
+                        tagRemoveIconColor="#CCC"
+                        tagBorderColor={colors.primary}
+                        tagTextColor={colors.text}
+                        selectedItemTextColor="#CCC"
+                        selectedItemIconColor="#CCC"
+                        itemTextColor="#000"
+                        displayKey="name"
+                        style={{backgroundColor:"#000", }}
+                        hideSubmitButton
+                        hideDropdown
+                        searchIcon={false}
+                        styleSelectorContainer={{ backgroundColor: colors.background}}
+                        onAddItem={()=>{}}
+                        keyboardShouldPersistTaps
+                    />
+                </Card>
+            </ScrollView>
+            <Fab
+                active={active}
+                direction="up"
+                style={{ backgroundColor: colors.primary, }}
+                position='bottomRight'
+            >
+                <MaterialIcons name="done" size={24} color={colors.primary} />
+            </Fab>
+        </SafeAreaView>
     )
 }
 
-export default Uploadpost
+export default Uploadpost;
 const styles = StyleSheet.create({
     screen: {
         backgroundColor: '#0b032b',
@@ -183,3 +223,32 @@ const styles = StyleSheet.create({
     }
 });
 
+const items = [{
+    id: '92iijs7yta',
+    name: 'Love'
+}, {
+    id: 'a0s0a8ssbsd',
+    name: 'Education'
+}, {
+    id: '16hbajsabsd',
+    name: 'College'
+}, {
+    id: 'nahs75a5sg',
+    name: 'Friends'
+}, {
+    id: '667atsas',
+    name: 'Vtu'
+}, {
+    id: 'hsyasajs',
+    name: 'Exam'
+}, {
+    id: 'djsjudksjd',
+    name: 'Results'
+}, {
+    id: 'sdhyaysdj',
+    name: 'Events'
+}, {
+    id: 'suudydjsjd',
+    name: 'Engineering life'
+}
+];

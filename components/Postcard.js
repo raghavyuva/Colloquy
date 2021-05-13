@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, TouchableOpacity, Image, FlatList, ImageBackground, Dimensions, Modal, SafeAreaView, Share, Alert, ToastAndroid, Platform, } from 'react-native';
+import { StyleSheet, TouchableOpacity, Image, Dimensions,Share, Alert, ToastAndroid, } from 'react-native';
 import { CardItem, Text, Button, Left, View, Right, Body, Item, Input } from 'native-base';
 import { MaterialIcons, AntDesign, MaterialCommunityIcons, Entypo } from '@expo/vector-icons';
 import * as MediaLibrary from 'expo-media-library';
@@ -8,9 +8,7 @@ import * as Permissions from 'expo-permissions';
 import { Config } from '../config';
 const { width, height } = Dimensions.get('window');
 import { DataLayerValue } from '../Context/DataLayer';
-import LottieView from 'lottie-react-native';
-import * as Sharing from 'expo-sharing';
-import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
+import { useTheme } from '@react-navigation/native';
 import { Menu, Divider, Provider } from 'react-native-paper';
 
 const Postcard = (props) => {
@@ -42,7 +40,8 @@ const Postcard = (props) => {
                 {
                     text: 'YES', onPress: () => {
                         const uri = item.photo;
-                        let fileUri = FileSystem.documentDirectory + `${item.postedBy.username}.jpg`;
+                        var randomstring = Math.random().toString(36).slice(-9);
+                        let fileUri = FileSystem.documentDirectory + `${item.postedBy.username+ randomstring}.jpg`;
                         FileSystem.downloadAsync(uri, fileUri)
                             .then(({ uri }) => {
                                 saveFile(uri);
@@ -56,24 +55,12 @@ const Postcard = (props) => {
             ]
         );
     }
-    const openPhotos = (uri) => {
-        switch (Platform.OS) {
-            case "ios":
-                Linking.openURL("photos-redirect://");
-                break;
-            case "android":
-                Linking.openURL("content://media/internal/images/media");
-                break;
-            default:
-                console.log("Could not open gallery app");
-        }
-    }
     const saveFile = async (fileUri) => {
         const { status } = await Permissions.askAsync(Permissions.MEDIA_LIBRARY);
         if (status === "granted") {
             const asset = await MediaLibrary.createAssetAsync(fileUri)
             await MediaLibrary.createAlbumAsync("Primish", asset, false)
-            openPhotos(fileUri)
+           
         } else {
             alert('provide permission');
         }
@@ -325,7 +312,6 @@ const Postcard = (props) => {
                 >
                 </Image>
                 <View style={styles(colors).lowerContainer}>
-              
                     <CardItem style={{ backgroundColor: colors.card, padding: 0, margin: 0, flexDirection:'column'}} >
                     <Text style={styles(colors).contentText} numberOfLines={2}>{props.item.caption} </Text>
                         <Left>
@@ -397,7 +383,6 @@ const Postcard = (props) => {
             </TouchableOpacity>
         </Provider>
     )
-
 }
 export default Postcard
 const styles = (color) => StyleSheet.create({

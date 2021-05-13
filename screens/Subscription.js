@@ -27,13 +27,11 @@ const Home = (props) => {
                     data: responseJson
                 })
                 setrefresh(false)
+                setload(false);
             })
     }
     useEffect(() => {
         fetching();
-        setTimeout(() => {
-            setload(false)
-        }, 2000);
         return () => {
         }
     }, [])

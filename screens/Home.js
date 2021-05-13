@@ -4,13 +4,16 @@ import Header from '../components/Header';
 import Postcard from '../components/Postcard';
 import { DataLayerValue } from '../Context/DataLayer';
 import { Config } from '../config';
-import * as Permissions from 'expo-permissions';
 import * as Notifications from 'expo-notifications';
+import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
+import LottieView from 'lottie-react-native';
+import Constants from 'expo-constants';
 
 const Home = (props) => {
     const [{ userToken, postData }, dispatch] = DataLayerValue();
     const [Notify, setNotify] = useState('');
     const [refresh, setrefresh] = useState(false);
+    const [loading, setloading] = useState(true)
     const fetching = () => {
         setrefresh(true);
         fetch(`${Config.url}` + `/post`, {
@@ -26,8 +29,11 @@ const Home = (props) => {
                     postData: responseJson
                 })
                 setrefresh(false)
+                setloading(false)
             })
     }
+    const { colors } = useTheme();
+
     useEffect(() => {
         let IsMounted = true;
         requestUserPermission();
@@ -41,22 +47,37 @@ const Home = (props) => {
     const _handleNotification = notification => {
         setNotify(notification)
     };
-    const requestUserPermission = async () => {
-        const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
-        let finalStatus = existingStatus;
-        // only ask if permissions have not already been determined, because
-        // iOS won't necessarily prompt the user a second time.
-        if (existingStatus !== 'granted') {
-            // Android remote notification permissions are granted during the app
-            // install, so this will only ask on iOS
-            const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+
+    async function requestUserPermission() {
+        let token;
+        if (Constants.isDevice) {
+          const { status: existingStatus } = await Notifications.getPermissionsAsync();
+          let finalStatus = existingStatus;
+          if (existingStatus !== 'granted') {
+            const { status } = await Notifications.requestPermissionsAsync();
             finalStatus = status;
-        }
-        // Stop here if the user did not grant permissions 
-        if (finalStatus !== 'granted') {
+          }
+          if (finalStatus !== 'granted') {
+            alert('Failed to get push token for push notification!');
             return;
+          }
+          token = (await Notifications.getExpoPushTokenAsync()).data;
+          console.log(token);
+        } else {
+          alert('Must use physical device for Push Notifications');
         }
-    }
+      
+        if (Platform.OS === 'android') {
+          Notifications.setNotificationChannelAsync('default', {
+            name: 'default',
+            importance: Notifications.AndroidImportance.MAX,
+            vibrationPattern: [0, 250, 250, 250],
+            lightColor: '#FF231F7C',
+          });
+        }
+      
+        return token;
+      }
     const registerForPushNotifications = async () => {
         const token = await Notifications.getExpoPushTokenAsync();
         try {
@@ -83,17 +104,30 @@ const Home = (props) => {
         flatListRef.scrollToOffset({ animated: true, offset: 0 });
 
     }
+    if (loading) {
+        return (
+            <View style={{ justifyContent: "center", flex: 1, backgroundColor: colors.background }}>
+                <LottieView
+                    loop={true}
+                    autoPlay={true}
+                    source={require('../animation/5328-loading-11.json')}
+                    style={{ width: 400, height: 400 }}
+                />
+            </View>
+        )
+    }
     return (
-        <SafeAreaView >  
+        <SafeAreaView >
             <Header {...props} />
 
             <FlatList
-                ref={(ref) => { flatListRef = ref; }}
+                            ref={(ref) => { flatListRef = ref; }}
+
                 renderItem={({ item }) => {
                     return (
                         <Postcard item={item} {...props} />
                     );
-                }} 
+                }}
                 keyExtractor={(item, index) => index.toString()}
                 data={postData}
                 onEndReached={fetching && GoTo_top_function}
