@@ -14,6 +14,17 @@ import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
 const IndexNavigator = (props) => {
     const [{ userToken, isLoading, defdarktheme }, dispatch] = DataLayerValue();
     const scheme = useColorScheme();
+    { /*const THEMEOF = {
+        dark:true,
+        colors:{
+            primary:'#8348FF',
+            background:"#071e3d",
+            card:"#1f4287",
+            text:"#21e6c1",
+            border:"#278ea5",
+            notification:"#BDBDBD",
+        },
+    };*/}
     const { colors } = useTheme();
     useEffect(() => {
         const unsubscribe = NetInfo.addEventListener(state => {
@@ -22,7 +33,7 @@ const IndexNavigator = (props) => {
             }
         });
         console.log(scheme)
-        dispatch({ type:'THEME',data:true})
+        dispatch({ type: 'THEME', data: true })
         SecureStore.getItemAsync('UserId').then(user => {
             SecureStore.getItemAsync('userToken').then((token) => {
                 dispatch({ type: 'RETRIEVE_TOKEN', token: token, id: user });

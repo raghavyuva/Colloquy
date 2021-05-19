@@ -1,9 +1,7 @@
 message feature
 search
-upload post page
 explore page
 mock interview section
 feedback page fetch request
-who and all liked?
-fast response to the animation request
-upload post animation as well as other features
+who and all liked?-
+fast response to the  request

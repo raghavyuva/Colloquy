@@ -28,6 +28,8 @@ export const initialState = {
     user:null,
     otherprofile:null,
     defdarktheme: true,
+    searchactive:false,
+    routename:null,
 };
 const reducer = (state, action) => {
     switch (action.type) {
@@ -127,6 +129,18 @@ const reducer = (state, action) => {
                 otherprofile:action.data,
                 isLoading:false
             }
+
+        case 'SEARCHCOMPONENT':
+            return{
+               ...state,
+               searchactive: action.data
+            }
+        case 'ROUTEPROP':
+            return{
+                ...state,
+                routename: action.data
+            }
+        
     }
 }
 export default reducer;

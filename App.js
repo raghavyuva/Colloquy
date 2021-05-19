@@ -8,6 +8,23 @@ import LottieView from 'lottie-react-native';
 import NetInfo from '@react-native-community/netinfo';
 
 import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
+import * as firebase from "firebase";
+import "@firebase/auth";
+import "@firebase/firestore";
+
+var firebaseConfig = {
+    apiKey: "AIzaSyChJ0ge-LvPuLpoN7KCNqTE7g7XSL2jJKY",
+    authDomain: "vtyuva-dd9cb.firebaseapp.com",
+    projectId: "vtyuva-dd9cb",
+    storageBucket: "vtyuva-dd9cb.appspot.com",
+    messagingSenderId: "742298040786",
+    appId: "1:742298040786:web:88378266062e3820ec700b",
+    measurementId: "G-JGEPSPEM8W"
+  };
+
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -29,7 +46,7 @@ function App() {
   }, [])
   if (loading) {
     return (
-      <View style={{ justifyContent: "center", flex: 1, backgroundColor: colors.background}}>
+      <View style={{ justifyContent: "center", flex: 1, backgroundColor: 'black'}}>
         <LottieView
           loop={true}
           autoPlay={true}

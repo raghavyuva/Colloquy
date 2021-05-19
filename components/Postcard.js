@@ -15,22 +15,19 @@ const Postcard = (props) => {
     const [{ userToken, UserId }, dispatch] = DataLayerValue();
     const [active, setactive] = useState(false);
     const [commenttext, setcommenttext] = useState('');
-    const [selectedImage, setSelectedImage] = React.useState(null);
-    const [votecount, setvotecount] = useState([]);
     const [visible, setVisible] = React.useState(false);
-
     const openMenu = () => setVisible(true);
 
     const closeMenu = () => setVisible(false);
     const { colors } = useTheme();
     styles(colors)
     useEffect(() => {
-        let IsMounted = true;
+        let IsMounted = true; 
+        console.log(props.item.location);
         return () => {
             IsMounted = false;
         }
     }, [])
-
     const downloadFile = (item) => {
         Alert.alert(
             'Download Post',
@@ -231,6 +228,7 @@ const Postcard = (props) => {
     const onGotoWhodid = (item) => {
         props.navigation.navigate('external', { screen: 'wholiked', params: { item: item } })
     }
+
     if (props.item == null || undefined) {
         return (
             <View style={{ justifyContent: "center", flex: 1, backgroundColor: colors.background }}>
@@ -275,7 +273,7 @@ const Postcard = (props) => {
                     </TouchableOpacity>
                     <Body style={{ margin: 10 }}>
                         <Text style={styles(colors).top} numberOfLines={1}>{props.item.postedBy.username}</Text>
-                        <Text style={styles(colors).capt} numberOfLines={1}>{props.item.createdAt.substring(0, 10)}</Text>
+                        <Text style={styles(colors).capt} numberOfLines={1}>{props.item.createdAt.substring(0, 10)} </Text>
                     </Body>
                     <Right>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', backgroundColor: colors.card }}>
@@ -414,7 +412,7 @@ const styles = (color) => StyleSheet.create({
     },
     imageBackground: {
         width: "100%",
-        height: height / 2.6,
+        height: height/2.6,
         alignSelf: "center",
         marginTop: 0,
     },

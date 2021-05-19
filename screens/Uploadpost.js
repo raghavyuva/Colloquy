@@ -1,35 +1,41 @@
 import React, { useEffect, useState } from 'react';
-import { Image, StyleSheet, FlatList, Dimensions, SafeAreaView, Text } from 'react-native';
-import { Card, Input, Fab, CardItem } from 'native-base';
+import { Image, StyleSheet, LogBox, FlatList, Dimensions, SafeAreaView, Text, Picker, Alert, View } from 'react-native';
+import { Card, Textarea, Fab, CardItem, Button } from 'native-base';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
-import * as Permissions from 'expo-permissions';
 import { Config } from '../config';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { DataLayerValue } from '../Context/DataLayer';
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 import * as MediaLibrary from 'expo-media-library';
 import Header from '../components/Header';
-import Base64 from 'Base64';
-import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
+import { useTheme } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
-import MultiSelect from 'react-native-multiple-select';
-
+import SectionedMultiSelect from 'react-native-sectioned-multi-select';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import * as Location from 'expo-location';
+import * as firebase from "firebase";
+import LottieView from 'lottie-react-native';
+import "@firebase/auth";
+import "@firebase/firestore";
+LogBox.ignoreLogs(['Setting a timer']);
 const Uploadpost = (props) => {
-    const [image, setimage] = useState('');
     const [body, setbody] = useState('');
-    const [postimage, setpostimage] = useState('https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.rZ6B0kNwWbL9IIbN90iAvgHaEK%26pid%3DApi&f=1')
-    const [{ userToken, EventData }, dispatch] = DataLayerValue()
-    const [activepermission, setactivepermission] = useState(false);
+    const [uploading, setuploading] = useState(false);
+    const [ondone, setondone] = useState(false);
+    const [postimage, setpostimage] = useState('')
+    const [{ userToken }, dispatch] = DataLayerValue()
     const [loaclimages, setloaclimages] = useState('');
-    const [active, setactive] = useState(false)
     const [selectedItems, setselectedItems] = useState([]);
+    const [location, setLocation] = useState(null);
+    const [errorMsg, setErrorMsg] = useState(null);
     const { colors } = useTheme();
-    const [first, setfirst] = useState('https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.rZ6B0kNwWbL9IIbN90iAvgHaEK%26pid%3DApi&f=1')
+    const [selectedValue, setSelectedValue] = useState("java");
+    const [finaltags, setfinaltags] = useState([]);
+    const [first, setfirst] = useState('')
     const getPermissionAsync = async () => {
         if (Constants.platform.android || Constants.platform.ios) {
-            const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-            setactivepermission(status)
+            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
             if (status !== 'granted') {
                 alert('Sorry, we need camera roll permissions to make this work!');
                 console.log(status)
@@ -40,70 +46,215 @@ const Uploadpost = (props) => {
         });
         setloaclimages(media.assets)
         setfirst(media.assets[0].uri);
-        encode();
+        setpostimage(media.assets[0])
+    }
+    const uploadPhotoAsync = async () => {
+        return new Promise(async (res, rej) => {
+            const response = await fetch(first);
+            const file = await response.blob();
+            let upload = firebase.storage().ref(postimage.filename).put(file)
+            upload.on(
+                "state_changed",
+                snapshot => { },
+                err => {
+                    rej(err);
+                },
+                async () => {
+                    const url = await upload.snapshot.ref.getDownloadURL();
+                    res(url);
+                    console.log(url)
+                    mongoupload(url);
+                }
+            );
+        });
+    };
+
+    const mongoupload = (url) => {
+
+        fetch(`${Config.url}` + `/post`, {
+            method: 'post',
+            headers: {
+                'Authorization': 'Bearer ' + `${userToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                caption: body,
+                photo: url,
+                location: location,
+                tags: finaltags,
+                category: selectedValue
+            })
+        }).then(res => res.json()).then((resp) => {
+            setuploading(false);
+            setbody('');
+            setfinaltags([]);
+            setSelectedValue('java')
+            setondone(true);
+            setTimeout(() => {
+                setondone(false);
+            }, 5000);
+        })
     }
 
-    const encode = () => {
-        const encoded = Base64.btoa(first);
-        console.log(encoded)
-        setpostimage(encoded);
-    }
     const _upload = async () => {
         if (!postimage) {
             alert('no photo selected to post');
         }
         else {
-            const uriArr = postimage.split('.');
-            const fileType = uriArr[uriArr.length - 1]
-            const file = `data:${fileType};base64,${image}`
-            const data = new FormData()
-            data.append("file", file)
-            data.append("upload_preset", 'primish');
-            data.append("cloud_name", "raghavyuva");
-            fetch("https://api.cloudinary.com/v1_1/raghavyuva/image/upload", {
-                method: "POST",
-                body: data,
-            }).then(res => res.json()).then((da) => {
-                fetch(`${Config.url}` + `/post`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': 'Bearer ' + `${userToken}`,
-                        'Content-Type': "application/json",
-                    },
-                    body: JSON.stringify({
-                        caption: body,
-                        photo: da.secure_url
-                    })
-                }).then(res => res.json()).then((resp) => {
-                    console.log(resp);
-                })
-            }).catch(err => {
-                Alert.alert(err);
-            })
+            setuploading(true);
+            uploadPhotoAsync()
         }
     }
     const onSelectedItemsChange = selectedItems => {
         setselectedItems(selectedItems)
+
     };
+    const oncomplete = objectfo => {
+        setfinaltags(objectfo);
+    }
     useEffect(() => {
+        let IsMounted = true;
         getPermissionAsync();
+        (async () => {
+            let { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                setErrorMsg('Permission to access location was denied');
+                return;
+            }
+
+            let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.High });
+            let locgeo = await Location.reverseGeocodeAsync(location.coords);
+            setLocation([locgeo[0]]);
+        })();
         return () => {
+            IsMounted = false;
         }
     }, [])
+    if (uploading) {
+        return (
+            <View style={{ flex: 1, backgroundColor: colors.background }}>
+                <Header {...props} />
+                <LottieView
+                    loop={true}
+                    autoPlay={true}
+                    source={require('../animation/4510-uploading.json')}
+                />
+            </View>
+        )
+    }
+    if (ondone) {
+        return (
+            <View style={{ flex: 1, backgroundColor: colors.background }}>
+                <Header {...props} />
+                <LottieView
+                    loop={true}
+                    autoPlay={true}
+                    source={require('../animation/50465-done.json')}
+                />
+            </View>
+        )
+    }
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <Header {...props} />
-            <ScrollView keyboardShouldPersistTaps>
+            <ScrollView keyboardShouldPersistTaps='always'>
+                <Card style={{ backgroundColor: colors.card, padding: 0, margin: 5, height: screenHeight / 5, borderColor: colors.border, flexDirection: 'row' }}>
+                    <Textarea rowSpan={5} style={{ color: colors.text }} placeholder="Type Description" width={screenWidth - 150} numberOfLines={5} multiline
+                        value={body}
+                        onChangeText={(body) => setbody(body)}
+                    />
+                    <Image style={{ width: 150, height: 150, alignSelf: 'center' }} source={{ uri: first }} />
+                </Card>
+                <Card style={{ backgroundColor: colors.card, padding: 0, margin: 5, borderColor: colors.border }}>
+                    <TouchableOpacity>
+                        <CardItem style={{ backgroundColor: colors.background, justifyContent: 'space-between' }}>
+                            <Text style={{ color: colors.text, fontSize: 18, fontWeight: 'bold', }}>
+                                Location  .
+                </Text>
+                            {location == null ? (
+                                <Text style={{ color: colors.text, fontSize: 14 }}>Location Unavailable  {errorMsg} </Text>
+                            ) : (
+                                <Text style={{ color: colors.text, fontSize: 14 }}>{location[0].city},{location[0].subregion}   </Text>
+                            )}
+                            <MaterialIcons name="add-location" size={24} color={colors.primary} />
+                        </CardItem>
+                    </TouchableOpacity>
+                </Card>
 
-                <Card style={{ backgroundColor: colors.card, padding: 0, margin: 5, height: screenHeight / 5, borderColor: colors.border }}>
-                    <Input style={{ color: colors.text }} placeholder="Type Description" />
+                <Card style={{ backgroundColor: colors.card, padding: 0, margin: 5, borderColor: colors.border }}>
+                    <CardItem style={{ backgroundColor: colors.background, justifyContent: 'space-between' }}>
+                        <Text style={{ color: colors.text, fontSize: 18, fontWeight: 'bold', }}>
+                            Category   .
+                </Text>
+                        <Picker
+                            selectedValue={selectedValue}
+                            style={{ height: 50, width: 150, backgroundColor: colors.background, color: colors.text }}
+                            onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
+                        >
+                            <Picker.Item label="Java" value="java" />
+                            <Picker.Item label="JavaScript" value="js" />
+                        </Picker>
+                        <MaterialIcons name="category" size={24} color={colors.primary} />
+                    </CardItem>
+                </Card>
+                <Card style={{ backgroundColor: colors.card, padding: 0, }} keyboardShouldPersistTaps='always'>
+                    <SectionedMultiSelect
+                        items={items}
+                        IconRenderer={Icon}
+                        uniqueKey="id"
+                        subKey="children"
+                        selectText="Choose some tags..."
+                        selectedIconOnLeft
+                        selectedText='Selected'
+                        showDropDowns={true}
+                        readOnlyHeadings={true}
+                        onSelectedItemsChange={onSelectedItemsChange}
+                        selectedItems={selectedItems}
+                        showRemoveAll
+                        searchPlaceholderText='Search Tags'
+                        onSelectedItemObjectsChange={oncomplete}
+                        styles={{
+                            container: {
+                                backgroundColor: colors.card
+                            },
+                            modalWrapper: {
+                                backgroundColor: colors.card
+                            },
+                            listContainer: {
+                                backgroundColor: colors.card
+                            },
+                            searchBar: {
+                                backgroundColor: colors.card,
+                                color: colors.text
+                            },
+                            searchTextInput: {
+                                color: colors.text
+                            },
+                            subItem: {
+                                backgroundColor: colors.card
+                            },
+                            subItemText: {
+                                color: colors.text
+                            },
+                            item: {
+                                backgroundColor: colors.card
+                            },
+                            backdrop: {
+                                backgroundColor: colors.card
+                            },
+                        }}
+                        colors={{ primary: colors.primary, searchSelectionColor: colors.text, searchPlaceholderTextColor: colors.text, itemBackground: colors.card, success: 'red', selectToggleTextColor: colors.text }}
+                    />
                 </Card>
                 <Card style={{ backgroundColor: colors.card, padding: 0, margin: 5, height: screenHeight / 4, borderColor: colors.border }}>
+                    <Text style={{ color: colors.text, opacity: 0.4 }}>Choose One Photo</Text>
                     <FlatList
-                        ref={(ref) => { flatListRef = ref; }}
                         renderItem={({ item }) => {
                             return (
-                                <TouchableOpacity>
+                                <TouchableOpacity onPress={() => {
+                                    setfirst(item.uri)
+                                    setpostimage(item);
+                                }}>
                                     <Card style={{ backgroundColor: colors.card, padding: 0, borderColor: colors.border }}>
                                         <Image style={{ width: 200, height: screenHeight / 4, }} source={{ uri: item.uri }} />
                                     </Card>
@@ -116,61 +267,13 @@ const Uploadpost = (props) => {
                     />
                 </Card>
 
-                <Card style={{ backgroundColor: colors.card, padding: 0, margin: 5, borderColor: colors.border }}>
-                    <TouchableOpacity>
-                        <CardItem style={{ backgroundColor: colors.background, justifyContent: 'space-between' }}>
-                            <Text style={{ color: colors.text, fontSize: 18, fontWeight: 'bold', }}>
-                                Location  .
-                </Text>
-                            <MaterialIcons name="add-location" size={24} color={colors.primary} />
-                        </CardItem>
-                    </TouchableOpacity>
-                </Card>
-
-                <Card style={{ backgroundColor: colors.card, padding: 0, margin: 5, borderColor: colors.border }}>
-                    <TouchableOpacity>
-                        <CardItem style={{ backgroundColor: colors.background, justifyContent: 'space-between' }}>
-                            <Text style={{ color: colors.text, fontSize: 18, fontWeight: 'bold', }}>
-                                Category   .
-                </Text>
-                            <MaterialIcons name="category" size={24} color={colors.primary} />
-                        </CardItem>
-                    </TouchableOpacity>
-                </Card>
-                <Card style={{ backgroundColor: colors.card, padding: 0, }} keyboardShouldPersistTaps>
-                    <MultiSelect
-                        items={items}
-                        uniqueKey="id"
-                        onSelectedItemsChange={onSelectedItemsChange}
-                        selectedItems={selectedItems}
-                        selectText="Select Tags"
-                        tagRemoveIconColor="#CCC"
-                        tagBorderColor={colors.primary}
-                        tagTextColor={colors.text}
-                        selectedItemTextColor="#CCC"
-                        selectedItemIconColor="#CCC"
-                        itemTextColor="#000"
-                        displayKey="name"
-                        style={{backgroundColor:"#000", }}
-                        hideSubmitButton
-                        hideDropdown
-                        searchIcon={false}
-                        styleSelectorContainer={{ backgroundColor: colors.background}}
-                        onAddItem={()=>{}}
-                        keyboardShouldPersistTaps
-                    />
-                </Card>
             </ScrollView>
-            <Fab
-                active={active}
-                direction="up"
-                style={{ backgroundColor: colors.primary, }}
-                position='bottomRight'
-            >
-                <MaterialIcons name="done" size={24} color={colors.primary} />
-            </Fab>
+            <Button style={{ backgroundColor: colors.notification, width: screenWidth, justifyContent: 'center', }} onPress={_upload}>
+                <Text style={{ color: colors.text, textAlign: 'center' }}>Upload </Text>
+            </Button>
         </SafeAreaView>
     )
+
 }
 
 export default Uploadpost;
@@ -223,32 +326,38 @@ const styles = StyleSheet.create({
     }
 });
 
-const items = [{
-    id: '92iijs7yta',
-    name: 'Love'
-}, {
-    id: 'a0s0a8ssbsd',
-    name: 'Education'
-}, {
-    id: '16hbajsabsd',
-    name: 'College'
-}, {
-    id: 'nahs75a5sg',
-    name: 'Friends'
-}, {
-    id: '667atsas',
-    name: 'Vtu'
-}, {
-    id: 'hsyasajs',
-    name: 'Exam'
-}, {
-    id: 'djsjudksjd',
-    name: 'Results'
-}, {
-    id: 'sdhyaysdj',
-    name: 'Events'
-}, {
-    id: 'suudydjsjd',
-    name: 'Engineering life'
-}
+const items = [
+    // this is the parent or 'item'
+    {
+        name: ' Tags',
+        id: 0,
+        // these are the children or 'sub items'
+        children: [
+            {
+                name: 'Results',
+                id: 10,
+            },
+            {
+                name: 'Strike',
+                id: 17,
+            },
+            {
+                name: 'Rank',
+                id: 13,
+            },
+            {
+                name: 'University',
+                id: 14,
+            },
+            {
+                name: 'Engineering',
+                id: 15,
+            },
+            {
+                name: 'Branch',
+                id: 16,
+            },
+        ],
+    },
+
 ];

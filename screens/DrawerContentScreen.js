@@ -2,8 +2,8 @@ import {
     DrawerContentScrollView,
     DrawerItem
 } from '@react-navigation/drawer';
-import React, { useState } from 'react';
-import { StyleSheet, View, Linking, TouchableOpacity, Switch,Dimensions } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, Linking, TouchableOpacity, Switch, Dimensions } from 'react-native';
 import { FontAwesome5, MaterialCommunityIcons, SimpleLineIcons, Octicons, FontAwesome, MaterialIcons, AntDesign } from '@expo/vector-icons';
 import { DataLayerValue } from '../Context/DataLayer';
 import * as SecureStore from 'expo-secure-store';
@@ -12,11 +12,11 @@ import { Text } from 'native-base';
 import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 const { width, height } = Dimensions.get('window');
-import {  Divider,  } from 'react-native-paper';
+import { Divider, } from 'react-native-paper';
 
 export function DrawerContent(props) {
-    const [{ userToken, defdarktheme }, dispatch] = DataLayerValue()
-
+    const [{ userToken, defdarktheme, routename }, dispatch] = DataLayerValue()
+    const [active, setactive] = useState(null);
     const { colors } = useTheme();
     const [loaded] = useFonts({
         Montserrat: require('../assets/Pacifico/Pacifico-Regular.ttf'),
@@ -53,12 +53,14 @@ export function DrawerContent(props) {
                             style={styles(colors).bar}
                             onPress={
                                 () => {
-
+                                    dispatch({ type: 'ROUTEPROP', data: 'Home' })
                                     props.navigation.navigate('external', { screen: 'Home' })
 
                                 }
                             }
-
+                            activeBackgroundColor={colors.background}
+                            activeTintColor='green'
+                            focused={routename === 'Home'}
                         />
                         <DrawerItem
                             icon={({ color, size }) => (
@@ -67,11 +69,13 @@ export function DrawerContent(props) {
                             label="Followers"
                             style={styles(colors).bar}
                             onPress={() => {
-
+                                dispatch({ type: 'ROUTEPROP', data: 'Followers' })
                                 props.navigation.navigate('external', { screen: 'follower' })
 
                             }}
-
+                            focused={routename === 'Followers'}
+                            activeBackgroundColor={colors.background}
+                            activeTintColor='green'
 
                         />
                         <DrawerItem
@@ -82,9 +86,12 @@ export function DrawerContent(props) {
                             style={styles(colors).bar}
                             onPress={() => {
                                 props.navigation.navigate('external', { screen: 'following' })
+                                dispatch({ type: 'ROUTEPROP', data: 'Following' })
 
                             }}
-
+                            focused={routename === 'Following'}
+                            activeBackgroundColor={colors.background}
+                            activeTintColor='green'
                         />
                         <DrawerItem
                             icon={({ color, size }) => (
@@ -93,8 +100,13 @@ export function DrawerContent(props) {
                             label="Interview"
                             style={styles(colors).bar}
                             onPress={() => {
+                                dispatch({ type: 'ROUTEPROP', data: 'interview' })
                                 props.navigation.navigate('external', { screen: 'notes' })
                             }}
+                            focused={routename === 'interview'}
+                            activeBackgroundColor={colors.background}
+
+                            activeTintColor='green'
                         />
                         <DrawerItem
                             icon={({ color, size }) => (
@@ -104,11 +116,16 @@ export function DrawerContent(props) {
                             labelStyle={{ color: colors.text }}
                             style={styles(colors).bar}
                             onPress={() => {
+                                dispatch({ type: 'ROUTEPROP', data: 'events' })
                                 props.navigation.navigate('external', { screen: 'events' })
 
                             }}
+                            focused={routename === 'events'}
+                            activeBackgroundColor={colors.background}
+
+                            activeTintColor='green'
                         />
-                       
+
                         <DrawerItem
                             icon={({ color, size }) => (
                                 <SimpleLineIcons name="support" size={24} color={colors.primary} />
@@ -127,11 +144,15 @@ export function DrawerContent(props) {
                             label="Terms"
                             style={styles(colors).bar}
                             onPress={() => {
+                                dispatch({ type: 'ROUTEPROP', data: 'segment' })
                                 props.navigation.navigate('external', { screen: 'segment' })
 
                             }
                             }
+                            focused={routename === 'segment'}
+                            activeBackgroundColor={colors.background}
 
+                            activeTintColor='green'
 
                         />
                         <DrawerItem
@@ -162,20 +183,24 @@ export function DrawerContent(props) {
                             label="Feedback"
                             style={styles(colors).bar}
                             onPress={() => {
+                                dispatch({ type: 'ROUTEPROP', data: 'feed' })
                                 props.navigation.navigate('external', { screen: 'feedback' })
 
                             }}
+                            focused={routename === 'feed'}
+                            activeBackgroundColor={colors.background}
 
+                            activeTintColor='green'
                         />
                     </View>
                 </DrawerContentScrollView>
-                <View style={defdarktheme?styles(colors).bottomDrawerSection:styles(colors).botmsect}>
+                <View style={defdarktheme ? styles(colors).bottomDrawerSection : styles(colors).botmsect}>
                     <DrawerItem
                         icon={({ color, size }) => (
                             <MaterialCommunityIcons name="exit-to-app" size={24} color={colors.primary} />
                         )}
                         label="Sign Out"
-                        labelStyle={{ color: colors.text ,}}
+                        labelStyle={{ color: colors.text, }}
                         onPress={() => signOut()}
                     />
                 </View>
@@ -183,7 +208,7 @@ export function DrawerContent(props) {
         </View>
     );
 }
-const styles=(colors)=> StyleSheet.create({
+const styles = (colors) => StyleSheet.create({
     drawerContent: {
         flex: 1,
 
@@ -192,8 +217,8 @@ const styles=(colors)=> StyleSheet.create({
         fontSize: 28,
         marginTop: 15,
         fontWeight: 'bold',
-        color: 'white',
-        fontFamily:'Montserrat'
+        color: colors.text,
+        fontFamily: 'Montserrat'
     },
     container:
     {
@@ -226,13 +251,13 @@ const styles=(colors)=> StyleSheet.create({
     },
     bottomDrawerSection: {
         marginBottom: 15,
-        borderTopColor:'yellow',
+        borderTopColor: 'yellow',
         borderTopWidth: 2,
 
     },
-    botmsect:{
+    botmsect: {
         marginBottom: 15,
-        borderTopColor:'black',
+        borderTopColor: 'black',
         borderTopWidth: 2,
 
     },
@@ -245,5 +270,5 @@ const styles=(colors)=> StyleSheet.create({
     label: {
         color: Config.texticons
     },
-    bar: { marginTop: 10, backgroundColor: colors.card,}
+    bar: { marginTop: 10, }
 })

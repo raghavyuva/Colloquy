@@ -8,9 +8,10 @@ import LottieView from 'lottie-react-native';
 import Headingbar from '../components/Header';
 import { ScrollView, TouchableHighlight, TouchableOpacity } from 'react-native-gesture-handler';
 import { Config } from '../config';
+import { DataLayerValue } from '../Context/DataLayer';
 const MockInterview = (props) => {
     const [load, setload] = useState(true);
-
+    const [{ userToken, defdarktheme, routename }, dispatch] = DataLayerValue()
     const Data = [{
         "course": "CSE",
         "id": "1"
@@ -33,7 +34,7 @@ const MockInterview = (props) => {
     }]
     const { colors } = useTheme();
     useEffect(() => {
-       
+        dispatch({ type: 'ROUTEPROP', data: 'interview' })
         setTimeout(() => {
             setload(false);
           }, 2000); 

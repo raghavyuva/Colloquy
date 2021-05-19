@@ -16,7 +16,7 @@ const Events = (props) => {
 
     useEffect(() => {
         fetching()
-        
+        dispatch({ type: 'ROUTEPROP', data: 'events' })
         return () => {
         }
     }, [])

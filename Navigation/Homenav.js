@@ -5,10 +5,8 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
 import { FontAwesome5, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import Profile from '../screens/Profile';
-import EditProfile from '../screens/EditProfile';
 import UploadPoll from '../screens/UploadPoll';
 import Uploadpost from '../screens/Uploadpost';
-import Room from '../screens/Room';
 import Privacy from '../screens/Privacy';
 import Poll from '../screens/Poll';
 import Followers from '../screens/Followers';
@@ -20,7 +18,6 @@ import Home from '../screens/Home';
 import Subscription from '../screens/Subscription';
 import Report from '../screens/Report';
 import Notification from '../screens/Notification';
-import Explore from '../screens/Explore';
 import { DrawerContent } from '../screens/DrawerContentScreen';
 import { Chat } from '../screens/Chat';
 import { Config } from '../config';
@@ -38,10 +35,8 @@ function External() {
         <Stack.Navigator headerMode={false}>
             <Stack.Screen name="Home" component={HomeScreen} />
             <Stack.Screen name="profile" component={Profile} />
-            <Stack.Screen name="edit" component={EditProfile} />
             <Stack.Screen name="polladd" component={UploadPoll} />
             <Stack.Screen name="feedback" component={Report} />
-            <Stack.Screen name="classroom" component={Room} />
             <Stack.Screen name="segment" component={Privacy} />
             <Stack.Screen name="poll" component={Poll} />
             <Stack.Screen name="follower" component={Followers} />
@@ -109,17 +104,7 @@ function HomeScreen() {
                     ),
                 }}
             />
-            <Tab.Screen
-                name="explore"
-                component={Explore}
-                options={{
-                    tabBarLabel: 'Explore',
-                    tabBarColor: 'purple',
-                    tabBarIcon: ({ color }) => (
-                        <MaterialIcons name="explore" size={24} color={color} />
-                    ),
-                }}
-            />
+          
         </Tab.Navigator>
     );
 }

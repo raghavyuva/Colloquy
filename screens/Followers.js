@@ -10,7 +10,7 @@ const { width, height } = Dimensions.get('window');
 import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
 
 const Followers = (props) => {
-  const [{ userToken, followerslist, UserId }, dispatch] = DataLayerValue()
+  const [{ userToken, followerslist, UserId }, dispatch] = DataLayerValue();
   const [load, setload] = useState(true);
   const { colors } = useTheme();
   const fetching = async () => {
@@ -35,6 +35,7 @@ const Followers = (props) => {
   useEffect(() => {
     let IsMounted = true;
     fetching();
+    dispatch({ type: 'ROUTEPROP', data: 'Following' })
     return () => {
       IsMounted = false;
     }

@@ -8,7 +8,7 @@ import * as SecureStore from 'expo-secure-store';
 import { Button } from "native-base";
 import * as Google from "expo-google-app-auth";
 import Svg, { Circle, Rect, Stop, Path, Defs, LinearGradient as Fgrad } from 'react-native-svg';
-import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
+import { useTheme } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import { Item, Input, Label } from 'native-base';
 import { useFonts } from 'expo-font';

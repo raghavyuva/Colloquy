@@ -4,12 +4,24 @@ import Header from '../components/Header';
 import { Config } from '../config';
 import { DataLayerValue } from '../Context/DataLayer';
 import { Thumbnail, Button, Left, Body, ListItem, Right, List, } from 'native-base';
+import { useTheme } from '@react-navigation/native';
+
 const WhoLiked = (props) => {
     const [data, setdata] = useState(props.route.params.item);
     const [{ userToken, user, otherprofile }, dispatch] = DataLayerValue()
-    const [Users, setUsers] = useState('');
+    const [Users, setUsers] = useState([]);
+    const { colors } = useTheme();
+
     useEffect(() => {
         let IsMounted = true;
+        getuser()
+        return () => {
+
+            IsMounted = false;
+
+        }
+    }, [])
+    const getuser = () => {
         data.likes.map((ele) => {
             try {
                 fetch(`${Config.url}` + `/user/${ele}`, {
@@ -20,19 +32,15 @@ const WhoLiked = (props) => {
                     .then((response) => response.json())
                     .then((responseJson) => {
                         let user = [];
-                        user.push(responseJson);
-                        setUsers(user);
+                        user.push(responseJson)
+                        setUsers(user)
+                        console.log(user.user);
                     })
             } catch (e) {
                 console.log(e);
             }
         })
-        return () => {
-
-            IsMounted = false;
-
-        }
-    }, [])
+    }
     const followuser = (itm) => {
         try {
             fetch(`${Config.url}` + `/follow`, {
@@ -72,7 +80,6 @@ const WhoLiked = (props) => {
         }
     }
     const opencomp = (id) => {
-        console.log(id == user.user._id)
         if (id == user.user.id) {
             props.navigation.navigate('external', { screen: 'profile' })
         }
@@ -81,20 +88,20 @@ const WhoLiked = (props) => {
         }
     }
     return (
-        <View style={{ flex: 1, backgroundColor: "#0E043B" }}>
+        <View style={{ flex: 1, backgroundColor: colors.background }}>
             <Header {...props} />
             <FlatList
-                ref={(ref) => { flatListRef = ref; }}
                 renderItem={({ item }) => {
+                    console.log(item)
                     return (
-                        <List style={{ borderBottomWidth: 0, borderWidth: 2, borderColor: '#251661', borderBottomColor: "#0E043B" }}>
+                        <List>
                             <ListItem thumbnail onPress={() => opencomp(item.user._id)} >
                                 <Left>
                                     <Thumbnail source={{ uri: item.user.userphoto }} />
                                 </Left>
-                                <Body style={{ borderBottomWidth: 0, borderWidth: 0, borderColor: '#0E043B', borderBottomColor: "#0E043B" }} >
-                                    <Text style={{ color: 'white' }}>{item.user.username}</Text>
-                                    <Text note numberOfLines={1} style={{ color: 'white' }}>{item.user.tagline}</Text>
+                                <Body style={{ borderBottomWidth: 0, borderWidth: 0 }} >
+                                    <Text style={{ color: colors.text }}>{item.user.username}</Text>
+                                    <Text note numberOfLines={1} style={{ color: colors.text }}>{item.user.tagline}</Text>
                                 </Body>
                                 <Right>
                                     {
@@ -103,24 +110,23 @@ const WhoLiked = (props) => {
 
                                             </View>
                                         ) : (
-                                                <>
-                                                    {item.user.followers.includes(user.user._id) ? (
-                                                        <View style={{ borderBottomWidth: 0, borderWidth: 0, borderColor: '#0E043B', borderBottomColor: "#0E043B" }}>
-                                                            <Button style={styles.follow} onPress={() => unfollow(item)}>
-                                                                <Text style={{ color: 'white' }}>unfollow</Text>
-                                                            </Button>
-                                                        </View>
-                                                    ) : (
-                                                            <View style={{ borderBottomWidth: 0, borderWidth: 0, borderColor: '#0E043B', borderBottomColor: "#0E043B" }}>
-                                                                <Button style={styles.follow} onPress={() => followuser(item)} >
-                                                                    <Text style={{ color: 'white' }}>follow</Text>
-                                                                </Button>
-                                                            </View>
-                                                        )
-                                                    }
-                                                </>
-                                            )
-
+                                            <>
+                                                {item.user.followers.includes(user.user._id) ? (
+                                                    <View style={{ borderBottomWidth: 0, borderWidth: 0, borderColor: '#0E043B', borderBottomColor: "#0E043B" }}>
+                                                        <Button style={styles.follow} onPress={() => unfollow(item)}>
+                                                            <Text style={{ color: 'white' }}>unfollow  </Text>
+                                                        </Button>
+                                                    </View>
+                                                ) : (
+                                                    <View style={{ borderBottomWidth: 0, borderWidth: 0, borderColor: '#0E043B', borderBottomColor: "#0E043B" }}>
+                                                        <Button style={styles.follow} onPress={() => followuser(item)} >
+                                                            <Text style={{ color: 'white' }}>follow </Text>
+                                                        </Button>
+                                                    </View>
+                                                )
+                                                }
+                                            </>
+                                        )
                                     }
 
                                 </Right>
@@ -130,7 +136,7 @@ const WhoLiked = (props) => {
                 }}
                 keyExtractor={(item, index) => index.toString()}
                 data={Users}
-                style={{ marginBottom: 50 }}
+
             />
         </View>
     )

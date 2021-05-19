@@ -6,10 +6,10 @@ const Pdf = () => {
     return (
         <PDFReader
             source={{
-                uri: `https://guidemic.in/wp-content/uploads/2020/10/dsa-mod-1.pdf`
+                uri: `http://africau.edu/images/default/sample.pdf`
             }}
         />
     )
 }
 
-export default Pdf
+export default Pdf;

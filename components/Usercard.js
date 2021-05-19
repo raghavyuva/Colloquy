@@ -9,7 +9,6 @@ const Usercard = (props) => {
     const [{ userToken, }, dispatch] = DataLayerValue()
     const [name, setname] = useState('');
     const { colors } = useTheme();
-
     useEffect(() => {
         setname(props.name)
         return () => {
