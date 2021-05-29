@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, TouchableOpacity, Image, Dimensions,Share, Alert, ToastAndroid, } from 'react-native';
-import { CardItem, Text, Button, Left, View, Right, Body, Item, Input } from 'native-base';
+import { StyleSheet, TouchableOpacity, Image, Dimensions, Share, Alert, ToastAndroid, Modal, Pressable } from 'react-native';
+import { CardItem, Text, Button, Left, View, Right, Body, Item, Input, Card } from 'native-base';
 import { MaterialIcons, AntDesign, MaterialCommunityIcons, Entypo } from '@expo/vector-icons';
 import * as MediaLibrary from 'expo-media-library';
 import * as FileSystem from 'expo-file-system';
@@ -9,25 +9,28 @@ import { Config } from '../config';
 const { width, height } = Dimensions.get('window');
 import { DataLayerValue } from '../Context/DataLayer';
 import { useTheme } from '@react-navigation/native';
-import { Menu, Divider, Provider } from 'react-native-paper';
+import { Menu, Provider } from 'react-native-paper';
 
 const Postcard = (props) => {
     const [{ userToken, UserId }, dispatch] = DataLayerValue();
     const [active, setactive] = useState(false);
     const [commenttext, setcommenttext] = useState('');
     const [visible, setVisible] = React.useState(false);
+
+    const [modalVisible, setModalVisible] = useState(false);
+
     const openMenu = () => setVisible(true);
 
     const closeMenu = () => setVisible(false);
     const { colors } = useTheme();
     styles(colors)
     useEffect(() => {
-        let IsMounted = true; 
-        console.log(props.item.location);
+        let IsMounted = true;
         return () => {
             IsMounted = false;
         }
     }, [])
+
     const downloadFile = (item) => {
         Alert.alert(
             'Download Post',
@@ -38,7 +41,7 @@ const Postcard = (props) => {
                     text: 'YES', onPress: () => {
                         const uri = item.photo;
                         var randomstring = Math.random().toString(36).slice(-9);
-                        let fileUri = FileSystem.documentDirectory + `${item.postedBy.username+ randomstring}.jpg`;
+                        let fileUri = FileSystem.documentDirectory + `${item.postedBy.username + randomstring}.jpg`;
                         FileSystem.downloadAsync(uri, fileUri)
                             .then(({ uri }) => {
                                 saveFile(uri);
@@ -57,7 +60,7 @@ const Postcard = (props) => {
         if (status === "granted") {
             const asset = await MediaLibrary.createAssetAsync(fileUri)
             await MediaLibrary.createAlbumAsync("Primish", asset, false)
-           
+
         } else {
             alert('provide permission');
         }
@@ -195,40 +198,214 @@ const Postcard = (props) => {
         })
         props.navigation.navigate('external', { screen: 'view' })
     }
-    const onVote = async (item) => {
-        try {
-            fetch(`${Config.url}` + `/posts/vote/${item._id}`, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': 'Bearer ' + `${userToken}`,
-                    'Content-Type': "application/json",
-                },
-            }).then(res => res.json()).then(async (resp) => {
-                await updatestore();
-            })
-        } catch (error) {
-            alert(error);
-        }
-    }
-    const onVotecancell = (item) => {
-        try {
-            fetch(`${Config.url}` + `/posts/votecancell/${item._id}`, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': 'Bearer ' + `${userToken}`,
-                    'Content-Type': "application/json",
-                },
-            }).then(res => res.json()).then(async (resp) => {
-                await updatestore();
-            })
-        } catch (error) {
-            alert(error);
-        }
-    }
+    // const onVote = async (item) => {
+    //     try {
+    //         fetch(`${Config.url}` + `/posts/vote/${item._id}`, {
+    //             method: 'PUT',
+    //             headers: {
+    //                 'Authorization': 'Bearer ' + `${userToken}`,
+    //                 'Content-Type': "application/json",
+    //             },
+    //         }).then(res => res.json()).then(async (resp) => {
+    //             await updatestore();
+    //         })
+    //     } catch (error) {
+    //         alert(error);
+    //     }
+    // }
+    // const onVotecancell = (item) => {
+    //     try {
+    //         fetch(`${Config.url}` + `/posts/votecancell/${item._id}`, {
+    //             method: 'PUT',
+    //             headers: {
+    //                 'Authorization': 'Bearer ' + `${userToken}`,
+    //                 'Content-Type': "application/json",
+    //             },
+    //         }).then(res => res.json()).then(async (resp) => {
+    //             await updatestore();
+    //         })
+    //     } catch (error) {
+    //         alert(error);
+    //     }
+    // }
     const onGotoWhodid = (item) => {
         props.navigation.navigate('external', { screen: 'wholiked', params: { item: item } })
     }
+    const CardLayout = () => {
+        return (
+            <>
+                <View style={styles(colors).centeredView}>
+                    <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={modalVisible}
+                        onRequestClose={() => {
+                            Alert.alert("Modal has been closed.");
+                            setModalVisible(!modalVisible);
+                        }}
+                    >
+                        <View style={styles(colors).centeredView}>
+                            <View style={styles(colors).modalView}>
+                                <Image
+                                    source={{ uri: props.item.photo }}
+                                    style={styles(colors).modalimage}
+                                />
+                                <Pressable
+                                    style={[styles(colors).button, styles(colors).buttonClose]}
+                                    onPress={() => setModalVisible(!modalVisible)}
+                                >
+                                    <Text style={styles(colors).textStyle}>Hide Modal</Text>
+                                </Pressable>
+                            </View>
+                        </View>
+                    </Modal>
+                </View>
+                <TouchableOpacity
+                    activeOpacity={1}
+                    style={styles(colors).item}
+                    onPress={() => NavigateFull(props.item)}
+                    onLongPress={() => { downloadFile(props.item) }}
+                >
+                    <Card style={styles(colors).cardcontainer}>
+                        <TouchableOpacity onPress={() => {
+                            if (props.item.postedBy._id == UserId) {
+                                props.navigation.navigate('external', { screen: 'profile' })
+                            } else {
+                                props.navigation.navigate('external', { screen: 'userpro', params: { thread: props.item.postedBy._id } })
+                            }
+                        }}>
+                            <Image
+                                source={{ uri: props.item.postedBy.userphoto }}
+                                style={styles(colors).Image}
+                            />
+                        </TouchableOpacity>
+                        <Body style={{ margin: 0 }}>
+                            <Text style={styles(colors).top} numberOfLines={1}>{props.item.postedBy.username}</Text>
+                            <Text style={styles(colors).capt} numberOfLines={1}>{props.item.createdAt.substring(0, 10)} </Text>
+                        </Body>
+                        <Right>
+                            <View style={{ backgroundColor: colors.card }}>
+                                <Menu
+                                    visible={visible}
+                                    onDismiss={closeMenu}
+                                    anchor={<Button onPress={openMenu} transparent><MaterialCommunityIcons name="dots-vertical" size={24} color={colors.text} /></Button>}>
+                                    <Menu.Item onPress={() => {
+                                        Share.share({
+                                            url: `${props.item.photo}`,
+                                            title: `${props.item.postedBy.userName}`,
+                                            message: `${props.item.caption}`,
+                                        })
+                                    }} title="share" />
+                                    <Menu.Item onPress={() => { downloadFile(props.item) }} title="Download Image" />
 
+                                    {props.item.postedBy._id == UserId ? (
+                                        <Menu.Item onPress={() => DeletePost(props.item)} title="Delete" />
+                                    ) : (
+                                        <View></View>
+                                    )}
+                                </Menu>
+                            </View>
+                        </Right>
+                    </Card>
+                    <TouchableOpacity onPress={() => setModalVisible(true)}>
+                        <Image
+                            source={{ uri: props.item.photo }}
+                            style={styles(colors).imageBackground}
+                        >
+                        </Image>
+                    </TouchableOpacity>
+                    <View style={styles(colors).lowerContainer}>
+                        <Text style={styles(colors).contentText} numberOfLines={2}>{props.item.caption} </Text>
+                        <CardItem style={{ backgroundColor: colors.card, }} >
+                            <Left style={{ flexDirection: "row", justifyContent: 'space-evenly' }}>
+                                {/* <Button transparent>
+                        {props.item.votes.includes(UserId) ?
+                            (<TouchableOpacity onPress={() => {
+                                onVotecancell(props.item)
+                            }}>
+                                <MaterialIcons name="thumb-up-alt" size={24} color={colors.text} />
+                            </TouchableOpacity>
+                            ) : (
+                                <TouchableOpacity onPress={() => {
+                                    onVote(props.item);
+                                }}>
+                                    <MaterialIcons name="thumb-down-alt" size={24} color={colors.text} />
+                                </TouchableOpacity>
+                            )
+                        }
+                        <Text style={styles(colors).likecomtext}>{props.item.votes.length} vote</Text>
+                    </Button> */}
+                                <Button transparent  >
+                                    {props.item.likes.includes(UserId) ?
+                                        (<TouchableOpacity onPress={() => {
+                                            onUnlIKE(props.item);
+                                        }}>
+                                            <MaterialCommunityIcons name="cards-heart" size={24} color='#ff1493' />
+                                        </TouchableOpacity>
+                                        ) : (
+                                            <TouchableOpacity onPress={() => {
+                                                onlIKE(props.item);
+                                            }}>
+                                                <MaterialCommunityIcons name="heart-outline" size={28} color={colors.text} />
+                                            </TouchableOpacity>
+                                        )
+                                    }
+                                    <Text style={{ textTransform: 'capitalize', color: colors.text }}
+                                        onPress={() => onGotoWhodid(props.item)}
+                                    >{props.item.likes.length} {props.item.likes.length > 1 ? 'likes' : "like"}</Text>
+                                </Button>
+                                <Button transparent onPress={() => {
+                                    setactive(!active)
+                                    setcommenttext('');
+                                }}>
+                                    <MaterialIcons name="comment" size={24} color={colors.text} />
+                                    <Text style={{ textTransform: 'capitalize', color: colors.text }}>{props.item.comments.length} </Text>
+                                </Button>
+                            </Left>
+                            <Right>
+                                <Button transparent onPress={() => {
+                                    Alert.alert(
+                                        "Details",
+                                        `Caption:\n${props.item.caption}\n\nPostedAt:${props.item.createdAt}\n\nCategory:${props.item.category}\n\nSubCategory:${props.item.subcategory}`,
+                                        [
+                                            {
+                                                text: "Cancel",
+                                                style: "cancel",
+                                            },
+                                        ],
+                                        {
+                                            cancelable: true,
+                                        }
+                                    );
+                                }}>
+                                    <MaterialIcons name="details" size={24} color={colors.text} />
+                                </Button>
+                            </Right>
+                        </CardItem>
+                        {
+                            active ? (
+                                <Item style={{}}>
+                                    <Input style={styles(colors).fieldinpu}
+                                        value={commenttext}
+                                        onChangeText={(t) => setcommenttext(t)}
+                                        placeholder='Add a comment' placeholderTextColor='#bababa'
+
+                                    />
+                                    <Button transparent style={{ borderRadius: 8 }} >
+                                        <Text style={{ textTransform: 'capitalize', color: '#fff' }}>comment</Text>
+                                    </Button>
+                                </Item>
+                            ) : (
+                                <View>
+                                </View>
+                            )
+                        }
+                    </View>
+
+                </TouchableOpacity>
+            </>
+        )
+    }
     if (props.item == null || undefined) {
         return (
             <View style={{ justifyContent: "center", flex: 1, backgroundColor: colors.background }}>
@@ -251,134 +428,25 @@ const Postcard = (props) => {
     }
     return (
         <Provider>
-
-            <TouchableOpacity
-                activeOpacity={1}
-                style={styles(colors).item}
-                onPress={() => NavigateFull(props.item)}
-                onLongPress={() => { downloadFile(props.item) }}
-            >
-                <CardItem style={styles(colors).cardcontainer}>
-                    <TouchableOpacity onPress={() => {
-                        if (props.item.postedBy._id == UserId) {
-                            props.navigation.navigate('external', { screen: 'profile' })
-                        } else {
-                            props.navigation.navigate('external', { screen: 'userpro', params: { thread: props.item.postedBy._id } })
-                        }
-                    }}>
-                        <Image
-                            source={{ uri: props.item.postedBy.userphoto }}
-                            style={styles(colors).Image}
-                        />
-                    </TouchableOpacity>
-                    <Body style={{ margin: 10 }}>
-                        <Text style={styles(colors).top} numberOfLines={1}>{props.item.postedBy.username}</Text>
-                        <Text style={styles(colors).capt} numberOfLines={1}>{props.item.createdAt.substring(0, 10)} </Text>
-                    </Body>
-                    <Right>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', backgroundColor: colors.card }}>
-                            <TouchableOpacity >
-                               
-                            </TouchableOpacity>
-                            <Menu
-                                visible={visible}
-                                onDismiss={closeMenu}
-                                anchor={<Button onPress={openMenu} transparent><MaterialCommunityIcons name="dots-vertical" size={24} color={colors.text} /></Button>}>
-                                <Menu.Item onPress={() => {
-                                Share.share({
-                                    url: `${props.item.photo}`,
-                                    title: `${props.item.postedBy.userName}`,
-                                    message: `${props.item.caption}`,
-                                })
-                            }} title="share" />
-                                    <Menu.Item onPress={() => { downloadFile(props.item) }}  title="Download Image" />
-
-                             {props.item.postedBy._id == UserId ? (
-                                    <Menu.Item onPress={() => DeletePost(props.item)} title="Delete" />
-                                ) : (
-                                    <View></View>
-                                )}
-                              
-                                <Divider />
-                            </Menu>
-                        </View>
-                    </Right>
-                </CardItem>
-                <Image
-                    source={{ uri: props.item.photo }}
-                    style={styles(colors).imageBackground}
-                >
-                </Image>
-                <View style={styles(colors).lowerContainer}>
-                    <CardItem style={{ backgroundColor: colors.card, padding: 0, margin: 0, flexDirection:'column'}} >
-                    <Text style={styles(colors).contentText} numberOfLines={2}>{props.item.caption} </Text>
-                        <Left>
-                            <Button transparent>
-                                {props.item.votes.includes(UserId) ?
-                                    (<TouchableOpacity onPress={() => {
-                                        onVotecancell(props.item)
-                                    }}>
-                                        <MaterialIcons name="thumb-up-alt" size={24} color={colors.text} />
-                                    </TouchableOpacity>
-                                    ) : (
-                                        <TouchableOpacity onPress={() => {
-                                            onVote(props.item);
-                                        }}>
-                                            <MaterialIcons name="thumb-down-alt" size={24} color={colors.text} />
-                                        </TouchableOpacity>
-                                    )
-                                }
-                                <Text style={styles(colors).likecomtext}>{props.item.votes.length} vote</Text>
-                            </Button>
-                            <Button transparent  >
-                                {props.item.likes.includes(UserId) ?
-                                    (<TouchableOpacity onPress={() => {
-                                        onUnlIKE(props.item);
-                                    }}>
-                                        <MaterialCommunityIcons name="cards-heart" size={24} color='#ff1493' />
-                                    </TouchableOpacity>
-                                    ) : (
-                                        <TouchableOpacity onPress={() => {
-                                            onlIKE(props.item);
-                                        }}>
-                                            <MaterialCommunityIcons name="heart-outline" size={28} color={colors.text} />
-                                        </TouchableOpacity>
-                                    )
-                                }
-                                <Text style={{ textTransform: 'capitalize', color: colors.text }}
-                                    onPress={() => onGotoWhodid(props.item)}
-                                >{props.item.likes.length} {props.item.likes.length > 1 ? 'likes' : "like"}</Text>
-                            </Button>
-                            <Button transparent onPress={() => {
-                                setactive(!active)
-                                setcommenttext('');
-                            }}>
-                                <MaterialIcons name="comment" size={24} color={colors.text} />
-                                <Text style={{ textTransform: 'capitalize', color: colors.text }}>{props.item.comments.length} </Text>
-                            </Button>
-                        </Left>
-                    </CardItem>
-                   
-                    {
-                        active ? (
-                            <Item style={{}}>
-                                <Input style={styles(colors).fieldinpu}
-                                    value={commenttext}
-                                    onChangeText={(t) => setcommenttext(t)}
-                                    placeholder='Add a comment' placeholderTextColor='#bababa'
-
-                                />
-                                <Button transparent style={{ borderRadius: 8 }} >
-                                    <Text style={{ textTransform: 'capitalize', color: '#fff' }}>comment</Text>
-                                </Button>
-                            </Item>
+            {
+                props.name === 'NormalView' ? (
+                    <>
+                        <CardLayout />
+                    </>
+                ) : (
+                    <>
+                        {props.item.postedBy._id == UserId ? (
+                            <>
+                            </>
                         ) : (
-                            <View>
-                            </View>
-                        )
-                    }
-                </View>
-            </TouchableOpacity>
+                            <>
+                                <CardLayout />
+                            </>
+                        )}
+                    </>
+                )
+            }
+
         </Provider>
     )
 }
@@ -397,12 +465,8 @@ const styles = (color) => StyleSheet.create({
         fontWeight: '800'
     },
     top: { color: color.text, fontWeight: "bold", fontSize: 15, },
-    carousel: {
-        height: '50%',
-        paddingTop: 0,
-    },
+
     item: {
-        marginBottom: 5,
         shadowColor: color.text,
         shadowOffset: { width: 2, height: 2 },
         shadowOpacity: 1,
@@ -411,10 +475,8 @@ const styles = (color) => StyleSheet.create({
         margin: 0.2
     },
     imageBackground: {
-        width: "100%",
-        height: height/2.6,
-        alignSelf: "center",
-        marginTop: 0,
+        width: width,
+        height: height / 2.5,
     },
     rightTextContainer: {
         marginLeft: 'auto',
@@ -455,6 +517,231 @@ const styles = (color) => StyleSheet.create({
         backgroundColor: color.card
     },
     capt: { color: color.text, fontWeight: "500", fontSize: 10, },
-    Image: { width: 60, height: 60, borderRadius: 14, margin: 5 },
-    likecomtext: { textTransform: 'capitalize', color: color.text }
+    Image: { width: 60, height: 60, borderRadius: 14, marginLeft: 5 },
+    likecomtext: { textTransform: 'capitalize', color: color.text },
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 2
+    },
+    modalView: {
+        margin: 20,
+        backgroundColor: color.card,
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5
+    },
+    button: {
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2
+    },
+    buttonOpen: {
+        backgroundColor: "#F194FF",
+    },
+    buttonClose: {
+        backgroundColor: "#2196F3",
+    },
+    textStyle: {
+        color: "white",
+        fontWeight: "bold",
+        textAlign: "center"
+    },
+    modalText: {
+        marginBottom: 15,
+        textAlign: "center"
+    },
+    modalimage: {
+        width: width - 20,
+        height: height / 1.2,
+        aspectRatio: 0.5,
+        resizeMode: 'contain',
+
+    },
+    ImageSection: {
+        backgroundColor: color.card,
+        marginRight: 2,
+        flexDirection: 'column'
+    },
+
+
 })
+// const styles = (colors) => StyleSheet.create({
+//     MainCard: {
+//         backgroundColor: colors.card,
+//         flex: 1,
+//         borderColor: colors.border
+//     },
+//     TopSection: {
+//         backgroundColor: colors.card,
+//         marginRight: 2
+//     },
+//     ImageSection: {
+//         backgroundColor: colors.card,
+//         marginRight: 2,
+//         flexDirection: 'column'
+//     },
+//     Imagebackg: {
+//         width: width - 40,
+//         height: height / 2.8,
+//         marginRight: 2,
+//         flex: 1
+//     },
+//     BottomSection: {
+//         backgroundColor: colors.card,
+//         marginRight: 2,
+
+//     },
+//     Imageuser: {
+//         height: 50,
+//         width: 50,
+//         borderRadius: 26
+//     },
+//     userName: {
+//         color: colors.text,
+//         fontSize: 22,
+//         fontWeight: 'bold'
+//     },
+//     capt: { color: colors.text, fontWeight: "500", fontSize: 10, },
+//     contentText: {
+//         fontSize: 14,
+//         color: colors.text,
+//         marginLeft: 5,
+//         marginRight: 5
+//     },
+//     likecomsection: {
+//         backgroundColor: colors.card,
+//         marginRight: 2,
+//     }
+// })
+
+
+
+
+
+
+
+{/**/ }
+
+// <Provider>
+
+// <Card style={styles(colors).MainCard}>
+//     <CardItem style={styles(colors).TopSection}>
+//         <Left>
+//             <Image source={{ uri: props.item.postedBy.userphoto }} style={styles(colors).Imageuser} />
+//             <Body>
+//                 <Text style={styles(colors).userName}>{props.item.postedBy.username} </Text>
+//             </Body>
+//         </Left>
+//         <Right>
+//             {props.item.postedBy._id == UserId ? (
+//                 <>
+//                     <Menu
+//                         visible={visible}
+//                         onDismiss={closeMenu}
+//                         style={{ backgroundColor: colors.card, }}
+//                         contentStyle={{ backgroundColor: colors.card, }}
+//                         anchor={<Button onPress={openMenu} transparent><MaterialCommunityIcons name="dots-vertical" size={24} color={colors.text} /></Button>}>
+//                         <Menu.Item title="Edit" titleStyle={{ color: colors.text }} />
+//                         <Menu.Item onPress={() => DeletePost(props.item)} title="Delete" titleStyle={{ color: colors.text }} />
+//                         <Divider />
+//                     </Menu>
+//                 </>
+//             )
+//                 : (
+//                     <>
+//                     </>
+//                 )}
+//         </Right>
+//     </CardItem>
+//     <CardItem style={styles(colors).ImageSection}>
+//         <Image source={{ uri: props.item.photo }} style={styles(colors).Imagebackg} />
+
+//     </CardItem>
+//     <Text style={styles(colors).contentText} numberOfLines={2}>{props.item.caption} </Text>
+//     <CardItem style={styles(colors).BottomSection}>
+//         <Left>
+//         <Button transparent>
+//             {props.item.votes.includes(UserId) ?
+//                 (<TouchableOpacity onPress={() => {
+//                     onVotecancell(props.item)
+//                 }}>
+//                     <MaterialIcons name="thumb-up-alt" size={24} color={colors.text} />
+//                 </TouchableOpacity>
+//                 ) : (
+//                     <TouchableOpacity onPress={() => {
+//                         onVote(props.item);
+//                     }}>
+//                         <MaterialIcons name="thumb-down-alt" size={24} color={colors.text} />
+//                     </TouchableOpacity>
+//                 )
+//             }
+//             <Text style={styles(colors).likecomtext}>{props.item.votes.length} vote</Text>
+//         </Button>
+//             <Button transparent  >
+//                 {props.item.likes.includes(UserId) ?
+//                     (<TouchableOpacity onPress={() => {
+//                         onUnlIKE(props.item);
+//                     }}>
+//                         <MaterialCommunityIcons name="cards-heart" size={24} color='red' />
+//                     </TouchableOpacity>
+//                     ) : (
+//                         <TouchableOpacity onPress={() => {
+//                             onlIKE(props.item);
+//                         }}>
+//                             <MaterialCommunityIcons name="heart-outline" size={28} color={colors.text} />
+//                         </TouchableOpacity>
+//                     )
+//                 }
+//                 <Text style={{ textTransform: 'capitalize', color: colors.text }}
+//                     onPress={() => onGotoWhodid(props.item)}
+//                 >{props.item.likes.length} {props.item.likes.length > 1 ? 'likes' : 'like'}</Text>
+//             </Button>
+//             <Button transparent onPress={() => {
+//                 setactive(!active)
+//                 setcommenttext('');
+//             }}>
+//                 <MaterialIcons name="comment" size={24} color={colors.text} />
+//                 <Text style={{ textTransform: 'capitalize', color: colors.text }}>{props.item.comments.length} </Text>
+//             </Button>
+//             <Button transparent onPress={() => {
+//                 Share.share({
+//                     url: `${props.item.photo}`,
+//                     title: `${props.item.postedBy.userName}`,
+//                     message: `${props.item.caption}`,
+//                 })
+//             }}>
+//                 <MaterialIcons name="share" size={24} color={colors.text} />
+//             </Button>
+//         </Left>
+//         <Right>
+//             <Button transparent onPress={() => {
+//                 Alert.alert(
+//                     "Details",
+//                     `Caption:\n${props.item.caption}\n\nPostedAt:${props.item.createdAt}\n\nCategory:${props.item.category}\n\nSubCategory:${props.item.subcategory}`,
+//                     [
+//                         {
+//                             text: "Cancel",
+//                             style: "cancel",
+//                         },
+//                     ],
+//                     {
+//                         cancelable: true,
+//                     }
+//                 );
+//             }}>
+//                 <MaterialIcons name="details" size={24} color="white" />
+//             </Button>
+//         </Right>
+//     </CardItem>
+// </Card>
+// </Provider>

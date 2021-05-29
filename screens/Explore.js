@@ -1,202 +1,221 @@
-import React from 'react'
-import { Audio, Video } from 'expo-av';
-import Carousel from 'react-native-snap-carousel';
-import { Text, StyleSheet, View, TouchableOpacity, ImageBackground, Dimensions, Image } from 'react-native'
-const { width, height } = Dimensions.get('window');
-import { MaterialCommunityIcons, SimpleLineIcons } from '@expo/vector-icons';
-import { Button, } from 'native-base';
+import React, { useState, useEffect } from 'react'
+import { StyleSheet, Text, View, TouchableOpacity, FlatList } from 'react-native'
+import { firebase } from '../components/firebase'
+import 'firebase/auth';
+import 'firebase/firestore';
+import { Button, Input, Card, CardItem, Label, Left, Right, Body, Thumbnail, Fab, Icon, Header, Item } from 'native-base';
+import { useTheme } from '@react-navigation/native';
+import { Entypo, MaterialIcons } from '@expo/vector-icons';
 import LottieView from 'lottie-react-native';
+import Headerv from '../components/Header';
+import { DataLayerValue } from '../Context/DataLayer';
+import { Config } from '../config';
+import Usercard from '../components/Usercard';
+require('firebase/storage');
+const ListOfChats = (props) => {
+    const [roomName, setRoomName] = useState("");
+    const { colors } = useTheme();
+    const [threads, setThreads] = useState([]);
+    const [active, setActive] = useState(false);
+    const [searchText, setsearchText] = useState(null);
+    const [filtered, setfiltered] = useState(null); 
+    const [loading, setloading] = useState(true);
+    const [Notfound, setNotfound] = useState(false);
+    const [AllUsers, setAllUsers] = useState(null);
+    const [refresh, setrefresh] = useState(false);
 
-const api = [
-    {
-        id: 0,
-        video: 'https://player.vimeo.com/external/426694466.sd.mp4?s=05ae02363ecc932334b4396e8edf1f67a412e5fa&profile_id=139&oauth2_token_id=57447761',
-        poster: 'https://images.pexels.com/photos/3130392/pexels-photo-3130392.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
-        user: {
-            username: 'whinderssonnunes',
-            description: 'Como nasceu o passinho do TikTok',
-            music: 'som original',
-            avatar: 'https://images.pexels.com/photos/2087954/pexels-photo-2087954.png?auto=compress&cs=tinysrgb&dpr=1&w=500'
-        },
-        count: {
-            like: '1.1M',
-            comment: '4080',
-            share: '2800'
-        }
-    },
-    {
-        id: 0,
-        video: 'https://player.vimeo.com/external/484854769.sd.mp4?s=2c4d4231b550e633c0d79755483722bee9710fae&profile_id=165&oauth2_token_id=57447761',
-        poster: 'https://images.pexels.com/photos/3130392/pexels-photo-3130392.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
-        user: {
-            username: 'whinderssonnunes',
-            description: 'Como nasceu o passinho do TikTok',
-            music: 'som original',
-            avatar: 'https://images.pexels.com/photos/2087954/pexels-photo-2087954.png?auto=compress&cs=tinysrgb&dpr=1&w=500'
-        },
-        count: {
-            like: '1.1M',
-            comment: '4080',
-            share: '2800'
-        }
-    },
-    {
-        id: 1,
-        video: 'https://player.vimeo.com/external/426217695.hd.mp4?s=350d6ecc750b1a67a217b985016d8d75b3132cba&profile_id=169&oauth2_token_id=57447761',
-        poster: 'https://images.pexels.com/photos/3130392/pexels-photo-3130392.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
-        user: {
-            username: 'whinderssonnunes',
-            description: 'Como nasceu o passinho do TikTok',
-            music: 'som original',
-            avatar: 'https://images.pexels.com/photos/2087954/pexels-photo-2087954.png?auto=compress&cs=tinysrgb&dpr=1&w=500'
-        },
-        count: {
-            like: '1.1M',
-            comment: '4080',
-            share: '2800'
-        }
-    },
-    {
-        id: 1,
-        video: 'https://player.vimeo.com/external/437122153.sd.mp4?s=cf9f4cf0a46a41b8ae0172f004422900f5bc25ce&profile_id=165&oauth2_token_id=57447761',
-        poster: 'https://images.pexels.com/photos/2087954/pexels-photo-2087954.png?auto=compress&cs=tinysrgb&dpr=1&w=500',
-        user: {
-            username: 'luismariz',
-            description:
-                'é que eu fui chutar o balde e tinha concreto dentro #foryoupage #fyp',
-            music: 'som original',
-            avatar: 'https://images.pexels.com/photos/2087954/pexels-photo-2087954.png?auto=compress&cs=tinysrgb&dpr=1&w=500'
-        },
-        count: {
-            like: '380K',
-            comment: '2388',
-            share: '535'
+    const [{ user, defdarktheme, searchactive,userToken,UserId }, dispatch] = DataLayerValue()
+    const handleButtonPress = () => {
+     
+    };
+
+  
+
+    useEffect(() => {
+        setloading(true);
+
+        const unsubscribe = firebase
+            .firestore()
+            .collection('THREADS')
+            .onSnapshot((querySnapshot) => {
+                const threads = querySnapshot.docs.map((documentSnapshot) => {
+
+                    return {
+                        _id: documentSnapshot.id,
+                        name: "",
+                        avatar: '', 
+                        latestMessage: {
+                            text: "",
+                            createdAt: ''
+                        },
+                        ...documentSnapshot.data(),
+                    };
+                }); 
+                setThreads(threads);
+                setloading(false);
+            });
+            FetchAll();
+        return () => unsubscribe();
+    }, []);
+    const ActivateSearch = () => {
+        dispatch({ type: 'SEARCHCOMPONENT', data: !searchactive })
+    }
+   const search = () => {
+        let filteredData = AllUsers.filter(function (item) {
+            setNotfound(false)
+            return item.username.toLowerCase().includes(searchText.toLowerCase());
+        });
+        setfiltered(filteredData);
+        if (filteredData.length === 0) {
+            setNotfound(true)
         }
     }
-]
-
-const Explore = () => {
-    const _renderItem = ({ item, index }) => {
-        console.log(item)
+    const FetchAll = () => {
+        fetch(`${Config.url}` + `/allusers`, {
+            headers: {
+                'Authorization': 'Bearer ' + `${userToken}`,
+            },
+            method: 'GET'
+        })
+            .then((response) => response.json())
+            .then((responseJson) => {
+                setAllUsers(responseJson)
+            })
+    }
+    const ChatSection = () => {
         return (
-            <View style={{ flex: 1,backgroundColor:'black' }}>
-                <Video
-                    rate={1.0}
-                    volume={1.0}
-                    isMuted={false}
-                    posterSource={{ uri: item.poster }}
-                    source={{ uri: item.video }}
-                    resizeMode='cover'
-                    style={{ width: width, height: height-30, flex: 1, position: 'absolute' }}
-                    shouldPlay={true}
-                />
-                <Image
-                    source={{ uri: item.poster }}
-                    style={{ width: 60, height: 60, borderRadius: 100, margin: 5, borderWidth: 2, borderColor: "#17b978" }}
-                />
-                <View style={styles.mainscreen}>
-                    <TouchableOpacity>
-                    <LottieView
-                                        loop={false}
-                                        autoPlay={true}
-                                        autoSize
-                                        source={require('../animation/4607-like-animation.json')}
-                                    />
-                        <Text style={{ color: 'white' }}>{item.count.like}</Text>
+            <FlatList
+                data={threads}
+                keyExtractor={(item) => item._id}
+                renderItem={({ item, index }) => (
+                    <TouchableOpacity
+                        onPress={() => {
+                            props.navigation.navigate('external', {
+                                screen: 'chat', params: {
+                                    thread: item
+                                }
+                            })
+                        }
+                        }
+                    >
+                        <Card style={{ backgroundColor: colors.card, borderRadius: null, borderWidth: 0, borderColor: colors.background }}
+                        >
+                            <CardItem avatar style={{ backgroundColor: colors.card, borderRadius: null, borderWidth: 0, }}>
+                                <Left>
+                                    <Body>
+                                        <Text style={styles(colors).listTitle} numberOfLines={1}>{item.name}</Text>
+                                        <Text note style={styles(colors).listDescription} numberOfLines={3}>{item.latestMessage.messagebyemail}: {item.latestMessage.text}</Text>
+                                    </Body>
+                                </Left>
+                                <Right>
+                                    <Text note style={{ color: colors.text }}>{new Date(item.latestMessage.createdAt).toDateString()}</Text>
+                                </Right>
+                            </CardItem>
+                        </Card>
                     </TouchableOpacity>
-                </View>
+                )}
+            />
+        )
+    }
+    if (loading) {
+        return (
+            <View style={{ justifyContent: "center", flex: 1, backgroundColor: colors.background }}>
+                <LottieView
+                    loop={true}
+                    autoPlay={true}
+                    source={require('../animation/8370-loading.json')}
+                />
             </View>
-        );
+        )
     }
     return (
         <View style={{ flex: 1 }}>
-            <Carousel
-                data={api}
-                renderItem={_renderItem}
-                sliderWidth={400}
-                itemWidth={400}
-                layout='tinder'
-                autoplay
-                loop
-            />
+            {searchactive ? (
+                <>
+                <Header searchBar rounded style={{ backgroundColor: colors.background, }}>
+                    <Item style={{ backgroundColor: colors.background }}>
+                        <TouchableOpacity onPress={ActivateSearch}>
+                            <Icon name="arrow-back" style={{ backgroundColor: colors.background }} />
+                        </TouchableOpacity>
+                        <Input placeholder="Find People to text" style={{ backgroundColor: colors.card, borderRadius: 5, color: colors.text, justifyContent: 'flex-end' }}
+                            onChangeText={(bo) => setsearchText(bo)}
+                            value={searchText}
+                            clearButtonMode='while-editing'
+                            keyboardAppearance='dark'
+                            keyboardType='web-search'
+                        >
+                        </Input>
+                        <TouchableOpacity onPress={() => search(searchText)}>
+                            <Icon name="ios-search" style={{ backgroundColor: colors.background, color: colors.primary }} />
+                        </TouchableOpacity>
+                    </Item>
+                    <Button transparent>
+                        <Text>Search</Text>
+                    </Button>
+                </Header>
+                  <FlatList
+                  renderItem={({ item }) => {
+                      return (
+                          <Usercard item={item} name={'chatscreen'} user={UserId} {...props} />
+                      );
+                  }}
+                  keyExtractor={(item, index) => index.toString()}
+                  data={filtered && filtered.length > 0 ? filtered : AllUsers}
+                  onEndReached={FetchAll}
+                  scrollEnabled
+                  onScrollAnimationEnd
+                  scrollToOverflowEnabled
+                  onEndReachedThreshold={0}
+                  refreshing={refresh}
+                  onRefresh={FetchAll}
+
+
+              />
+              </>
+            ) : (
+                <>
+                <View style={{flex:1}} >
+                    <Headerv {...props} />
+                    <ChatSection />
+                    <Fab
+                        active={active}
+                        direction="up"
+                        containerStyle={{}}
+                        style={{ backgroundColor: colors.primary, }}
+                        position="bottomRight"
+                        onPress={() => setActive(!active)}>
+                        <Icon name="plus" type='Entypo' />
+
+                        <Button style={{ backgroundColor: 'green', marginBottom: 40 }} onPress={() => {
+                            navigation.navigate('SuperAdmin');
+                        }}  >
+                            <Icon name="new-message" type='Entypo' />
+                        </Button>
+                        <Button style={{ backgroundColor: '#3B5998', marginBottom: 40 }}>
+                            <Icon name="share" />
+                        </Button>
+                        <Button style={{ backgroundColor: '#DD5', marginBottom: 40 }} onPress={() => Linking.openURL('https://raghav.orak.in/releases')}>
+                            <MaterialIcons name="new-releases" size={24} color="black" />
+                        </Button>
+                    </Fab>
+                    </View>
+                </>
+            )
+            }
+
         </View>
     )
 }
 
-export default Explore
-const styles = StyleSheet.create({
-    mainscreen: {
-        width: width,
-        flexDirection: "row",
-        justifyContent: 'space-between',
-        bottom: 10,
-        position: 'absolute'
-    },
-    row1: {
-        marginTop: 100,
-        alignSelf: 'center'
-    },
-    row2: {
-        marginTop: 40,
-        alignSelf: "center"
-    },
-    row3: {
-        marginTop: -20,
-        alignSelf: "center"
-    },
-    txt1: {
+export default ListOfChats
+
+const styles = (colors) => StyleSheet.create({
+    listTitle: {
+        color: colors.text,
         fontSize: 18,
-        color: "#000",
-        alignSelf: "center",
-        fontWeight: '500'
+        fontWeight: 'bold'
     },
-    txt2: {
-        fontSize: 18,
-        color: "#f0f0f0",
-        alignSelf: "center",
-        fontWeight: '500'
-    },
-    carousel: {
-        height: '50%',
-        backgroundColor: "#f0f0f0",
-        paddingTop: 30,
-    },
-    item: {
-        borderWidth: 2,
-        backgroundColor: '#000',
-        borderRadius: 5,
-        borderColor: '#fc5185',
-        elevation: 3,
-        flex: 2
-    },
-    imageBackground: {
-        backgroundColor: '#fc5185',
-        borderWidth: 5,
-        borderColor: '#fc5185',
-        flex: 1
-    },
-    rightTextContainer: {
-        marginLeft: 'auto',
-        marginRight: -2,
-        backgroundColor: 'rgba(49, 49, 51,0.5)',
-        padding: 3,
-        marginTop: 3,
-        borderTopLeftRadius: 5,
-        borderBottomLeftRadius: 5
-    },
-    rightText: { color: 'white' },
-    lowerContainer: {
-        margin: 10
-    },
-    titleText: {
-        fontWeight: 'bold',
-        fontSize: 18,
-        color: "#000",
-        textAlign: "center",
-        alignSelf: 'center'
-    },
-    contentText: {
-        fontSize: 12,
-        color: "#fff"
+    listDescription: {
+        color: colors.text
     }
 })

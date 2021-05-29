@@ -15,6 +15,7 @@ import LottieView from 'lottie-react-native';
 import Postcard from '../components/Postcard';
 import Headingbar from '../components/Header';
 import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
+import LoadingComp from '../components/LoadingComp';
 
 const UserProfile = (props) => {
     const [{ userToken, user, otherprofile }, dispatch] = DataLayerValue()
@@ -92,14 +93,7 @@ const UserProfile = (props) => {
 
     if (load) {
         return (
-            <View style={{ justifyContent: "center", flex: 1, backgroundColor: colors.background }}>
-                <LottieView
-                    loop={true}
-                    autoPlay={true}
-                    source={require('../animation/5328-loading-11.json')}
-                    style={{ width: 400, height: 400 }}
-                />
-            </View>
+            <LoadingComp />
         );
     }
     return (

@@ -8,6 +8,7 @@ import Usercard from '../components/Usercard';
 import Header from '../components/Header';
 const { width, height } = Dimensions.get('window');
 import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
+import LoadingComp from '../components/LoadingComp';
 
 const Following = (props) => {
   const [{ userToken, followinglist }, dispatch] = DataLayerValue()
@@ -56,14 +57,7 @@ const Following = (props) => {
   }
   if (load) { 
     return (
-      <View style={{ justifyContent: "center", flex: 1, backgroundColor:colors.background }}>
-        <LottieView
-          loop={true}
-          autoPlay={true}
-          source={require('../animation/5328-loading-11.json')}
-          style={{ width: 400, height: 400 }}
-        />
-      </View>
+     <LoadingComp />
     )
   }
   return (

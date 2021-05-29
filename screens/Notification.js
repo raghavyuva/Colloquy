@@ -7,6 +7,7 @@ import { Config } from '../config';
 import Notify from '../components/Notify';
 import LottieView from 'lottie-react-native';
 import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
+import LoadingComp from '../components/LoadingComp';
 
 const Notification = (props) => {
     const [{ userToken, notifylist, UserId }, dispatch] = DataLayerValue();
@@ -48,14 +49,7 @@ const Notification = (props) => {
     
     if (load) {
         return (
-            <View style={{ justifyContent: "center", flex: 1, backgroundColor: colors.background }}>
-                <LottieView
-                    loop={true}
-                    autoPlay={true}
-                    source={require('../animation/5328-loading-11.json')}
-                    style={{ width: 400, height: 400 }}
-                />
-            </View>
+           <LoadingComp />
         );
     }
     return (

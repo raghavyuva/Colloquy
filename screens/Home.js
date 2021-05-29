@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { View, Text, SafeAreaView, FlatList, TouchableOpacity, StyleSheet } from 'react-native'
 import Headerv from '../components/Header';
 import Postcard from '../components/Postcard';
@@ -12,8 +12,18 @@ import { Button, Icon, Item, Input, Header, Card, CardItem, List, ListItem, Left
 import { MaterialIcons } from '@expo/vector-icons';
 import Usercard from '../components/Usercard';
 import * as Device from 'expo-device';
+import NotFoundComp from '../components/NotFoundComp';
+import LoadingComp from '../components/LoadingComp';
 
 const Home = (props) => {
+
+
+
+
+
+
+
+
     const [{ userToken, postData, searchactive, UserId }, dispatch] = DataLayerValue();
     const [Notify, setNotify] = useState('');
     const [refresh, setrefresh] = useState(false);
@@ -23,7 +33,26 @@ const Home = (props) => {
     const [active, setactive] = useState('Post');
     const [AllUsers, setAllUsers] = useState(null);
     const [dataforfilter, setdataforfilter] = useState(null);
-    const [itemforfilter, setitemforfilter] = useState(null);
+    const [Notfound, setNotfound] = useState(false);
+
+
+
+    const { colors } = useTheme();
+
+    useEffect(() => {
+        let IsMounted = true;
+        requestUserPermission();
+        dispatch({ type: 'ROUTEPROP', data: 'Home' })
+        registerForPushNotifications();
+        Notifications.addNotificationReceivedListener(_handleNotification);
+        fetching();
+        FetchAll();
+        return () => {
+            IsMounted = false;
+        }
+    }, [])
+
+
     const fetching = () => {
         setrefresh(true);
         fetch(`${Config.url}` + `/post`, {
@@ -54,25 +83,29 @@ const Home = (props) => {
                 setAllUsers(responseJson)
             })
     }
-    const { colors } = useTheme();
-    useEffect(() => {
-        let IsMounted = true;
-        requestUserPermission();
-        dispatch({ type: 'ROUTEPROP', data: 'Home' })
-        registerForPushNotifications();
-        Notifications.addNotificationReceivedListener(_handleNotification);
-        fetching();
-        FetchAll();
-        return () => {
-            IsMounted = false;
-        }
-    }, [])
+
+
+
+
+
+
+
     const _handleNotification = notification => {
         setNotify(notification)
     };
+
+
+
+
+
     const ActivateSearch = () => {
         dispatch({ type: 'SEARCHCOMPONENT', data: !searchactive })
     }
+
+
+
+
+
     async function requestUserPermission() {
         let token;
         if (Device.osName == 'Android') {
@@ -97,10 +130,21 @@ const Home = (props) => {
                 vibrationPattern: [0, 250, 250, 250],
                 lightColor: '#FF231F7C',
             });
-        } 
+        }
 
         return token;
     }
+
+
+
+
+
+
+
+
+
+
+
     const registerForPushNotifications = async () => {
         const token = await Notifications.getExpoPushTokenAsync();
         try {
@@ -123,184 +167,237 @@ const Home = (props) => {
 
     const GoTo_top_function = () => {
 
-        flatListRef.scrollToOffset({ animated: true, offset: 0 });
+
 
     }
+
+
+
+
+
+
+
+
+
+
+
+
     const changedata = () => {
         switch (active) {
             case 'People':
                 setdataforfilter(AllUsers);
-                setitemforfilter('username')
+                setfiltered([])
+                setsearchText('')
                 break;
             case 'Post':
                 setdataforfilter(postData);
-                setitemforfilter('caption')
+                setfiltered([])
+                setsearchText('')
                 break;
             default:
                 break;
         }
-        console.log(dataforfilter);
     }
-    const search = (searchTex,) => {
-        setsearchText(searchTex)
+
+
+
+
+
+    const search = () => {
         switch (active) {
             case 'People':
-                setdataforfilter(AllUsers);
-                setitemforfilter('username')
+                let filteredData = AllUsers.filter(function (item) {
+                    setNotfound(false)
+                    return item.username.toLowerCase().includes(searchText.toLowerCase());
+                });
+                setfiltered(filteredData);
+                if (filteredData.length === 0) {
+                    setNotfound(true)
+                }
                 break;
             case 'Post':
-                setdataforfilter(postData);
-                setitemforfilter('caption')
+                let filteredDatas = postData.filter(function (item) {
+                    setNotfound(false)
+                    return item.caption.toLowerCase().includes(searchText.toLowerCase());
+
+                });
+                if (filteredDatas.length === 0) {
+                    setNotfound(true)
+                }
+                setfiltered(filteredDatas);
                 break;
             default:
                 break;
         }
-        let filteredData = dataforfilter.filter(function (item) {
-            return item[`${itemforfilter}`].toLowerCase().includes(searchTex);
-
-        });
-        setfiltered(filteredData);
 
     };
 
-    if (loading) {
+
+
+
+
+
+
+    const PostCardComp = (props) => {
         return (
-            <View style={{ justifyContent: "center", flex: 1, backgroundColor: colors.background }}>
-                <LottieView
-                    loop={true}
-                    autoPlay={true}
-                    source={require('../animation/5328-loading-11.json')}
-                    style={{ width: 400, height: 400 }}
-                />
-            </View>
+            <FlatList
+                renderItem={({ item }) => {
+                    return (
+                        <Postcard item={item} {...props} name={props.section} />
+                    );
+                }}
+                keyExtractor={(item, index) => index.toString()}
+                data={props.section === 'NormalView' ? postData : filtered && filtered.length > 0 ? filtered : postData}
+                onEndReached={fetching && GoTo_top_function}
+                scrollEnabled
+                onScrollAnimationEnd
+                scrollToOverflowEnabled
+                onEndReachedThreshold={0}
+                refreshing={refresh}
+                onRefresh={fetching}
+            />
         )
     }
+
+    const PeopLeComp = () => {
+        return (
+            <FlatList
+
+                renderItem={({ item }) => {
+                    return (
+                        <Usercard item={item} name={'followers'} user={UserId} {...props} />
+                    );
+                }}
+                keyExtractor={(item, index) => index.toString()}
+                data={filtered && filtered.length > 0 ? filtered : AllUsers}
+                onEndReached={FetchAll && GoTo_top_function}
+                scrollEnabled
+                onScrollAnimationEnd
+                scrollToOverflowEnabled
+                onEndReachedThreshold={0}
+                refreshing={refresh}
+                onRefresh={FetchAll}
+
+
+            />
+        )
+    }
+    const FilterCardComp = () => {
+        return (
+            <FlatList
+                renderItem={({ item }) => {
+                    return (
+                        <CardItem style={active == item.name ? styles(colors).cardofactive : styles(colors).cardof}>
+                            <TouchableOpacity onPress={() => {
+                                setactive(item.name)
+                                changedata();
+                            }}
+                                style={{ flexDirection: 'row' }}>
+                                <Text style={{ color: colors.text }}>{item.name} </Text>
+
+                            </TouchableOpacity>
+                        </CardItem>
+                    );
+                }}
+                keyExtractor={(item, index) => index.toString()}
+                data={Filter}
+                horizontal
+            />
+        )
+    }
+
+    const HeaderComp = () => {
+        return (
+            <Header searchBar rounded style={{ backgroundColor: colors.background, }}>
+                <Item style={{ backgroundColor: colors.background }}>
+                    <TouchableOpacity onPress={ActivateSearch}>
+                        <Icon name="arrow-back" style={{ backgroundColor: colors.background }} />
+                    </TouchableOpacity>
+                    <Input placeholder="Search" style={{ backgroundColor: colors.card, borderRadius: 25, color: colors.text, justifyContent: 'flex-end' }}
+                        onChangeText={(bo) => setsearchText(bo)}
+                        value={searchText}
+                        clearButtonMode='while-editing'
+                        keyboardAppearance='dark'
+                        keyboardType='web-search'
+                    >
+
+                    </Input>
+                    <TouchableOpacity onPress={() => search(searchText)}>
+                        <Icon name="ios-search" style={{ backgroundColor: colors.background, color: colors.primary }} />
+                    </TouchableOpacity>
+                </Item>
+                <Button transparent>
+                    <Text>Search</Text>
+                </Button>
+            </Header>
+        )
+    }
+
+
+    const ActiveRenderer = () => {
+        return (
+            <>
+                {active == 'Post' ? (
+                    <PostCardComp  {...props} section='FilterView' />
+                ) : (
+                    <>
+                        {active == 'People' ? (
+                            <>
+                                <PeopLeComp />
+                            </>
+                        ) : (
+                            <>
+
+                            </>
+                        )}
+                    </>
+                )}
+            </>
+        )
+    }
+
+
+
+    if (loading) {
+        return (
+            <LoadingComp />
+        )
+    }
+
+
     return (
         <SafeAreaView >
 
             {searchactive ? (
                 <>
                     <View>
-                        <Header searchBar rounded style={{ backgroundColor: colors.background, }}>
-                            <Item style={{ backgroundColor: colors.background }}>
-                                <TouchableOpacity onPress={ActivateSearch}>
-                                    <Icon name="arrow-back" style={{ backgroundColor: colors.background }} />
-                                </TouchableOpacity>
-                                <Input placeholder="Search" style={{ backgroundColor: colors.card, borderRadius: 15, color: colors.text }}
-                                    onChangeText={search}
-                                    value={searchText}
-                                />
-                                <TouchableOpacity >
-                                    <Icon name="ios-search" style={{ backgroundColor: colors.background }} />
-                                </TouchableOpacity>
-                            </Item>
-                            <Button transparent>
-                                <Text>Search</Text>
-                            </Button>
-                        </Header>
+                        <HeaderComp />
                         <Card style={styles(colors).cardoff}>
-                            <FlatList
-                                ref={(ref) => { flatListRef = ref; }}
-                                renderItem={({ item }) => {
-                                    return (
-                                        <CardItem style={styles(colors).cardof}>
-                                            <TouchableOpacity onPress={() => {
-                                                setactive(item.name)
-                                                changedata();
-                                            }}
-                                                style={{ flexDirection: 'row' }}>
-                                                <Text style={{ color: colors.text }}>{item.name} </Text>
-                                                {active == item.name ?
-                                                    (<MaterialIcons name="done" size={18} color={colors.primary} />) : (
-                                                        <>
-                                                        </>
-                                                    )
-                                                }
-                                            </TouchableOpacity>
-                                        </CardItem>
-                                    );
-                                }}
-                                keyExtractor={(item, index) => index.toString()}
-                                data={Filter}
-                                horizontal
-                            />
+                            <FilterCardComp />
                         </Card>
-                        {active == 'Post' ? (
-                            <FlatList
-                                renderItem={({ item }) => {
-                                    return (
-                                        <Postcard item={item} {...props} />
-                                    );
-                                }}
-                                keyExtractor={(item, index) => index.toString()}
-                                data={filtered && filtered.length > 0 ? filtered : postData}
-                                onEndReached={fetching && GoTo_top_function}
-                                scrollEnabled
-                                onScrollAnimationEnd
-                                scrollToOverflowEnabled
-                                onEndReachedThreshold={0}
-                                style={{ marginBottom: 50 }}
-                                refreshing={refresh}
-                                onRefresh={fetching}
-                            />
-                        ) : (
-                            <>
-                                {active == 'People' ? (
-                                    <>
-                                        <FlatList
+                        {
+                            Notfound == false ? (
+                                <>
+                                    <ActiveRenderer />
+                                </>
+                            ) : (
+                                <>
+                                    <NotFoundComp />
+                                </>
+                            )
+                        }
 
-                                            renderItem={({ item }) => {
-                                                return (
-                                                    <Usercard item={item} name={'followers'} user={UserId} {...props} />
-                                                );
-                                            }}
-                                            keyExtractor={(item, index) => index.toString()}
-                                            data={filtered && filtered.length > 0 ? filtered : AllUsers}
-                                            onEndReached={FetchAll && GoTo_top_function}
-                                            scrollEnabled
-                                            onScrollAnimationEnd
-                                            scrollToOverflowEnabled
-                                            onEndReachedThreshold={0}
-                                            style={{ marginBottom: 50 }}
-                                            refreshing={refresh}
-                                            onRefresh={FetchAll}
-
-
-                                        />
-                                    </>
-                                ) : (
-                                    <>
-                                    </>
-                                )}
-                            </>
-                        )}
                     </View>
                 </>
             ) : (
                 <>
                     <Headerv {...props} />
-                    <FlatList
-
-                        renderItem={({ item }) => {
-                            return (
-                                <Postcard item={item} {...props} />
-                            );
-                        }}
-                        keyExtractor={(item, index) => index.toString()}
-                        data={postData}
-                        onEndReached={fetching && GoTo_top_function}
-                        scrollEnabled
-                        onScrollAnimationEnd
-                        scrollToOverflowEnabled
-                        onEndReachedThreshold={0}
-                        style={{ marginBottom: 50 }}
-                        refreshing={refresh}
-                        onRefresh={fetching}
-                    />
+                    <PostCardComp {...props} section='NormalView' />
                 </>
-            )}
+            )
+            }
 
-        </SafeAreaView>
+        </SafeAreaView >
     )
 }
 
@@ -334,8 +431,17 @@ const styles = (colors) => StyleSheet.create({
         borderColor: colors.background
     },
     cardof: {
+        margin: 4,
         backgroundColor: colors.background,
-        margin: 2,
+        borderRadius: 20,
+        borderWidth: 1,
+        borderColor: colors.border
+    },
+    cardofactive: {
         backgroundColor: colors.card,
+        borderRadius: 20,
+        borderWidth: 1,
+        borderColor: colors.primary,
+        margin: 4
     }
 });

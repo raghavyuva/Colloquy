@@ -12,7 +12,8 @@ import { useTheme } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import { Item, Input, Label } from 'native-base';
 import { useFonts } from 'expo-font';
-
+import LottieView from 'lottie-react-native';
+import LoadingComp from "../components/LoadingComp";
 const Login = ({ navigation }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -20,6 +21,7 @@ const Login = ({ navigation }) => {
     const [pass, setpass] = useState('');
     const [emailby, setemailby] = useState('');
     const { colors } = useTheme();
+    const [loggingin, setloggingin] = useState(false);
     const [loaded] = useFonts({
         Montserrat: require('../assets/Pacifico/Pacifico-Regular.ttf'),
     });
@@ -30,6 +32,7 @@ const Login = ({ navigation }) => {
         if (!email || !password) {
             alert("input fields cannot be as empty as like that")
         } else {
+            setloggingin(true);
             fetch(`${Config.url}` + `/login`, {
                 method: "POST",
                 headers: {
@@ -53,9 +56,11 @@ const Login = ({ navigation }) => {
                         SecureStore.setItemAsync('UserId', responseData.user._id)
                         setEmail(null);
                         setPassword(null);
+                        setloggingin(false)
                     }
                     else {
                         alert(responseData.message);
+                        setloggingin(false)
                     }
                 })
                 .done();
@@ -63,6 +68,7 @@ const Login = ({ navigation }) => {
     }
     const Loginwith = () => {
         try {
+            setloggingin(true);
             fetch(`${Config.url}` + `/login`, {
                 method: "POST",
                 headers: {
@@ -87,9 +93,11 @@ const Login = ({ navigation }) => {
                         SecureStore.setItemAsync('UserId', responseData.user._id)
                         setemailby(null);
                         setpass(null);
+                        setloggingin(false)
                     }
                     else {
                         alert(responseData.message);
+                        setloggingin(false);
                     }
                 })
                 .done();
@@ -118,6 +126,11 @@ const Login = ({ navigation }) => {
             alert(e);
             return { error: true };
         }
+    }
+    if (loggingin) {
+        return (
+         <LoadingComp />
+        )
     }
     return (
         <View style={styles(colors).screen}>

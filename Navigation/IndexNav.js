@@ -11,6 +11,7 @@ import * as SecureStore from 'expo-secure-store';
 import LottieView from 'lottie-react-native';
 import { AppearanceProvider, useColorScheme } from 'react-native-appearance';
 import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
+import LoadingComp from "../components/LoadingComp";
 const IndexNavigator = (props) => {
     const [{ userToken, isLoading, defdarktheme }, dispatch] = DataLayerValue();
     const scheme = useColorScheme();
@@ -40,19 +41,12 @@ const IndexNavigator = (props) => {
             })
         })
         return () => {
-            unsubscribe();
+            unsubscribe(); 
         }
     }, [])
     if (isLoading) {
         return (
-            <View style={{ justifyContent: "center", flex: 1, backgroundColor: colors.background }}>
-                <LottieView
-                    loop={true}
-                    autoPlay={true}
-                    source={require('../animation/5328-loading-11.json')}
-                    style={{ width: 400, height: 400 }}
-                />
-            </View>
+           <LoadingComp/>
         );
     }
     return (

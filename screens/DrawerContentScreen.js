@@ -38,7 +38,7 @@ export function DrawerContent(props) {
                     <View style={{ flexDirection: 'row', marginTop: 15 }}>
 
                         <View style={{ marginLeft: 15, flexDirection: 'column' }}>
-                            <Text style={styles(colors).title}>Primish</Text>
+                            <Text style={styles(colors).title}>Vtyuva</Text>
                             <Text style={styles(colors).caption}>Unleash your potential</Text>
                         </View>
                     </View>

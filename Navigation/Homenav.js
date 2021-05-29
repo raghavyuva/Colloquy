@@ -26,6 +26,8 @@ import LottieView from 'lottie-react-native';
 import Notes from '../screens/Notes';
 import WhoLiked from '../screens/WhoLiked';
 import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
+import ListOfChats from '../screens/ListOfChats';
+import LoadingComp from '../components/LoadingComp';
 
 const Tab = createMaterialBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -44,7 +46,7 @@ function External() {
             <Stack.Screen name="userpro" component={UserProfile} />
             <Stack.Screen name="view" component={PostfullView} />
             <Stack.Screen name="events" component={Events} />
-            <Stack.Screen name='chat' component={Chat} />
+            <Stack.Screen name='message' component={Chat} />
             <Stack.Screen name='notes' component={Notes} />
             <Stack.Screen name='wholiked' component={WhoLiked} />
         </Stack.Navigator>
@@ -104,6 +106,17 @@ function HomeScreen() {
                     ),
                 }}
             />
+            <Tab.Screen
+                name="chat"
+                component={ListOfChats}
+                options={{
+                    tabBarLabel: 'message',
+                    tabBarColor: '#F99124',
+                    tabBarIcon: ({ color }) => (
+                        <MaterialIcons name="message" size={26} color={color} />
+                    ),
+                }}
+            />
           
         </Tab.Navigator>
     );
@@ -139,14 +152,7 @@ function Drawernav() {
     }, [])
     if (load) {
         return (
-            <View style={{ justifyContent: "center", flex: 1, backgroundColor: colors.background }}>
-                <LottieView
-                    loop={true}
-                    autoPlay={true}
-                    source={require('../animation/5328-loading-11.json')}
-                    style={{ width: 400, height: 400 }}
-                />
-            </View>
+           <LoadingComp />
         );
     }
     return (

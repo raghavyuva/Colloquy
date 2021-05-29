@@ -91,7 +91,7 @@ const PostfullView = (props) => {
             <Headingbar {...props}/>
             <FlatList
                 ListHeaderComponent={
-                    <Postcard item={fullview} {...props} />
+                    <Postcard item={fullview} {...props} name='NormalView' />
                 }
                 renderItem={commentui}
                 keyExtractor={(item) => item._id}

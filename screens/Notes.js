@@ -9,6 +9,7 @@ import Headingbar from '../components/Header';
 import { ScrollView, TouchableHighlight, TouchableOpacity } from 'react-native-gesture-handler';
 import { Config } from '../config';
 import { DataLayerValue } from '../Context/DataLayer';
+import LoadingComp from '../components/LoadingComp';
 const MockInterview = (props) => {
     const [load, setload] = useState(true);
     const [{ userToken, defdarktheme, routename }, dispatch] = DataLayerValue()
@@ -44,14 +45,7 @@ const MockInterview = (props) => {
 
     if (load) { 
         return (
-          <View style={{ justifyContent: "center", flex: 1, backgroundColor:colors.background }}>
-            <LottieView
-              loop={true}
-              autoPlay={true}
-              source={require('../animation/5328-loading-11.json')}
-              style={{ width: 400, height: 400 }}
-            />
-          </View>
+        <LoadingComp />
         )
       }
     return (

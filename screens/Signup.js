@@ -5,13 +5,13 @@ import Svg, { Circle, Rect, Stop, Path, Defs, LinearGradient as Fgrad, } from 'r
 import { StatusBar } from 'expo-status-bar';
 import { Item, Input, Label, Icon } from 'native-base';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Picker } from '@react-native-picker/picker';
-import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
+import {  useTheme } from '@react-navigation/native';
 import { Button, Text } from "native-base";
 import * as Google from "expo-google-app-auth";
 import { Config } from '../config';
 import { DataLayerValue } from '../Context/DataLayer';
 import * as SecureStore from 'expo-secure-store';
+import LoadingComp from '../components/LoadingComp';
 
 const Signup = (props) => {
     const [selected, setselected] = useState('key3');
@@ -20,7 +20,7 @@ const Signup = (props) => {
     const [userphoto, setuserphoto] = useState('');
     const [email, setEmail] = useState("");
     const [{ userToken }, dispatch] = DataLayerValue()
-
+    const [loggingin, setloggingin] = useState(false);
     const [password, setPassword] = useState("");
     const [loaded] = useFonts({
         Montserrat: require('../assets/Pacifico/Pacifico-Regular.ttf'),
@@ -41,6 +41,7 @@ const Signup = (props) => {
             alert("input fields cannot be as empty as like that")
         }
         else {
+            setloggingin(true);
             fetch(`${Config.url}` + `/signup`, {
                 method: "POST",
                 headers: {
@@ -71,8 +72,10 @@ const Signup = (props) => {
                         setAge(null);
                         setUsername(null);
                         setuserphoto(null);
+                        setloggingin(false)
                     } else {
                         alert(responseData.message);
+                        setloggingin(false);
                     }
                 })
                 .done();
@@ -85,6 +88,7 @@ const Signup = (props) => {
     }
     const Registerwith = () => {
         try {
+            setloggingin(true)
             fetch(`${Config.url}` + `/signup`, {
                 method: "POST",
                 headers: {
@@ -115,8 +119,10 @@ const Signup = (props) => {
                         setAge(null);
                         setUsername(null);
                         setuserphoto(null);
+                        setloggingin(false)
                     } else {
                         alert(responseData.message);
+                        setloggingin(false);
                     }
                 })
                 .done();
@@ -146,6 +152,11 @@ const Signup = (props) => {
             alert(e.message);
             return { error: true };
         }
+    }
+    if (loggingin) {
+        return (
+            <LoadingComp />
+        )
     }
     return (
         <View style={styles(colors).screen}>
@@ -280,7 +291,8 @@ const styles = (colors) => StyleSheet.create({
     },
     btntxt: {
         backgroundColor: 'transparent',
-        fontSize: 15, color: colors.text,
+        fontSize: 15,
+         color: colors.text,
         textAlign: 'center',
         fontFamily: 'Montserrat'
     },

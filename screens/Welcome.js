@@ -17,7 +17,7 @@ const Welcome = (props) => {
         props.navigation.navigate('signup');
     }
     const onloginpress = () => {
-        props.navigation.navigate('login'); 
+        props.navigation.navigate('login');
     }
     return (
         <View style={styles(colors).screen}>
@@ -42,7 +42,7 @@ const Welcome = (props) => {
             </Card>
         </View>
     )
-} 
+}
 
 export default Welcome
 const styles = (colors) => StyleSheet.create({

@@ -30,6 +30,7 @@ export const initialState = {
     defdarktheme: true,
     searchactive:false,
     routename:null,
+    chattee:null
 };
 const reducer = (state, action) => {
     switch (action.type) {
@@ -140,7 +141,11 @@ const reducer = (state, action) => {
                 ...state,
                 routename: action.data
             }
-        
+        case 'CHATTINGUSER':
+            return{
+                ...state,
+                chattee:action.data
+            }
     }
 }
 export default reducer;

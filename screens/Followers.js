@@ -8,11 +8,14 @@ import Usercard from '../components/Usercard';
 import Header from '../components/Header';
 const { width, height } = Dimensions.get('window');
 import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
+import LoadingComp from '../components/LoadingComp';
 
 const Followers = (props) => {
   const [{ userToken, followerslist, UserId }, dispatch] = DataLayerValue();
   const [load, setload] = useState(true);
   const { colors } = useTheme();
+
+
   const fetching = async () => {
     try {
       const Listener = fetch(`${Config.url}` + `/followerslist`, {
@@ -56,14 +59,7 @@ const Followers = (props) => {
   }
   if (load) {
     return (
-      <View style={{ justifyContent: "center", flex: 1, backgroundColor: colors.card }}>
-        <LottieView
-          loop={true}
-          autoPlay={true}
-          source={require('../animation/5328-loading-11.json')}
-          style={{ width: 400, height: 400 }}
-        />
-      </View>
+      <LoadingComp />
     )
   }
   return (

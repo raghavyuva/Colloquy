@@ -14,6 +14,7 @@ import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
+import LoadingComp from '../components/LoadingComp';
 
 const Profile = (props) => {
     const [{ userToken, UserId, user }, dispatch] = DataLayerValue()
@@ -53,25 +54,25 @@ const Profile = (props) => {
             console.log(e);
         }
     }
-    const _pickImagefromCamera = async () => {
-        try {
-            let result = await ImagePicker.launchCameraAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.All,
-                allowsEditing: true,
-                quality: 1,
-                base64: true,
-                aspect: [4, 3],
-            });
+    // const _pickImagefromCamera = async () => {
+    //     try {
+    //         let result = await ImagePicker.launchCameraAsync({
+    //             mediaTypes: ImagePicker.MediaTypeOptions.All,
+    //             allowsEditing: true,
+    //             quality: 1,
+    //             base64: true,
+    //             aspect: [4, 3],
+    //         });
 
-            if (!result.cancelled) {
-                const { uri, base64 } = result
-                setpostimage(uri);
-                setimage(base64)
-            }
-        } catch (E) {
-            console.log(E);
-        }
-    };
+    //         if (!result.cancelled) {
+    //             const { uri, base64 } = result
+    //             setpostimage(uri);
+    //             setimage(base64)
+    //         }
+    //     } catch (E) {
+    //         console.log(E);
+    //     }
+    // };
     const _pickImagefromGallery = async () => {
         try {
             let result = await ImagePicker.launchImageLibraryAsync({
@@ -170,14 +171,7 @@ const Profile = (props) => {
     }, [])
     if (load) {
         return (
-            <View style={{ justifyContent: "center", flex: 1, backgroundColor: colors.background }}>
-                <LottieView
-                    loop={true}
-                    autoPlay={true}
-                    source={require('../animation/5328-loading-11.json')}
-                    style={{ width: 400, height: 400 }}
-                />
-            </View>
+           <LoadingComp />
         );
     }
     return (
@@ -186,7 +180,6 @@ const Profile = (props) => {
             {user.userposts[0] == null ? (
                 <>
                     <View style={{ flex: 1,backgroundColor:colors.primary }}>
-
                         <View style={styles(colors).mainscreen}>
                             <View style={{ flexDirection: 'row' }}>
                                 <Image
