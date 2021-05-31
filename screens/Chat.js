@@ -21,11 +21,6 @@ export function Chat(props) {
 
   const [{ userToken, postData, searchactive, UserId, user }, dispatch] = DataLayerValue();
   const [loading, setloading] = useState(true)
-
-
-
-
-
   useEffect(() => {
     setloading(true);
     const DocIdgenerated = anotheruser._id > user.user._id ? user.user._id + "-" + anotheruser._id : anotheruser._id + "-" + user.user._id
@@ -58,17 +53,8 @@ export function Chat(props) {
     return () => messagesListener();
   }, []);
 
-
-
-
-
-
-
-
-
-
-
   const renderBubble = (props) => {
+    console.log(props)
     return (
       <Bubble
         {...props}
@@ -95,6 +81,7 @@ export function Chat(props) {
 
           }
         }}
+        // onLongPress={() => Delete(props.currentMessage)}
       />
     );
   };
@@ -177,8 +164,15 @@ export function Chat(props) {
             latestMessage: {
               text: giftedArray.text,
               createdAt: new Date().getTime(),
-              user2:anotheruser
+              user2: anotheruser,
+              sentBy: user.user,
             },
+            UserType: {
+              sentBy: user.user._id,
+              sentTo: anotheruser._id,
+              SentUserDetails: user.user,
+              SentToUserDetails: anotheruser
+            }
           },
           { merge: true }
         );
@@ -193,14 +187,22 @@ export function Chat(props) {
 
 
 
+  // const Delete = (doci) => {
+  //   console.log(doci)
+  //   const DocIdgenerated = anotheruser._id > user.user._id ? user.user._id + "-" + anotheruser._id : anotheruser._id + "-" + user.user._id
 
+  //   firebase.firestore().collection('chatrooms').doc(DocIdgenerated).collection('messages').doc('PPxqW0fPLFnIfS2oJxR2').delete().then((f) => {
+  //     console.log(f);
+  //   })
+
+  // }
   return (
     <View style={{ flex: 1 }}>
-           
+
 
       <Headingbar {...props} user={anotheruser} />
-      
-      <GiftedChat 
+
+      <GiftedChat
         messages={messages}
         onSend={handleSend}
         user={{ _id: UserId }}
@@ -212,16 +214,7 @@ export function Chat(props) {
         placeholder="Type your message..."
         alwaysShowSend
         scrollToBottom
-        renderChatEmpty={() => {
-          return (
-            <View style={{ flex: 0.5 }}>
-              <Image
-                source={require('../assets/emptyy.png')}
-                style={{ width: screenWidth - 100, height: screenHeight / 2, alignSelf: 'center' }}
-              />
-            </View>
-          )
-        }}
+        renderChatEmpty={renderLoading}
         renderInputToolbar={(props) => {
           return <InputToolbar {...props}
             containerStyle={{ backgroundColor: colors.card, height: 50, borderWidth: 0.5, borderTopColor: colors.card, marginLeft: 8, marginRight: 8 }}
@@ -230,6 +223,7 @@ export function Chat(props) {
             accessoryStyle={{ borderColor: colors.card, borderWidth: 0 }}
           />
         }}
+
       />
 
     </View>
@@ -320,4 +314,4 @@ const styles = (colors) => StyleSheet.create({
     width: screenWidth - 100,
     height: 300,
   }
-}); 
+});

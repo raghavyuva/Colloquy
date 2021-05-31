@@ -30,7 +30,8 @@ export const initialState = {
     defdarktheme: true,
     searchactive:false,
     routename:null,
-    chattee:null
+    chattee:null,
+    allusers:null
 };
 const reducer = (state, action) => {
     switch (action.type) {
@@ -145,6 +146,11 @@ const reducer = (state, action) => {
             return{
                 ...state,
                 chattee:action.data
+            }
+        case 'RETRIEVEALLUSERS':
+            return{
+                ...state,
+                allusers:action.data
             }
     }
 }

@@ -11,7 +11,7 @@ import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
 import LoadingComp from '../components/LoadingComp';
 
 const Following = (props) => {
-  const [{ userToken, followinglist }, dispatch] = DataLayerValue()
+  const [{ userToken, followinglist ,UserId}, dispatch] = DataLayerValue()
   const [load, setload] = useState(true);
   const {colors} = useTheme();
 
@@ -69,7 +69,7 @@ const Following = (props) => {
             data={followinglist}
             renderItem={({ item }) => {
               return (
-                <Usercard item={item} {...props} />
+                <Usercard item={item} {...props} name={'following'} user={UserId}/>
               );
             }}
             keyExtractor={item => item._id}

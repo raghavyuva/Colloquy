@@ -24,7 +24,7 @@ const Home = (props) => {
 
 
 
-    const [{ userToken, postData, searchactive, UserId }, dispatch] = DataLayerValue();
+    const [{ userToken, postData, searchactive, UserId,allusers }, dispatch] = DataLayerValue();
     const [Notify, setNotify] = useState('');
     const [refresh, setrefresh] = useState(false);
     const [loading, setloading] = useState(true);
@@ -80,7 +80,7 @@ const Home = (props) => {
         })
             .then((response) => response.json())
             .then((responseJson) => {
-                setAllUsers(responseJson)
+                dispatch({type:'RETRIEVEALLUSERS',data:responseJson})
             })
     }
 
@@ -99,6 +99,9 @@ const Home = (props) => {
 
 
     const ActivateSearch = () => {
+        // if (searchactive == true) {
+        //     props.navigation.goBack();
+        // }
         dispatch({ type: 'SEARCHCOMPONENT', data: !searchactive })
     }
 
@@ -255,6 +258,7 @@ const Home = (props) => {
                 onEndReachedThreshold={0}
                 refreshing={refresh}
                 onRefresh={fetching}
+                style={{marginBottom:50}}
             />
         )
     }
@@ -269,7 +273,7 @@ const Home = (props) => {
                     );
                 }}
                 keyExtractor={(item, index) => index.toString()}
-                data={filtered && filtered.length > 0 ? filtered : AllUsers}
+                data={filtered && filtered.length > 0 ? filtered : allusers}
                 onEndReached={FetchAll && GoTo_top_function}
                 scrollEnabled
                 onScrollAnimationEnd
@@ -306,32 +310,11 @@ const Home = (props) => {
         )
     }
 
-    const HeaderComp = () => {
-        return (
-            <Header searchBar rounded style={{ backgroundColor: colors.background, }}>
-                <Item style={{ backgroundColor: colors.background }}>
-                    <TouchableOpacity onPress={ActivateSearch}>
-                        <Icon name="arrow-back" style={{ backgroundColor: colors.background }} />
-                    </TouchableOpacity>
-                    <Input placeholder="Search" style={{ backgroundColor: colors.card, borderRadius: 25, color: colors.text, justifyContent: 'flex-end' }}
-                        onChangeText={(bo) => setsearchText(bo)}
-                        value={searchText}
-                        clearButtonMode='while-editing'
-                        keyboardAppearance='dark'
-                        keyboardType='web-search'
-                    >
+    // const HeaderComp = () => {
+    //     return (
 
-                    </Input>
-                    <TouchableOpacity onPress={() => search(searchText)}>
-                        <Icon name="ios-search" style={{ backgroundColor: colors.background, color: colors.primary }} />
-                    </TouchableOpacity>
-                </Item>
-                <Button transparent>
-                    <Text>Search</Text>
-                </Button>
-            </Header>
-        )
-    }
+    //     )
+    // }
 
 
     const ActiveRenderer = () => {
@@ -371,7 +354,29 @@ const Home = (props) => {
             {searchactive ? (
                 <>
                     <View>
-                        <HeaderComp />
+                        <Header searchBar rounded style={{ backgroundColor: colors.background, }}>
+                            <Item style={{ backgroundColor: colors.background }}>
+                                <TouchableOpacity onPress={ActivateSearch}>
+                                    <Icon name="arrow-back" style={{ backgroundColor: colors.background }}  />
+                                </TouchableOpacity>
+                                <Input placeholder="Search" style={{ backgroundColor: colors.card, borderRadius: 25, color: colors.text, justifyContent: 'flex-end' }}
+                                    onChangeText={(bo) => setsearchText(bo)}
+                                    value={searchText}
+                                    clearButtonMode='while-editing'
+                                    multiline={false}
+                                    keyboardAppearance='dark'
+                                    keyboardType='web-search'
+                                    onSubmitEditing={()=>search(searchText)}
+                                >
+                                </Input>
+                                <TouchableOpacity onPress={() => search(searchText)}>
+                                    <Icon name="ios-search" style={{ backgroundColor: colors.background, color: colors.primary }} />
+                                </TouchableOpacity>
+                            </Item>
+                            <Button transparent>
+                                <Text>Search</Text>
+                            </Button>
+                        </Header>
                         <Card style={styles(colors).cardoff}>
                             <FilterCardComp />
                         </Card>

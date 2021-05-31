@@ -50,6 +50,7 @@ const ListOfChats = (props) => {
             .collection('chatrooms')
             .onSnapshot((querySnapshot) => {
                 const threads = querySnapshot.docs.map((documentSnapshot) => {
+
                     return {
                         _id: documentSnapshot.id,
                         name: "",
@@ -59,6 +60,10 @@ const ListOfChats = (props) => {
                             text: "",
                             createdAt: ''
                         },
+                        UserType: {
+                            sentBy: '',
+                            sentTo: ''
+                        },
                         ...documentSnapshot.data(),
                     };
                 });
@@ -67,9 +72,9 @@ const ListOfChats = (props) => {
             });
     }
     const ActivateSearch = () => {
-        if (searchactive == true) {
-            props.navigation.goBack();
-        }
+        // if (searchactive == true) {
+        //     props.navigation.goBack();
+        // }
         dispatch({ type: 'SEARCHCOMPONENT', data: !searchactive })
     }
 
@@ -145,62 +150,79 @@ const ListOfChats = (props) => {
                 keyExtractor={(item) => item._id}
                 renderItem={({ item, index }) =>
                 (
-                    <TouchableOpacity onPress={() => { MessageParticularguy(item.latestMessage.user2) }}   >
-                        <Card style={{ borderWidth: 2, borderColor: colors.border, borderBottomColor: colors.border, }} >
+                    <>
+                        {item.UserType.sentBy === user.user._id || item.UserType.sentTo === user.user._id
+                            ? (
+                                <>
+                                    {item.UserType.sentBy === user.user._id ? (
+                                        <TouchableOpacity onPress={() => { MessageParticularguy(item.latestMessage.user2) }}   >
+                                            <Card style={{ borderWidth: 2, borderColor: colors.border, borderBottomColor: colors.border, }} >
 
-                            <CardItem avatar style={{ backgroundColor: colors.background, borderRadius: null, borderWidth: 0, margin: 0 }}>
-                                <Thumbnail
-                                    source={{
-                                        uri: item.latestMessage.user2.userphoto
-                                    }}
-                                    size={50}
-                                    square
-                                    style={{ borderRadius: 5 }}
-                                />
-                                <Left>
-                                    <Body>
-                                        <Text style={styles(colors).listTitle} numberOfLines={1}>{item.latestMessage.user2.username}</Text>
-                                        <Text note style={styles(colors).listDescription} numberOfLines={3}> {item.latestMessage.text}</Text>
-                                    </Body>
-                                </Left>
-                                <Right>
-                                    <Text note style={{ color: colors.text }}>{new Date(item.latestMessage.createdAt).toDateString()}</Text>
-                                </Right>
-                            </CardItem>
-                        </Card>
-                    </TouchableOpacity>
+                                                <CardItem avatar style={{ backgroundColor: colors.background, borderRadius: null, borderWidth: 0, margin: 0 }}>
+                                                    <Thumbnail
+                                                        source={{
+                                                            uri: item.latestMessage.user2.userphoto
+                                                        }}
+                                                        size={50}
+                                                        square
+                                                        style={{ borderRadius: 5 }}
+                                                    />
+                                                    <Left>
+                                                        <Body>
+                                                            <Text style={styles(colors).listTitle} numberOfLines={1}>{item.latestMessage.user2.username}</Text>
+                                                            <Text note style={styles(colors).listDescription} numberOfLines={3}> {item.latestMessage.text}</Text>
+                                                        </Body>
+                                                    </Left>
+                                                    <Right>
+                                                        <Text note style={{ color: colors.text }}>{new Date(item.latestMessage.createdAt).toDateString()}</Text>
+                                                    </Right>
+                                                </CardItem>
+                                            </Card>
+                                        </TouchableOpacity>
+                                    ) : (
+                                        <TouchableOpacity onPress={() => { MessageParticularguy(item.UserType.SentUserDetails) }}   >
+                                            <Card style={{ borderWidth: 2, borderColor: colors.border, borderBottomColor: colors.border, }} >
+                                                <CardItem avatar style={{ backgroundColor: colors.background, borderRadius: null, borderWidth: 0, margin: 0 }}>
+                                                    <Thumbnail
+                                                        source={{
+                                                            uri: item.UserType.SentUserDetails.userphoto
+                                                        }}
+                                                        size={50}
+                                                        square
+                                                        style={{ borderRadius: 5 }}
+                                                    />
+                                                    <Left>
+                                                        <Body>
+                                                            <Text style={styles(colors).listTitle} numberOfLines={1}>{item.UserType.SentUserDetails.username}</Text>
+                                                            <Text note style={styles(colors).listDescription} numberOfLines={3}> {item.latestMessage.text}</Text>
+                                                        </Body>
+                                                    </Left>
+                                                    <Right>
+                                                        <Text note style={{ color: colors.text }}>{new Date(item.latestMessage.createdAt).toDateString()}</Text>
+                                                    </Right>
+                                                </CardItem>
+                                            </Card>
+                                        </TouchableOpacity>
+                                    )}
+                                </>
+                            ) : (
+                                <>
+                                </>
+                            )
+                        }
+                    </>
 
                 )}
 
             />
         )
     }
-    const HeaderForChat = () => {
-        return (
-            <Header searchBar rounded style={{ backgroundColor: colors.background, }}>
-                <Item style={{ backgroundColor: colors.background }}>
-                    <TouchableOpacity onPress={ActivateSearch}>
-                        <Icon name="arrow-back" style={{ backgroundColor: colors.background }} />
-                    </TouchableOpacity>
-                    <Input placeholder="Find People to text" style={{ backgroundColor: colors.card, borderRadius: 5, color: colors.text, justifyContent: 'flex-end' }}
-                        onChangeText={(bo) => setsearchText(bo)}
-                        value={searchText}
-                        clearButtonMode='while-editing'
-                        keyboardAppearance='dark'
-                        keyboardType='web-search'
-                    >
-                    </Input>
-                    <TouchableOpacity onPress={() => search(searchText)}>
-                        <Icon name="ios-search" style={{ backgroundColor: colors.background, color: colors.primary }} />
-                    </TouchableOpacity>
-                </Item>
-                <Button transparent>
-                    <Text>Search</Text>
-                </Button>
-            </Header>
+    // const HeaderForChat = () => {
+    //     return (
 
-        )
-    }
+
+    //     )
+    // }
     const ListOfUsers = () => {
         return (
             <FlatList
@@ -276,7 +298,29 @@ const ListOfChats = (props) => {
             <StatusBar backgroundColor={colors.card} />
             {searchactive ? (
                 <>
-                    <HeaderForChat />
+                    <Header searchBar rounded style={{ backgroundColor: colors.background, }}>
+                        <Item style={{ backgroundColor: colors.background }}>
+                            <TouchableOpacity onPress={ActivateSearch}>
+                                <Icon name="arrow-back" style={{ backgroundColor: colors.background }} />
+                            </TouchableOpacity>
+                            <Input placeholder="Find People to text" style={{ backgroundColor: colors.card, borderRadius: 5, color: colors.text, justifyContent: 'flex-end' }}
+                                onChangeText={(bo) => setsearchText(bo)}
+                                value={searchText}
+                                clearButtonMode='while-editing'
+                                keyboardAppearance='dark'
+                                keyboardType='web-search'
+                                onSubmitEditing={()=>search(searchText)}
+                                multiline={false}
+                            >
+                            </Input>
+                            <TouchableOpacity onPress={() => search(searchText)}>
+                                <Icon name="ios-search" style={{ backgroundColor: colors.background, color: colors.primary }} />
+                            </TouchableOpacity>
+                        </Item>
+                        <Button transparent>
+                            <Text>Search</Text>
+                        </Button>
+                    </Header>
                     <ListOfUsers />
                 </>
             ) : (
@@ -284,8 +328,8 @@ const ListOfChats = (props) => {
                     <View style={{ flex: 1 }} >
                         <StatusBar backgroundColor={colors.card} />
                         <Headerv {...props} />
-
-                        <ListOfUsers />
+                        <ChatSection />
+                        {/* <ListOfUsers /> */}
                         <FabComponent />
                     </View>
                 </>

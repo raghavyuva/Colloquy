@@ -47,8 +47,6 @@ function App() {
     appState.current = nextAppState;
     setAppStateVisible(appState.current);
     console.log('AppState', appState.current);
-
-
   };
   if (loading) {
     return (

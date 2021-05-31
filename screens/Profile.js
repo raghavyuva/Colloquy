@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { StyleSheet, View, Dimensions, Image, FlatList, TouchableOpacity, TextInput, Alert } from 'react-native'
 import { Fab, Button, Text } from 'native-base';
 const { width, height } = Dimensions.get('window');
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons ,MaterialCommunityIcons} from '@expo/vector-icons';
 import { DataLayerValue } from '../Context/DataLayer';
 import { Config } from '../config'
 import LottieView from 'lottie-react-native';
@@ -415,13 +415,13 @@ const Profile = (props) => {
                                     style={{ backgroundColor: colors.primary, }}
                                     position="bottomRight"
                                     onPress={_toggleBottomNavigationView}>
-                                    <MaterialIcons name="settings" size={24} color={colors.primary} />
+                                   <MaterialCommunityIcons name="pencil" size={24} color={colors.primary} />
                                 </Fab>
                             </View>
                         }
                         renderItem={({ item }) => {
                             return (
-                                <Postcard item={item} {...props} />
+                                <Postcard item={item} {...props} name="NormalView"/>
                             )
                         }}
                         keyExtractor={(item, index) => index.toString()}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Image, StyleSheet, LogBox, FlatList, Dimensions, SafeAreaView, Text, Picker, Alert, View } from 'react-native';
+import { Image, StyleSheet, LogBox, FlatList, Dimensions, SafeAreaView, Text, Picker, Alert, View, ActivityIndicator } from 'react-native';
 import { Card, Textarea, Fab, CardItem, Button, Left, Body, Title, Right, Header } from 'native-base';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
@@ -20,6 +20,7 @@ import * as firebase from "firebase";
 import LottieView from 'lottie-react-native';
 import "@firebase/auth";
 import "@firebase/firestore";
+import UploadingComp from '../components/UploadingComp';
 LogBox.ignoreLogs(['Setting a timer']);
 const Uploadpost = (props) => {
 
@@ -42,10 +43,16 @@ const Uploadpost = (props) => {
     const [toggle, setToggle] = useState(true);
 
 
-     
+
     useEffect(() => {
         let IsMounted = true;
         getPermissionAsync();
+        LOcGetter()
+        return () => {
+            IsMounted = false;
+        }
+    }, [])
+    const LOcGetter = () => {
         (async () => {
             let { status } = await Location.requestForegroundPermissionsAsync();
             if (status !== 'granted') {
@@ -56,12 +63,9 @@ const Uploadpost = (props) => {
             let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.High });
             let locgeo = await Location.reverseGeocodeAsync(location.coords);
             setLocation([locgeo[0]]);
-        })();
-        return () => {
-            IsMounted = false;
         }
-    }, [])
-
+        )
+    }
     const getPermissionAsync = async () => {
         if (Constants.platform.android || Constants.platform.ios) {
             const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -193,57 +197,11 @@ const Uploadpost = (props) => {
 
 
 
-    const MulTiSelect = (colors) => {
-        return (
-            <SectionedMultiSelect
-                items={items}
-                IconRenderer={Icon}
-                uniqueKey="id"
-                subKey="children"
-                selectText="Choose some tags..."
-                selectedIconOnLeft
-                selectedText='Selected'
-                showDropDowns={true}
-                readOnlyHeadings={true}
-                onSelectedItemsChange={onSelectedItemsChange}
-                selectedItems={selectedItems}
-                showRemoveAll
-                searchPlaceholderText='Search Tags'
-                onSelectedItemObjectsChange={oncomplete}
-                styles={{
-                    container: {
-                        backgroundColor: colors.card
-                    },
-                    modalWrapper: {
-                        backgroundColor: colors.card
-                    },
-                    listContainer: {
-                        backgroundColor: colors.card
-                    },
-                    searchBar: {
-                        backgroundColor: colors.card,
-                        color: colors.text
-                    },
-                    searchTextInput: {
-                        color: colors.text
-                    },
-                    subItem: {
-                        backgroundColor: colors.card
-                    },
-                    subItemText: {
-                        color: colors.text
-                    },
-                    item: {
-                        backgroundColor: colors.card
-                    },
-                    backdrop: {
-                        backgroundColor: colors.card
-                    },
-                }}
-                colors={{ primary: colors.primary, searchSelectionColor: colors.text, searchPlaceholderTextColor: colors.text, itemBackground: colors.card, success: 'red', selectToggleTextColor: colors.text }}
-            />
-        )
-    }
+    // const MulTiSelect = (colors) => {
+    //     return (
+
+    //     )
+    // }
 
 
     if (uploading) {
@@ -255,7 +213,7 @@ const Uploadpost = (props) => {
         )
     }
 
-    
+
     if (ondone) {
         return (
             <View style={{ flex: 1, backgroundColor: colors.background }}>
@@ -281,13 +239,13 @@ const Uploadpost = (props) => {
                     <Image style={{ width: 150, height: 150, alignSelf: 'center' }} source={{ uri: first }} />
                 </Card>
                 <Card style={{ backgroundColor: colors.card, padding: 0, margin: 5, borderColor: colors.border }}>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={LOcGetter}>
                         <CardItem style={{ backgroundColor: colors.background, justifyContent: 'space-between' }}>
                             <Text style={{ color: colors.text, fontSize: 18, fontWeight: 'bold', }}>
-                                Location  .
+                                Location
                 </Text>
                             {location == null ? (
-                                <Text style={{ color: colors.text, fontSize: 14 }}>Location Unavailable  {errorMsg} </Text>
+                                <ActivityIndicator size={30} color={colors.primary} />
                             ) : (
                                 <Text style={{ color: colors.text, fontSize: 14 }}>{location[0].city},{location[0].subregion}   </Text>
                             )}
@@ -299,7 +257,7 @@ const Uploadpost = (props) => {
                 <Card style={{ backgroundColor: colors.card, padding: 0, margin: 5, borderColor: colors.border }}>
                     <CardItem style={{ backgroundColor: colors.background, justifyContent: 'space-between' }}>
                         <Text style={{ color: colors.text, fontSize: 18, fontWeight: 'bold', }}>
-                            Category   .
+                            Category
                 </Text>
                         <Picker
                             selectedValue={selectedValue}
@@ -313,7 +271,53 @@ const Uploadpost = (props) => {
                     </CardItem>
                 </Card>
                 <Card style={{ backgroundColor: colors.card, padding: 0, }} keyboardShouldPersistTaps='always'>
-                   <MulTiSelect />
+                    <SectionedMultiSelect
+                        items={items}
+                        IconRenderer={Icon}
+                        uniqueKey="id"
+                        subKey="children"
+                        selectText="Choose some tags..."
+                        selectedIconOnLeft
+                        selectedText='Selected'
+                        showDropDowns={true}
+                        readOnlyHeadings={true}
+                        onSelectedItemsChange={onSelectedItemsChange}
+                        selectedItems={selectedItems}
+                        showRemoveAll
+                        searchPlaceholderText='Search Tags'
+                        onSelectedItemObjectsChange={oncomplete}
+                        styles={{
+                            container: {
+                                backgroundColor: colors.card
+                            },
+                            modalWrapper: {
+                                backgroundColor: colors.card
+                            },
+                            listContainer: {
+                                backgroundColor: colors.card
+                            },
+                            searchBar: {
+                                backgroundColor: colors.card,
+                                color: colors.text
+                            },
+                            searchTextInput: {
+                                color: colors.text
+                            },
+                            subItem: {
+                                backgroundColor: colors.card
+                            },
+                            subItemText: {
+                                color: colors.text
+                            },
+                            item: {
+                                backgroundColor: colors.card
+                            },
+                            backdrop: {
+                                backgroundColor: colors.card
+                            },
+                        }}
+                        colors={{ primary: colors.primary, searchSelectionColor: colors.text, searchPlaceholderTextColor: colors.text, itemBackground: colors.card, success: 'red', selectToggleTextColor: colors.text }}
+                    />
                 </Card>
                 <Card style={{ backgroundColor: colors.card, padding: 0, margin: 5, height: screenHeight / 4, borderColor: colors.border }}>
                     <Text style={{ color: colors.text, opacity: 0.4 }}>Choose One Photo</Text>

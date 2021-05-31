@@ -38,13 +38,55 @@ const Usercard = (props) => {
                 })
             }).then(res => res.json()).then((resp) => {
                 console.log(resp);
+                update();
             })
         }
         catch (error) {
             console.log('error', error)
         }
     }
+    const update = async () => {
+        try {
+            const Listener = fetch(`${Config.url}` + `/followerslist`, {
+                headers: {
+                    'Authorization': 'Bearer ' + `${userToken}`,
+                }
+            })
+                .then((response) => response.json())
+                .then((responseJson) => {
+                    dispatch({
+                        type: "FOLLOWERSLIST",
+                        data: responseJson
+                    })
+                })
 
+            fetch(`${Config.url}` + `/allusers`, {
+                headers: {
+                    'Authorization': 'Bearer ' + `${userToken}`,
+                },
+                method: 'GET'
+            })
+                .then((response) => response.json())
+                .then((responseJson) => {
+                    dispatch({ type: 'RETRIEVEALLUSERS', data: responseJson })
+                })
+            fetch(`${Config.url}` + `/followinglist`, {
+                headers: {
+                    'Authorization': 'Bearer ' + `${userToken}`,
+                }
+            })
+                .then((response) => response.json())
+                .then((responseJson) => {
+                    dispatch({
+                        type: "FOLLOWINGLIST",
+                        data: responseJson
+                    })
+                })
+
+        } catch (e) {
+            console.log(e);
+        }
+    }
 
     const unfollow = (itm) => {
         console.log(itm._id)
@@ -61,7 +103,10 @@ const Usercard = (props) => {
                 })
             })
                 .then((response) => response.json())
-                .then((responseJson) => { console.log(responseJson) }).catch((err) => { alert(err); })
+                .then((responseJson) => {
+                    console.log(responseJson)
+                    update();
+                }).catch((err) => { alert(err); })
         } catch (error) {
             alert(error);
         }
