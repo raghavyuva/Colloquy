@@ -1,34 +1,25 @@
 import React, { useState, useRef } from 'react'
 import { StyleSheet, View, TouchableOpacity, Dimensions, SafeAreaView } from 'react-native'
 import { useFonts } from 'expo-font';
-import Svg, { Circle, Rect, Stop, Path, Defs, LinearGradient as Fgrad, } from 'react-native-svg';
-import { StatusBar } from 'expo-status-bar';
 import { Item, Input, Label, Icon } from 'native-base';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '@react-navigation/native';
-import { Button, Text } from "native-base";
-import * as Google from "expo-google-app-auth";
+import { Text } from "native-base";
 import { Config } from '../config';
 import { DataLayerValue } from '../Context/DataLayer';
 import * as SecureStore from 'expo-secure-store';
 import LoadingComp from '../components/LoadingComp';
 import { FirebaseRecaptchaVerifierModal } from 'expo-firebase-recaptcha';
 import firebase from 'firebase';
-const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
-import {
-    CodeField,
-    Cursor,
-    useBlurOnFulfill,
-    useClearByFocusCell,
-} from 'react-native-confirmation-code-field';
+const { width: screenWidth, } = Dimensions.get('window');
+import { CodeField, Cursor, useBlurOnFulfill, useClearByFocusCell, } from 'react-native-confirmation-code-field';
+import WaveComp from '../components/WaveComp';
+
 const Signup = ({ navigation }) => {
     const [{ userToken }, dispatch] = DataLayerValue()
     const recaptchaVerifier = useRef(null);
-
-    const [selected, setselected] = useState('key3');
     const [age, setAge] = useState("");
     const [username, setUsername] = useState("");
-    const [userphoto, setuserphoto] = useState('');
     const [email, setEmail] = useState("");
     const [loggingin, setloggingin] = useState(false);
     const [password, setPassword] = useState("");
@@ -51,12 +42,7 @@ const Signup = ({ navigation }) => {
         return null;
     }
 
-    const setDate = () => {
-        setselected()
-    }
-    const onValueChange = (f) => {
-        setselected(f)
-    }
+
     const onsignup = async () => {
 
         if (!email || !password || !age || !username) {
@@ -75,7 +61,6 @@ const Signup = ({ navigation }) => {
                     password: password,
                     age: age,
                     username: username,
-                    userphoto: userphoto
                 })
             })
                 .then((response) => response.json())
@@ -88,7 +73,7 @@ const Signup = ({ navigation }) => {
                         setPassword(null);
                         setAge(null);
                         setUsername(null);
-                        setuserphoto(null);
+                       
                         setId(responseData.user._id);
                         settoken(responseData.token)
                         setloggingin(false)
@@ -102,6 +87,7 @@ const Signup = ({ navigation }) => {
     }
     const confirmCode = () => {
         setloggingin(true);
+
         try {
             const credential = firebase.auth.PhoneAuthProvider.credential(
                 verificationId,
@@ -118,7 +104,7 @@ const Signup = ({ navigation }) => {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
-                            number: phoneNumber,
+                            number: "+91"+phoneNumber,
                         })
                     })
                         .then((response) => response.json())
@@ -145,80 +131,14 @@ const Signup = ({ navigation }) => {
         var randomstring = Math.random().toString(36).slice(-9);
         setPassword(randomstring);
     }
-    const Registerwith = () => {
-        try {
-            setloggingin(true)
-            fetch(`${Config.url}` + `/signup`, {
-                method: "POST",
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    email: email,
-                    password: password,
-                    age: age,
-                    username: username,
-                    userphoto: userphoto
-                })
-            })
-                .then((response) => response.json())
-                .then((responseData) => {
-                    console.log(responseData);
-                    if (responseData.message == 'signed up successfully') {
-                        dispatch({
-                            type: 'REGISTER',
-                            token: responseData.token,
-                            id: responseData.user._id
-                        })
-                        SecureStore.setItemAsync('userToken', responseData.token);
-                        SecureStore.setItemAsync('UserId', responseData.user._id)
-                        setEmail(null);
-                        setPassword(null);
-                        setAge(null);
-                        setUsername(null);
-                        setuserphoto(null);
-                        setloggingin(false)
-                    } else {
-                        alert(responseData.message);
-                        setloggingin(false);
-                    }
-                })
-                .done();
-        } catch (error) {
-            alert(error)
-        }
-    }
     const sendVerification = () => {
         const phoneProvider = new firebase.auth.PhoneAuthProvider();
-        phoneProvider.verifyPhoneNumber(phoneNumber, recaptchaVerifier.current).then(setVerificationId).then(() => {
+        phoneProvider.verifyPhoneNumber("+91"+phoneNumber, recaptchaVerifier.current).then(setVerificationId).then(() => {
             alert('OTP has been sent to your phone number');
             setotpactive(true);
         });
     };
-    const Googlesignup = async () => {
-        try {
-            const result = await Google.logInAsync({
-                androidClientId: Config.Android,
-                iosClientId: Config.IOS,
-                scopes: ["profile", "email"],
-            });
-            if (result.type === "success") {
-                setEmail(result.user.email);
-                setPassword(result.user.id);
-                setAge(25);
-                setuserphoto(result.user.photoUrl);
-                setUsername(result.user.name);
-                Registerwith();
-                return result.accessToken;
-            } else {
-                return { cancelled: true };
-            }
-        } catch (e) {
-            alert(e.message);
-            return { error: true };
-        }
-    }
+
 
 
     const CELL_COUNT = 6;
@@ -230,31 +150,12 @@ const Signup = ({ navigation }) => {
     }
     return (
         <View style={styles(colors).screen}>
-            <View style={{ height: '30%' }}>
-                <Svg height="45%" width="100%" id="svg" viewBox="0 0 1440 400"
-                    xmlns="http://www.w3.org/2000/svg" class="transition duration-300 ease-in-out delay-150">
-                    <Defs><Fgrad id="gradient">
-                        <Stop offset="20%" stopColor={colors.card}>
-                        </Stop><Stop offset="80%"
-                            stopColor={colors.primary}></Stop>
-                    </Fgrad></Defs>
-                    <Path d="M 0,400 C 0,400 0,200 0,200 C 80.54545454545456,234.19138755980862 
-                161.09090909090912,268.38277511961724 252,260 C 342.9090909090909,251.61722488038276 
-                444.18181818181813,200.66028708133967 548,177 C 651.8181818181819,153.33971291866033 
-                758.1818181818182,156.97607655502395 872,180 C 985.8181818181818,203.02392344497605 1107.090909090909,245.43540669856458 1203,252 
-                C 1298.909090909091,258.5645933014354 1369.4545454545455,229.2822966507177 1440,200 C 1440,200 1440,400 1440,400 Z"
-                        stroke="none" stroke-width="0" fill="url(#gradient)"
-                        class="transition-all duration-300 ease-in-out delay-150" transform="rotate(-180 720 200)">
-                    </Path></Svg>
-                <Text style={styles(colors).header}>
-                    Get On the Board
-        </Text>
-                <FirebaseRecaptchaVerifierModal
-                    ref={recaptchaVerifier}
-                    firebaseConfig={firebase.app().options}
-                    style={{ flex: 1 }}
-                />
-            </View>
+            <WaveComp />
+            <FirebaseRecaptchaVerifierModal
+                ref={recaptchaVerifier}
+                firebaseConfig={firebase.app().options}
+                style={{ flex: 1 }}
+            />
             {
                 otpactive ? (
                     <>
@@ -263,7 +164,6 @@ const Signup = ({ navigation }) => {
                             <CodeField
                                 ref={refs}
                                 {...props}
-                                // Use `caretHidden={false}` when users can't paste a text value, because context menu doesn't appear
                                 value={code}
                                 onChangeText={setCode}
                                 cellCount={CELL_COUNT}
@@ -359,20 +259,6 @@ const Signup = ({ navigation }) => {
                                         />
                                     </Item>
                                 </View>
-                                <View style={{ marginTop: 0 }}>
-                                    <Button style={{
-                                        backgroundColor: colors.card,
-                                        justifyContent: 'center',
-                                        alignSelf: "center",
-                                        width: 210,
-                                        marginTop: 10
-                                    }}
-                                        onPress={Googlesignup}
-                                    >
-                                        <Text style={{ color: colors.text }}>Sign Up With Google</Text>
-                                    </Button>
-                                </View>
-
                             </View>
                         </View>
                         <View >
@@ -448,20 +334,6 @@ const styles = (colors) => StyleSheet.create({
     },
     txtnav: {
         textAlign: 'center',
-        color: colors.text
-    },
-    picker1: {
-        height: "40%",
-        margin: 0,
-        flexDirection: 'row'
-    },
-    picker2: {
-        flexDirection: 'row',
-        height: "10%",
-        margin: 0,
-    },
-    picker: {
-        width: "50%",
         color: colors.text
     },
     phone: {

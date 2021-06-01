@@ -1,5 +1,5 @@
 
-import React, {  useState } from 'react'
+import React, { useState } from 'react'
 import {
     StyleSheet,
     Text,
@@ -9,7 +9,7 @@ import {
     ImageBackground,
     Alert
 } from 'react-native'
-import {  CardItem, Left, Button, } from 'native-base';
+import { CardItem, Left, Button, } from 'native-base';
 import { EvilIcons, AntDesign, FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { DataLayerValue } from '../Context/DataLayer';
 import { Config } from '../config';
@@ -79,9 +79,9 @@ const Pcarsl = (props) => {
                         </TouchableOpacity>
                     </View>
                 ) : (
-                        <View>
-                        </View>
-                    )}
+                    <View>
+                    </View>
+                )}
             </ImageBackground>
             <View style={styles.lowerContainer}>
                 <Text style={styles.titleText}>{props.item.caption}</Text>

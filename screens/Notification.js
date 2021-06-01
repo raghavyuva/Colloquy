@@ -13,10 +13,10 @@ const Notification = (props) => {
     const [{ userToken, notifylist, UserId }, dispatch] = DataLayerValue();
     const [refresh, setrefresh] = useState(false)
     const [load, setload] = useState(true);
-    const {colors} = useTheme();
+    const { colors } = useTheme();
     useEffect(() => {
         fetching();
-       
+
         return () => {
 
         }
@@ -46,10 +46,10 @@ const Notification = (props) => {
     const GoTo_top_function = () => {
         flatListRef.scrollToOffset({ animated: true, offset: 0 });
     }
-    
+
     if (load) {
         return (
-           <LoadingComp />
+            <LoadingComp />
         );
     }
     return (
@@ -78,6 +78,6 @@ const Notification = (props) => {
 }
 
 export default Notification
-const styles =(colors)=> StyleSheet.create({
+const styles = (colors) => StyleSheet.create({
 
 })

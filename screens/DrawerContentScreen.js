@@ -8,7 +8,7 @@ import { FontAwesome5, MaterialCommunityIcons, SimpleLineIcons, Octicons, FontAw
 import { DataLayerValue } from '../Context/DataLayer';
 import * as SecureStore from 'expo-secure-store';
 import { Config } from '../config';
-import { Text } from 'native-base';
+import { Text,Title } from 'native-base';
 import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 const { width, height } = Dimensions.get('window');
@@ -38,7 +38,12 @@ export function DrawerContent(props) {
                     <View style={{ flexDirection: 'row', marginTop: 15 }}>
 
                         <View style={{ marginLeft: 15, flexDirection: 'column' }}>
-                            <Text style={styles(colors).title}>Vtyuva</Text>
+                            <Text style={{
+                                fontSize: 28, 
+                                marginTop: 15,
+                                color: colors.text,
+                                fontFamily: 'Montserrat', 
+                            }}>Vtyuva</Text>
                             <Text style={styles(colors).caption}>Unleash your potential</Text>
                         </View>
                     </View>
@@ -60,7 +65,7 @@ export function DrawerContent(props) {
                             }
                             activeBackgroundColor={colors.background}
                             activeTintColor='green'
-                            focused={routename === 'Home'}
+                        // focused={routename === 'Home'}
                         />
                         <DrawerItem
                             icon={({ color, size }) => (
@@ -73,7 +78,7 @@ export function DrawerContent(props) {
                                 props.navigation.navigate('external', { screen: 'follower' })
 
                             }}
-                            focused={routename === 'Followers'}
+                            // focused={routename === 'Followers'}
                             activeBackgroundColor={colors.background}
                             activeTintColor='green'
 
@@ -89,7 +94,7 @@ export function DrawerContent(props) {
                                 dispatch({ type: 'ROUTEPROP', data: 'Following' })
 
                             }}
-                            focused={routename === 'Following'}
+                            // focused={routename === 'Following'}
                             activeBackgroundColor={colors.background}
                             activeTintColor='green'
                         />
@@ -103,7 +108,7 @@ export function DrawerContent(props) {
                                 dispatch({ type: 'ROUTEPROP', data: 'interview' })
                                 props.navigation.navigate('external', { screen: 'notes' })
                             }}
-                            focused={routename === 'interview'}
+                            // focused={routename === 'interview'}
                             activeBackgroundColor={colors.background}
 
                             activeTintColor='green'
@@ -120,7 +125,7 @@ export function DrawerContent(props) {
                                 props.navigation.navigate('external', { screen: 'events' })
 
                             }}
-                            focused={routename === 'events'}
+                            // focused={routename === 'events'}
                             activeBackgroundColor={colors.background}
 
                             activeTintColor='green'
@@ -149,7 +154,7 @@ export function DrawerContent(props) {
 
                             }
                             }
-                            focused={routename === 'segment'}
+                            // focused={routename === 'segment'}
                             activeBackgroundColor={colors.background}
 
                             activeTintColor='green'
@@ -187,7 +192,7 @@ export function DrawerContent(props) {
                                 props.navigation.navigate('external', { screen: 'feedback' })
 
                             }}
-                            focused={routename === 'feed'}
+                            // focused={routename === 'feed'}
                             activeBackgroundColor={colors.background}
 
                             activeTintColor='green'
@@ -197,7 +202,7 @@ export function DrawerContent(props) {
                 <View style={defdarktheme ? styles(colors).bottomDrawerSection : styles(colors).botmsect}>
                     <DrawerItem
                         icon={({ color, size }) => (
-                            <MaterialCommunityIcons name="exit-to-app" size={24} color={colors.primary} />
+                            <MaterialCommunityIcons name="exit-to-app" size={24} color={colors.notification} />
                         )}
                         label="Sign Out"
                         labelStyle={{ color: colors.text, }}
@@ -227,7 +232,9 @@ const styles = (colors) => StyleSheet.create({
     ,
     caption: {
         fontSize: 14,
-        color: colors.text,
+        color: 'purple',
+        opacity:1
+
     },
     userInfoSection: {
         paddingLeft: 20,

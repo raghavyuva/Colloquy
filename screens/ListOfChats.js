@@ -68,6 +68,7 @@ const ListOfChats = (props) => {
                     };
                 });
                 setThreads(threads);
+                console.log(threads)
                 setloading(false);
             });
     }
@@ -207,6 +208,7 @@ const ListOfChats = (props) => {
                                 </>
                             ) : (
                                 <>
+
                                 </>
                             )
                         }
@@ -309,7 +311,7 @@ const ListOfChats = (props) => {
                                 clearButtonMode='while-editing'
                                 keyboardAppearance='dark'
                                 keyboardType='web-search'
-                                onSubmitEditing={()=>search(searchText)}
+                                onSubmitEditing={() => search(searchText)}
                                 multiline={false}
                             >
                             </Input>
@@ -328,8 +330,8 @@ const ListOfChats = (props) => {
                     <View style={{ flex: 1 }} >
                         <StatusBar backgroundColor={colors.card} />
                         <Headerv {...props} />
-                        <ChatSection />
-                        {/* <ListOfUsers /> */}
+                        {/* <ChatSection /> */}
+                        <ListOfUsers />
                         <FabComponent />
                     </View>
                 </>

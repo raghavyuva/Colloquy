@@ -14,7 +14,7 @@ import Headingbar from '../components/Header';
 import LoadingComp from '../components/LoadingComp';
 export function Chat(props) {
 
-
+ 
   const { anotheruser } = props.route.params;
   const [messages, setMessages] = useState([]);
   const { colors } = useTheme();
@@ -54,7 +54,6 @@ export function Chat(props) {
   }, []);
 
   const renderBubble = (props) => {
-    console.log(props)
     return (
       <Bubble
         {...props}
@@ -81,7 +80,7 @@ export function Chat(props) {
 
           }
         }}
-        // onLongPress={() => Delete(props.currentMessage)}
+      // onLongPress={() => Delete(props.currentMessage)}
       />
     );
   };
@@ -134,6 +133,32 @@ export function Chat(props) {
 
 
 
+
+
+  const Notifyy = (val, sentby, sentto) => {
+    fetch("https://exp.host/--/api/v2/push/send",
+      {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        method: "POST",
+        body: JSON.stringify({
+          to: sentto.notifytoken,
+          sound: 'default',
+          vibrationPattern: [0, 250, 250, 250],
+          lightColor: '#FF231F7C',
+          body: `${val}`,
+          title: `${sentby.username} sent you a message`
+        })
+      })
+  }
+
+
+
+
+
+
   const handleSend = async (messages) => {
     try {
       const giftedArray = messages[0];
@@ -175,7 +200,10 @@ export function Chat(props) {
             }
           },
           { merge: true }
+
         );
+      let val = 'message';
+      Notifyy(giftedArray.text, user.user, anotheruser)
     } catch (error) {
       alert(error)
     }

@@ -42,21 +42,21 @@ const Home = (props) => {
     }
     if (load) {
         return (
-           <LoadingComp />
+            <LoadingComp />
         );
     }
 
     if (subscribeddata.length == null || subscribeddata.length == 0 || subscribeddata.length == undefined || subscribeddata == null) {
         return (
-            <View style={{ flex: 1, backgroundColor: colors.background,}}>
+            <View style={{ flex: 1, backgroundColor: colors.background, }}>
                 <Header {...props} />
-                <View style={{ justifyContent: 'center',alignSelf: 'center',flex: 1}}>
-                <Image
-                    source={{uri:'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fcdn.onlinewebfonts.com%2Fsvg%2Fimg_412721.png&f=1&nofb=1'}}
-                    style={{ width: width, height: 400, alignSelf: 'center', marginLeft: 2,justifyContent: 'center', }}
-                />
+                <View style={{ justifyContent: 'center', alignSelf: 'center', flex: 1 }}>
+                    <Image
+                        source={{ uri: 'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fcdn.onlinewebfonts.com%2Fsvg%2Fimg_412721.png&f=1&nofb=1' }}
+                        style={{ width: width, height: 400, alignSelf: 'center', marginLeft: 2, justifyContent: 'center', }}
+                    />
                 </View>
-              
+
             </View>
         )
     }

@@ -26,7 +26,6 @@ const Uploadpost = (props) => {
 
 
 
-
     const [body, setbody] = useState('');
     const [uploading, setuploading] = useState(false);
     const [ondone, setondone] = useState(false);

@@ -1,5 +1,5 @@
-import React, {  useState, } from 'react'
-import { StyleSheet,Image, FlatList, KeyboardAvoidingView, } from 'react-native'
+import React, { useState, } from 'react'
+import { StyleSheet, Image, FlatList, KeyboardAvoidingView, } from 'react-native'
 import { CardItem, Text, Button, Left, View, Input, Item, Label, Body, Right, } from 'native-base';
 import { DataLayerValue } from '../Context/DataLayer';
 import Postcard from '../components/Postcard';
@@ -11,10 +11,10 @@ const PostfullView = (props) => {
     const [{ userToken, fullview }, dispatch] = DataLayerValue();
     const [commenttext, setcommenttext] = useState('');
     const { colors } = useTheme();
-    
+
     const commentui = ({ item, index }) => {
         return (
-            <CardItem style={{ backgroundColor: colors.card, borderBottomWidth: 0.2, borderBottomColor: colors.border}}>
+            <CardItem style={{ backgroundColor: colors.card, borderBottomWidth: 0.2, borderBottomColor: colors.border }}>
                 <Left>
                     <Body>
                         <Text style={{ color: colors.text }} >{item.postedBy.username}</Text>
@@ -88,7 +88,7 @@ const PostfullView = (props) => {
     }
     return (
         <KeyboardAvoidingView style={styles(colors).screen}>
-            <Headingbar {...props}/>
+            <Headingbar {...props} />
             <FlatList
                 ListHeaderComponent={
                     <Postcard item={fullview} {...props} name='NormalView' />
@@ -97,13 +97,13 @@ const PostfullView = (props) => {
                 keyExtractor={(item) => item._id}
                 data={fullview.comments}
             />
-            <Item style={{ backgroundColor:colors.border }}>
+            <Item style={{ backgroundColor: colors.border }}>
                 <Input style={styles(colors).fieldinpu}
                     value={commenttext}
                     onChangeText={(t) => setcommenttext(t)}
-                    placeholder='Add a comment' placeholderTextColor={colors.text}/>
+                    placeholder='Add a comment' placeholderTextColor={colors.text} />
                 <Button transparent style={{ borderRadius: 8 }} onPress={comment}>
-                    <Text style={{ textTransform: 'capitalize', color: colors.text}}>comment</Text>
+                    <Text style={{ textTransform: 'capitalize', color: colors.text }}>comment</Text>
                 </Button>
             </Item>
         </KeyboardAvoidingView>
@@ -112,7 +112,7 @@ const PostfullView = (props) => {
 }
 
 export default PostfullView
-const styles =(color)=> StyleSheet.create({
+const styles = (color) => StyleSheet.create({
     screen: {
         justifyContent: 'center',
         backgroundColor: color.card,
@@ -120,7 +120,7 @@ const styles =(color)=> StyleSheet.create({
     },
     txt1: {
         fontSize: 22,
-        color:color.text,
+        color: color.text,
         alignSelf: "center",
         fontWeight: 'bold'
     },
@@ -137,7 +137,7 @@ const styles =(color)=> StyleSheet.create({
     item: {
         borderWidth: 2,
         backgroundColor: color.card,
-        borderRadius: 1, 
+        borderRadius: 1,
         borderColor: color.border,
     },
     imageBackground: {
@@ -167,7 +167,7 @@ const styles =(color)=> StyleSheet.create({
     },
     contentText: {
         fontSize: 12,
-        color:color.text
+        color: color.text
     },
     fieldinpu: {
         color: color.text

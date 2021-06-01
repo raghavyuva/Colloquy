@@ -5,10 +5,8 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
 import { FontAwesome5, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import Profile from '../screens/Profile';
-import UploadPoll from '../screens/UploadPoll';
 import Uploadpost from '../screens/Uploadpost';
 import Privacy from '../screens/Privacy';
-import Poll from '../screens/Poll';
 import Followers from '../screens/Followers';
 import Following from '../screens/Following';
 import UserProfile from '../screens/UserProfile';
@@ -37,10 +35,8 @@ function External() {
         <Stack.Navigator headerMode={false}>
             <Stack.Screen name="Home" component={HomeScreen} />
             <Stack.Screen name="profile" component={Profile} />
-            <Stack.Screen name="polladd" component={UploadPoll} />
             <Stack.Screen name="feedback" component={Report} />
             <Stack.Screen name="segment" component={Privacy} />
-            <Stack.Screen name="poll" component={Poll} />
             <Stack.Screen name="follower" component={Followers} />
             <Stack.Screen name="following" component={Following} />
             <Stack.Screen name="userpro" component={UserProfile} />
@@ -160,12 +156,10 @@ function Drawernav() {
             <Drawer.Screen name="external" component={External} />
             <Drawer.Screen name="follower" component={Followers} />
             <Drawer.Screen name="following" component={Following} />
-            <Drawer.Screen name="poll" component={Poll} />
             <Drawer.Screen name="events" component={Events} />
             <Drawer.Screen name="segment" component={Privacy} />
             <Drawer.Screen name="feedback" component={Report} />
             <Drawer.Screen name="notes" component={Notes} />
-
         </Drawer.Navigator>
     );
 }

@@ -4,9 +4,9 @@
     "slug": "Primish",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/log.png",
+    "icon": "./assets/slack.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/slack.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -27,12 +27,14 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/slack.png",
         "backgroundColor": "#FFFFFF"
       },
       "userInterfaceStyle": "automatic",
       "package": "com.primish",
-      "permissions": ["ACCESS_BACKGROUND_LOCATION"]
+      "permissions": [
+        "ACCESS_BACKGROUND_LOCATION"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { StyleSheet, View, Dimensions, Image, FlatList, TouchableOpacity, TextInput, Alert } from 'react-native'
 import { Fab, Button, Text } from 'native-base';
 const { width, height } = Dimensions.get('window');
-import { MaterialIcons ,MaterialCommunityIcons} from '@expo/vector-icons';
+import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { DataLayerValue } from '../Context/DataLayer';
 import { Config } from '../config'
 import LottieView from 'lottie-react-native';
@@ -171,257 +171,194 @@ const Profile = (props) => {
     }, [])
     if (load) {
         return (
-           <LoadingComp />
+            <LoadingComp />
         );
     }
-    return (
-        <View style={{}}>
-            <Headingbar {...props} />
-            {user.userposts[0] == null ? (
-                <>
-                    <View style={{ flex: 1,backgroundColor:colors.primary }}>
-                        <View style={styles(colors).mainscreen}>
-                            <View style={{ flexDirection: 'row' }}>
+
+    const BottomComponent = () => {
+        return (
+            <BottomSheet
+                visible={visible}
+                onBackButtonPress={_toggleBottomNavigationView}
+                onBackdropPress={_toggleBottomNavigationView}
+            >
+                <View style={styles(colors).bottomNavigationView}>
+                    <View>
+                        <View style={{ justifyContent: "center", alignSelf: 'center', paddingTop: 5 }}>
+                            <TouchableOpacity onPress={_pickImagefromGallery} >
                                 <Image
-                                    source={{ uri: user.user.userphoto }}
+                                    source={{ uri: postimage }}
                                     style={{
                                         height: 150,
                                         width: 150,
                                         borderRadius: 20,
-                                        marginVertical: 30,
-                                        marginHorizontal: 10
                                     }}
                                 />
-                                <View>
-                                    <View style={{ marginTop: 50 }}>
-                                        <Text style={styles(colors).txt1}>
-                                            {user.user.username}
-                                        </Text>
-                                    </View>
-                                    <View style={{ width: 250, marginRight: 10 }}>
-                                        {user.user.tagline == null ? (
-                                            <Text style={styles(colors).txt2}>
-                                                {user.user.email}
-                                            </Text>
-                                        ) : (
-                                            <Text style={styles(colors).txt2} numberOfLines={4} note>
-                                                {user.user.tagline}
-                                            </Text>
-                                        )}
-                                    </View>
-                                </View>
-                            </View>
-                            <View style={{ position: 'absolute', bottom: 60, marginHorizontal: 20 }}>
+                                <Text style={{ color: colors.text, textAlign: 'center' }}>Change Photo</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={{ margin: 5 }}>
+                            <TextInput style={{
+                                width: "80%", paddingLeft: 10,
+                                paddingBottom: 10, paddingRight: 10,
+                                fontSize: 18, color: colors.text,
+                                borderColor: colors.border,
+                                borderWidth: 1.5,
+                                height: 60,
+                                justifyContent: 'center',
+                                alignContent: 'center',
+                                alignSelf: "center",
+                                opacity: 0.5
+                            }}
+                                value={username}
+                                placeholder='Change UserName'
+                                onChangeText={(useremail) => setusername(useremail)}
+                                placeholderTextColor={colors.text}
+                            ></TextInput>
+                        </View>
+                        <View style={{ margin: 5 }}>
+                            <TextInput style={{
+                                width: "80%", paddingLeft: 10,
+                                paddingBottom: 10, paddingRight: 10,
+                                fontSize: 18, color: colors.text,
+                                borderColor: colors.border,
+                                borderWidth: 1.5,
+                                height: 60,
+                                justifyContent: 'center',
+                                alignContent: 'center',
+                                alignSelf: "center",
+                                opacity: 0.5
+                            }}
+                                value={body}
+                                placeholder='Change Tagline'
+                                onChangeText={(useremail) => setbody(useremail)}
+                                placeholderTextColor={colors.text}
+                            ></TextInput>
+                        </View>
+                        <Button style={{
+                            backgroundColor: colors.primary,
+                            justifyContent: 'center',
+                            alignSelf: "center",
+                            width: 150,
+                            marginTop: 10
+                        }}
+                            onPress={_upload}
+                        >
+                            <Text style={{ color: colors.text }}>Submit</Text>
+                        </Button>
+                    </View>
+                    <Button style={{
+                        backgroundColor: colors.card,
+                        justifyContent: 'center',
+                        alignSelf: "center",
+                        width: width - 50,
+                        marginTop: 25
+                    }}
+                        onPress={Reset}
+                    >
+                        <Text style={{ color: colors.text }}>Send Password Reset Link to My Email</Text>
+                    </Button>
+                </View>
+            </BottomSheet>
+        )
+    }
+
+    const PostNotnullcomp = () => {
+        return (
+            <View style={styles(colors).mainscreen}>
+                <BottomComponent />
+                <View style={{ flexDirection: 'row' }}>
+                    <Image
+                        source={{ uri: user.user.userphoto }}
+                        style={{
+                            height: 150,
+                            width: 150,
+                            borderRadius: 20,
+                            marginVertical: 30,
+                            marginHorizontal: 10
+                        }}
+                    />
+                    <View>
+                        <View style={{ marginTop: 50 }}>
+                            <Text style={styles(colors).txt1}>
+                                {user.user.username}
+                            </Text>
+                        </View>
+                        <View style={{ width: 250, marginRight: 10 }}>
+                            {user.user.tagline == null ? (
                                 <Text style={styles(colors).txt2}>
                                     {user.user.email}
                                 </Text>
-                            </View>
-                            <View style={{ flexDirection: 'row', position: 'absolute', bottom: 30, marginHorizontal: 20 }}>
-                                <View style={{ marginRight: 5 }}>
-                                    <Text style={{
-                                        fontWeight: "bold",
-                                        fontSize: 15,
-                                        color: colors.text
-                                    }}>{user.userposts.length} Posts</Text>
-                                </View>
-                                <View style={{ marginRight: 5 }}>
-                                    <Text style={{
-                                        fontWeight: "bold",
-                                        fontSize: 15,
-                                        color: colors.text
-                                    }}>{user.user.followers.length} Followers</Text>
-
-                                </View>
-                                <View style={{ marginRight: 5 }}>
-                                    <Text style={{
-                                        fontWeight: "bold",
-                                        fontSize: 15,
-                                        color: colors.text
-                                    }}>{user.user.following.length} Following</Text>
-                                </View>
-
-                            </View>
-                            <Fab
-                                    active={active}
-                                    direction="up"
-                                    style={{ backgroundColor: colors.primary, }}
-                                    position='bottomRight'
-                                    onPress={_toggleBottomNavigationView}>
-                                    <MaterialIcons name="edit" size={24} color={colors.primary} />
-                                </Fab>
-                          
+                            ) : (
+                                <Text style={styles(colors).txt2}>
+                                    {user.user.tagline}
+                                </Text>
+                            )}
                         </View>
-
-                        <Image
-                            source={require('../assets/emptyy.png')}
-                            style={{ width: width, height: height / 1.7, alignSelf: 'center' }}
-                        />
-                      
                     </View>
-                    
+                </View>
+                <View style={{ position: 'absolute', bottom: 60, marginHorizontal: 20 }}>
+                    <Text style={styles(colors).txt2}>
+                        {user.user.email}
+                    </Text>
+                </View>
+                <View style={{ flexDirection: 'row', position: 'absolute', bottom: 30, marginHorizontal: 20 }}>
+                    <View style={{ marginRight: 5 }}>
+                        <Text style={{
+                            fontWeight: "bold",
+                            fontSize: 15,
+                            color: colors.text,
+                        }}>{user.userposts.length} Posts</Text>
+                    </View>
+                    <View style={{ marginRight: 5 }}>
+                        <Text style={{
+                            fontWeight: "bold",
+                            fontSize: 15,
+                            color: colors.text,
+                        }}>{user.user.followers.length} Followers</Text>
+
+                    </View>
+
+                    <View style={{ marginRight: 5 }}>
+                        <Text style={{
+                            fontWeight: "bold",
+                            fontSize: 15,
+                            color: colors.text,
+                        }}>{user.user.following.length} Following</Text>
+                    </View>
+                </View>
+                <Fab
+                    active={active}
+                    direction="up"
+                    containerStyle={{}}
+                    style={{ backgroundColor: colors.primary, }}
+                    position="bottomRight"
+                    onPress={_toggleBottomNavigationView}>
+                    <MaterialCommunityIcons name="pencil" size={24} color={colors.primary} />
+                </Fab>
+            </View>
+        )
+    }
+    return (
+        <View>
+            <Headingbar {...props} />
+            {user.userposts[0] == null ? (
+                <>
+                    <PostNotnullcomp />
+                    <Image
+                        source={{ uri: 'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fcdn.onlinewebfonts.com%2Fsvg%2Fimg_412721.png&f=1&nofb=1' }}
+                        style={{ width: width, height: height / 2, alignSelf: 'center' }}
+                    />
                 </>
             ) : (
                 <>
                     <FlatList
                         ListHeaderComponent={
-                            <View style={styles(colors).mainscreen}>
-                                <BottomSheet
-                                    visible={visible}
-                                    onBackButtonPress={_toggleBottomNavigationView}
-                                    onBackdropPress={_toggleBottomNavigationView}
-                                >
-                                    <View style={styles(colors).bottomNavigationView}>
-                                        <View>
-                                            <View style={{ justifyContent: "center", alignSelf: 'center', paddingTop: 5 }}>
-                                                <TouchableOpacity onPress={_pickImagefromGallery} >
-                                                    <Image
-                                                        source={{ uri: postimage }}
-                                                        style={{
-                                                            height: 150,
-                                                            width: 150,
-                                                            borderRadius: 20,
-                                                        }}
-                                                    />
-                                                    <Text style={{ color: colors.text, textAlign: 'center' }}>Change Photo</Text>
-                                                </TouchableOpacity>
-                                            </View>
-                                            <View style={{ margin: 5 }}>
-                                                <TextInput style={{
-                                                    width: "80%", paddingLeft: 10,
-                                                    paddingBottom: 10, paddingRight: 10,
-                                                    fontSize: 18, color: colors.text,
-                                                    borderColor: colors.border,
-                                                    borderWidth: 1.5,
-                                                    height: 60,
-                                                    justifyContent: 'center',
-                                                    alignContent: 'center',
-                                                    alignSelf: "center",
-                                                    opacity: 0.5
-                                                }}
-                                                    value={username}
-                                                    placeholder='Change UserName'
-                                                    onChangeText={(useremail) => setusername(useremail)}
-                                                    placeholderTextColor={colors.text}
-                                                ></TextInput>
-                                            </View>
-                                            <View style={{ margin: 5 }}>
-                                                <TextInput style={{
-                                                    width: "80%", paddingLeft: 10,
-                                                    paddingBottom: 10, paddingRight: 10,
-                                                    fontSize: 18, color: colors.text,
-                                                    borderColor: colors.border,
-                                                    borderWidth: 1.5,
-                                                    height: 60,
-                                                    justifyContent: 'center',
-                                                    alignContent: 'center',
-                                                    alignSelf: "center",
-                                                    opacity: 0.5
-                                                }}
-                                                    value={body}
-                                                    placeholder='Change Tagline'
-                                                    onChangeText={(useremail) => setbody(useremail)}
-                                                    placeholderTextColor={colors.text}
-                                                ></TextInput>
-                                            </View>
-                                            <Button style={{
-                                                backgroundColor: colors.primary,
-                                                justifyContent: 'center',
-                                                alignSelf: "center",
-                                                width: 150,
-                                                marginTop: 10
-                                            }}
-                                                onPress={_upload}
-                                            >
-                                                <Text style={{ color: colors.text}}>Submit</Text>
-                                            </Button>
-                                        </View>
-                                        <Button style={{
-                                            backgroundColor: colors.card,
-                                            justifyContent: 'center',
-                                            alignSelf: "center",
-                                            width: width - 50,
-                                            marginTop: 25
-                                        }}
-                                            onPress={Reset}
-                                        >
-                                            <Text style={{ color: colors.text }}>Send Password Reset Link to My Email</Text>
-                                        </Button>
-                                    </View>
-                                </BottomSheet>
-                                <View style={{ flexDirection: 'row' }}>
-                                    <Image
-                                        source={{ uri: user.user.userphoto }}
-                                        style={{
-                                            height: 150,
-                                            width: 150,
-                                            borderRadius: 20,
-                                            marginVertical: 30,
-                                            marginHorizontal: 10
-                                        }}
-                                    />
-                                    <View>
-                                        <View style={{ marginTop: 50 }}>
-                                            <Text style={styles(colors).txt1}>
-                                                {user.user.username}
-                                            </Text>
-                                        </View>
-                                        <View style={{ width: 250, marginRight: 10 }}>
-                                            {user.user.tagline == null ? (
-                                                <Text style={styles(colors).txt2}>
-                                                    {user.user.email}
-                                                </Text>
-                                            ) : (
-                                                <Text style={styles(colors).txt2}>
-                                                    {user.user.tagline}
-                                                </Text>
-                                            )}
-                                        </View>
-                                    </View>
-                                </View>
-                                <View style={{ position: 'absolute', bottom: 60, marginHorizontal: 20 }}>
-                                    <Text style={styles(colors).txt2}>
-                                        {user.user.email}
-                                    </Text>
-                                </View>
-                                <View style={{ flexDirection: 'row', position: 'absolute', bottom: 30, marginHorizontal: 20 }}>
-                                    <View style={{ marginRight: 5 }}>
-                                        <Text style={{
-                                            fontWeight: "bold",
-                                            fontSize: 15,
-                                            color: colors.text,
-                                        }}>{user.userposts.length} Posts</Text>
-                                    </View>
-                                    <View style={{ marginRight: 5 }}>
-                                        <Text style={{
-                                            fontWeight: "bold",
-                                            fontSize: 15,
-                                            color:colors.text,
-                                        }}>{user.user.followers.length} Followers</Text>
-
-                                    </View>
-
-                                    <View style={{ marginRight: 5 }}>
-                                        <Text style={{
-                                            fontWeight: "bold",
-                                            fontSize: 15,
-                                            color: colors.text,
-                                        }}>{user.user.following.length} Following</Text>
-                                    </View>
-                                </View>
-                                <Fab
-                                    active={active}
-                                    direction="up"
-                                    containerStyle={{}}
-                                    style={{ backgroundColor: colors.primary, }}
-                                    position="bottomRight"
-                                    onPress={_toggleBottomNavigationView}>
-                                   <MaterialCommunityIcons name="pencil" size={24} color={colors.primary} />
-                                </Fab>
-                            </View>
+                            <PostNotnullcomp />
                         }
                         renderItem={({ item }) => {
                             return (
-                                <Postcard item={item} {...props} name="NormalView"/>
+                                <Postcard item={item} {...props} name="NormalView" />
                             )
                         }}
                         keyExtractor={(item, index) => index.toString()}
@@ -443,7 +380,7 @@ const Profile = (props) => {
 }
 
 export default Profile
-const styles = (colors) =>StyleSheet.create({
+const styles = (colors) => StyleSheet.create({
     mainscreen: {
         height: height / 3,
         backgroundColor: colors.card,
@@ -459,7 +396,7 @@ const styles = (colors) =>StyleSheet.create({
     },
     txt1: {
         fontSize: 25,
-        color:colors.text,
+        color: colors.text,
         fontWeight: 'bold'
     },
     txt2: {
@@ -517,7 +454,7 @@ const styles = (colors) =>StyleSheet.create({
         backgroundColor: colors.background,
     },
     bottomNavigationView: {
-        backgroundColor:colors.background,
+        backgroundColor: colors.background,
         width: '100%',
         height: height / 1.8,
         borderTopLeftRadius: 50,

@@ -17,13 +17,6 @@ import LoadingComp from '../components/LoadingComp';
 
 const Home = (props) => {
 
-
-
-
-
-
-
-
     const [{ userToken, postData, searchactive, UserId,allusers }, dispatch] = DataLayerValue();
     const [Notify, setNotify] = useState('');
     const [refresh, setrefresh] = useState(false);
