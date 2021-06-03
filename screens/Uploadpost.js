@@ -40,19 +40,19 @@ const Uploadpost = (props) => {
     const [finaltags, setfinaltags] = useState([]);
     const [first, setfirst] = useState('')
     const [toggle, setToggle] = useState(true);
-
+    const [status, setstatus] = useState(null);
 
 
     useEffect(() => {
         let IsMounted = true;
         getPermissionAsync();
-        LOcGetter()
+
         return () => {
             IsMounted = false;
         }
     }, [])
-    const LOcGetter = () => {
-        (async () => {
+    const LOcGetter =async () => {
+       
             let { status } = await Location.requestForegroundPermissionsAsync();
             if (status !== 'granted') {
                 setErrorMsg('Permission to access location was denied');
@@ -62,24 +62,24 @@ const Uploadpost = (props) => {
             let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.High });
             let locgeo = await Location.reverseGeocodeAsync(location.coords);
             setLocation([locgeo[0]]);
-        }
-        )
+            console.log(locgeo)
+        
     }
     const getPermissionAsync = async () => {
-        if (Constants.platform.android || Constants.platform.ios) {
-            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-            if (status !== 'granted') {
-                alert('Sorry, we need camera roll permissions to make this work!');
-                console.log(status)
-            }
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== 'granted') {
+            alert('Sorry, we need camera roll permissions to make this work!');
+            setstatus('notgranted')
+        } else {
+            setstatus('granted');
+            LOcGetter()
+            const media = await MediaLibrary.getAssetsAsync({
+                mediaType: MediaLibrary.MediaType.photo,
+            });
+            setloaclimages(media.assets)
+            setfirst(media.assets[0].uri);
+            setpostimage(media.assets[0])
         }
-
-        const media = await MediaLibrary.getAssetsAsync({
-            mediaType: MediaLibrary.MediaType.photo,
-        });
-        setloaclimages(media.assets)
-        setfirst(media.assets[0].uri);
-        setpostimage(media.assets[0])
     }
 
     const toggleFunction = () => {
@@ -225,7 +225,14 @@ const Uploadpost = (props) => {
             </View>
         )
     }
-
+    if (status == 'notgranted') {
+        return (
+            <View style={{ flex: 1, backgroundColor: colors.background }}>
+                <HeaderView {...props} />
+                <Text style={{ color: colors.text }}>We Need Camera Roll Permission to make this work</Text>
+            </View>
+        )
+    }
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <HeaderView />

@@ -228,6 +228,30 @@ const Postcard = (props) => {
     //         alert(error);
     //     }
     // }
+    const comment = async (item) => {
+        try {
+            fetch(`${Config.url}` + `/posts/comments/${item._id}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': 'Bearer ' + `${userToken}`,
+                    'Content-Type': "application/json",
+                },
+                body: JSON.stringify({
+                    text: commenttext
+                })
+            }).then(res => res.json()).then(async (resp) => {
+                try {
+                    let val = 'message';
+                    setcommenttext('')
+                } catch (error) {
+                    alert(error)
+                    console.log(error)
+                }
+            })
+        } catch (error) {
+            alert(error);
+        }
+    }
     const onGotoWhodid = (item) => {
         props.navigation.navigate('external', { screen: 'wholiked', params: { item: item } })
     }
@@ -422,7 +446,7 @@ const Postcard = (props) => {
                                                 placeholder='Add a comment' placeholderTextColor='#bababa'
 
                                             />
-                                            <Button transparent style={{ borderRadius: 8 }} >
+                                            <Button transparent style={{ borderRadius: 8 }} onPress={()=>comment(props.item)}>
                                                 <Text style={{ textTransform: 'capitalize', color: '#fff' }}>comment</Text>
                                             </Button>
                                         </Item>
@@ -531,7 +555,7 @@ const Postcard = (props) => {
                             (<TouchableOpacity onPress={() => {
                                 onVotecancell(props.item)
                             }}>
-                                <MaterialIcons name="thumb-up-alt" size={24} color={colors.text} />
+                                <MaterialIcons name="thumb-up-subcategoryalt" size={24} color={colors.text} />
                             </TouchableOpacity>
                             ) : (
                                 <TouchableOpacity onPress={() => {
@@ -574,7 +598,7 @@ const Postcard = (props) => {
                                                 <Button transparent onPress={() => {
                                                     Alert.alert(
                                                         "Details",
-                                                        `Caption:\n${props.item.caption}\n\nPostedAt:${props.item.createdAt}\n\nCategory:${props.item.category}\n\nSubCategory:${props.item.subcategory}`,
+                                                        `Caption:\n${props.item.caption}\n\nPostedAt:${props.item.createdAt}\n\nCategory:${props.item.category}\n\nLocation:${props.item.location}`,
                                                         [
                                                             {
                                                                 text: "Cancel",

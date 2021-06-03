@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import reducer, { DataLayer, initialState } from './Context/DataLayer'
+import reducer, { DataLayer, DataLayerValue, initialState } from './Context/DataLayer'
 import IndexNavigator from './Navigation/IndexNav'
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
@@ -15,8 +15,10 @@ import { firebase } from './components/firebase'
 import LoadingComp from './components/LoadingComp';
 function App() {
   const [loading, setLoading] = useState(true);
+
   const [connected, setconnected] = useState(false);
   const { colors } = useTheme();
+
   const appState = useRef(AppState.currentState);
   const [appStateVisible, setAppStateVisible] = useState(appState.current);
   useEffect(() => {
@@ -42,11 +44,12 @@ function App() {
       appState.current.match(/inactive|background/) &&
       nextAppState === 'active'
     ) {
-      console.log('App foreground!');
+      // console.log('App foreground!');
     }
     appState.current = nextAppState;
     setAppStateVisible(appState.current);
-    console.log('AppState', appState.current);
+     
+    // console.log('AppState', appState.current);
   };
   if (loading) {
     return (

@@ -31,7 +31,8 @@ export const initialState = {
     searchactive:false,
     routename:null,
     chattee:null,
-    allusers:null
+    allusers:null,
+    isOnline:null,
 };
 const reducer = (state, action) => {
     switch (action.type) {
@@ -151,6 +152,11 @@ const reducer = (state, action) => {
             return{
                 ...state,
                 allusers:action.data
+            }
+        case 'ONLINESTATUS':
+            return{
+                ...state,
+                isOnline:action.data
             }
     }
 }

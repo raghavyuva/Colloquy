@@ -5,19 +5,15 @@ import 'firebase/auth';
 import 'firebase/firestore';
 import { Button, Input, Card, CardItem, Label, Left, Right, Body, Thumbnail, Fab, Icon, Header, Item, List, ListItem } from 'native-base';
 import { useTheme } from '@react-navigation/native';
-import { Entypo, MaterialIcons } from '@expo/vector-icons';
-import LottieView from 'lottie-react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 import Headerv from '../components/Header';
 import { DataLayerValue } from '../Context/DataLayer';
 import { Config } from '../config';
 import Usercard from '../components/Usercard';
-import {
-    Avatar,
-} from 'react-native-paper';
 import LoadingComp from '../components/LoadingComp';
 require('firebase/storage');
 const ListOfChats = (props) => {
-
+ 
 
 
     const [roomName, setRoomName] = useState("");
@@ -30,16 +26,15 @@ const ListOfChats = (props) => {
     const [Notfound, setNotfound] = useState(false);
     const [AllUsers, setAllUsers] = useState(null);
     const [refresh, setrefresh] = useState(false);
-    const [{ user, defdarktheme, searchactive, userToken, UserId }, dispatch] = DataLayerValue()
-
-
-
+    const [{ user, searchactive, userToken, UserId, followinglist }, dispatch] = DataLayerValue()
     useEffect(() => {
+        let IsMounted = true;
         setloading(true);
-
         FetchThreads();
         FetchAll();
-
+        return () => {
+            IsMounted = false;
+        }
     }, []);
 
 
@@ -47,10 +42,9 @@ const ListOfChats = (props) => {
         setloading(true);
         firebase
             .firestore()
-            .collection('chatrooms')
+            .collection('chatrooms').orderBy("latestMessage", "desc")
             .onSnapshot((querySnapshot) => {
                 const threads = querySnapshot.docs.map((documentSnapshot) => {
-
                     return {
                         _id: documentSnapshot.id,
                         name: "",
@@ -66,16 +60,13 @@ const ListOfChats = (props) => {
                         },
                         ...documentSnapshot.data(),
                     };
-                });
+                })
                 setThreads(threads);
-                console.log(threads)
                 setloading(false);
             });
+
     }
     const ActivateSearch = () => {
-        // if (searchactive == true) {
-        //     props.navigation.goBack();
-        // }
         dispatch({ type: 'SEARCHCOMPONENT', data: !searchactive })
     }
 
@@ -91,7 +82,7 @@ const ListOfChats = (props) => {
     }
 
     const FetchAll = () => {
-        fetch(`${Config.url}` + `/allusers`, {
+        fetch(`${Config.url}` + `/AllUsers`, {
             headers: {
                 'Authorization': 'Bearer ' + `${userToken}`,
             },
@@ -106,37 +97,6 @@ const ListOfChats = (props) => {
 
 
     const MessageParticularguy = (guy) => {
-        // const chatterID = user.user._id;
-        // const chateeID = guy._id;
-        // const chatIDpre = [];
-        // chatIDpre.push(chatterID);
-        // chatIDpre.push(chateeID);
-        // chatIDpre.sort();
-        // chatIDpre.join('_');
-        //     firebase
-        //         .firestore()
-        //         .collection('THREADS')
-        //         .add({
-        //             name: guy.username,
-        //             latestMessage: {
-        //                 text: `Chat Enabled`,
-        //                 createdAt: new Date().getTime(),
-        //             },
-        //             sentby:user.user.username
-        //         })
-        //         .then((docRef) => {
-        //             docRef.collection(user.user.username).add({
-        //                 text: `Chat Enabled`,
-        //                 createdAt: new Date().getTime(),
-        //                 system: true,
-        //             });
-        //             docRef.collection(guy.username).add({
-        //                 text: `Chat Enabled`,
-        //                 createdAt: new Date().getTime(),
-        //                 system: true,
-        //             });
-        //             alert('done')
-        //         });
         dispatch({ type: "CHATTINGUSER", data: guy })
         props.navigation.navigate('external', {
             screen: 'message', params: {
@@ -175,7 +135,10 @@ const ListOfChats = (props) => {
                                                         </Body>
                                                     </Left>
                                                     <Right>
-                                                        <Text note style={{ color: colors.text }}>{new Date(item.latestMessage.createdAt).toDateString()}</Text>
+                                                        <Body style={{ justifyContent: "flex-end" }}>
+                                                            <Text note style={{ color: colors.text }}>{new Date(item.latestMessage.createdAt).toDateString().slice(4)}</Text>
+                                                            <Text note style={{ color: colors.primary,  }}>{new Date(item.latestMessage.createdAt).toTimeString().split("GMT+0530 (IST)")}</Text>
+                                                        </Body>
                                                     </Right>
                                                 </CardItem>
                                             </Card>
@@ -198,8 +161,11 @@ const ListOfChats = (props) => {
                                                             <Text note style={styles(colors).listDescription} numberOfLines={3}> {item.latestMessage.text}</Text>
                                                         </Body>
                                                     </Left>
-                                                    <Right>
-                                                        <Text note style={{ color: colors.text }}>{new Date(item.latestMessage.createdAt).toDateString()}</Text>
+                                                    <Right >
+                                                        <Body style={{ justifyContent: "flex-end" }}>
+                                                        <Text note style={{ color: colors.text }}>{new Date(item.latestMessage.createdAt).toDateString().slice(4)}</Text>
+                                                            <Text note style={{ color: colors.primary,  }}>{new Date(item.latestMessage.createdAt).toTimeString().split("GMT+0530 (IST)")}</Text>
+                                                        </Body>
                                                     </Right>
                                                 </CardItem>
                                             </Card>
@@ -214,17 +180,11 @@ const ListOfChats = (props) => {
                         }
                     </>
 
-                )}
+                )} 
 
             />
         )
     }
-    // const HeaderForChat = () => {
-    //     return (
-
-
-    //     )
-    // }
     const ListOfUsers = () => {
         return (
             <FlatList
@@ -235,7 +195,7 @@ const ListOfChats = (props) => {
                 }}
                 keyExtractor={(item, index) => index.toString()}
                 data={filtered && filtered.length > 0 ? filtered : AllUsers}
-                onEndReached={FetchAll}
+                // onEndReached={FetchAll}
                 scrollEnabled
                 onScrollAnimationEnd
                 scrollToOverflowEnabled

@@ -17,7 +17,7 @@ import LoadingComp from '../components/LoadingComp';
 
 const Home = (props) => {
 
-    const [{ userToken, postData, searchactive, UserId,allusers }, dispatch] = DataLayerValue();
+    const [{ userToken, postData, searchactive, UserId, allusers, isOnline }, dispatch] = DataLayerValue();
     const [Notify, setNotify] = useState('');
     const [refresh, setrefresh] = useState(false);
     const [loading, setloading] = useState(true);
@@ -40,12 +40,25 @@ const Home = (props) => {
         Notifications.addNotificationReceivedListener(_handleNotification);
         fetching();
         FetchAll();
+        console.log(isOnline); 
         return () => {
             IsMounted = false;
+            unsubscribe;
         }
     }, [])
 
-
+    fetch(`${Config.url}` + `/updateonlinestatus`, {
+        method: 'PUT',
+        headers: {
+            'Authorization': 'Bearer ' + `${userToken}`,
+            'Content-Type': "application/json",
+        },
+        body: JSON.stringify({
+            isonline: isOnline === 'active' ? true : false,
+        })
+    }).then(res => res.json()).then((resp) => {
+        console.log(resp);
+    })
     const fetching = () => {
         setrefresh(true);
         fetch(`${Config.url}` + `/post`, {
@@ -73,7 +86,7 @@ const Home = (props) => {
         })
             .then((response) => response.json())
             .then((responseJson) => {
-                dispatch({type:'RETRIEVEALLUSERS',data:responseJson})
+                dispatch({ type: 'RETRIEVEALLUSERS', data: responseJson })
             })
     }
 
@@ -125,12 +138,15 @@ const Home = (props) => {
                 importance: Notifications.AndroidImportance.MAX,
                 vibrationPattern: [0, 250, 250, 250],
                 lightColor: '#FF231F7C',
+                showBadge: true,
+                sound: true,
+                lockscreenVisibility: true,
+                enableVibrate: true,
+                description: 'check now'
             });
         }
-
         return token;
     }
-
 
 
 
@@ -251,7 +267,7 @@ const Home = (props) => {
                 onEndReachedThreshold={0}
                 refreshing={refresh}
                 onRefresh={fetching}
-                style={{marginBottom:50}}
+                style={{ marginBottom: 50 }}
             />
         )
     }
@@ -350,7 +366,7 @@ const Home = (props) => {
                         <Header searchBar rounded style={{ backgroundColor: colors.background, }}>
                             <Item style={{ backgroundColor: colors.background }}>
                                 <TouchableOpacity onPress={ActivateSearch}>
-                                    <Icon name="arrow-back" style={{ backgroundColor: colors.background }}  />
+                                    <Icon name="arrow-back" style={{ backgroundColor: colors.background }} />
                                 </TouchableOpacity>
                                 <Input placeholder="Search" style={{ backgroundColor: colors.card, borderRadius: 25, color: colors.text, justifyContent: 'flex-end' }}
                                     onChangeText={(bo) => setsearchText(bo)}
@@ -359,7 +375,7 @@ const Home = (props) => {
                                     multiline={false}
                                     keyboardAppearance='dark'
                                     keyboardType='web-search'
-                                    onSubmitEditing={()=>search(searchText)}
+                                    onSubmitEditing={() => search(searchText)}
                                 >
                                 </Input>
                                 <TouchableOpacity onPress={() => search(searchText)}>

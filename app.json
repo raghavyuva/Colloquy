@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Primish",
-    "slug": "Primish",
+    "name": "Vtyva",
+    "slug": "Vtyuva",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/slack.png",
@@ -26,12 +26,14 @@
       "userInterfaceStyle": "automatic"
     },
     "android": {
+      "googleServicesFile": "./google-services.json",
+      "useNextNotificationsApi":true,
       "adaptiveIcon": {
         "foregroundImage": "./assets/slack.png",
         "backgroundColor": "#FFFFFF"
       },
       "userInterfaceStyle": "automatic",
-      "package": "com.primish",
+      "package": "com.vtyuva",
       "permissions": [
         "ACCESS_BACKGROUND_LOCATION"
       ]

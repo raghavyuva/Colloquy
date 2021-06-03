@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View, Image, ActivityIndicator, Dimensions, StatusBar } from "react-native";
+import { StyleSheet, Text, View, Image, ToastAndroid, Dimensions, StatusBar, TouchableOpacity, LogBox, Alert } from "react-native";
 import { GiftedChat, Bubble, Send, SystemMessage, Actions, InputToolbar } from "react-native-gifted-chat";
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 import { firebase } from '../components/firebase'
@@ -12,17 +12,60 @@ import { DataLayerValue } from '../Context/DataLayer';
 import { MaterialIcons } from '@expo/vector-icons';
 import Headingbar from '../components/Header';
 import LoadingComp from '../components/LoadingComp';
-export function Chat(props) {
+import { Video, Audio } from 'expo-av';
+import { BottomSheet } from 'react-native-btr';
+import { CardItem } from 'native-base';
+import * as ImagePicker from "expo-image-picker";
+import { Config } from '../config';
+import * as MediaLibrary from 'expo-media-library';
+import * as FileSystem from 'expo-file-system';
+LogBox.ignoreLogs(['Animated.event now requires a second argument for options']);
+LogBox.ignoreLogs(['Animated: `useNativeDriver` was not specified']);
 
- 
+export function Chat(props) {
+  const [imagePicked, setImagePicked] = useState(null);
+  const [visible, setVisible] = useState();
+  const [status, setstatus] = useState(null);
   const { anotheruser } = props.route.params;
   const [messages, setMessages] = useState([]);
   const { colors } = useTheme();
-
+  const [AnOnline, setAnOnline] = useState(null);
   const [{ userToken, postData, searchactive, UserId, user }, dispatch] = DataLayerValue();
-  const [loading, setloading] = useState(true)
+  const [loading, setloading] = useState(true);
+  const [filepresent, setfilepresent] = useState(false);
+  const [imagetosendurl, setimagetosendurl] = useState(null);
+  const [uploading, setuploading] = useState(null);
+  const _toggleBottomNavigationView = () => {
+    setVisible(!visible);
+  };
+  const renderMessageVideo = (props) => {
+    const { currentMessage } = props;
+    return (
+      <View style={{ padding: 20 }}>
+        <Video
+          useNativeControls
+          shouldPlay={true}
+          source={{ uri: currentMessage.video }}
+          style={{ width: screenWidth - 100, height: 300, }}
+          accessibilityViewIsModal
+        />
+      </View>
+    );
+  };
+  const ImagePickerComponent = async () => {
+    const result = await ImagePicker.getMediaLibraryPermissionsAsync();
+    if (result.granted) {
+      setstatus(true);
+    }
+    if (!result.granted) {
+      alert("You need to enable camera permission ");
+      setstatus(false);
+    }
+  };
+
   useEffect(() => {
     setloading(true);
+    ImagePickerComponent();
     const DocIdgenerated = anotheruser._id > user.user._id ? user.user._id + "-" + anotheruser._id : anotheruser._id + "-" + user.user._id
     const messagesListener = firebase
       .firestore()
@@ -53,6 +96,94 @@ export function Chat(props) {
     return () => messagesListener();
   }, []);
 
+  fetch(`${Config.url}` + `/user/${anotheruser._id}`, {
+    headers: {
+      'Authorization': 'Bearer ' + `${userToken}`,
+    }
+  })
+    .then((response) => response.json())
+    .then((responseJson) => {
+      // console.log(responseJson.user.Online)
+      setAnOnline(responseJson.user.Online)
+    })
+
+  const _pickImagefromGallery = async () => {
+    if (status) {
+      try {
+        const result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.Images,
+          base64: true,
+          allowsEditing: true,
+        });
+        setImagePicked(result.uri)
+        setVisible(!visible);
+        setfilepresent(true);
+        _toggleBottomNavigationView
+        // uploadImage(result.uri)
+      } catch (error) {
+        console.log("Camera Permission error");
+        alert('something went wrong contact developer');
+      }
+    } else {
+      console.log("Camera Permission error");
+      alert('need camera permission');
+    }
+  };
+  const _pickImagefromCamera = async () => {
+    if (status) {
+      try {
+        const result = await ImagePicker.launchCameraAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.Images,
+          base64: true,
+          allowsEditing: true,
+        });
+        // uploadImage(result.uri)
+        setImagePicked(result.uri)
+        setVisible(!visible)
+        setfilepresent(true)
+      } catch (error) {
+        console.log("Camera Permission error");
+        alert('something went wrong contact developer');
+      }
+    } else {
+      console.log("Camera Permission error");
+      alert('need camera permission');
+    }
+  };
+  const downloadFile = (item) => {
+    Alert.alert(
+      'Download Image',
+      'Do you want to save image to gallery?,',
+      [
+        { text: 'Cancel' },
+        {
+          text: 'Download', onPress: () => {
+            const uri = item.image;
+            var randomstring = Math.random().toString(36).slice(-9);
+            let fileUri = FileSystem.documentDirectory + `${randomstring}.jpg`;
+            FileSystem.downloadAsync(uri, fileUri)
+              .then(({ uri }) => {
+                saveFile(uri);
+                console.log(uri)
+                ToastAndroid.show(" Image Downloaded !", ToastAndroid.LONG);
+              })
+              .catch(error => {
+                console.error(error);
+              })
+          }
+        }
+      ]
+    );
+  }
+  const saveFile = async (fileUri) => {
+    const { status } = await MediaLibrary.getPermissionsAsync();
+    if (status === "granted") {
+      const asset = await MediaLibrary.createAssetAsync(fileUri)
+      await MediaLibrary.createAlbumAsync("Primish", asset, false)
+    } else {
+      alert('provide permission');
+    }
+  }
   const renderBubble = (props) => {
     return (
       <Bubble
@@ -80,7 +211,11 @@ export function Chat(props) {
 
           }
         }}
-      // onLongPress={() => Delete(props.currentMessage)}
+        onLongPress={() => {
+          // console.log(props.currentMessage.image)
+          downloadFile(props.currentMessage)
+        }}
+
       />
     );
   };
@@ -95,12 +230,6 @@ export function Chat(props) {
       </Send>
     );
   };
-
-
-
-
-
-
   const scrollToBottomComponent = () => {
     return (
       <View style={styles(colors).bottomComponentContainer}>
@@ -108,10 +237,6 @@ export function Chat(props) {
       </View>
     );
   };
-
-
-
-
   const renderSystemMessage = (props) => {
     return (
       <SystemMessage
@@ -136,6 +261,7 @@ export function Chat(props) {
 
 
   const Notifyy = (val, sentby, sentto) => {
+    // console.log(val, sentto)
     fetch("https://exp.host/--/api/v2/push/send",
       {
         headers: {
@@ -154,63 +280,197 @@ export function Chat(props) {
       })
   }
 
+  const uploadImage = async (messages) => {
+    return new Promise(async (res, rej) => {
+      setuploading(true);
+      const response = await fetch(imagePicked);
+      const blob = await response.blob();
+      let upload = firebase.storage().ref(`images/${user.user.username}/${Date.now()}`).put(blob)
+      upload.on(
+        "state_changed",
+        snapshot => {
+          // setImagePicked(uri);
+        },
+        err => {
+          rej(err);
+        },
+        async () => {
+          const url = await upload.snapshot.ref.getDownloadURL();
+          res(url);
+          // console.log(url)
+          // setimagetosendurl(url);
+          const giftedArray = messages[0];
+          const SENDINGMESSAGE = {
+            ...giftedArray,
+            sentBy: user.user,
+            sentTo: anotheruser,
+            createdAt: new Date().getTime(),
+            sent: true,
+            received: AnOnline ? true : false,
+            pending: false,
+            image: url,
+            // video:"https://www.youtube.com/watch?v=BsOmYpP4UDU",
+            user: {
+              name: user.user.username,
+              avatar: user.user.userphoto,
+              _id: user.user._id
+            }
+          }
+          setMessages(previousMessages => GiftedChat.append(previousMessages, SENDINGMESSAGE))
+          const DocIdgenerated = anotheruser._id > user.user._id ? user.user._id + "-" + anotheruser._id : anotheruser._id + "-" + user.user._id
+          firebase
+            .firestore()
+            .collection("chatrooms").doc(DocIdgenerated).collection('messages').add({ ...SENDINGMESSAGE })
+          await firebase.firestore()
+            .collection('chatrooms')
+            .doc(DocIdgenerated)
+            .set(
+              {
+                latestMessage: {
+                  text: giftedArray.text,
+                  createdAt: new Date().getTime(),
+                  user2: anotheruser,
+                  sentBy: user.user,
+                },
+                UserType: {
+                  sentBy: user.user._id,
+                  sentTo: anotheruser._id,
+                  SentUserDetails: user.user,
+                  SentToUserDetails: anotheruser
+                }
+              },
+              { merge: true }
 
+            );
+          let val = 'message';
+          Notifyy(giftedArray.text, user.user, anotheruser)
+          setfilepresent(false);
+          setuploading(false);
+        })
+    })
 
-
+  }
 
 
   const handleSend = async (messages) => {
-    try {
-      const giftedArray = messages[0];
-      const SENDINGMESSAGE = {
-        ...giftedArray,
-        sentBy: user.user,
-        sentTo: anotheruser,
-        createdAt: new Date().getTime(),
-        sent: true,
-        received: true,
-        pending: false,
-        user: {
-          name: user.user.username,
-          avatar: user.user.userphoto,
-          _id: user.user._id
+    if (filepresent) {
+      uploadImage(messages);
+    } else {
+      try {
+        const giftedArray = messages[0];
+        const SENDINGMESSAGE = {
+          ...giftedArray,
+          sentBy: user.user,
+          sentTo: anotheruser,
+          createdAt: new Date().getTime(),
+          sent: true,
+          received: AnOnline ? true : false,
+          pending: false,
+          // image: filepresent ? urlreturner : null,
+          // video:"https://www.youtube.com/watch?v=BsOmYpP4UDU",
+          user: {
+            name: user.user.username,
+            avatar: user.user.userphoto,
+            _id: user.user._id
+          }
         }
-      }
-      setMessages(previousMessages => GiftedChat.append(previousMessages, SENDINGMESSAGE))
-      const DocIdgenerated = anotheruser._id > user.user._id ? user.user._id + "-" + anotheruser._id : anotheruser._id + "-" + user.user._id
-      firebase
-        .firestore()
-        .collection("chatrooms").doc(DocIdgenerated).collection('messages').add({ ...SENDINGMESSAGE })
-      await firebase.firestore()
-        .collection('chatrooms')
-        .doc(DocIdgenerated)
-        .set(
-          {
-            latestMessage: {
-              text: giftedArray.text,
-              createdAt: new Date().getTime(),
-              user2: anotheruser,
-              sentBy: user.user,
+        setMessages(previousMessages => GiftedChat.append(previousMessages, SENDINGMESSAGE))
+        const DocIdgenerated = anotheruser._id > user.user._id ? user.user._id + "-" + anotheruser._id : anotheruser._id + "-" + user.user._id
+        firebase
+          .firestore()
+          .collection("chatrooms").doc(DocIdgenerated).collection('messages').add({ ...SENDINGMESSAGE })
+        await firebase.firestore()
+          .collection('chatrooms')
+          .doc(DocIdgenerated)
+          .set(
+            {
+              latestMessage: {
+                text: giftedArray.text,
+                createdAt: new Date().getTime(),
+                user2: anotheruser,
+                sentBy: user.user,
+              },
+              UserType: {
+                sentBy: user.user._id,
+                sentTo: anotheruser._id,
+                SentUserDetails: user.user,
+                SentToUserDetails: anotheruser
+              }
             },
-            UserType: {
-              sentBy: user.user._id,
-              sentTo: anotheruser._id,
-              SentUserDetails: user.user,
-              SentToUserDetails: anotheruser
-            }
-          },
-          { merge: true }
+            { merge: true }
 
-        );
-      let val = 'message';
-      Notifyy(giftedArray.text, user.user, anotheruser)
-    } catch (error) {
-      alert(error)
+          );
+        let val = 'message';
+        Notifyy(giftedArray.text, user.user, anotheruser)
+      } catch (error) {
+        alert(error)
+      }
     }
+
+
   };
 
 
 
+  const CancelImage = () => {
+    setfilepresent(false)
+  }
+  const renderActions = () => {
+
+    return (
+
+      <View style={{ flexDirection: 'row' }}>
+        {
+          filepresent == false ? (
+            <TouchableOpacity onPress={_toggleBottomNavigationView} style={{ marginBottom: 5 }}>
+              <MaterialIcons name="attach-file" size={34} color={colors.notification} />
+            </TouchableOpacity>
+          ) : (
+            <>
+              <TouchableOpacity style={{ marginBottom: 5 }}>
+                <MaterialIcons name="file-present" size={34} color={colors.notification} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={CancelImage} style={{ marginBottom: 5 }}>
+                <MaterialIcons name="cancel" size={14} color={colors.notification} />
+              </TouchableOpacity>
+            </>
+          )
+        }
+        {/* {imagePicked == null ? (
+          <Text></Text>
+        ) : (
+          <View>
+            <Image source={{ uri: imagePicked }} style={{ width: 200, height: 20, }} />
+          </View>
+        )
+        } */}
+        <BottomSheet
+          visible={visible}
+          onBackButtonPress={_toggleBottomNavigationView}
+          onBackdropPress={_toggleBottomNavigationView}
+        >
+          <View
+            style={styles(colors).bottomNavigationView}>
+            <Text style={{ padding: 20, fontSize: 25, color: colors.text, fontWeight: 'bold' }}>
+              Select one
+              </Text>
+            <View style={{ flexDirection: 'row', }}>
+              <TouchableOpacity onPress={_pickImagefromGallery} style={{ flexDirection: 'row', justifyContent: "center" }}>
+                <MaterialIcons name="image" size={45} color={colors.primary} />
+                <Text style={{ color: colors.text, alignSelf: "center" }}>Open Files</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={{ flexDirection: 'row', }}>
+              <TouchableOpacity onPress={_pickImagefromCamera} style={{ flexDirection: 'row', justifyContent: "center" }}>
+                <MaterialIcons name="camera" size={45} color={colors.primary} />
+                <Text style={{ color: colors.text, alignSelf: "center" }}>Open Camera</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </BottomSheet>
+      </View>
+    );
+  };
 
 
 
@@ -224,12 +484,14 @@ export function Chat(props) {
   //   })
 
   // }
+
+
+  const opencomp = (id) => {
+    props.navigation.navigate('external', { screen: 'userpro', params: { thread: id } })
+  }
   return (
     <View style={{ flex: 1 }}>
-
-
       <Headingbar {...props} user={anotheruser} />
-
       <GiftedChat
         messages={messages}
         onSend={handleSend}
@@ -241,8 +503,12 @@ export function Chat(props) {
         renderSystemMessage={renderSystemMessage}
         placeholder="Type your message..."
         alwaysShowSend
+        // renderMessageVideo={renderMessageVideo}
         scrollToBottom
+        renderActions={renderActions}
         renderChatEmpty={renderLoading}
+        // onLongPressAvatar={()=>opencomp(anotheruser._id)}
+        onPressAvatar={() => opencomp(anotheruser._id)}
         renderInputToolbar={(props) => {
           return <InputToolbar {...props}
             containerStyle={{ backgroundColor: colors.card, height: 50, borderWidth: 0.5, borderTopColor: colors.card, marginLeft: 8, marginRight: 8 }}
@@ -252,8 +518,8 @@ export function Chat(props) {
           />
         }}
 
+        isTyping={uploading}
       />
-
     </View>
   );
 }
@@ -341,5 +607,13 @@ const styles = (colors) => StyleSheet.create({
   video: {
     width: screenWidth - 100,
     height: 300,
-  }
+  },
+  bottomNavigationView: {
+    backgroundColor: colors.card,
+    width: '100%',
+    height: 250,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 15
+  },
 });

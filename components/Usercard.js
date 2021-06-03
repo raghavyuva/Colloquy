@@ -25,7 +25,6 @@ const Usercard = (props) => {
 
 
     const followuser = (itm) => {
-        console.log(itm._id)
         try {
             fetch(`${Config.url}` + `/follow`, {
                 method: 'PUT',
@@ -37,7 +36,7 @@ const Usercard = (props) => {
                     followid: itm._id
                 })
             }).then(res => res.json()).then((resp) => {
-                console.log(resp);
+                
                 update();
             })
         }
@@ -89,7 +88,6 @@ const Usercard = (props) => {
     }
 
     const unfollow = (itm) => {
-        console.log(itm._id)
         try {
             fetch(`${Config.url}` + `/unfollow`, {
                 method: 'PUT',
@@ -104,7 +102,6 @@ const Usercard = (props) => {
             })
                 .then((response) => response.json())
                 .then((responseJson) => {
-                    console.log(responseJson)
                     update();
                 }).catch((err) => { alert(err); })
         } catch (error) {
