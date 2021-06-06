@@ -18,16 +18,16 @@ const Welcomecard = (props) => {
                 <Text style={styles(colors).caption}>Unleash your potential</Text>
             </Card>
             <Card style={{ backgroundColor: colors.background, borderColor: colors.background }}>
-                <Image source={{ uri: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcrmtipoftheday.com%2Fwp-content%2Fuploads%2F2017%2F10%2FPowerApps-Logo.png&f=1&nofb=1" }} style={{ width: 200, height: 200 }} />
+                <Image source={require('../assets/logo.png')} style={{ width: 300, height: 300 }} />
             </Card>
-            <Card style={{ flexDirection: "row", justifyContent: 'space-around', margin: 5, borderColor: colors.background, backgroundColor: colors.background, }}>
+            <Card style={{ flexDirection: "row", justifyContent: 'space-between', borderColor: colors.background, backgroundColor: colors.background, }}>
                 <CardItem style={{ backgroundColor: colors.background, borderColor: colors.background }}>
-                    <Button style={{ backgroundColor: colors.card, borderColor: colors.border, borderWidth: 1 }} onPress={onloginpress}>
+                    <Button style={{ backgroundColor: colors.card, borderColor: 'grey', borderWidth: 1 }} onPress={onloginpress}>
                         <Text style={{ color: colors.text, textTransform: 'capitalize' }}>Login</Text>
                     </Button>
                 </CardItem>
                 <CardItem style={{ backgroundColor: colors.background, borderColor: colors.background }}>
-                    <Button style={{ backgroundColor: colors.card, borderColor: colors.border, borderWidth: 1 }} onPress={onsignuppress}>
+                    <Button style={{ backgroundColor: colors.card, borderColor: 'grey', borderWidth: 1 }} onPress={onsignuppress}>
                         <Text style={{ color: colors.text, textTransform: 'capitalize' }}>signup</Text>
                     </Button>
                 </CardItem>

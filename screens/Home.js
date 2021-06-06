@@ -14,10 +14,18 @@ import Usercard from '../components/Usercard';
 import * as Device from 'expo-device';
 import NotFoundComp from '../components/NotFoundComp';
 import LoadingComp from '../components/LoadingComp';
+import {
+    AdMobBanner,
+    AdMobInterstitial,
+    PublisherBanner,
+    AdMobRewarded,
+    setTestDeviceIDAsync,
+
+} from 'expo-ads-admob';
 
 const Home = (props) => {
 
-    const [{ userToken, postData, searchactive, UserId, allusers, isOnline }, dispatch] = DataLayerValue();
+    const [{ userToken, postData, searchactive, UserId, allusers, isOnline, refreshhome }, dispatch] = DataLayerValue();
     const [Notify, setNotify] = useState('');
     const [refresh, setrefresh] = useState(false);
     const [loading, setloading] = useState(true);
@@ -27,23 +35,25 @@ const Home = (props) => {
     const [AllUsers, setAllUsers] = useState(null);
     const [dataforfilter, setdataforfilter] = useState(null);
     const [Notfound, setNotfound] = useState(false);
-
-
+    const [reward, setreward] = useState(false);
+    const [disableinter, setdisableinter] = useState(false);
 
     const { colors } = useTheme();
+    AdMobRewarded.setAdUnitID("ca-app-pub-1751328492898824/8806464007")
 
     useEffect(() => {
-        let IsMounted = true;
+        let IsMounted = true
         requestUserPermission();
-        dispatch({ type: 'ROUTEPROP', data: 'Home' })
+        _openInterstitial()
+        // _openRewarded()
+        // dispatch({ type: 'ROUTEPROP', data: 'Home' })
         registerForPushNotifications();
         Notifications.addNotificationReceivedListener(_handleNotification);
         fetching();
         FetchAll();
-        console.log(isOnline); 
+        console.log(isOnline);
         return () => {
             IsMounted = false;
-            unsubscribe;
         }
     }, [])
 
@@ -57,10 +67,9 @@ const Home = (props) => {
             isonline: isOnline === 'active' ? true : false,
         })
     }).then(res => res.json()).then((resp) => {
-        console.log(resp);
     })
     const fetching = () => {
-        setrefresh(true);
+        dispatch({ type: "REFRESH", data: true })
         fetch(`${Config.url}` + `/post`, {
             headers: {
                 'Authorization': 'Bearer ' + `${userToken}`,
@@ -73,7 +82,7 @@ const Home = (props) => {
                     type: "POSTDATA",
                     postData: responseJson
                 })
-                setrefresh(false)
+                dispatch({ type: "REFRESH", data: false })
                 setloading(false)
             })
     }
@@ -245,15 +254,10 @@ const Home = (props) => {
     };
 
 
-
-
-
-
-
     const PostCardComp = (props) => {
         return (
             <FlatList
-                renderItem={({ item }) => {
+                renderItem={({ item, index }) => {
                     return (
                         <Postcard item={item} {...props} name={props.section} />
                     );
@@ -265,13 +269,61 @@ const Home = (props) => {
                 onScrollAnimationEnd
                 scrollToOverflowEnabled
                 onEndReachedThreshold={0}
-                refreshing={refresh}
+                refreshing={refreshhome}
                 onRefresh={fetching}
                 style={{ marginBottom: 50 }}
+            // ListFooterComponent={()=>{
+            //     return(
+
+            //     )
+            // }}
+
+            // ItemSeparatorComponent={({ item, index }) => {
+            //     return (
+            //         <>
+            //             {postData.map((ele, index) => {
+            //                 if (index % 3 === 0) {
+            //                     return (
+            //                         <AdMobBanner
+            //                             bannerSize="mediumRectangle"
+            //                             adUnitID="ca-app-pub-1751328492898824/7808189055" // Test ID, Replace with your-admob-unit-id
+            //                             servePersonalizedAds={false} // true or false
+            //                         // style={{backgroundColor:colors.background,color:colors.text}}
+            //                         />
+            //                     )
+            //                 }
+            //             })}
+            //         </>
+            //     )
+            // }}
+
             />
+
         )
     }
-
+    const _openInterstitial = async () => {
+        try {
+            setdisableinter(true)
+            await AdMobInterstitial.requestAdAsync()
+            await AdMobInterstitial.showAdAsync()
+        } catch (error) {
+            console.error(error)
+        } finally {
+            setdisableinter(false);
+        }
+    }
+    const _openRewarded = async () => {
+        try {
+            setreward(true)
+            await AdMobRewarded.requestAdAsync()
+            await AdMobRewarded.showAdAsync()
+        } catch (error) {
+            console.error(error)
+        } finally {
+            setreward(false);
+        }
+    }
+    AdMobInterstitial.setAdUnitID('ca-app-pub-1751328492898824/9408017662')
     const PeopLeComp = () => {
         return (
             <FlatList
@@ -378,6 +430,7 @@ const Home = (props) => {
                                     onSubmitEditing={() => search(searchText)}
                                 >
                                 </Input>
+
                                 <TouchableOpacity onPress={() => search(searchText)}>
                                     <Icon name="ios-search" style={{ backgroundColor: colors.background, color: colors.primary }} />
                                 </TouchableOpacity>
@@ -392,7 +445,9 @@ const Home = (props) => {
                         {
                             Notfound == false ? (
                                 <>
+
                                     <ActiveRenderer />
+
                                 </>
                             ) : (
                                 <>
@@ -406,11 +461,15 @@ const Home = (props) => {
             ) : (
                 <>
                     <Headerv {...props} />
+                    <PublisherBanner bannerSize="banner" adUnitID='ca-app-pub-1751328492898824/7808189055' shouldRasterizeIOS onAdFailedToLoad={error => console.error(error)}
+                      onAppEvent={event => console.log(event.name, event.info)}
+                    />
+
                     <PostCardComp {...props} section='NormalView' />
+
                 </>
             )
             }
-
         </SafeAreaView >
     )
 }

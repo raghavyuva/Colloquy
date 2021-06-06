@@ -1,5 +1,3 @@
->/message feature
-search
 explore page
 mock interview section
 feedback page fetch request

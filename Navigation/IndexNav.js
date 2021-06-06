@@ -17,27 +17,20 @@ const IndexNavigator = (props) => {
     const [{ userToken, isLoading, defdarktheme }, dispatch] = DataLayerValue();
     const appState = useRef(AppState.currentState);
     const [appStateVisible, setAppStateVisible] = useState(appState.current);
-
     const scheme = useColorScheme();
-    { /*const THEMEOF = {
-        dark:true,
-        colors:{
-            primary:'#8348FF',
-            background:"#071e3d",
-            card:"#1f4287",
-            text:"#21e6c1",
-            border:"#278ea5",
-            notification:"#BDBDBD",
-        },
-    };*/}
+    // const THEMEOF = {
+    //     dark:true,
+    //     colors:{
+    //         primary:'green',
+    //         background:"green",
+    //         card:"green",
+    //         text:"#21e6c1",
+    //         border:"#278ea5",
+    //         notification:"#BDBDBD",
+    //     },
+    // };
     const { colors } = useTheme();
     useEffect(() => {
-        // const unsubscribe = NetInfo.addEventListener(state => {
-        //     if (state.isConnected == false) {
-        //         ToastAndroid.show("please connect to internet", ToastAndroid.LONG);
-        //     }
-        // });
-        // console.log(scheme)
         dispatch({ type: 'THEME', data: true })
         SecureStore.getItemAsync('UserId').then(user => {
             SecureStore.getItemAsync('userToken').then((token) => {
@@ -48,7 +41,6 @@ const IndexNavigator = (props) => {
         AppState.addEventListener('change', _handleAppStateChange);
         return () => {
             AppState.removeEventListener('change', _handleAppStateChange);
-            // unsubscribe();
         }
     }, [])
 
@@ -77,7 +69,7 @@ const IndexNavigator = (props) => {
                 ) : (
                     <AuthNav />
                 )
-                }
+                } 
             </NavigationContainer>
         </AppearanceProvider>
     )

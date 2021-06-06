@@ -18,7 +18,6 @@ const Usercard = (props) => {
 
     useEffect(() => {
         setname(props.name)
-        ArraySorter()
         return () => {
         }
     }, [])
@@ -36,7 +35,7 @@ const Usercard = (props) => {
                     followid: itm._id
                 })
             }).then(res => res.json()).then((resp) => {
-                
+
                 update();
             })
         }
@@ -84,7 +83,7 @@ const Usercard = (props) => {
 
         } catch (e) {
             console.log(e);
-        }
+        } 
     }
 
     const unfollow = (itm) => {
@@ -115,42 +114,7 @@ const Usercard = (props) => {
         props.navigation.navigate('external', { screen: 'userpro', params: { thread: id } })
     }
 
-    const ArraySorter = () => {
-
-    }
     const MessageParticularguy = (guy) => {
-        // const chatterID = user.user._id;
-        // const chateeID = guy._id;
-        // const chatIDpre = [];
-        // chatIDpre.push(chatterID);
-        // chatIDpre.push(chateeID);
-        // chatIDpre.sort();
-        // chatIDpre.join('_');
-        //     firebase
-        //         .firestore()
-        //         .collection('THREADS')
-        //         .add({
-        //             name: guy.username,
-        //             latestMessage: {
-        //                 text: `Chat Enabled`,
-        //                 createdAt: new Date().getTime(),
-        //             },
-        //             sentby:user.user.username
-        //         })
-        //         .then((docRef) => {
-        //             docRef.collection(user.user.username).add({
-        //                 text: `Chat Enabled`,
-        //                 createdAt: new Date().getTime(),
-        //                 system: true,
-        //             });
-        //             docRef.collection(guy.username).add({
-        //                 text: `Chat Enabled`,
-        //                 createdAt: new Date().getTime(),
-        //                 system: true,
-        //             });
-        //             alert('done')
-        //         });
-        dispatch({ type: "CHATTINGUSER", data: guy })
         props.navigation.navigate('external', {
             screen: 'message', params: {
                 anotheruser: guy

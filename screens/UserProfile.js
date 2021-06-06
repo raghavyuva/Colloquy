@@ -16,6 +16,7 @@ import Postcard from '../components/Postcard';
 import Headingbar from '../components/Header';
 import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
 import LoadingComp from '../components/LoadingComp';
+import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 
 const UserProfile = (props) => {
     const [{ userToken, user, otherprofile }, dispatch] = DataLayerValue()
@@ -102,10 +103,19 @@ const UserProfile = (props) => {
                         </View>
                     </View>
                 </View>
-                <View style={{ position: 'absolute', bottom: 60, marginHorizontal: 20 }}>
-                    <Text style={styles(colors).txt2}>
-                        {otherprofile.user.email}
-                    </Text>
+                <View style={{ position: 'absolute', bottom: 60, marginHorizontal: 20, flexDirection: 'row' }}>
+                    {
+                        otherprofile.user.verified == true ? (
+                            <>
+                                <MaterialIcons name="verified-user" size={24} color={colors.primary} />
+                                <Text style={{ color: 'green', fontWeight: "700" }}>Verified User</Text>
+                            </>
+                        ) : (
+                            <>
+                                <Text style={{ color: colors.notification }}>User Not Verified</Text>
+                            </>
+                        )
+                    }
                 </View>
                 <View style={{ flexDirection: 'row', position: 'absolute', bottom: 30, marginHorizontal: 20 }}>
                     <View style={{ marginRight: 5 }}>
@@ -123,7 +133,6 @@ const UserProfile = (props) => {
                         }}>{otherprofile.user.followers.length} Followers</Text>
 
                     </View>
-
                     <View style={{ marginRight: 5 }}>
                         <Text style={{
                             fontWeight: "bold",
@@ -288,6 +297,6 @@ const styles = (colors) => StyleSheet.create({
         borderRadius: 15,
         borderColor: colors.border,
         borderWidth: 2,
-        marginLeft:4
+        marginLeft: 4
     },
-}) 
+})

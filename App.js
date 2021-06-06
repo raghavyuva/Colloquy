@@ -15,10 +15,8 @@ import { firebase } from './components/firebase'
 import LoadingComp from './components/LoadingComp';
 function App() {
   const [loading, setLoading] = useState(true);
-
-  const [connected, setconnected] = useState(false);
+  const [connected, setconnected] = useState(null);
   const { colors } = useTheme();
-
   const appState = useRef(AppState.currentState);
   const [appStateVisible, setAppStateVisible] = useState(appState.current);
   useEffect(() => {
@@ -29,14 +27,12 @@ function App() {
       Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf'),
       ...Ionicons.font,
     });
-    setTimeout(() => {
-      setLoading(false)
-    }, 3000);
     const unsubscribe = NetInfo.addEventListener(state => {
       setconnected(state.isConnected);
     });
     return () => {
       AppState.removeEventListener('change', _handleAppStateChange);
+      unsubscribe();
     };
   }, [])
   const _handleAppStateChange = (nextAppState) => {
@@ -48,14 +44,9 @@ function App() {
     }
     appState.current = nextAppState;
     setAppStateVisible(appState.current);
-     
+
     // console.log('AppState', appState.current);
   };
-  if (loading) {
-    return (
-     <LoadingComp />
-    );
-  }
   if (connected == false) {
     return (
       <View style={{ justifyContent: "center", alignSelf: 'center', flex: 1, backgroundColor: colors.background }}>
@@ -74,4 +65,4 @@ function App() {
   )
 }
 
-export default App
+export default App;

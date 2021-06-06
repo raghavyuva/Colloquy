@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, View, Dimensions, Image, FlatList, TouchableOpacity, TextInput, Alert } from 'react-native'
+import { StyleSheet, View, Dimensions, FlatList, TouchableOpacity, TextInput, Alert } from 'react-native'
 import { Fab, Button, Text } from 'native-base';
 const { width, height } = Dimensions.get('window');
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -15,6 +15,8 @@ import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
 import LoadingComp from '../components/LoadingComp';
+import Image from 'react-native-image-progress';
+import * as Progress from 'react-native-progress';
 
 const Profile = (props) => {
     const [{ userToken, UserId, user }, dispatch] = DataLayerValue()
@@ -193,6 +195,14 @@ const Profile = (props) => {
                                         width: 150,
                                         borderRadius: 20,
                                     }}
+                                    indicator={Progress.Pie}
+                                    indicatorProps={{
+                                        size: 180,
+                                        borderWidth: 0,
+                                        color: 'rgba(150, 150, 150, 1)',
+                                        unfilledColor: 'rgba(200, 200, 200, 0.2)',
+
+                                    }}
                                 />
                                 <Text style={{ color: colors.text, textAlign: 'center' }}>Change Photo</Text>
                             </TouchableOpacity>
@@ -277,6 +287,13 @@ const Profile = (props) => {
                             marginVertical: 30,
                             marginHorizontal: 10
                         }}
+                        indicator={Progress.Pie}
+                        indicatorProps={{
+                            size: 140,
+                            borderWidth: 0,
+                            color: 'rgba(150, 150, 150, 1)',
+                            unfilledColor: 'rgba(200, 200, 200, 0.2)'
+                        }}
                     />
                     <View>
                         <View style={{ marginTop: 50 }}>
@@ -297,10 +314,19 @@ const Profile = (props) => {
                         </View>
                     </View>
                 </View>
-                <View style={{ position: 'absolute', bottom: 60, marginHorizontal: 20 }}>
-                    <Text style={styles(colors).txt2}>
-                        {user.user.email}
-                    </Text>
+                <View style={{ position: 'absolute', bottom: 60, marginHorizontal: 20, flexDirection: "row" }}>
+                    {
+                        user.user.verified == true ? (
+                            <>
+                                <MaterialIcons name="verified-user" size={24} color={colors.primary} />
+                                <Text style={{ color: 'green' }}>Verified</Text>
+                            </>
+                        ) : (
+                            <>
+                                <Text style={{ color: colors.notification }}>Not Verified</Text>
+                            </>
+                        )
+                    }
                 </View>
                 <View style={{ flexDirection: 'row', position: 'absolute', bottom: 30, marginHorizontal: 20 }}>
                     <View style={{ marginRight: 5 }}>
@@ -348,6 +374,13 @@ const Profile = (props) => {
                     <Image
                         source={{ uri: 'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fcdn.onlinewebfonts.com%2Fsvg%2Fimg_412721.png&f=1&nofb=1' }}
                         style={{ width: width, height: height / 2, alignSelf: 'center' }}
+                        indicator={Progress.Pie}
+                        indicatorProps={{
+                            size: 140,
+                            borderWidth: 0,
+                            color: 'rgba(150, 150, 150, 1)',
+                            unfilledColor: 'rgba(200, 200, 200, 0.2)'
+                        }}
                     />
                 </>
             ) : (

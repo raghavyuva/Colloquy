@@ -12,11 +12,16 @@ import { Config } from '../config';
 import Usercard from '../components/Usercard';
 import LoadingComp from '../components/LoadingComp';
 require('firebase/storage');
+import {
+    AdMobBanner,
+    AdMobInterstitial,
+    PublisherBanner,
+    AdMobRewarded,
+    setTestDeviceIDAsync,
+
+} from 'expo-ads-admob';
 const ListOfChats = (props) => {
- 
-
-
-    const [roomName, setRoomName] = useState("");
+    const [disableinter, setdisableinter] = useState(false);
     const { colors } = useTheme();
     const [threads, setThreads] = useState([]);
     const [active, setActive] = useState(false);
@@ -30,12 +35,28 @@ const ListOfChats = (props) => {
     useEffect(() => {
         let IsMounted = true;
         setloading(true);
+        _openInterstitial();
         FetchThreads();
         FetchAll();
         return () => {
             IsMounted = false;
         }
     }, []);
+    AdMobInterstitial.setAdUnitID('ca-app-pub-1751328492898824/9408017662')
+
+    const _openInterstitial = async () => {
+        try {
+            setdisableinter(true)
+            await AdMobInterstitial.requestAdAsync()
+            await AdMobInterstitial.showAdAsync()
+            FetchThreads();
+            FetchAll();
+        } catch (error) {
+            console.error(error)
+        } finally {
+            setdisableinter(false);
+        }
+    }
 
 
     const FetchThreads = () => {
@@ -97,7 +118,7 @@ const ListOfChats = (props) => {
 
 
     const MessageParticularguy = (guy) => {
-        dispatch({ type: "CHATTINGUSER", data: guy })
+
         props.navigation.navigate('external', {
             screen: 'message', params: {
                 anotheruser: guy
@@ -137,7 +158,7 @@ const ListOfChats = (props) => {
                                                     <Right>
                                                         <Body style={{ justifyContent: "flex-end" }}>
                                                             <Text note style={{ color: colors.text }}>{new Date(item.latestMessage.createdAt).toDateString().slice(4)}</Text>
-                                                            <Text note style={{ color: colors.primary,  }}>{new Date(item.latestMessage.createdAt).toTimeString().split("GMT+0530 (IST)")}</Text>
+                                                            <Text note style={{ color: colors.primary, }}>{new Date(item.latestMessage.createdAt).toTimeString().split("GMT+0530 (IST)")}</Text>
                                                         </Body>
                                                     </Right>
                                                 </CardItem>
@@ -163,8 +184,8 @@ const ListOfChats = (props) => {
                                                     </Left>
                                                     <Right >
                                                         <Body style={{ justifyContent: "flex-end" }}>
-                                                        <Text note style={{ color: colors.text }}>{new Date(item.latestMessage.createdAt).toDateString().slice(4)}</Text>
-                                                            <Text note style={{ color: colors.primary,  }}>{new Date(item.latestMessage.createdAt).toTimeString().split("GMT+0530 (IST)")}</Text>
+                                                            <Text note style={{ color: colors.text }}>{new Date(item.latestMessage.createdAt).toDateString().slice(4)}</Text>
+                                                            <Text note style={{ color: colors.primary, }}>{new Date(item.latestMessage.createdAt).toTimeString().split("GMT+0530 (IST)")}</Text>
                                                         </Body>
                                                     </Right>
                                                 </CardItem>
@@ -180,7 +201,7 @@ const ListOfChats = (props) => {
                         }
                     </>
 
-                )} 
+                )}
 
             />
         )
@@ -293,10 +314,20 @@ const ListOfChats = (props) => {
                         {/* <ChatSection /> */}
                         <ListOfUsers />
                         <FabComponent />
+
                     </View>
                 </>
             )
             }
+            <AdMobBanner
+                bannerSize='fullBanner'
+                adUnitID="ca-app-pub-1751328492898824/7808189055"
+
+
+                // servePersonalizedAds={true} // true or false
+                // style={{ backgroundColor: colors.background, color: colors.text }}
+                onAdFailedToLoad={error => console.error(error)}
+            />
         </View>
     )
 }

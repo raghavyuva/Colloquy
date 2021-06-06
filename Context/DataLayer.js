@@ -22,30 +22,32 @@ export const initialState = {
     EventData: null,
     subscribeddata: null,
     ExploreData: null,
-    followerslist:null,
-    followinglist:null,
-    notifylist:null,
-    user:null,
-    otherprofile:null,
+    followerslist: null,
+    followinglist: null,
+    notifylist: null,
+    user: null,
+    otherprofile: null,
     defdarktheme: true,
-    searchactive:false,
-    routename:null,
-    chattee:null,
-    allusers:null,
-    isOnline:null,
+    searchactive: false,
+    routename: null,
+    chattee: null,
+    allusers: null,
+    isOnline: null,
+    chatteeOnline: null,
+    refreshhome:false,
 };
 const reducer = (state, action) => {
     switch (action.type) {
         case 'THEME':
             return {
-            ...state,
-            defdarktheme:action.data
+                ...state,
+                defdarktheme: action.data
             };
         case 'RETRIEVE_TOKEN':
             return {
                 ...state,
-                userToken: action.token, 
-                UserId:action.id,
+                userToken: action.token,
+                UserId: action.id,
                 isLoading: false,
 
             };
@@ -53,7 +55,7 @@ const reducer = (state, action) => {
             return {
                 ...state,
                 userToken: action.token,
-                UserId:action.id,
+                UserId: action.id,
                 isLoading: false,
 
             };
@@ -61,14 +63,14 @@ const reducer = (state, action) => {
             return {
                 ...state,
                 userToken: null,
-                UserId:null,
+                UserId: null,
                 isLoading: false,
             };
         case 'REGISTER':
             return {
                 ...state,
                 userToken: action.token,
-                UserId:action.id,
+                UserId: action.id,
                 isLoading: false,
             };
         case 'POSTDATA':
@@ -102,61 +104,71 @@ const reducer = (state, action) => {
                 isLoading: false
             }
         case 'FOLLOWERSLIST':
-            return{
+            return {
                 ...state,
-                followerslist:action.data,
-                isLoading:false
+                followerslist: action.data,
+                isLoading: false
             }
         case 'FOLLOWINGLIST':
-            return{
+            return {
                 ...state,
-                followinglist:action.data,
-                isLoading:false
+                followinglist: action.data,
+                isLoading: false
             }
         case 'NOTIFYLIST':
-            return{
+            return {
                 ...state,
-                notifylist:action.data,
-                isLoading:false,
-                
+                notifylist: action.data,
+                isLoading: false,
+
             }
         case 'USERPROFILE':
-            return{
+            return {
                 ...state,
                 user: action.data,
-                isLoading:false,
+                isLoading: false,
             }
         case 'PROFILEOFOTHER':
-            return{
+            return {
                 ...state,
-                otherprofile:action.data,
-                isLoading:false
+                otherprofile: action.data,
+                isLoading: false
             }
 
         case 'SEARCHCOMPONENT':
-            return{
-               ...state,
-               searchactive: action.data
+            return {
+                ...state,
+                searchactive: action.data
             }
         case 'ROUTEPROP':
-            return{
+            return {
                 ...state,
                 routename: action.data
             }
         case 'CHATTINGUSER':
-            return{
+            return {
                 ...state,
-                chattee:action.data
+                chattee: action.data,
             }
         case 'RETRIEVEALLUSERS':
-            return{
+            return {
                 ...state,
-                allusers:action.data
+                allusers: action.data
             }
         case 'ONLINESTATUS':
+            return {
+                ...state,
+                isOnline: action.data
+            }
+        case 'CHATTEEONLINE':
+            return {
+                ...state,
+                chatteeOnline: action.isonline
+            }
+        case 'REFRESH':
             return{
                 ...state,
-                isOnline:action.data
+                refreshhome:action.data
             }
     }
 }

@@ -2,25 +2,24 @@ import {
     DrawerContentScrollView,
     DrawerItem
 } from '@react-navigation/drawer';
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Linking, TouchableOpacity, Switch, Dimensions } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, View, Linking, Text, Image } from 'react-native';
 import { FontAwesome5, MaterialCommunityIcons, SimpleLineIcons, Octicons, FontAwesome, MaterialIcons, AntDesign } from '@expo/vector-icons';
 import { DataLayerValue } from '../Context/DataLayer';
 import * as SecureStore from 'expo-secure-store';
-import { Config } from '../config';
-import { Text,Title } from 'native-base';
-import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
+import {
+    Avatar,
+} from 'react-native-paper';
 import { useFonts } from 'expo-font';
-const { width, height } = Dimensions.get('window');
-import { Divider, } from 'react-native-paper';
-
+import { useTheme } from '@react-navigation/native';
 export function DrawerContent(props) {
-    const [{ userToken, defdarktheme, routename }, dispatch] = DataLayerValue()
-    const [active, setactive] = useState(null);
+    const [{ userToken }, dispatch] = DataLayerValue()
     const { colors } = useTheme();
     const [loaded] = useFonts({
         Montserrat: require('../assets/Pacifico/Pacifico-Regular.ttf'),
     });
+
+    // console.log(chatteeOnline)
     if (!loaded) {
         return null;
     }
@@ -32,18 +31,18 @@ export function DrawerContent(props) {
         })
     }
     return (
-        <View style={styles(colors).container}>
+        <View style={{ flex: 1, backgroundColor: colors.card }}>
             <View style={styles(colors).drawerContent}>
                 <View style={styles(colors).userInfoSection}>
-                    <View style={{ flexDirection: 'row', marginTop: 15 }}>
-
-                        <View style={{ marginLeft: 15, flexDirection: 'column' }}>
+                    <View style={{ flexDirection: 'row', marginTop: 5, }}>
+                    <View style={{ marginLeft: 15, flexDirection: 'column',justifyContent:"center",alignSelf:'center' }}>
                             <Text style={{
-                                fontSize: 28, 
-                                marginTop: 15,
+                                fontSize: 38, 
+                                marginTop: 5,
                                 color: colors.text,
                                 fontFamily: 'Montserrat', 
-                            }}>Vtyuva</Text>
+                                textAlign:'center'
+                            }}>VtYuva</Text>
                             <Text style={styles(colors).caption}>Unleash your potential</Text>
                         </View>
                     </View>
@@ -52,164 +51,130 @@ export function DrawerContent(props) {
                     <View style={styles(colors).drawerSection}>
                         <DrawerItem
                             icon={({ color, size }) => (
-                                <AntDesign name="home" size={24} color={colors.primary} />)}
-                            labelStyle={{ color: colors.text }}
+                                <AntDesign name="home" size={24} color={colors.text} />)}
+                            labelStyle={{ color: colors.text, }}
                             label="Home"
-                            style={styles(colors).bar}
                             onPress={
                                 () => {
-                                    dispatch({ type: 'ROUTEPROP', data: 'Home' })
                                     props.navigation.navigate('external', { screen: 'Home' })
-
+                                }
+                            } onPress={
+                                () => {
+                                    props.navigation.navigate('external', { screen: 'Home' })
                                 }
                             }
-                            activeBackgroundColor={colors.background}
-                            activeTintColor='green'
-                        // focused={routename === 'Home'}
                         />
                         <DrawerItem
                             icon={({ color, size }) => (
-                                <SimpleLineIcons name="user-follow" size={24} color={colors.primary} />)}
+                                <MaterialCommunityIcons name="account-plus" size={24} color={colors.text} />)}
                             labelStyle={{ color: colors.text }}
                             label="Followers"
-                            style={styles(colors).bar}
                             onPress={() => {
-                                dispatch({ type: 'ROUTEPROP', data: 'Followers' })
+                                // dispatch({ type: 'ROUTEPROP', data: 'Followers' })
                                 props.navigation.navigate('external', { screen: 'follower' })
 
                             }}
-                            // focused={routename === 'Followers'}
-                            activeBackgroundColor={colors.background}
-                            activeTintColor='green'
-
                         />
                         <DrawerItem
                             icon={({ color, size }) => (
-                                <SimpleLineIcons name="user-following" size={24} color={colors.primary} />)}
+                                <MaterialCommunityIcons name="account-check" size={24} color={colors.text} />)}
                             labelStyle={{ color: colors.text }}
                             label="Following"
-                            style={styles(colors).bar}
+
                             onPress={() => {
                                 props.navigation.navigate('external', { screen: 'following' })
-                                dispatch({ type: 'ROUTEPROP', data: 'Following' })
+                                // dispatch({ type: 'ROUTEPROP', data: 'Following' })
 
                             }}
-                            // focused={routename === 'Following'}
-                            activeBackgroundColor={colors.background}
-                            activeTintColor='green'
                         />
                         <DrawerItem
                             icon={({ color, size }) => (
-                                <MaterialCommunityIcons name="pen" size={24} color={colors.primary} />)}
+                                <MaterialCommunityIcons name="account-voice" size={24} color={colors.text} />)}
                             labelStyle={{ color: colors.text }}
-                            label="Interview"
-                            style={styles(colors).bar}
+                            label="Mock interview"
                             onPress={() => {
-                                dispatch({ type: 'ROUTEPROP', data: 'interview' })
+                                // dispatch({ type: 'ROUTEPROP', data: 'interview' })
                                 props.navigation.navigate('external', { screen: 'notes' })
                             }}
-                            // focused={routename === 'interview'}
-                            activeBackgroundColor={colors.background}
-
-                            activeTintColor='green'
                         />
                         <DrawerItem
                             icon={({ color, size }) => (
-                                <MaterialCommunityIcons name="feature-search" size={24} color={colors.primary} />
-                            )}
-                            label="Events"
+                                <MaterialIcons name="event-seat" size={24} color={colors.text} />)}
                             labelStyle={{ color: colors.text }}
-                            style={styles(colors).bar}
+                            label="Events"
                             onPress={() => {
-                                dispatch({ type: 'ROUTEPROP', data: 'events' })
+                                // dispatch({ type: 'ROUTEPROP', data: 'events' })
                                 props.navigation.navigate('external', { screen: 'events' })
 
                             }}
-                            // focused={routename === 'events'}
-                            activeBackgroundColor={colors.background}
-
-                            activeTintColor='green'
                         />
 
                         <DrawerItem
                             icon={({ color, size }) => (
-                                <SimpleLineIcons name="support" size={24} color={colors.primary} />
+                                <MaterialIcons name="details" size={24} color={colors.text} />
                             )}
+                            label="About Us"
                             labelStyle={{ color: colors.text }}
-                            label="Support"
-                            style={styles(colors).bar}
-                            onPress={() => Linking.openURL('https://guidemic.in')}
-
-                        />
-                        <DrawerItem
-                            icon={({ color, size }) => (
-                                <Octicons name="mail-read" size={24} color={colors.primary} />
-                            )}
-                            labelStyle={{ color: colors.text }}
-                            label="Terms"
-                            style={styles(colors).bar}
                             onPress={() => {
-                                dispatch({ type: 'ROUTEPROP', data: 'segment' })
-                                props.navigation.navigate('external', { screen: 'segment' })
-
-                            }
-                            }
-                            // focused={routename === 'segment'}
-                            activeBackgroundColor={colors.background}
-
-                            activeTintColor='green'
-
+                                Linking.openURL('https://www.vtyuva.com');
+                            }}
                         />
                         <DrawerItem
                             icon={({ color, size }) => (
-                                <FontAwesome5 name="hire-a-helper" size={24} color={colors.primary} />
+                                <MaterialIcons name="call" size={24} color={colors.text} />
                             )}
                             labelStyle={{ color: colors.text }}
-                            label="Hire Helper"
-                            style={styles(colors).bar}
-                            onPress={() => Linking.openURL('https://raghav.orak.in/')}
-
+                            label="Contact Us"
+                            onPress={() => {
+                                Linking.openURL('tel:50000000');
+                            }}
                         />
                         <DrawerItem
                             icon={({ color, size }) => (
-                                <FontAwesome name="telegram" size={24} color={colors.primary} />
+                                <MaterialIcons name="privacy-tip" size={24} color={colors.text} />
                             )}
                             labelStyle={{ color: colors.text }}
-                            label="Join Channel"
-                            style={styles(colors).bar}
-                            onPress={() => Linking.openURL('https://t.me/orakin')}
+                            label="Privacy Policy"
 
                         />
                         <DrawerItem
                             icon={({ color, size }) => (
-                                <MaterialIcons name="feedback" size={24} color={colors.primary} />
+                                <MaterialIcons name="feedback" size={24} color={colors.text} />
                             )}
                             labelStyle={{ color: colors.text }}
                             label="Feedback"
-                            style={styles(colors).bar}
                             onPress={() => {
-                                dispatch({ type: 'ROUTEPROP', data: 'feed' })
+                                // dispatch({ type: 'ROUTEPROP', data: 'feed' })
                                 props.navigation.navigate('external', { screen: 'feedback' })
 
                             }}
-                            // focused={routename === 'feed'}
-                            activeBackgroundColor={colors.background}
-
-                            activeTintColor='green'
                         />
+                        {/* <DrawerItem
+                            icon={({ color, size }) => (
+                                <MaterialIcons name="money" size={24} color={colors.text} />
+                            )}
+                            labelStyle={{ color: colors.text }}
+                            label="Refer And Earn"
+                            onPress={
+                                () => {
+                                    props.navigation.navigate('external', { screen: 'referral' })
+                                }
+                            }
+                        /> */}
                     </View>
                 </DrawerContentScrollView>
-                <View style={defdarktheme ? styles(colors).bottomDrawerSection : styles(colors).botmsect}>
+                <View style={styles(colors).bottomDrawerSection}>
                     <DrawerItem
                         icon={({ color, size }) => (
-                            <MaterialCommunityIcons name="exit-to-app" size={24} color={colors.notification} />
+                            <MaterialCommunityIcons name="exit-to-app" size={24} color={colors.text} />
                         )}
                         label="Sign Out"
-                        labelStyle={{ color: colors.text, }}
+                        labelStyle={{ color: colors.text }}
                         onPress={() => signOut()}
                     />
                 </View>
             </View>
+
         </View>
     );
 }
@@ -220,24 +185,20 @@ const styles = (colors) => StyleSheet.create({
     },
     title: {
         fontSize: 28,
-        marginTop: 15,
+        marginTop: 25,
         fontWeight: 'bold',
         color: colors.text,
-        fontFamily: 'Montserrat'
+        width: 120
     },
-    container:
-    {
-        flex: 1,
-    }
-    ,
     caption: {
         fontSize: 14,
-        color: 'purple',
-        opacity:1
-
-    },
+        color: 'yellow',
+        textAlign:'right'
+    }, 
     userInfoSection: {
         paddingLeft: 20,
+        backgroundColor: colors.border,
+        // justifyContent:"center",
     },
     row: {
         marginTop: 20,
@@ -248,25 +209,21 @@ const styles = (colors) => StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginRight: 15,
+
     },
     paragraph: {
         fontWeight: 'bold',
         marginRight: 3,
+
     },
     drawerSection: {
         marginTop: 3,
+
     },
     bottomDrawerSection: {
-        marginBottom: 15,
-        borderTopColor: 'yellow',
-        borderTopWidth: 2,
-
-    },
-    botmsect: {
-        marginBottom: 15,
-        borderTopColor: 'black',
-        borderTopWidth: 2,
-
+        borderTopColor: colors.primary,
+        borderTopWidth: 3,
+        backgroundColor: colors.border
     },
     preference: {
         flexDirection: 'row',
@@ -275,7 +232,6 @@ const styles = (colors) => StyleSheet.create({
         paddingHorizontal: 16,
     },
     label: {
-        color: Config.texticons
-    },
-    bar: { marginTop: 10, }
+        color: colors.text
+    }
 })

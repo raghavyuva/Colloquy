@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View, Image, ToastAndroid, Dimensions, StatusBar, TouchableOpacity, LogBox, Alert } from "react-native";
-import { GiftedChat, Bubble, Send, SystemMessage, Actions, InputToolbar } from "react-native-gifted-chat";
+import { StyleSheet, Text, View, ToastAndroid, Dimensions, StatusBar, TouchableOpacity, LogBox, Alert } from "react-native";
+import { GiftedChat, Bubble, Send, SystemMessage, Actions, InputToolbar, MessageImage } from "react-native-gifted-chat";
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 import { firebase } from '../components/firebase'
 import 'firebase/auth';
@@ -14,13 +14,16 @@ import Headingbar from '../components/Header';
 import LoadingComp from '../components/LoadingComp';
 import { Video, Audio } from 'expo-av';
 import { BottomSheet } from 'react-native-btr';
-import { CardItem } from 'native-base';
+import { CardItem, Right } from 'native-base';
 import * as ImagePicker from "expo-image-picker";
 import { Config } from '../config';
 import * as MediaLibrary from 'expo-media-library';
 import * as FileSystem from 'expo-file-system';
+import UploadingComp from '../components/UploadingComp';
 LogBox.ignoreLogs(['Animated.event now requires a second argument for options']);
 LogBox.ignoreLogs(['Animated: `useNativeDriver` was not specified']);
+import Image from 'react-native-image-progress';
+import * as Progress from 'react-native-progress';
 
 export function Chat(props) {
   const [imagePicked, setImagePicked] = useState(null);
@@ -53,17 +56,21 @@ export function Chat(props) {
     );
   };
   const ImagePickerComponent = async () => {
+    const res = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    const srt = await ImagePicker.requestCameraPermissionsAsync();
     const result = await ImagePicker.getMediaLibraryPermissionsAsync();
-    if (result.granted) {
+    const rest = await ImagePicker.getCameraPermissionsAsync();
+    if (result.granted && rest.granted) {
       setstatus(true);
     }
-    if (!result.granted) {
+    if (!result.granted || !rest.granted) {
       alert("You need to enable camera permission ");
       setstatus(false);
     }
   };
 
   useEffect(() => {
+    let IsMounted = true;
     setloading(true);
     ImagePickerComponent();
     const DocIdgenerated = anotheruser._id > user.user._id ? user.user._id + "-" + anotheruser._id : anotheruser._id + "-" + user.user._id
@@ -93,37 +100,21 @@ export function Chat(props) {
         setMessages(messages);
         setloading(false);
       });
-    return () => messagesListener();
+    return () => {
+      messagesListener()
+      IsMounted = false;
+    };
   }, []);
-
-  fetch(`${Config.url}` + `/user/${anotheruser._id}`, {
-    headers: {
-      'Authorization': 'Bearer ' + `${userToken}`,
-    }
-  })
-    .then((response) => response.json())
-    .then((responseJson) => {
-      // console.log(responseJson.user.Online)
-      setAnOnline(responseJson.user.Online)
-    })
-
   const _pickImagefromGallery = async () => {
     if (status) {
-      try {
-        const result = await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ImagePicker.MediaTypeOptions.Images,
-          base64: true,
-          allowsEditing: true,
-        });
-        setImagePicked(result.uri)
-        setVisible(!visible);
-        setfilepresent(true);
-        _toggleBottomNavigationView
-        // uploadImage(result.uri)
-      } catch (error) {
-        console.log("Camera Permission error");
-        alert('something went wrong contact developer');
-      }
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        base64: true,
+        allowsEditing: true,
+      });
+      setImagePicked(result.uri)
+      setVisible(!visible);
+      setfilepresent(true);
     } else {
       console.log("Camera Permission error");
       alert('need camera permission');
@@ -131,20 +122,14 @@ export function Chat(props) {
   };
   const _pickImagefromCamera = async () => {
     if (status) {
-      try {
-        const result = await ImagePicker.launchCameraAsync({
-          mediaTypes: ImagePicker.MediaTypeOptions.Images,
-          base64: true,
-          allowsEditing: true,
-        });
-        // uploadImage(result.uri)
-        setImagePicked(result.uri)
-        setVisible(!visible)
-        setfilepresent(true)
-      } catch (error) {
-        console.log("Camera Permission error");
-        alert('something went wrong contact developer');
-      }
+      const result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        base64: true,
+        allowsEditing: true,
+      });
+      setImagePicked(result.uri)
+      setVisible(!visible)
+      setfilepresent(true)
     } else {
       console.log("Camera Permission error");
       alert('need camera permission');
@@ -219,6 +204,7 @@ export function Chat(props) {
       />
     );
   };
+
 
 
   const renderSend = (props) => {
@@ -448,6 +434,7 @@ export function Chat(props) {
           visible={visible}
           onBackButtonPress={_toggleBottomNavigationView}
           onBackdropPress={_toggleBottomNavigationView}
+
         >
           <View
             style={styles(colors).bottomNavigationView}>
@@ -491,7 +478,7 @@ export function Chat(props) {
   }
   return (
     <View style={{ flex: 1 }}>
-      <Headingbar {...props} user={anotheruser} />
+      <Headingbar {...props} user={anotheruser} isOnline={AnOnline} />
       <GiftedChat
         messages={messages}
         onSend={handleSend}
@@ -517,8 +504,41 @@ export function Chat(props) {
             accessoryStyle={{ borderColor: colors.card, borderWidth: 0 }}
           />
         }}
+        renderChatFooter={() => {
+          return (
+            <>
+              {uploading === true ? (
+                <View style={{ flex: 0.1, backgroundColor: colors.background, }}>
+                  <LottieView
+                    loop={true}
+                    autoPlay={true}
+                    source={require('../animation/sending.json')}
 
-        isTyping={uploading}
+                  />
+                </View>
+              ) : (
+                <>
+                </>
+              )}
+            </>
+          )
+        }}
+        // renderMessageImage={(props) => {
+        //   return (
+        //     <Image
+        //       source={{ uri: props.currentMessage.image }}
+        //       indicator={Progress.Pie}
+        //       indicatorProps={{
+        //         size: 80,
+        //         borderWidth: 0,
+        //         color: colors.notification,
+        //         unfilledColor: colors.primary
+        //       }}
+        //       style={{ width: 120, height: 120 }}
+        //     >
+        //     </Image>
+        //   )
+        // }}
       />
     </View>
   );

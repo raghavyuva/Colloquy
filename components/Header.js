@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import { SafeAreaView, Text, StatusBar, TouchableOpacity } from 'react-native';
 import { Header, Button, Icon, Left, Body, View, Right, Title, Item, Input, Radio, } from 'native-base';
-import {
-    Avatar,
-} from 'react-native-paper';
+import { Avatar,} from 'react-native-paper';
 import { DataLayerValue } from '../Context/DataLayer';
 import { MaterialIcons, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useFonts } from 'expo-font';
 import { useTheme } from '@react-navigation/native';
 import { Menu, Provider } from 'react-native-paper';
+import { Config } from '../config';
 
 const Headingbar = (props) => {
-    const [{ user, defdarktheme, searchactive, chattee }, dispatch] = DataLayerValue()
+    const [{ user, defdarktheme, searchactive, chattee, chatteeOnline }, dispatch] = DataLayerValue()
     const [toggle, setToggle] = useState(true);
     const { colors } = useTheme();
     const [visible, setVisible] = React.useState(false);
@@ -21,12 +20,12 @@ const Headingbar = (props) => {
         dispatch({ type: 'THEME', data: !defdarktheme })
     };
 
-    
+
     const [loaded] = useFonts({
         Montserrat: require('../assets/Pacifico/Pacifico-Regular.ttf'),
     });
 
-
+    // console.log(chatteeOnline)
     if (!loaded) {
         return null;
     }
@@ -50,9 +49,9 @@ const Headingbar = (props) => {
                         <Button transparent onPress={() => { props.navigation.openDrawer() }}>
                             <Icon name='menu' style={{ color: colors.text }} />
                         </Button>
-                    </Left> 
+                    </Left>
                     <Body>
-                        <Title style={{ fontFamily: 'Montserrat', fontSize: 25, color: colors.primary }}>Vtyuva</Title>
+                        <Title style={{ fontFamily: 'Montserrat', fontSize: 25, color: colors.primary }}>VtYuva</Title>
                     </Body>
                     <Right>
                         <Button transparent onPress={toggleFunction}>
@@ -62,7 +61,7 @@ const Headingbar = (props) => {
                                 <Ionicons name="md-moon-sharp" size={24} color={colors.text} />
                             )}
                         </Button>
-                        {props.route.name === 'Home' || 'chat' ? (
+                        {props.route.name === 'Home' || props.route.name === 'chat' ? (
                             <Button transparent onPress={ActivateSearch}>
                                 <Icon name='search' style={{ color: colors.text }} />
                             </Button>
@@ -97,7 +96,6 @@ const Headingbar = (props) => {
                             </Button>
                         )
                         }
-
                     </Right>
                 </Header>
             </View>
@@ -114,18 +112,18 @@ const Headingbar = (props) => {
                     </Button>
                 </Left>
                 <TouchableOpacity style={{ flexDirection: "row" }}
-                    onPress={() => props.navigation.navigate('external', { screen: 'userpro', params: { thread: chattee._id } })}>
+                    onPress={() => props.navigation.navigate('external', { screen: 'userpro', params: { thread: props.user._id } })}>
                     <Avatar.Image
                         source={{
-                            uri: chattee.userphoto
+                            uri: props.user.userphoto
                         }}
                         size={40}
                         style={{ margin: 8 }}
                     />
                     <View >
-                        <Text style={{ color: colors.text, fontSize: 20, marginLeft: 15 }}>{chattee.username}</Text>
-                        <Text style={{ color: colors.primary, marginLeft: 15, fontWeight: 'bold' }}>last seen 24 May</Text>
-                    </View> 
+                        <Text style={{ color: colors.text, fontSize: 20, margin: 10 }} numberOfLines={1}>{props.user.username}</Text>
+                        {/* <Text style={{ color: colors.primary, marginLeft: 15, fontWeight: 'bold' }}>{chatteeOnline === true ? "online" : "offline"}</Text> */}
+                    </View>
                 </TouchableOpacity>
                 <Right>
                     <Menu

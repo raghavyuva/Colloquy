@@ -26,7 +26,6 @@ import WhoLiked from '../screens/WhoLiked';
 import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
 import ListOfChats from '../screens/ListOfChats';
 import LoadingComp from '../components/LoadingComp';
-
 const Tab = createMaterialBottomTabNavigator();
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -50,7 +49,8 @@ function External() {
 }
 
 function HomeScreen() {
-    const {colors} = useTheme();
+    const { colors } = useTheme();
+    const [{ userToken, isLoading, UserId, refreshhome }, dispatch] = DataLayerValue();
     return (
         <Tab.Navigator
             initialRouteName="Home"
@@ -61,13 +61,39 @@ function HomeScreen() {
             <Tab.Screen
                 name="Home" initialRouteName="Home"
                 component={Home}
+                listeners={{
+                    tabPress: () => {
+                        dispatch({ type: "REFRESH", data: true })
+                        fetch(`${Config.url}` + `/post`, {
+                            headers: {
+                                'Authorization': 'Bearer ' + `${userToken}`,
+                            },
+                            method: 'GET'
+                        })
+                            .then((response) => response.json())
+                            .then((responseJson) => {
+                                dispatch({
+                                    type: "POSTDATA",
+                                    postData: responseJson
+                                })
+                                dispatch({ type: "REFRESH", data: false })
+                            })
+                    }
+                }
+                }
                 options={{
                     tabBarLabel: 'Home',
                     tabBarColor: Config.secondary,
+
                     tabBarIcon: ({ color }) => (
                         <MaterialCommunityIcons name="pentagon-outline" color={color} size={26} />
                     ),
-                }}
+
+                }
+
+                }
+
+
             />
             <Tab.Screen
                 name="subscribed"
@@ -76,7 +102,7 @@ function HomeScreen() {
                     tabBarLabel: 'subscribed',
                     tabBarColor: 'red',
                     tabBarIcon: ({ color }) => (
-                        <MaterialCommunityIcons name="menu" color={color} size={26} />
+                        <MaterialCommunityIcons name="post-outline" size={24} color={color} />
                     ),
                 }}
             />
@@ -84,10 +110,10 @@ function HomeScreen() {
                 name="addblog"
                 component={Uploadpost}
                 options={{
-                    tabBarLabel: 'post',
+                    tabBarLabel: 'New post',
                     tabBarColor: 'green',
                     tabBarIcon: ({ color }) => (
-                        <MaterialIcons name="add-circle" size={26} color={color} />
+                        <MaterialIcons name="post-add" size={24} color={color} />
                     ),
                 }}
             />
@@ -95,10 +121,10 @@ function HomeScreen() {
                 name="write"
                 component={Notification}
                 options={{
-                    tabBarLabel: 'bell',
+                    tabBarLabel: 'Notification',
                     tabBarColor: '#F99124',
                     tabBarIcon: ({ color }) => (
-                        <FontAwesome5 name="bell" color={color} size={26} />
+                        <MaterialIcons name="notifications" size={24} color={color} />
                     ),
                 }}
             />
@@ -106,14 +132,17 @@ function HomeScreen() {
                 name="chat"
                 component={ListOfChats}
                 options={{
-                    tabBarLabel: 'message',
+                    tabBarLabel: 'chat',
                     tabBarColor: '#F99124',
                     tabBarIcon: ({ color }) => (
                         <MaterialIcons name="message" size={26} color={color} />
                     ),
+
+                    tabBarBadge: '5'
+
                 }}
+
             />
-          
         </Tab.Navigator>
     );
 }
@@ -121,7 +150,7 @@ function HomeScreen() {
 function Drawernav() {
     const [load, setload] = useState(true);
     const [{ userToken, isLoading, UserId }, dispatch] = DataLayerValue();
-    const {colors} = useTheme();
+    const { colors } = useTheme();
 
     const fetching = async () => {
         try {
@@ -148,7 +177,7 @@ function Drawernav() {
     }, [])
     if (load) {
         return (
-           <LoadingComp />
+            <LoadingComp />
         );
     }
     return (

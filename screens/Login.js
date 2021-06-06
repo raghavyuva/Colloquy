@@ -7,15 +7,17 @@ import * as SecureStore from 'expo-secure-store';
 import Svg, { Stop, Path, Defs, LinearGradient as Fgrad } from 'react-native-svg';
 import { useTheme } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
-import { Item, Input, Label } from 'native-base';
+import { Item, Input, Label, Right } from 'native-base';
 import { useFonts } from 'expo-font';
 import LoadingComp from "../components/LoadingComp";
+import { MaterialIcons } from '@expo/vector-icons';
 const Login = ({ navigation }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [{ userToken }, dispatch] = DataLayerValue()
     const { colors } = useTheme();
     const [loggingin, setloggingin] = useState(false);
+    const [passvisibility, setpassvisibility] = useState(true);
     const [loaded] = useFonts({
         Montserrat: require('../assets/Pacifico/Pacifico-Regular.ttf'),
     });
@@ -92,28 +94,32 @@ const Login = ({ navigation }) => {
             </View>
             <View style={{ height: '20%' }}>
                 <View>
-                    <Item stackedLabel style={styles(colors).txtitm} >
-                        <Label style={styles(colors).txtinput}
-                        >Email</Label>
+                    <Item style={styles(colors).txtitm} stackedLabel>
+                        <Label style={styles(colors).txtinput}>Email Address</Label>
                         <Input value={email}
                             onChangeText={(useremail) => setEmail(useremail)}
-                            placeholderTextColor={colors.text} style={{ color: colors.text }} />
-                    </Item>
-                </View>
-                <View>
-                    <Item stackedLabel style={styles(colors).txtitm} >
-                        <Label style={styles(colors).txtinput} >Password</Label>
-                        <Input value={password}
-                            onChangeText={(userPassword) => setPassword(userPassword)}
-                            style={{ color: colors.text }}
+                            placeholderTextColor={colors.text} style={{ color: colors.text }}
+
                         />
                     </Item>
                 </View>
+                <View >
+                    <Item style={styles(colors).txtitm} stackedLabel >
+                        <Label style={styles(colors).txtinput}>Password</Label>
+                        <Input value={password}
+                            onChangeText={(userPassword) => setPassword(userPassword)}
+                            style={{ color: colors.text }}
+                            secureTextEntry={passvisibility}
+                        >
+                        </Input>
+                    </Item>
+
+                </View>
             </View>
             <View style={{ height: '40%' }}>
-                <View style={{ height: '20%' }}>
-                    <TouchableOpacity>
-                        <Text style={styles(colors).txtnav}>Forgot Your Password?</Text>
+                <View style={{ height: '30%' }}>
+                    <TouchableOpacity onPress={() => navigation.navigate('forgot')}>
+                        <Text style={styles(colors).forgot}>Forgot Your Password?</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={{ height: '40%' }}>
@@ -134,11 +140,17 @@ const Login = ({ navigation }) => {
                         </LinearGradient>
                     </TouchableOpacity>
                 </View>
+                {/* <View style={{ height: '15%', }}>
+                    <TouchableOpacity onPress={() => navigation.navigate('phone')}>
+                        <Text style={styles(colors).txtnav}>Login With Phone Number? </Text>
+                    </TouchableOpacity>
+                </View> */}
                 <View style={{ height: '15%', }}>
                     <TouchableOpacity onPress={() => navigation.navigate('signup')}>
                         <Text style={styles(colors).txtnav}>New Here? SignUp Instead! </Text>
                     </TouchableOpacity>
                 </View>
+
             </View>
 
         </View>
@@ -173,8 +185,9 @@ const styles = (colors) => StyleSheet.create({
     txtitm: {
         width: '90%',
         alignSelf: 'center',
-        borderBottomColor: colors.border,
-        color: colors.text
+        borderBottomColor: 'grey',
+        color: colors.text,
+        margin: 10
     },
     header: {
         fontFamily: 'Montserrat',
@@ -183,7 +196,13 @@ const styles = (colors) => StyleSheet.create({
     },
     txtnav: {
         textAlign: 'center',
-        color: colors.text
+        color: colors.text,
+        
+    },
+    forgot:{
+        marginTop:35,
+        textAlign: 'center',
+        color: colors.text,
     }
 
 

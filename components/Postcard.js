@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, TouchableOpacity, Image, Dimensions, Share, Alert, ToastAndroid, Modal, Pressable } from 'react-native';
+import { StyleSheet, TouchableOpacity, Dimensions, Share, Alert, ToastAndroid, Modal, Pressable } from 'react-native';
 import { CardItem, Text, Button, Left, View, Right, Body, Item, Input, Card } from 'native-base';
 import { MaterialIcons, AntDesign, MaterialCommunityIcons, Entypo } from '@expo/vector-icons';
 import * as MediaLibrary from 'expo-media-library';
 import * as FileSystem from 'expo-file-system';
+import Image from 'react-native-image-progress';
+
 import * as Permissions from 'expo-permissions';
 import { Config } from '../config';
 const { width, height } = Dimensions.get('window');
 import { DataLayerValue } from '../Context/DataLayer';
 import { useTheme } from '@react-navigation/native';
 import { Menu, Provider } from 'react-native-paper';
+import * as Progress from 'react-native-progress';
 
 const Postcard = (props) => {
     const [{ userToken, UserId }, dispatch] = DataLayerValue();
@@ -198,36 +201,36 @@ const Postcard = (props) => {
         })
         props.navigation.navigate('external', { screen: 'view' })
     }
-    // const onVote = async (item) => {
-    //     try {
-    //         fetch(`${Config.url}` + `/posts/vote/${item._id}`, {
-    //             method: 'PUT',
-    //             headers: {
-    //                 'Authorization': 'Bearer ' + `${userToken}`,
-    //                 'Content-Type': "application/json",
-    //             },
-    //         }).then(res => res.json()).then(async (resp) => {
-    //             await updatestore();
-    //         })
-    //     } catch (error) {
-    //         alert(error);
-    //     }
-    // }
-    // const onVotecancell = (item) => {
-    //     try {
-    //         fetch(`${Config.url}` + `/posts/votecancell/${item._id}`, {
-    //             method: 'PUT',
-    //             headers: {
-    //                 'Authorization': 'Bearer ' + `${userToken}`,
-    //                 'Content-Type': "application/json",
-    //             },
-    //         }).then(res => res.json()).then(async (resp) => {
-    //             await updatestore();
-    //         })
-    //     } catch (error) {
-    //         alert(error);
-    //     }
-    // }
+    const onVote = async (item) => {
+        try {
+            fetch(`${Config.url}` + `/posts/vote/${item._id}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': 'Bearer ' + `${userToken}`,
+                    'Content-Type': "application/json",
+                },
+            }).then(res => res.json()).then(async (resp) => {
+                await updatestore();
+            })
+        } catch (error) {
+            alert(error);
+        }
+    }
+    const onVotecancell = (item) => {
+        try {
+            fetch(`${Config.url}` + `/posts/votecancell/${item._id}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': 'Bearer ' + `${userToken}`,
+                    'Content-Type': "application/json",
+                },
+            }).then(res => res.json()).then(async (resp) => {
+                await updatestore();
+            })
+        } catch (error) {
+            alert(error);
+        }
+    }
     const comment = async (item) => {
         try {
             fetch(`${Config.url}` + `/posts/comments/${item._id}`, {
@@ -332,6 +335,17 @@ const Postcard = (props) => {
                                     <Image
                                         source={{ uri: props.item.postedBy.userphoto }}
                                         style={styles(colors).Image}
+                                        indicator={Progress.Pie}
+                                        indicatorProps={{
+                                            size: 40,
+                                            borderWidth: 0,
+                                            color: 'rgba(150, 150, 150, 1)',
+                                            unfilledColor: 'rgba(200, 200, 200, 0.2)'
+                                        }}
+                                    // style={{
+                                    //   width: 320,
+                                    //   height: 240,
+                                    // }}
                                     />
                                 </TouchableOpacity>
                                 <Body style={{ margin: 0 }}>
@@ -352,7 +366,7 @@ const Postcard = (props) => {
                                                 })
                                             }} title="share" />
                                             <Menu.Item onPress={() => { downloadFile(props.item) }} title="Download Image" />
-
+                                            <Menu.Item onPress={() => { downloadFile(props.item) }} title="Report" />
                                             {props.item.postedBy._id == UserId ? (
                                                 <Menu.Item onPress={() => DeletePost(props.item)} title="Delete" />
                                             ) : (
@@ -366,30 +380,37 @@ const Postcard = (props) => {
                                 <Image
                                     source={{ uri: props.item.photo }}
                                     style={styles(colors).imageBackground}
+                                    indicator={Progress.Pie}
+                                    indicatorProps={{
+                                        size: 180,
+                                        borderWidth: 0,
+                                        color: 'rgba(150, 150, 150, 1)',
+                                        unfilledColor: 'rgba(200, 200, 200, 0.2)'
+                                    }}
                                 >
                                 </Image>
                             </TouchableOpacity>
                             <View style={styles(colors).lowerContainer}>
                                 <Text style={styles(colors).contentText} numberOfLines={2}>{props.item.caption} </Text>
                                 <CardItem style={{ backgroundColor: colors.card, }} >
-                                    <Left style={{ flexDirection: "row", justifyContent: 'space-evenly' }}>
-                                        {/* <Button transparent>
-                        {props.item.votes.includes(UserId) ?
-                            (<TouchableOpacity onPress={() => {
-                                onVotecancell(props.item)
-                            }}>
-                                <MaterialIcons name="thumb-up-alt" size={24} color={colors.text} />
-                            </TouchableOpacity>
-                            ) : (
-                                <TouchableOpacity onPress={() => {
-                                    onVote(props.item);
-                                }}>
-                                    <MaterialIcons name="thumb-down-alt" size={24} color={colors.text} />
-                                </TouchableOpacity>
-                            )
-                        }
-                        <Text style={styles(colors).likecomtext}>{props.item.votes.length} vote</Text>
-                    </Button> */}
+                                    <Left style={{ flexDirection: "row", justifyContent: 'space-between' }}>
+                                        <Button transparent>
+                                            {props.item.votes.includes(UserId) ?
+                                                (<TouchableOpacity onPress={() => {
+                                                    onVotecancell(props.item)
+                                                }}>
+                                                    <MaterialIcons name="thumb-up-alt" size={24} color={colors.text} />
+                                                </TouchableOpacity>
+                                                ) : (
+                                                    <TouchableOpacity onPress={() => {
+                                                        onVote(props.item);
+                                                    }}>
+                                                        <MaterialIcons name="thumb-down-alt" size={24} color={colors.text} />
+                                                    </TouchableOpacity>
+                                                )
+                                            }
+                                            <Text style={styles(colors).likecomtext}>{props.item.votes.length} vote</Text>
+                                        </Button>
                                         <Button transparent  >
                                             {props.item.likes.includes(UserId) ?
                                                 (<TouchableOpacity onPress={() => {
@@ -421,7 +442,7 @@ const Postcard = (props) => {
                                         <Button transparent onPress={() => {
                                             Alert.alert(
                                                 "Details",
-                                                `Caption:\n${props.item.caption}\n\nPostedAt:${props.item.createdAt}\n\nCategory:${props.item.category}\n\nSubCategory:${props.item.subcategory}`,
+                                                `Caption:\n${props.item.caption}\n\nPostedAt:${props.item.createdAt}\n\nCategory:${props.item.category}\n\nLocation:${props.item.location}`,
                                                 [
                                                     {
                                                         text: "Cancel",
@@ -446,7 +467,7 @@ const Postcard = (props) => {
                                                 placeholder='Add a comment' placeholderTextColor='#bababa'
 
                                             />
-                                            <Button transparent style={{ borderRadius: 8 }} onPress={()=>comment(props.item)}>
+                                            <Button transparent style={{ borderRadius: 8 }} onPress={() => comment(props.item)}>
                                                 <Text style={{ textTransform: 'capitalize', color: '#fff' }}>comment</Text>
                                             </Button>
                                         </Item>
@@ -550,23 +571,23 @@ const Postcard = (props) => {
                                         <Text style={styles(colors).contentText} numberOfLines={2}>{props.item.caption} </Text>
                                         <CardItem style={{ backgroundColor: colors.card, }} >
                                             <Left style={{ flexDirection: "row", justifyContent: 'space-evenly' }}>
-                                                {/* <Button transparent>
-                        {props.item.votes.includes(UserId) ?
-                            (<TouchableOpacity onPress={() => {
-                                onVotecancell(props.item)
-                            }}>
-                                <MaterialIcons name="thumb-up-subcategoryalt" size={24} color={colors.text} />
-                            </TouchableOpacity>
-                            ) : (
-                                <TouchableOpacity onPress={() => {
-                                    onVote(props.item);
-                                }}>
-                                    <MaterialIcons name="thumb-down-alt" size={24} color={colors.text} />
-                                </TouchableOpacity>
-                            )
-                        }
-                        <Text style={styles(colors).likecomtext}>{props.item.votes.length} vote</Text>
-                    </Button> */}
+                                                <Button transparent>
+                                                    {props.item.votes.includes(UserId) ?
+                                                        (<TouchableOpacity onPress={() => {
+                                                            onVotecancell(props.item)
+                                                        }}>
+                                                            <MaterialIcons name="thumb-up-alt" size={24} color={colors.text} />
+                                                        </TouchableOpacity>
+                                                        ) : (
+                                                            <TouchableOpacity onPress={() => {
+                                                                onVote(props.item);
+                                                            }}>
+                                                                <MaterialIcons name="thumb-down-alt" size={24} color={colors.text} />
+                                                            </TouchableOpacity>
+                                                        )
+                                                    }
+                                                    <Text style={styles(colors).likecomtext}>{props.item.votes.length} vote</Text>
+                                                </Button>
                                                 <Button transparent  >
                                                     {props.item.likes.includes(UserId) ?
                                                         (<TouchableOpacity onPress={() => {

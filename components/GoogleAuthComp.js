@@ -4,7 +4,7 @@ import { Config } from '../config';
 import { DataLayerValue } from '../Context/DataLayer';
 import * as SecureStore from 'expo-secure-store';
 import { useTheme } from '@react-navigation/native';
-import { Button, View, Text, Card, CardItem, Title } from 'native-base';
+import { Button, View, Text, Card, CardItem, Title, Left } from 'native-base';
 import * as Google from "expo-google-app-auth";
 import LoadingComp from './LoadingComp';
 
@@ -149,7 +149,7 @@ const GoogleAuthComp = () => {
         )
     }
     return (
-        <Card style={{ backgroundColor: colors.background, borderWidth: 0, borderColor: colors.background, flexDirection: 'row' }}>
+        <Card style={{ backgroundColor: colors.background, borderWidth: 0, borderColor: colors.background, }}>
             <CardItem style={{ backgroundColor: colors.background, }}>
                 <Button style={{
                     backgroundColor: colors.card,
@@ -157,27 +157,27 @@ const GoogleAuthComp = () => {
                     alignSelf: "center",
                     width: 200,
                     marginTop: 10,
-                    borderColor: colors.border, borderWidth: 1
+                    borderColor: 'grey', borderWidth: 1
                 }}
                     onPress={Googlesingin}
                 >
                     <Text style={{ color: colors.text, textTransform: 'capitalize' }}>Sign In With Google </Text>
                 </Button>
             </CardItem>
-            <View style={{ marginTop: 0,  }}>
+            <CardItem style={{ marginLeft: 0, backgroundColor: colors.background, }}>
                 <Button style={{
                     backgroundColor: colors.card,
                     justifyContent: 'center',
                     alignSelf: "center",
                     width: 200,
                     marginTop: 10,
-                    borderColor: colors.border, borderWidth: 1
+                    borderColor: 'grey', borderWidth: 1
                 }}
                     onPress={Googlesignup}
                 >
                     <Text style={{ color: colors.text, textTransform: 'capitalize' }}>Sign Up With Google</Text>
                 </Button>
-            </View>
+            </CardItem>
         </Card>
     )
 }
