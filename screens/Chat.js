@@ -271,7 +271,7 @@ export function Chat(props) {
       setuploading(true);
       const response = await fetch(imagePicked);
       const blob = await response.blob();
-      let upload = firebase.storage().ref(`images/${user.user.username}/${Date.now()}`).put(blob)
+      let upload = firebase.storage().ref(`images/${user.user.username}/${Date.now()}/chat`).put(blob)
       upload.on(
         "state_changed",
         snapshot => {

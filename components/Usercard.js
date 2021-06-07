@@ -83,7 +83,7 @@ const Usercard = (props) => {
 
         } catch (e) {
             console.log(e);
-        } 
+        }
     }
 
     const unfollow = (itm) => {
@@ -109,11 +109,14 @@ const Usercard = (props) => {
     }
 
 
-
     const opencomp = (id) => {
-        props.navigation.navigate('external', { screen: 'userpro', params: { thread: id } })
+        if (id == user.user._id) {
+            props.navigation.navigate('external', { screen: 'profile' })
+        }
+        else {
+            props.navigation.navigate('external', { screen: 'userpro', params: { thread: id } })
+        }
     }
-
     const MessageParticularguy = (guy) => {
         props.navigation.navigate('external', {
             screen: 'message', params: {
@@ -123,43 +126,43 @@ const Usercard = (props) => {
     }
     if (props.name == 'followers') {
         return (
-            <>
-                {
-                    props.item._id === props.user ? (
-                        <>
-                        </>
-                    ) :
-                        (
-                            <List style={{ borderBottomWidth: 0, borderWidth: 2, borderColor: colors.border, borderBottomColor: colors.border, }}>
-                                <ListItem thumbnail onPress={() => opencomp(props.item._id)} >
-                                    <Left>
-                                        <Thumbnail source={{ uri: props.item.userphoto }} />
-                                    </Left>
-                                    <Body style={{ borderBottomWidth: 0, borderWidth: 0, borderColor: colors.border, borderBottomColor: colors.border, }} >
-                                        <Text style={{ color: colors.text }}>{props.item.username}</Text>
-                                        <Text note numberOfLines={1}>{props.item.tagline}</Text>
-                                    </Body>
-                                    <Right>
-                                        {props.item.followers.includes(props.user) ? (
-                                            <View style={{ borderBottomWidth: 0, borderWidth: 0, borderColor: colors.border, borderBottomColor: colors.border, }}>
-                                                <Button style={styles(colors).follow} onPress={() => unfollow(props.item)}>
-                                                    <Text>unfollow</Text>
-                                                </Button>
-                                            </View>
+            <List style={{ borderWidth: 2, borderColor: colors.border, borderBottomColor: colors.border, margin: 5 }}>
+                <ListItem thumbnail onPress={() => opencomp(props.item._id)}  >
+                    <Left>
+                        <Thumbnail source={{ uri: props.item.userphoto }} />
+                    </Left>
+                    <Body style={{ borderBottomWidth: 0, borderWidth: 0, borderColor: colors.border, borderBottomColor: colors.border, }} >
+                        <Text style={{ color: colors.text }}>{props.item.username}</Text>
+                        <Text note numberOfLines={1}>{props.item.tagline}</Text>
+                    </Body>
+                    <Right style={{ borderBottomWidth: 0, borderWidth: 0, borderColor: colors.border, borderBottomColor: colors.border, }}>
+                        {
+                            props.item._id === props.user ? (
+                                <>
+                                </>
+                            ) : (
 
-                                        ) : (
-                                            <View style={{ borderBottomWidth: 0, borderWidth: 0, borderColor: colors.border, borderBottomColor: colors.border, }}>
-                                                <Button style={styles(colors).follow} onPress={() => followuser(props.item)} >
-                                                    <Text>follow</Text>
-                                                </Button>
-                                            </View>
-                                        )}
-                                    </Right>
-                                </ListItem>
-                            </List>
-                        )
-                }
-            </>
+                                <>
+                                    {props.item.followers.includes(props.user) ? (
+                                        <View style={{ borderWidth: 0.5, borderColor: 'grey', borderBottomColor: 'grey', }}>
+                                            <Button style={styles(colors).follow} onPress={() => unfollow(props.item)}>
+                                                <Text>unfollow</Text>
+                                            </Button>
+                                        </View>
+
+                                    ) : (
+                                        <View style={{ borderWidth: 0.5, borderColor: 'grey', borderBottomColor: 'grey', }}>
+                                            <Button style={styles(colors).follow} onPress={() => followuser(props.item)} >
+                                                <Text>follow</Text>
+                                            </Button>
+                                        </View>
+                                    )}
+                                </>
+                            )
+                        }
+                    </Right>
+                </ListItem>
+            </List>
         )
     }
     if (props.name === 'following') {
@@ -235,7 +238,7 @@ const styles = (colors) => StyleSheet.create({
         borderBottomWidth: 0,
         borderWidth: 0,
         borderColor: colors.border,
-        borderBottomColor: colors.border,
+        borderBottomColor: 'grey',
     },
     search: {
         backgroundColor: colors.background,

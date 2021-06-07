@@ -231,6 +231,9 @@ const ListOfChats = (props) => {
                                 </>
                             ) : (
                                 <>
+                                  <Card style={{ backgroundColor: colors.background, borderWidth: 0, borderColor: colors.card }}>
+                                        <Text style={{ color: colors.primary, fontSize: 16, fontStyle: 'italic' }}>Recent chats</Text>
+                                    </Card>
                                     <ChatSection />
                                     <Card style={{ backgroundColor: colors.background, borderWidth: 0, borderColor: colors.card }}>
                                         <Text style={{ color: colors.primary, fontSize: 16, fontStyle: 'italic' }}>Your Friends On Vtyuva</Text>
@@ -307,7 +310,7 @@ const ListOfChats = (props) => {
                     <ListOfUsers />
                 </>
             ) : (
-                <>
+                <> 
                     <View style={{ flex: 1 }} >
                         <StatusBar backgroundColor={colors.card} />
                         <Headerv {...props} />

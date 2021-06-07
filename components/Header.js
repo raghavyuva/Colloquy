@@ -43,6 +43,7 @@ const Headingbar = (props) => {
     const Headingcomp = () => {
         return (
             <View >
+                
                 <Header style={{ backgroundColor: colors.background }}>
                     <StatusBar backgroundColor={colors.background} />
                     <Left>

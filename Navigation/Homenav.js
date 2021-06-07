@@ -26,6 +26,7 @@ import WhoLiked from '../screens/WhoLiked';
 import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
 import ListOfChats from '../screens/ListOfChats';
 import LoadingComp from '../components/LoadingComp';
+import SlotSelection from '../screens/SlotSelection';
 const Tab = createMaterialBottomTabNavigator();
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -43,6 +44,7 @@ function External() {
             <Stack.Screen name="events" component={Events} />
             <Stack.Screen name='message' component={Chat} />
             <Stack.Screen name='notes' component={Notes} />
+            <Stack.Screen name='slot' component={SlotSelection} />
             <Stack.Screen name='wholiked' component={WhoLiked} />
         </Stack.Navigator>
     );
@@ -61,26 +63,26 @@ function HomeScreen() {
             <Tab.Screen
                 name="Home" initialRouteName="Home"
                 component={Home}
-                listeners={{
-                    tabPress: () => {
-                        dispatch({ type: "REFRESH", data: true })
-                        fetch(`${Config.url}` + `/post`, {
-                            headers: {
-                                'Authorization': 'Bearer ' + `${userToken}`,
-                            },
-                            method: 'GET'
-                        })
-                            .then((response) => response.json())
-                            .then((responseJson) => {
-                                dispatch({
-                                    type: "POSTDATA",
-                                    postData: responseJson
-                                })
-                                dispatch({ type: "REFRESH", data: false })
-                            })
-                    }
-                }
-                }
+                // listeners={{
+                //     tabPress: () => {
+                //         dispatch({ type: "REFRESH", data: true })
+                //         fetch(`${Config.url}` + `/post`, {
+                //             headers: {
+                //                 'Authorization': 'Bearer ' + `${userToken}`,
+                //             },
+                //             method: 'GET'
+                //         })
+                //             .then((response) => response.json())
+                //             .then((responseJson) => {
+                //                 dispatch({
+                //                     type: "POSTDATA",
+                //                     postData: responseJson
+                //                 })
+                //                 dispatch({ type: "REFRESH", data: false })
+                //             })
+                //     }
+                // }
+                // }
                 options={{
                     tabBarLabel: 'Home',
                     tabBarColor: Config.secondary,
@@ -138,7 +140,7 @@ function HomeScreen() {
                         <MaterialIcons name="message" size={26} color={color} />
                     ),
 
-                    tabBarBadge: '5'
+                    // tabBarBadge: '5'
 
                 }}
 

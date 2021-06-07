@@ -22,6 +22,7 @@ import {
     setTestDeviceIDAsync,
 
 } from 'expo-ads-admob';
+import WaveComp from '../components/WaveComp';
 
 const Home = (props) => {
 
@@ -57,17 +58,17 @@ const Home = (props) => {
         }
     }, [])
 
-    fetch(`${Config.url}` + `/updateonlinestatus`, {
-        method: 'PUT',
-        headers: {
-            'Authorization': 'Bearer ' + `${userToken}`,
-            'Content-Type': "application/json",
-        },
-        body: JSON.stringify({
-            isonline: isOnline === 'active' ? true : false,
-        })
-    }).then(res => res.json()).then((resp) => {
-    })
+    // fetch(`${Config.url}` + `/updateonlinestatus`, {
+    //     method: 'PUT',
+    //     headers: {
+    //         'Authorization': 'Bearer ' + `${userToken}`,
+    //         'Content-Type': "application/json",
+    //     },
+    //     body: JSON.stringify({
+    //         isonline: isOnline === 'active' ? true : false,
+    //     })
+    // }).then(res => res.json()).then((resp) => {
+    // })
     const fetching = () => {
         dispatch({ type: "REFRESH", data: true })
         fetch(`${Config.url}` + `/post`, {
@@ -271,7 +272,7 @@ const Home = (props) => {
                 onEndReachedThreshold={0}
                 refreshing={refreshhome}
                 onRefresh={fetching}
-                style={{ marginBottom: 50 }}
+                style={{ marginBottom: 100 }}
             // ListFooterComponent={()=>{
             //     return(
 
@@ -461,10 +462,16 @@ const Home = (props) => {
             ) : (
                 <>
                     <Headerv {...props} />
-                    <PublisherBanner bannerSize="banner" adUnitID='ca-app-pub-1751328492898824/7808189055' shouldRasterizeIOS onAdFailedToLoad={error => console.error(error)}
-                      onAppEvent={event => console.log(event.name, event.info)}
-                    />
+                   
+                    <AdMobBanner
+                        bannerSize='fullBanner'
+                        adUnitID="ca-app-pub-1751328492898824/7808189055"
 
+
+                        // servePersonalizedAds={true} // true or false
+                        // style={{ backgroundColor: colors.background, color: colors.text }}
+                        onAdFailedToLoad={error => console.error(error)}
+                    />
                     <PostCardComp {...props} section='NormalView' />
 
                 </>

@@ -41,6 +41,7 @@
     "react-native-appearance": "~0.3.3",
     "react-native-btr": "^2.1.2",
     "react-native-confirmation-code-field": "^7.1.0",
+    "react-native-datepicker": "^1.7.2",
     "react-native-gesture-handler": "~1.10.2",
     "react-native-gifted-chat": "^0.16.3",
     "react-native-image-progress": "^1.1.1",

@@ -1,4 +1,4 @@
-import React,{ useState,useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import { Text, View, Dimensions, FlatList, Image } from 'react-native'
 const { width, height } = Dimensions.get('window');
 import { LinearGradient } from 'expo-linear-gradient';
@@ -13,6 +13,7 @@ import LoadingComp from '../components/LoadingComp';
 const MockInterview = (props) => {
     const [load, setload] = useState(true);
     const [{ userToken, defdarktheme, routename }, dispatch] = DataLayerValue()
+    // const [selected, setselected] = useState(null);
     const Data = [{
         "course": "CSE",
         "id": "1"
@@ -38,20 +39,23 @@ const MockInterview = (props) => {
         dispatch({ type: 'ROUTEPROP', data: 'interview' })
         setTimeout(() => {
             setload(false);
-          }, 2000); 
+        }, 2000);
         return () => {
         }
     }, [])
 
-    if (load) { 
+    if (load) {
         return (
-        <LoadingComp />
+            <LoadingComp />
         )
-      }
+    }
     return (
         <View style={{ flex: 1, backgroundColor: colors.background }}>
             <Headingbar {...props} />
-            <Image source={{ uri: 'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fblogs.longwood.edu%2Ffiles%2F2014%2F12%2FStudent-Icon.png&f=1&nofb=1' }} style={{ width: width, height: height / 2, alignSelf: 'center', backgroundColor: colors.background }} />
+            <Text style={{ color: colors.text, textTransform: 'capitalize', fontWeight: 'bold', fontSize: 20,}}>Preparing For AN iNTERVIEW ?</Text>
+            <Image source={{ uri: 'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fblogs.longwood.edu%2Ffiles%2F2014%2F12%2FStudent-Icon.png&f=1&nofb=1' }} style={{ width: width / 1.5, height: height / 3.3, alignSelf: 'center', backgroundColor: colors.background }} />
+            <Text style={{ color: 'grey', textTransform: 'capitalize', fontSize: 15,fontStyle:'italic' ,marginBottom:20}}>Take a Mockup Interview to Enrich {'\n'}Your Skill with Industry Experts</Text>
+            <Text style={{ color: colors.text, marginLeft: 15 }}>Pick a Branch</Text>
             <FlatList
                 ref={(ref) => { flatListRef = ref; }}
                 renderItem={({ item }) => {
@@ -60,8 +64,12 @@ const MockInterview = (props) => {
                         <TouchableOpacity style={{
                             width: width / 2, height: 100, backgroundColor: colors.background, flexDirection: 'row',
                             marginLeft: 0, marginBottom: 8, borderWidth: 2, borderColor: colors.border, justifyContent: 'center',
-                            borderRadius: 10, marginRight: 0
-                        }}>
+                            borderRadius: 10, marginRight: 0,
+                            margin: 5
+                        }}
+                            onPress={() => {
+                                props.navigation.navigate('external', { screen: 'slot', params: { thread: ele.course } })
+                            }}>
                             <View style={{ justifyContent: 'center', alignSelf: 'center' }}>
                                 <Text style={{ fontSize: 20, fontWeight: 'bold', color: colors.text, textAlign: "center" }} >{ele.course} </Text>
                             </View>
@@ -71,7 +79,7 @@ const MockInterview = (props) => {
                 }}
                 keyExtractor={(item, index) => index.toString()}
                 data={Data}
-                style={{ marginBottom: 50, margin: 2 }}
+                style={{ margin: 2 }}
                 numColumns={2}
             />
         </View>

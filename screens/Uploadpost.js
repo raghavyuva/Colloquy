@@ -9,7 +9,7 @@ import { DataLayerValue } from '../Context/DataLayer';
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 import * as MediaLibrary from 'expo-media-library';
 import { useTheme } from '@react-navigation/native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import * as Location from 'expo-location';
@@ -41,7 +41,7 @@ const Uploadpost = (props) => {
     const [first, setfirst] = useState('')
     const [toggle, setToggle] = useState(true);
     const [status, setstatus] = useState(null);
-
+    const [active, setactive] = useState(false)
 
     useEffect(() => {
         let IsMounted = true;
@@ -51,19 +51,19 @@ const Uploadpost = (props) => {
             IsMounted = false;
         }
     }, [])
-    const LOcGetter =async () => {
-       
-            let { status } = await Location.requestForegroundPermissionsAsync();
-            if (status !== 'granted') {
-                setErrorMsg('Permission to access location was denied');
-                return;
-            }
+    const LOcGetter = async () => {
 
-            let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.High });
-            let locgeo = await Location.reverseGeocodeAsync(location.coords);
-            setLocation([locgeo[0]]);
-            console.log(locgeo)
-        
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') {
+            setErrorMsg('Permission to access location was denied');
+            return;
+        }
+
+        let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.High });
+        let locgeo = await Location.reverseGeocodeAsync(location.coords);
+        setLocation([locgeo[0]]);
+        console.log(locgeo)
+
     }
     const getPermissionAsync = async () => {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -81,7 +81,25 @@ const Uploadpost = (props) => {
             setpostimage(media.assets[0])
         }
     }
-
+    const FabComponent = () => {
+        return (
+            <Fab
+                active={active}
+                direction="up"
+                containerStyle={{}}
+                style={{ backgroundColor: colors.primary, }}
+                position="bottomRight"
+                onPress={() => setactive(!active)}>
+                <MaterialCommunityIcons name="image-edit" size={24} color={colors.text} />
+                <Button style={{ backgroundColor: colors.primary, marginBottom: 40 }} onPress={_pickImagefromGallery} >
+                    <MaterialCommunityIcons name="file-image" size={24} color={colors.text} />
+                </Button>
+                <Button style={{ backgroundColor: colors.primary, marginBottom: 40 }} onPress={_pickImagefromCamera} >
+                    <MaterialCommunityIcons name="camera" size={24} color={colors.text} />
+                </Button>
+            </Fab>
+        )
+    }
     const toggleFunction = () => {
         setToggle(!toggle);
         dispatch({ type: 'THEME', data: !defdarktheme })
@@ -180,7 +198,7 @@ const Uploadpost = (props) => {
                             <Ionicons name="md-moon-sharp" size={24} color={colors.text} />
                         )}
                     </Button>
-                    <Button transparent style={{ backgroundColor: colors.primary, borderRadius: 12 }} onPress={_upload}>
+                    <Button transparent style={{ backgroundColor: colors.card, borderRadius: 2 }} onPress={_upload}>
                         <Text style={{ color: colors.text }}>Upload </Text>
                     </Button>
                 </Right>
@@ -193,7 +211,33 @@ const Uploadpost = (props) => {
 
 
 
+    const _pickImagefromGallery = async () => {
+        if (status) {
+            const result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                base64: true,
+                allowsEditing: true,
+            });
+            setfirst(result.uri);
+        } else {
+            console.log("Camera Permission error");
+            alert('need camera permission');
+        }
+    };
+    const _pickImagefromCamera = async () => {
+        if (status) {
+            const result = await ImagePicker.launchCameraAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                base64: true,
+                allowsEditing: true,
+            });
+            setfirst(result.uri)
 
+        } else {
+            console.log("Camera Permission error");
+            alert('need camera permission');
+        }
+    };
 
 
     // const MulTiSelect = (colors) => {
@@ -347,6 +391,7 @@ const Uploadpost = (props) => {
                 </Card>
 
             </ScrollView>
+            <FabComponent />
         </SafeAreaView>
     )
 

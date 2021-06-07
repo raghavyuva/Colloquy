@@ -13,6 +13,8 @@ import { AppearanceProvider, useColorScheme } from 'react-native-appearance';
 import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
 import LoadingComp from "../components/LoadingComp";
 import { Config } from "../config";
+import { Menu, Provider } from 'react-native-paper';
+
 const IndexNavigator = (props) => {
     const [{ userToken, isLoading, defdarktheme }, dispatch] = DataLayerValue();
     const appState = useRef(AppState.currentState);
@@ -63,9 +65,13 @@ const IndexNavigator = (props) => {
     }
     return (
         <AppearanceProvider>
+            
             <NavigationContainer theme={defdarktheme === true ? DarkTheme : DefaultTheme}>
                 {userToken !== null || undefined ? (
-                    <Drawernav />
+                   
+                        <Drawernav />
+                 
+                    
                 ) : (
                     <AuthNav />
                 )
