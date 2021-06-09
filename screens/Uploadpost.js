@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Image, StyleSheet, LogBox, FlatList, Dimensions, SafeAreaView, Text, Picker, Alert, View, ActivityIndicator } from 'react-native';
+import { Image, StyleSheet, LogBox, FlatList, Dimensions, SafeAreaView, Text, Picker, Alert, View, ActivityIndicator,Platform } from 'react-native';
 import { Card, Textarea, Fab, CardItem, Button, Left, Body, Title, Right, Header } from 'native-base';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
@@ -25,7 +25,6 @@ LogBox.ignoreLogs(['Setting a timer']);
 const Uploadpost = (props) => {
 
 
-
     const [body, setbody] = useState('');
     const [uploading, setuploading] = useState(false);
     const [ondone, setondone] = useState(false);
@@ -45,8 +44,28 @@ const Uploadpost = (props) => {
 
     useEffect(() => {
         let IsMounted = true;
-        getPermissionAsync();
-
+        (async () => {
+            if (Platform.OS !== 'web') {
+                const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+                console.log(status)
+                if (status !== 'granted') {
+                    setstatus('notgranted')
+                    alert('Sorry, we need camera roll permissions to make this work!');
+                } else {
+                    // console.log(status)
+                    setstatus('granted');
+                    // LOcGetter()
+                    const media = MediaLibrary.getAssetsAsync({
+                        mediaType: MediaLibrary.MediaType.photo,
+                    });
+                    // console.log((await media).assets)
+                    setloaclimages((await media).assets)
+                    setfirst((await media).assets[0].uri);
+                    setpostimage((await media).assets[0])
+                    LOcGetter()
+                }
+            }
+        })();
         return () => {
             IsMounted = false;
         }
@@ -65,21 +84,9 @@ const Uploadpost = (props) => {
         console.log(locgeo)
 
     }
+
     const getPermissionAsync = async () => {
-        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (status !== 'granted') {
-            alert('Sorry, we need camera roll permissions to make this work!');
-            setstatus('notgranted')
-        } else {
-            setstatus('granted');
-            LOcGetter()
-            const media = await MediaLibrary.getAssetsAsync({
-                mediaType: MediaLibrary.MediaType.photo,
-            });
-            setloaclimages(media.assets)
-            setfirst(media.assets[0].uri);
-            setpostimage(media.assets[0])
-        }
+
     }
     const FabComponent = () => {
         return (
@@ -225,19 +232,22 @@ const Uploadpost = (props) => {
         }
     };
     const _pickImagefromCamera = async () => {
-        if (status) {
-            const result = await ImagePicker.launchCameraAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.Images,
-                base64: true,
-                allowsEditing: true,
-            });
-            setfirst(result.uri)
-
-        } else {
-            console.log("Camera Permission error");
-            alert('need camera permission');
-        }
-    };
+        
+            if (Platform.OS !== 'web') {
+                const { status } = await ImagePicker.requestCameraPermissionsAsync();
+                console.log(status)
+                if (status !== 'granted') {
+                    alert('Sorry, we need camera roll permissions to make this work!');
+                } else {
+                    const result = await ImagePicker.launchCameraAsync({
+                        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                        base64: true,
+                        allowsEditing: true,
+                    });
+                    setfirst(result.uri)
+                }
+            }
+    }; 
 
 
     // const MulTiSelect = (colors) => {
@@ -289,7 +299,9 @@ const Uploadpost = (props) => {
                     <Image style={{ width: 150, height: 150, alignSelf: 'center' }} source={{ uri: first }} />
                 </Card>
                 <Card style={{ backgroundColor: colors.card, padding: 0, margin: 5, borderColor: colors.border }}>
-                    <TouchableOpacity onPress={LOcGetter}>
+                    <TouchableOpacity
+                    //  onPress={LOcGetter}
+                    >
                         <CardItem style={{ backgroundColor: colors.background, justifyContent: 'space-between' }}>
                             <Text style={{ color: colors.text, fontSize: 18, fontWeight: 'bold', }}>
                                 Location

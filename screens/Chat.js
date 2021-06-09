@@ -60,9 +60,11 @@ export function Chat(props) {
     const srt = await ImagePicker.requestCameraPermissionsAsync();
     const result = await ImagePicker.getMediaLibraryPermissionsAsync();
     const rest = await ImagePicker.getCameraPermissionsAsync();
+    console.log(res)
     if (result.granted && rest.granted) {
       setstatus(true);
     }
+    // console.log(result.granted)
     if (!result.granted || !rest.granted) {
       alert("You need to enable camera permission ");
       setstatus(false);
@@ -523,22 +525,22 @@ export function Chat(props) {
             </>
           )
         }}
-        // renderMessageImage={(props) => {
-        //   return (
-        //     <Image
-        //       source={{ uri: props.currentMessage.image }}
-        //       indicator={Progress.Pie}
-        //       indicatorProps={{
-        //         size: 80,
-        //         borderWidth: 0,
-        //         color: colors.notification,
-        //         unfilledColor: colors.primary
-        //       }}
-        //       style={{ width: 120, height: 120 }}
-        //     >
-        //     </Image>
-        //   )
-        // }}
+      // renderMessageImage={(props) => {
+      //   return (
+      //     <Image
+      //       source={{ uri: props.currentMessage.image }}
+      //       indicator={Progress.Pie}
+      //       indicatorProps={{
+      //         size: 80,
+      //         borderWidth: 0,
+      //         color: colors.notification,
+      //         unfilledColor: colors.primary
+      //       }}
+      //       style={{ width: 120, height: 120 }}
+      //     >
+      //     </Image>
+      //   )
+      // }}
       />
     </View>
   );

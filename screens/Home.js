@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { View, Text, SafeAreaView, FlatList, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, Text, SafeAreaView, FlatList, TouchableOpacity, StyleSheet, Platform } from 'react-native'
 import Headerv from '../components/Header';
 import Postcard from '../components/Postcard';
 import { DataLayerValue } from '../Context/DataLayer';
@@ -46,6 +46,8 @@ const Home = (props) => {
         let IsMounted = true
         requestUserPermission();
         _openInterstitial()
+        setTestDeviceIDAsync('EMULATOR');
+
         // _openRewarded()
         // dispatch({ type: 'ROUTEPROP', data: 'Home' })
         registerForPushNotifications();
@@ -465,9 +467,7 @@ const Home = (props) => {
                    
                     <AdMobBanner
                         bannerSize='fullBanner'
-                        adUnitID="ca-app-pub-1751328492898824/7808189055"
-
-
+                        adUnitID={Platform.OS=='android'?"ca-app-pub-1751328492898824/7808189055":"ca-app-pub-1751328492898824/7396129668"}
                         // servePersonalizedAds={true} // true or false
                         // style={{ backgroundColor: colors.background, color: colors.text }}
                         onAdFailedToLoad={error => console.error(error)}
