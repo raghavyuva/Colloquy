@@ -6,7 +6,7 @@ const Privacy = () => {
     const [{ userToken, postData, searchactive, UserId }, dispatch] = DataLayerValue();
     const [laod, setlaod] = useState(true)
     useEffect(() => {
-        dispatch({ type: 'ROUTEPROP', data: 'segment' })
+       
         setTimeout(() => {
             setlaod(false);
         }, 2000);

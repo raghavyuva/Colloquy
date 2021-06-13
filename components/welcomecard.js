@@ -12,23 +12,23 @@ const Welcomecard = (props) => {
         props.navigation.navigate('login');
     }
     return (
-        <View>
-            <Card style={{ backgroundColor: colors.background, borderColor: colors.background, borderWidth: 0 }} >
+        <View style={{}}>
+            <Card style={{ backgroundColor: colors.background, borderColor: colors.background, borderWidth: 0, }} >
                 <Title style={{ fontFamily: 'Montserrat', fontSize: 52, color: colors.text }}>VtYuva</Title>
                 <Text style={styles(colors).caption}>Unleash your potential</Text>
             </Card>
             <Card style={{ backgroundColor: colors.background, borderColor: colors.background }}>
                 <Image source={require('../assets/logo.png')} style={{ width: 300, height: 300 }} />
             </Card>
-            <Card style={{ flexDirection: "row", justifyContent: 'space-between', borderColor: colors.background, backgroundColor: colors.background, }}>
-                <CardItem style={{ backgroundColor: colors.background, borderColor: colors.background }}>
-                    <Button style={{ backgroundColor: colors.card, borderColor: 'grey', borderWidth: 1 }} onPress={onloginpress}>
-                        <Text style={{ color: colors.text, textTransform: 'capitalize' }}>Login</Text>
+            <Card style={{ justifyContent: 'center', borderColor: colors.background, backgroundColor: colors.background, alignSelf: 'center', flexDirection: 'row' }}>
+                <CardItem style={{ backgroundColor: colors.background, borderColor: colors.background, }}>
+                    <Button style={{ backgroundColor: colors.card, borderColor: 'grey', borderWidth: 1, alignSelf: 'center' }} onPress={onloginpress}>
+                        <Text style={{ color: colors.text, textTransform: 'capitalize', textAlign: 'center' }}>Login</Text>
                     </Button>
                 </CardItem>
-                <CardItem style={{ backgroundColor: colors.background, borderColor: colors.background }}>
-                    <Button style={{ backgroundColor: colors.card, borderColor: 'grey', borderWidth: 1 }} onPress={onsignuppress}>
-                        <Text style={{ color: colors.text, textTransform: 'capitalize' }}>signup</Text>
+                <CardItem style={{ backgroundColor: colors.background, borderColor: colors.background, alignSelf: 'center' }}>
+                    <Button style={{ backgroundColor: colors.card, borderColor: 'grey', borderWidth: 1, alignSelf: 'center' }} onPress={onsignuppress}>
+                        <Text style={{ color: colors.text, textTransform: 'capitalize', textAlign: 'center' }}>signup</Text>
                     </Button>
                 </CardItem>
             </Card>

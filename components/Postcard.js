@@ -5,8 +5,6 @@ import { MaterialIcons, AntDesign, MaterialCommunityIcons, Entypo } from '@expo/
 import * as MediaLibrary from 'expo-media-library';
 import * as FileSystem from 'expo-file-system';
 import Image from 'react-native-image-progress';
-
-import * as Permissions from 'expo-permissions';
 import { Config } from '../config';
 const { width, height } = Dimensions.get('window');
 import { DataLayerValue } from '../Context/DataLayer';
@@ -59,7 +57,7 @@ const Postcard = (props) => {
         );
     }
     const saveFile = async (fileUri) => {
-        const { status } = await Permissions.askAsync(Permissions.MEDIA_LIBRARY);
+        const { status } = await MediaLibrary.requestPermissionsAsync();
         if (status === "granted") {
             const asset = await MediaLibrary.createAssetAsync(fileUri)
             await MediaLibrary.createAlbumAsync("Primish", asset, false)

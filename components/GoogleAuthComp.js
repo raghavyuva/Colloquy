@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { StyleSheet, } from 'react-native'
+import { StyleSheet, TouchableOpacity, } from 'react-native'
 import { Config } from '../config';
 import { DataLayerValue } from '../Context/DataLayer';
 import * as SecureStore from 'expo-secure-store';
@@ -149,34 +149,34 @@ const GoogleAuthComp = () => {
         )
     }
     return (
-        <Card style={{ backgroundColor: colors.background, borderWidth: 0, borderColor: colors.background, }}>
+        <Card style={{ backgroundColor: colors.background, borderWidth: 0, borderColor: colors.background, flexDirection: 'row', justifyContent: 'space-between' }}>
             <CardItem style={{ backgroundColor: colors.background, }}>
-                <Button style={{
-                    backgroundColor: colors.card,
+                <TouchableOpacity style={{
+
                     justifyContent: 'center',
                     alignSelf: "center",
-                    width: 200,
                     marginTop: 10,
-                    borderColor: 'grey', borderWidth: 1
+
                 }}
+                    transparent
                     onPress={Googlesingin}
                 >
                     <Text style={{ color: colors.text, textTransform: 'capitalize' }}>Sign In With Google </Text>
-                </Button>
+                </TouchableOpacity>
             </CardItem>
             <CardItem style={{ marginLeft: 0, backgroundColor: colors.background, }}>
-                <Button style={{
-                    backgroundColor: colors.card,
+                <TouchableOpacity style={{
+
                     justifyContent: 'center',
                     alignSelf: "center",
-                    width: 200,
                     marginTop: 10,
-                    borderColor: 'grey', borderWidth: 1
+
                 }}
                     onPress={Googlesignup}
+                    transparent
                 >
                     <Text style={{ color: colors.text, textTransform: 'capitalize' }}>Sign Up With Google</Text>
-                </Button>
+                </TouchableOpacity>
             </CardItem>
         </Card>
     )

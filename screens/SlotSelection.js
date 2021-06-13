@@ -6,11 +6,103 @@ import DatePicker from 'react-native-datepicker';
 const { width, height } = Dimensions.get('window');
 import { Button, Textarea, } from 'native-base';
 import { MaterialIcons } from '@expo/vector-icons';
+import { Config } from '../config';
+import { DataLayerValue } from '../Context/DataLayer';
 
 const SlotSelection = (props) => {
     const { colors } = useTheme();
     const [date, setDate] = useState('09-10-2020');
     const [Input, setInput] = useState(null);
+    const [uploading, setuploading] = useState(false);
+    const [slotavailable, setslotavailable] = useState(null);
+    const [attachment, setattachment] = useState(false)
+    const [{ userToken, user }, dispatch] = DataLayerValue();
+    console.log(props.route.params.thread);
+    const VerifyTheSlot = (ele) => {
+        fetch(`${Config.url}` + `/Interview`, {
+            headers: {
+                'Authorization': 'Bearer ' + `${userToken}`,
+            },
+            method: 'GET'
+        })
+            .then((response) => response.json())
+            .then((responseJson) => {
+                console.log(responseJson)
+            })
+    }
+    const _upload = async () => {
+        if (!attachment) {
+            alert('no photo selected to post');
+        }
+        else {
+            setuploading(true);
+            uploadPhotoAsync()
+        }
+    }
+    const uploadPhotoAsync = async () => {
+        try {
+            return new Promise(async (res, rej) => {
+                const response = await fetch(attachment);
+                const file = await response.blob();
+                let upload = firebase.storage().ref(`images/${user.user.username}/${Date.now()}/interview`).put(file)
+                upload.on(
+                    "state_changed",
+                    snapshot => { },
+                    err => {
+                        rej(err);
+                    },
+                    async () => {
+                        const url = await upload.snapshot.ref.getDownloadURL();
+                        res(url);
+                        console.log(url)
+                        mongoupload(url);
+                    }
+                );
+            });
+        } catch (error) {
+            alert(error);
+            setuploading(false);
+        }
+    };
+    const _pickImagefromGallery = async () => {
+        try {
+            let result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.All,
+                allowsEditing: true,
+                quality: 1,
+                aspect: [4, 3],
+            });
+            if (!result.cancelled) {
+                setattachment(result.uri)
+            }
+        } catch (E) {
+            console.log(E);
+        }
+    }
+    const mongoupload = (url) => {
+        try {
+            fetch(`${Config.url}` + `/post`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + `${userToken}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    InterviewDate: date,
+                    InterviewTime: ele,
+                    Branch: props.route.params.thread,
+                    paymentrefid: Input,
+                    paymentattachment: attachment
+                })
+            }).then(res => res.json()).then((resp) => {
+                setuploading(false);
+            })
+        } catch (error) {
+            alert(error);
+            setuploading(false);
+        }
+    }
+
     return (
         <View style={{ flex: 1, backgroundColor: colors.background }}>
             <Headingbar {...props} />
@@ -80,21 +172,27 @@ const SlotSelection = (props) => {
                     style={{ margin: 2 }}
                     numColumns={2}
                 />
-                <Button style={{ borderWidth: 0.5, borderColor: 'grey', width: 200, backgroundColor: colors.card, justifyContent: "center", alignSelf: 'center' }}>
+                <Button style={{ borderWidth: 0.5, borderColor: 'grey', width: 200, backgroundColor: colors.card, justifyContent: "center", alignSelf: 'center' }} onPress={VerifyTheSlot}>
                     <Text style={{ color: colors.text, textAlign: "center" }}>Verify Slot Availability</Text>
                 </Button>
             </View>
+            <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                <Text style={{ color: colors.text, textAlign: 'center', }}>Attach Bug File</Text>
+                <TouchableOpacity onPress={_pickImagefromGallery}>
+                    <MaterialIcons name="attach-file" size={24} color={colors.primary} />
+                </TouchableOpacity>
+            </View>
             <View >
-            <Text style={{ fontSize: 18,  color: colors.primary, textAlign: "center" ,marginBottom:10,marginTop:20}}>Pay INR 200 to upi id: raghav@kotak</Text>
+                <Text style={{ fontSize: 18, color: colors.primary, textAlign: "center", marginBottom: 10, marginTop: 20 }}>Pay INR 300 to upi id: raghav@kotak</Text>
                 <TextInput
                     value={Input}
                     onChangeText={(e) => setInput(e)}
-                    style={{ borderWidth: 1, borderColor: 'grey', color: colors.text, marginLeft: 15, padding: 10, marginTop: 25,marginRight:15 }}
+                    style={{ borderWidth: 1, borderColor: 'grey', color: colors.text, marginLeft: 15, padding: 10, marginTop: 25, marginRight: 15 }}
                     placeholder='Payment Ref Id'
                     placeholderTextColor='grey'
                 />
                 <Button
-                    // onPress={submitfile}
+                    onPress={_upload}
                     style={{ justifyContent: 'center', alignSelf: 'center', width: 200, backgroundColor: colors.card, borderColor: 'grey', borderWidth: 0.2, marginTop: 15 }}>
                     <Text style={{ color: colors.text }}>Apply For Interview</Text>
                 </Button>
@@ -114,7 +212,7 @@ const styles = (colors) => StyleSheet.create({
     },
 })
 const Data = [{
-    "time": "10.30",
+    "time": "10.00",
     "id": "1"
 },
 {

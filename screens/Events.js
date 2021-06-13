@@ -13,7 +13,7 @@ const Events = (props) => {
     const [{ userToken, EventData }, dispatch] = DataLayerValue()
     const [refresh, setrefresh] = useState(false)
     const [load, setload] = useState(true);
-    const {colors} = useTheme();
+    const { colors } = useTheme();
 
     useEffect(() => {
         fetching()
@@ -21,7 +21,7 @@ const Events = (props) => {
         return () => {
         }
     }, [])
-
+   
     const fetching = () => {
         setrefresh(true)
         fetch(`${Config.url}` + `/Event`, {
@@ -41,14 +41,17 @@ const Events = (props) => {
                 setload(false);
             })
     }
-    if (load) { 
+    if (load) {
         return (
-         <LoadingComp />
+            <LoadingComp />
         )
-      }
+    }
     return (
         <View >
             <Header {...props} />
+            <Text style={{ color: colors.text, fontSize: 24, fontWeight: 'bold', marginLeft: 10, marginBottom: 15 }}>
+                List Of Events
+            </Text>
             <FlatList
                 ref={(ref) => { flatListRef = ref; }}
                 renderItem={({ item }) => {
@@ -62,7 +65,14 @@ const Events = (props) => {
                 onScrollAnimationEnd
                 scrollToOverflowEnabled
                 onEndReachedThreshold={0}
-                style={{ }}
+                style={{}}
+                ListEmptyComponent={() => {
+                    return (
+                        <View>
+                            <Text>Nothing Here To Show</Text>
+                        </View>
+                    )
+                }}
                 refreshing={refresh}
                 onRefresh={fetching}
             />

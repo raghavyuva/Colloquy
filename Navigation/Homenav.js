@@ -21,12 +21,13 @@ import { Chat } from '../screens/Chat';
 import { Config } from '../config';
 import { DataLayerValue } from '../Context/DataLayer';
 import LottieView from 'lottie-react-native';
-import Notes from '../screens/Notes';
+import Notes from '../screens/Interview';
 import WhoLiked from '../screens/WhoLiked';
 import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
 import ListOfChats from '../screens/ListOfChats';
 import LoadingComp from '../components/LoadingComp';
 import SlotSelection from '../screens/SlotSelection';
+import AboutUs from '../screens/AboutUs';
 const Tab = createMaterialBottomTabNavigator();
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -46,6 +47,7 @@ function External() {
             <Stack.Screen name='notes' component={Notes} />
             <Stack.Screen name='slot' component={SlotSelection} />
             <Stack.Screen name='wholiked' component={WhoLiked} />
+            <Stack.Screen name='aboutus' component={AboutUs} />
         </Stack.Navigator>
     );
 }
@@ -191,6 +193,7 @@ function Drawernav() {
             <Drawer.Screen name="segment" component={Privacy} />
             <Drawer.Screen name="feedback" component={Report} />
             <Drawer.Screen name="notes" component={Notes} />
+            <Drawer.Screen name="aboutus" component={AboutUs} />
         </Drawer.Navigator>
     );
 }

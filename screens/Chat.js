@@ -33,7 +33,7 @@ export function Chat(props) {
   const [messages, setMessages] = useState([]);
   const { colors } = useTheme();
   const [AnOnline, setAnOnline] = useState(null);
-  const [{ userToken, postData, searchactive, UserId, user }, dispatch] = DataLayerValue();
+  const [{ userToken, postData, searchactive, UserId, user, permstorage }, dispatch] = DataLayerValue();
   const [loading, setloading] = useState(true);
   const [filepresent, setfilepresent] = useState(false);
   const [imagetosendurl, setimagetosendurl] = useState(null);
@@ -56,18 +56,16 @@ export function Chat(props) {
     );
   };
   const ImagePickerComponent = async () => {
-    const res = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    const srt = await ImagePicker.requestCameraPermissionsAsync();
-    const result = await ImagePicker.getMediaLibraryPermissionsAsync();
-    const rest = await ImagePicker.getCameraPermissionsAsync();
-    console.log(res)
-    if (result.granted && rest.granted) {
-      setstatus(true);
-    }
-    // console.log(result.granted)
-    if (!result.granted || !rest.granted) {
-      alert("You need to enable camera permission ");
-      setstatus(false);
+    if (permstorage == 'granted') {
+      setstatus('granted')
+    } else {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      console.log(status)
+      if (status == 'granted') {
+        dispatch({ type: 'STORAGEPERMISSION', data: 'granted' })
+      } else {
+        dispatch({ type: 'STORAGEPERMISSION', data: 'notgranted' })
+      }
     }
   };
 
@@ -108,7 +106,7 @@ export function Chat(props) {
     };
   }, []);
   const _pickImagefromGallery = async () => {
-    if (status) {
+    if (permstorage==='granted') {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         base64: true,
@@ -123,7 +121,7 @@ export function Chat(props) {
     }
   };
   const _pickImagefromCamera = async () => {
-    if (status) {
+    if (permstorage==='granted') {
       const result = await ImagePicker.launchCameraAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         base64: true,
@@ -446,13 +444,13 @@ export function Chat(props) {
             <View style={{ flexDirection: 'row', }}>
               <TouchableOpacity onPress={_pickImagefromGallery} style={{ flexDirection: 'row', justifyContent: "center" }}>
                 <MaterialIcons name="image" size={45} color={colors.primary} />
-                <Text style={{ color: colors.text, alignSelf: "center" }}>Open Files</Text>
+                <Text style={{ color: colors.text, alignSelf: "center" }}>Gallery</Text>
               </TouchableOpacity>
             </View>
             <View style={{ flexDirection: 'row', }}>
               <TouchableOpacity onPress={_pickImagefromCamera} style={{ flexDirection: 'row', justifyContent: "center" }}>
                 <MaterialIcons name="camera" size={45} color={colors.primary} />
-                <Text style={{ color: colors.text, alignSelf: "center" }}>Open Camera</Text>
+                <Text style={{ color: colors.text, alignSelf: "center" }}>Camera</Text>
               </TouchableOpacity>
             </View>
           </View>

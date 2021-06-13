@@ -34,7 +34,8 @@ export const initialState = {
     allusers: null,
     isOnline: null,
     chatteeOnline: null,
-    refreshhome:false,
+    refreshhome: false,
+    permstorage: null
 };
 const reducer = (state, action) => {
     switch (action.type) {
@@ -166,9 +167,14 @@ const reducer = (state, action) => {
                 chatteeOnline: action.isonline
             }
         case 'REFRESH':
-            return{
+            return {
                 ...state,
-                refreshhome:action.data
+                refreshhome: action.data
+            }
+        case 'STORAGEPERMISSION':
+            return {
+                ...state,
+                permstorage: action.data
             }
     }
 }

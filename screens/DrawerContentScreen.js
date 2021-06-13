@@ -116,7 +116,7 @@ export function DrawerContent(props) {
                             label="About Us"
                             labelStyle={{ color: colors.text }}
                             onPress={() => {
-                                Linking.openURL('https://www.vtyuva.com');
+                                props.navigation.navigate('aboutus');
                             }}
                         />
                         <DrawerItem
@@ -126,7 +126,7 @@ export function DrawerContent(props) {
                             labelStyle={{ color: colors.text }}
                             label="Contact Us"
                             onPress={() => {
-                                Linking.openURL('tel:50000000');
+                                Linking.openURL('https://t.me/raghavyuva');
                             }}
                         />
                         <DrawerItem

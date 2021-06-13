@@ -316,7 +316,7 @@ const ListOfChats = (props) => {
                         <Headerv {...props} />
                         {/* <ChatSection /> */}
                         <ListOfUsers />
-                        <FabComponent />
+                        {/* <FabComponent /> */}
 
                     </View>
                 </>
@@ -329,7 +329,7 @@ const ListOfChats = (props) => {
 
                 // servePersonalizedAds={true} // true or false
                 // style={{ backgroundColor: colors.background, color: colors.text }}
-                onAdFailedToLoad={error => console.error(error)}
+                onAdFailedToLoad={error => alert(error)}
             />
         </View>
     )

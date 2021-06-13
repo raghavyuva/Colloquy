@@ -36,7 +36,6 @@ const MockInterview = (props) => {
     }]
     const { colors } = useTheme();
     useEffect(() => {
-        dispatch({ type: 'ROUTEPROP', data: 'interview' })
         setTimeout(() => {
             setload(false);
         }, 2000);

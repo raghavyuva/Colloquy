@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Image, StyleSheet, LogBox, FlatList, Dimensions, SafeAreaView, Text, Picker, Alert, View, ActivityIndicator,Platform } from 'react-native';
+import { Image, StyleSheet, LogBox, FlatList, Dimensions, SafeAreaView, Text, Picker, Alert, View, ActivityIndicator, Platform } from 'react-native';
 import { Card, Textarea, Fab, CardItem, Button, Left, Body, Title, Right, Header } from 'native-base';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
@@ -9,7 +9,7 @@ import { DataLayerValue } from '../Context/DataLayer';
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 import * as MediaLibrary from 'expo-media-library';
 import { useTheme } from '@react-navigation/native';
-import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialIcons, MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import * as Location from 'expo-location';
@@ -21,21 +21,23 @@ import LottieView from 'lottie-react-native';
 import "@firebase/auth";
 import "@firebase/firestore";
 import UploadingComp from '../components/UploadingComp';
+import LoadingComp from '../components/LoadingComp';
 LogBox.ignoreLogs(['Setting a timer']);
+LogBox.ignoreLogs(['']);
+
 const Uploadpost = (props) => {
-
-
+    const [loading, setloading] = useState(true)
     const [body, setbody] = useState('');
     const [uploading, setuploading] = useState(false);
     const [ondone, setondone] = useState(false);
     const [postimage, setpostimage] = useState('')
-    const [{ userToken, user, defdarktheme }, dispatch] = DataLayerValue()
+    const [{ userToken, user, defdarktheme, permstorage }, dispatch] = DataLayerValue()
     const [loaclimages, setloaclimages] = useState('');
     const [selectedItems, setselectedItems] = useState([]);
     const [location, setLocation] = useState(null);
     const [errorMsg, setErrorMsg] = useState(null);
     const { colors } = useTheme();
-    const [selectedValue, setSelectedValue] = useState("java");
+    const [selectedValue, setSelectedValue] = useState("VTU");
     const [finaltags, setfinaltags] = useState([]);
     const [first, setfirst] = useState('')
     const [toggle, setToggle] = useState(true);
@@ -44,26 +46,16 @@ const Uploadpost = (props) => {
 
     useEffect(() => {
         let IsMounted = true;
+        // console.log(permstorage)
         (async () => {
-            if (Platform.OS !== 'web') {
-                const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-                console.log(status)
-                if (status !== 'granted') {
-                    setstatus('notgranted')
-                    alert('Sorry, we need camera roll permissions to make this work!');
-                } else {
-                    // console.log(status)
-                    setstatus('granted');
-                    // LOcGetter()
-                    const media = MediaLibrary.getAssetsAsync({
-                        mediaType: MediaLibrary.MediaType.photo,
-                    });
-                    // console.log((await media).assets)
-                    setloaclimages((await media).assets)
-                    setfirst((await media).assets[0].uri);
-                    setpostimage((await media).assets[0])
-                    LOcGetter()
-                }
+            if (permstorage == 'granted') {
+                const media = MediaLibrary.getAssetsAsync({
+                    mediaType: MediaLibrary.MediaType.photo,
+                });
+                setloaclimages((await media).assets)
+                setfirst((await media).assets[0].uri);
+                setpostimage((await media).assets[0])
+                LOcGetter()
             }
         })();
         return () => {
@@ -82,10 +74,6 @@ const Uploadpost = (props) => {
         let locgeo = await Location.reverseGeocodeAsync(location.coords);
         setLocation([locgeo[0]]);
         console.log(locgeo)
-
-    }
-
-    const getPermissionAsync = async () => {
 
     }
     const FabComponent = () => {
@@ -219,35 +207,30 @@ const Uploadpost = (props) => {
 
 
     const _pickImagefromGallery = async () => {
-        if (status) {
-            const result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.Images,
-                base64: true,
-                allowsEditing: true,
-            });
-            setfirst(result.uri);
-        } else {
-            console.log("Camera Permission error");
-            alert('need camera permission');
-        }
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            base64: true,
+            allowsEditing: true,
+        });
+        setfirst(result.uri);
     };
     const _pickImagefromCamera = async () => {
-        
-            if (Platform.OS !== 'web') {
-                const { status } = await ImagePicker.requestCameraPermissionsAsync();
-                console.log(status)
-                if (status !== 'granted') {
-                    alert('Sorry, we need camera roll permissions to make this work!');
-                } else {
-                    const result = await ImagePicker.launchCameraAsync({
-                        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-                        base64: true,
-                        allowsEditing: true,
-                    });
-                    setfirst(result.uri)
-                }
+
+        if (Platform.OS !== 'web') {
+            const { status } = await ImagePicker.requestCameraPermissionsAsync();
+            console.log(status)
+            if (status !== 'granted') {
+                alert('Sorry, we need camera roll permissions to make this work!');
+            } else {
+                const result = await ImagePicker.launchCameraAsync({
+                    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                    base64: true,
+                    allowsEditing: true,
+                });
+                setfirst(result.uri)
             }
-    }; 
+        }
+    };
 
 
     // const MulTiSelect = (colors) => {
@@ -256,7 +239,11 @@ const Uploadpost = (props) => {
     //     )
     // }
 
-
+    // if (loading) {
+    //   return(
+    //       <LoadingComp />
+    //   )
+    // }
     if (uploading) {
         return (
             <View style={{ flex: 1, backgroundColor: colors.background }}>
@@ -279,14 +266,23 @@ const Uploadpost = (props) => {
             </View>
         )
     }
-    if (status == 'notgranted') {
-        return (
-            <View style={{ flex: 1, backgroundColor: colors.background }}>
-                <HeaderView {...props} />
-                <Text style={{ color: colors.text }}>We Need Camera Roll Permission to make this work</Text>
-            </View>
-        )
+
+    if (permstorage == 'notgranted') {
+        const { status } = ImagePicker.getMediaLibraryPermissionsAsync;
+        console.log(status)
+        if (permstorage != 'granted') {
+            dispatch({ type: 'STORAGEPERMISSION', data: 'notgranted' })
+            return (
+                <View style={{ flex: 1, backgroundColor: colors.background }}>
+                    <HeaderView {...props} />
+                    <Text style={{ color: colors.text }}>We Need Camera Roll Permission to make this work</Text>
+                </View>
+            )
+        } else {
+            dispatch({ type: 'STORAGEPERMISSION', data: 'granted' })
+        }
     }
+
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <HeaderView />
@@ -326,8 +322,11 @@ const Uploadpost = (props) => {
                             style={{ height: 50, width: 150, backgroundColor: colors.background, color: colors.text }}
                             onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
                         >
-                            <Picker.Item label="Java" value="java" />
-                            <Picker.Item label="JavaScript" value="js" />
+                            <Picker.Item label="VTU" value="VTU" />
+                            <Picker.Item label="STUDENTS" value="STUDENTS" />
+                            <Picker.Item label="MEMES" value="MEMES" />
+                            <Picker.Item label="Engineering" value="Engineering" />
+                            <Picker.Item label="Social" value="Social" />
                         </Picker>
                         <MaterialIcons name="category" size={24} color={colors.primary} />
                     </CardItem>
@@ -408,7 +407,6 @@ const Uploadpost = (props) => {
     )
 
 }
-
 export default Uploadpost;
 const styles = StyleSheet.create({
     screen: {
@@ -489,6 +487,22 @@ const items = [
             {
                 name: 'Branch',
                 id: 16,
+            },
+            {
+                name: 'Life',
+                id: 18,
+            },
+            {
+                name: 'MEME',
+                id: 196,
+            },
+            {
+                name: 'nammavtu',
+                id: 1839,
+            },
+            {
+                name: 'VTU-Life',
+                id: 18739,
             },
         ],
     },

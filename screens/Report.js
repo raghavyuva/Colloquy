@@ -184,7 +184,7 @@ const Report = (props) => {
                         value={Input}
                         onChangeText={(e) => setInput(e)}
                         style={{ borderWidth: 1, borderColor: 'grey', margin: 15, color: colors.text, justifyContent: 'center', }}
-                        placeholder='We would love to hear from you'
+                        placeholder='We would love to hear from you,paste crash log here'
                         placeholderTextColor='grey'
                     />
                     <Button

@@ -14,6 +14,7 @@ import Usercard from '../components/Usercard';
 import * as Device from 'expo-device';
 import NotFoundComp from '../components/NotFoundComp';
 import LoadingComp from '../components/LoadingComp';
+import * as ImagePicker from 'expo-image-picker';
 import {
     AdMobBanner,
     AdMobInterstitial,
@@ -41,20 +42,18 @@ const Home = (props) => {
 
     const { colors } = useTheme();
     AdMobRewarded.setAdUnitID("ca-app-pub-1751328492898824/8806464007")
-
     useEffect(() => {
         let IsMounted = true
         requestUserPermission();
+        AdMobInterstitial.setAdUnitID('ca-app-pub-1751328492898824/9408017662')
         _openInterstitial()
-        setTestDeviceIDAsync('EMULATOR');
-
+        GetPermofStorage()
+        // setTestDeviceIDAsync('EMULATOR');
         // _openRewarded()
-        // dispatch({ type: 'ROUTEPROP', data: 'Home' })
         registerForPushNotifications();
         Notifications.addNotificationReceivedListener(_handleNotification);
         fetching();
         FetchAll();
-        console.log(isOnline);
         return () => {
             IsMounted = false;
         }
@@ -111,7 +110,6 @@ const Home = (props) => {
     const _handleNotification = notification => {
         setNotify(notification)
     };
-
 
 
 
@@ -275,31 +273,6 @@ const Home = (props) => {
                 refreshing={refreshhome}
                 onRefresh={fetching}
                 style={{ marginBottom: 100 }}
-            // ListFooterComponent={()=>{
-            //     return(
-
-            //     )
-            // }}
-
-            // ItemSeparatorComponent={({ item, index }) => {
-            //     return (
-            //         <>
-            //             {postData.map((ele, index) => {
-            //                 if (index % 3 === 0) {
-            //                     return (
-            //                         <AdMobBanner
-            //                             bannerSize="mediumRectangle"
-            //                             adUnitID="ca-app-pub-1751328492898824/7808189055" // Test ID, Replace with your-admob-unit-id
-            //                             servePersonalizedAds={false} // true or false
-            //                         // style={{backgroundColor:colors.background,color:colors.text}}
-            //                         />
-            //                     )
-            //                 }
-            //             })}
-            //         </>
-            //     )
-            // }}
-
             />
 
         )
@@ -308,13 +281,32 @@ const Home = (props) => {
         try {
             setdisableinter(true)
             await AdMobInterstitial.requestAdAsync()
-            await AdMobInterstitial.showAdAsync()
+            await AdMobInterstitial.showAdAsync().then((d) => {
+                alert(d)
+            })
+
         } catch (error) {
             console.error(error)
+            alert(error);
         } finally {
             setdisableinter(false);
         }
     }
+    const GetPermofStorage = async () => {
+        const { status } = await ImagePicker.getMediaLibraryPermissionsAsync()
+        if (status == 'granted') {
+            dispatch({ type: 'STORAGEPERMISSION', data: 'granted' })
+        } else {
+            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+            console.log(status)
+            if (status == 'granted') {
+                dispatch({ type: 'STORAGEPERMISSION', data: 'granted' })
+            } else {
+                dispatch({ type: 'STORAGEPERMISSION', data: 'notgranted' })
+            }
+        }
+    }
+
     const _openRewarded = async () => {
         try {
             setreward(true)
@@ -326,7 +318,6 @@ const Home = (props) => {
             setreward(false);
         }
     }
-    AdMobInterstitial.setAdUnitID('ca-app-pub-1751328492898824/9408017662')
     const PeopLeComp = () => {
         return (
             <FlatList
@@ -464,10 +455,10 @@ const Home = (props) => {
             ) : (
                 <>
                     <Headerv {...props} />
-                   
+
                     <AdMobBanner
                         bannerSize='fullBanner'
-                        adUnitID={Platform.OS=='android'?"ca-app-pub-1751328492898824/7808189055":"ca-app-pub-1751328492898824/7396129668"}
+                        adUnitID={Platform.OS == 'android' ? "ca-app-pub-1751328492898824/7808189055" : "ca-app-pub-1751328492898824/7396129668"}
                         // servePersonalizedAds={true} // true or false
                         // style={{ backgroundColor: colors.background, color: colors.text }}
                         onAdFailedToLoad={error => console.error(error)}
