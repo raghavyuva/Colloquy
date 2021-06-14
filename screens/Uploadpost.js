@@ -47,8 +47,9 @@ const Uploadpost = (props) => {
     useEffect(() => {
         let IsMounted = true;
         // console.log(permstorage)
+        GetPermofStorage();
         (async () => {
-            if (permstorage == 'granted') {
+            if (status == 'granted') {
                 const media = MediaLibrary.getAssetsAsync({
                     mediaType: MediaLibrary.MediaType.photo,
                 });
@@ -105,10 +106,23 @@ const Uploadpost = (props) => {
             return new Promise(async (res, rej) => {
                 const response = await fetch(first);
                 const file = await response.blob();
+                // console.log(file) 
                 let upload = firebase.storage().ref(postimage.filename).put(file)
                 upload.on(
                     "state_changed",
-                    snapshot => { },
+                    snapshot => { 
+                        var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        console.log('Upload is ' + progress + '% done');
+    
+                        switch (snapshot.state) {
+                            case firebase.storage.TaskState.PAUSED: // or 'paused'
+                                console.log('Upload is paused');
+                                break;
+                            case firebase.storage.TaskState.RUNNING: // or 'running'
+                                console.log('Upload is running');
+                                break;
+                        }
+                    },
                     err => {
                         rej(err);
                     },
@@ -125,6 +139,20 @@ const Uploadpost = (props) => {
             setuploading(false);
         }
     };
+    const GetPermofStorage = async () => {
+        const { status } = await ImagePicker.getMediaLibraryPermissionsAsync()
+        if (status == 'granted') {
+            setstatus('granted')
+        } else { 
+            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+            console.log(status)
+            if (status == 'granted') {
+                setstatus('granted')
+            } else {
+                setstatus('notgranted')
+            }
+        }
+    }
 
     const mongoupload = (url) => {
         try {
@@ -270,8 +298,8 @@ const Uploadpost = (props) => {
     if (permstorage == 'notgranted') {
         const { status } = ImagePicker.getMediaLibraryPermissionsAsync;
         console.log(status)
-        if (permstorage != 'granted') {
-            dispatch({ type: 'STORAGEPERMISSION', data: 'notgranted' })
+        if (status != 'granted') {
+            setstatus('notgranted')
             return (
                 <View style={{ flex: 1, backgroundColor: colors.background }}>
                     <HeaderView {...props} />
@@ -279,7 +307,7 @@ const Uploadpost = (props) => {
                 </View>
             )
         } else {
-            dispatch({ type: 'STORAGEPERMISSION', data: 'granted' })
+            setstatus('granted')
         }
     }
 

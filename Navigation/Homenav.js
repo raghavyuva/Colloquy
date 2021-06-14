@@ -21,13 +21,15 @@ import { Chat } from '../screens/Chat';
 import { Config } from '../config';
 import { DataLayerValue } from '../Context/DataLayer';
 import LottieView from 'lottie-react-native';
-import Notes from '../screens/Interview';
 import WhoLiked from '../screens/WhoLiked';
 import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
 import ListOfChats from '../screens/ListOfChats';
 import LoadingComp from '../components/LoadingComp';
 import SlotSelection from '../screens/SlotSelection';
 import AboutUs from '../screens/AboutUs';
+import MockInterview from '../screens/Interview';
+import NotesUpload from '../screens/NotesUpload';
+import NotesRender from '../screens/NotesRender';
 const Tab = createMaterialBottomTabNavigator();
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -44,10 +46,12 @@ function External() {
             <Stack.Screen name="view" component={PostfullView} />
             <Stack.Screen name="events" component={Events} />
             <Stack.Screen name='message' component={Chat} />
-            <Stack.Screen name='notes' component={Notes} />
+            <Stack.Screen name='interview' component={MockInterview} />
             <Stack.Screen name='slot' component={SlotSelection} />
             <Stack.Screen name='wholiked' component={WhoLiked} />
             <Stack.Screen name='aboutus' component={AboutUs} />
+            <Stack.Screen name='rendernotes' component={NotesRender} />
+            <Stack.Screen name='uploadNotes' component={NotesUpload} />
         </Stack.Navigator>
     );
 }
@@ -192,8 +196,10 @@ function Drawernav() {
             <Drawer.Screen name="events" component={Events} />
             <Drawer.Screen name="segment" component={Privacy} />
             <Drawer.Screen name="feedback" component={Report} />
-            <Drawer.Screen name="notes" component={Notes} />
+            <Drawer.Screen name="interview" component={MockInterview} />
             <Drawer.Screen name="aboutus" component={AboutUs} />
+            <Drawer.Screen name="uploadNotes" component={NotesUpload} />
+            <Drawer.Screen name="rendernotes" component={NotesRender} />
         </Drawer.Navigator>
     );
 }

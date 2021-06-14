@@ -23,6 +23,8 @@ const Report = (props) => {
     const [status, setstatus] = useState(null);
     const [expanded, setExpanded] = React.useState(true);
     const [file, setfile] = useState(null);
+    const [Data, setData] = useState(null);
+    const [filtered, setfiltered] = useState(null);
     const [submitting, setsubmitting] = useState(false);
     const handlePress = () => setExpanded(!expanded);
     const attachFile = () => {
@@ -72,7 +74,7 @@ const Report = (props) => {
                             'Content-Type': "application/json",
                         },
                         body: JSON.stringify({
-                            description: Input,
+                            description: `bug` + Input,
                             errscreenshot: url
                         })
                     }).then(res => res.json()).then((resp) => {
@@ -90,11 +92,40 @@ const Report = (props) => {
     useEffect(() => {
         let IsMounted = true;
         getPermissionAsync();
-
+        Fetching()
         return () => {
             IsMounted = false;
         }
     }, [])
+
+    const search = (searchText) => {
+        let filteredData = Data.filter(function (item) {
+            return item.Question.toLowerCase().includes(searchText.toLowerCase());
+        });
+        setfiltered(filteredData);
+    };
+
+    function Fetching() {
+        try {
+            fetch(`${Config.url}` + `/faq`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + `${userToken}`,
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    setData(data);
+                    console.log(Data)
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        } catch (error) {
+            alert(error)
+        }
+    }
     const getPermissionAsync = async () => {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (status !== 'granted') {
@@ -131,6 +162,8 @@ const Report = (props) => {
                 <Searchbar style={{ backgroundColor: colors.card, color: colors.text }} iconColor='grey' inputStyle={{ color: colors.text }}
                     placeholder="Describe Your Issue"
                     placeholderTextColor='grey'
+                    // onIconPress={search}
+                    onChangeText={search}
                 />
             </View>
             <ScrollView keyboardShouldPersistTaps='always'>
@@ -139,16 +172,16 @@ const Report = (props) => {
                         renderItem={({ item }) => {
                             return (
                                 <List.Accordion
-                                    title={item.title}
+                                    title={item.Question}
                                     left={props => <MaterialIcons name="article" size={24} color='grey' />}
                                     titleStyle={{ color: colors.text }}
                                 >
-                                    <Text style={{ color: 'grey' }}>{item.data}</Text>
+                                    <Text style={{ color: 'grey' }}>{item.Answer}</Text>
                                 </List.Accordion>
                             );
                         }}
                         keyExtractor={(item, index) => index.toString()}
-                        data={menu}
+                        data={filtered && filtered.length > 0 ? filtered : Data}
                         scrollEnabled
                     />
                 </List.Section>

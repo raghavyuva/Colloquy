@@ -9,8 +9,9 @@ import { Config } from '../config';
 const { width, height } = Dimensions.get('window');
 import { DataLayerValue } from '../Context/DataLayer';
 import { useTheme } from '@react-navigation/native';
-import { Menu, Provider } from 'react-native-paper';
 import * as Progress from 'react-native-progress';
+import { Menu, } from 'react-native-paper'
+import { Provider } from 'react-native-paper';
 
 const Postcard = (props) => {
     const [{ userToken, UserId }, dispatch] = DataLayerValue();
@@ -24,7 +25,6 @@ const Postcard = (props) => {
 
     const closeMenu = () => setVisible(false);
     const { colors } = useTheme();
-    styles(colors)
     useEffect(() => {
         let IsMounted = true;
         return () => {
@@ -244,6 +244,7 @@ const Postcard = (props) => {
                 try {
                     let val = 'message';
                     setcommenttext('')
+                    updatestore();
                 } catch (error) {
                     alert(error)
                     console.log(error)
@@ -255,6 +256,24 @@ const Postcard = (props) => {
     }
     const onGotoWhodid = (item) => {
         props.navigation.navigate('external', { screen: 'wholiked', params: { item: item } })
+    }
+
+
+    const ReportTheUser = (item) => {
+        fetch(`${Config.url}` + `/report`, {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + `${userToken}`,
+                'Content-Type': "application/json",
+            },
+            body: JSON.stringify({
+                description: `post` + item.postedBy.username,
+                errscreenshot: item.photo
+            })
+        }).then(res => res.json()).then((resp) => {
+            console.log(resp)
+            alert('reported this post and user')
+        })
     }
     const CardLayout = () => {
         return (
@@ -328,34 +347,7 @@ const Postcard = (props) => {
 
         )
     }
-    const RightTopCont = () => {
-        return (
 
-            <Right>
-                <View style={{ backgroundColor: colors.card }}>
-                    <Menu
-                        visible={visible}
-                        onDismiss={closeMenu}
-                        anchor={<Button onPress={openMenu} transparent><MaterialCommunityIcons name="dots-vertical" size={24} color={colors.text} /></Button>}>
-                        <Menu.Item onPress={() => {
-                            Share.share({
-                                url: `${props.item.photo}`,
-                                title: `${props.item.postedBy.userName}`,
-                                message: `${props.item.caption}`,
-                            })
-                        }} title="share" />
-                        <Menu.Item onPress={() => { downloadFile(props.item) }} title="Download Image" />
-                        <Menu.Item onPress={() => { downloadFile(props.item) }} title="Report" />
-                        {props.item.postedBy._id == UserId ? (
-                            <Menu.Item onPress={() => DeletePost(props.item)} title="Delete" />
-                        ) : (
-                            <View></View>
-                        )}
-                    </Menu>
-                </View>
-            </Right>
-        )
-    }
     const ModalLayOut = () => {
         return (
             <Modal
@@ -385,29 +377,6 @@ const Postcard = (props) => {
         )
     }
 
-    const ImageCard = () => {
-        return (
-            <Card style={styles(colors).cardcontainer}>
-                <TouchableOpacity onPress={() => {
-                    if (props.item.postedBy._id == UserId) {
-                        props.navigation.navigate('external', { screen: 'profile' })
-                    } else {
-                        props.navigation.navigate('external', { screen: 'userpro', params: { thread: props.item.postedBy._id } })
-                    }
-                }}>
-                    <Image
-                        source={{ uri: props.item.postedBy.userphoto }}
-                        style={styles(colors).Image}
-                    />
-                </TouchableOpacity>
-                <Body style={{ margin: 0 }}>
-                    <Text style={styles(colors).top} numberOfLines={1}>{props.item.postedBy.username}</Text>
-                    <Text style={styles(colors).capt} numberOfLines={1}>{props.item.createdAt.substring(0, 10)} </Text>
-                </Body>
-                <RightTopCont />
-            </Card>
-        )
-    }
     if (props.item == null || undefined) {
         return (
             <View style={{ justifyContent: "center", flex: 1, backgroundColor: colors.background }}>
@@ -442,7 +411,48 @@ const Postcard = (props) => {
                             onPress={() => NavigateFull(props.item)}
                             onLongPress={() => { downloadFile(props.item) }}
                         >
-                            <ImageCard />
+                            <Card style={styles(colors).cardcontainer}>
+                                <TouchableOpacity onPress={() => {
+                                    if (props.item.postedBy._id == UserId) {
+                                        props.navigation.navigate('external', { screen: 'profile' })
+                                    } else {
+                                        props.navigation.navigate('external', { screen: 'userpro', params: { thread: props.item.postedBy._id } })
+                                    }
+                                }}>
+                                    <Image
+                                        source={{ uri: props.item.postedBy.userphoto }}
+                                        style={styles(colors).Image}
+                                    />
+                                </TouchableOpacity>
+                                <Body style={{ margin: 0 }}>
+                                    <Text style={styles(colors).top} numberOfLines={1}>{props.item.postedBy.username}</Text>
+                                    <Text style={styles(colors).capt} numberOfLines={1}>{props.item.createdAt.substring(0, 10)} </Text>
+                                </Body>
+                                <Right>
+                                    <View style={{ backgroundColor: colors.card }}>
+                                        <Menu
+                                            visible={visible}
+                                            onDismiss={closeMenu}
+                                            anchor={<Button onPress={openMenu} transparent><MaterialCommunityIcons name="dots-vertical" size={24} color={colors.text} /></Button>}>
+                                            <Menu.Item onPress={() => {
+                                                Share.share({
+                                                    url: `${props.item.photo}`,
+                                                    title: `${props.item.postedBy.userName}`,
+                                                    message: `${props.item.caption}`,
+                                                })
+                                            }} title="share" />
+                                            <Menu.Item onPress={() => { downloadFile(props.item) }} title="Download Image" />
+                                            <Menu.Item onPress={() => { ReportTheUser(props.item) }} title="Report" />
+                                            {props.item.postedBy._id == UserId ? (
+                                                <Menu.Item onPress={() => DeletePost(props.item)} title="Delete" />
+                                            ) : (
+                                                <View></View>
+                                            )}
+                                        </Menu>
+
+                                    </View>
+                                </Right>
+                            </Card>
                             <TouchableOpacity onPress={() => NavigateFull(props.item)}>
                                 <Image
                                     source={{ uri: props.item.photo }}
@@ -460,7 +470,7 @@ const Postcard = (props) => {
                             </TouchableOpacity>
                             <View style={styles(colors).lowerContainer}>
                                 <Text style={styles(colors).contentText} numberOfLines={2}>{props.item.caption} </Text>
-                                    <CardLayout />
+                                <CardLayout />
 
                                 {
                                     active ? (
@@ -494,7 +504,47 @@ const Postcard = (props) => {
                                 <View style={styles(colors).centeredView}>
                                     <ModalLayOut />
                                 </View>
-                                <ImageCard />
+                                <Card style={styles(colors).cardcontainer}>
+                                    <TouchableOpacity onPress={() => {
+                                        if (props.item.postedBy._id == UserId) {
+                                            props.navigation.navigate('external', { screen: 'profile' })
+                                        } else {
+                                            props.navigation.navigate('external', { screen: 'userpro', params: { thread: props.item.postedBy._id } })
+                                        }
+                                    }}>
+                                        <Image
+                                            source={{ uri: props.item.postedBy.userphoto }}
+                                            style={styles(colors).Image}
+                                        />
+                                    </TouchableOpacity>
+                                    <Body style={{ margin: 0 }}>
+                                        <Text style={styles(colors).top} numberOfLines={1}>{props.item.postedBy.username}</Text>
+                                        <Text style={styles(colors).capt} numberOfLines={1}>{props.item.createdAt.substring(0, 10)} </Text>
+                                    </Body>
+                                    <Right>
+                                        <View style={{ backgroundColor: colors.card }}>
+                                            <Menu
+                                                visible={visible}
+                                                onDismiss={closeMenu}
+                                                anchor={<Button onPress={openMenu} transparent><MaterialCommunityIcons name="dots-vertical" size={24} color={colors.text} /></Button>}>
+                                                <Menu.Item onPress={() => {
+                                                    Share.share({
+                                                        url: `${props.item.photo}`,
+                                                        title: `${props.item.postedBy.userName}`,
+                                                        message: `${props.item.caption}`,
+                                                    })
+                                                }} title="share" />
+                                                <Menu.Item onPress={() => { downloadFile(props.item) }} title="Download Image" />
+                                                <Menu.Item onPress={() => { ReportTheUser(props.item) }} title="Report" />
+                                                {props.item.postedBy._id == UserId ? (
+                                                    <Menu.Item onPress={() => DeletePost(props.item)} title="Delete" />
+                                                ) : (
+                                                    <View></View>
+                                                )}
+                                            </Menu>
+                                        </View>
+                                    </Right>
+                                </Card>
                                 <TouchableOpacity
                                     activeOpacity={1}
                                     style={styles(colors).item}
@@ -510,7 +560,7 @@ const Postcard = (props) => {
                                     </TouchableOpacity>
                                     <View style={styles(colors).lowerContainer}>
                                         <Text style={styles(colors).contentText} numberOfLines={2}>{props.item.caption} </Text>
-                                            <CardLayout />
+                                        <CardLayout />
                                         {
                                             active ? (
                                                 <Item style={{}}>

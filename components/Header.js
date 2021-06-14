@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { SafeAreaView, Text, StatusBar, TouchableOpacity } from 'react-native';
+import { SafeAreaView, Text, StatusBar, TouchableOpacity, Share } from 'react-native';
 import { Header, Button, Icon, Left, Body, View, Right, Title, Item, Input, Radio, } from 'native-base';
-import { Avatar,} from 'react-native-paper';
+import { Avatar, } from 'react-native-paper';
 import { DataLayerValue } from '../Context/DataLayer';
 import { MaterialIcons, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useFonts } from 'expo-font';
@@ -43,7 +43,7 @@ const Headingbar = (props) => {
     const Headingcomp = () => {
         return (
             <View >
-                
+
                 <Header style={{ backgroundColor: colors.background }}>
                     <StatusBar backgroundColor={colors.background} />
                     <Left>
@@ -102,7 +102,22 @@ const Headingbar = (props) => {
             </View>
         )
     }
-
+    const ReportTheUser = (item) => {
+        fetch(`${Config.url}` + `/report`, {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + `${userToken}`,
+                'Content-Type': "application/json",
+            },
+            body: JSON.stringify({
+                description: `chat`+item.username,
+                errscreenshot: item.userphoto
+            })
+        }).then(res => res.json()).then((resp) => {
+            console.log(resp)
+            alert('reported this post and user')
+        })
+    }
     const Headerforchat = (props) => {
         return (
             <Header style={{ backgroundColor: colors.card }}>
@@ -127,31 +142,22 @@ const Headingbar = (props) => {
                     </View>
                 </TouchableOpacity>
                 <Right>
-                    <Menu
-                        visible={visible}
-                        onDismiss={closeMenu}
-                        anchor={<Button onPress={openMenu} transparent><MaterialCommunityIcons name="dots-vertical" size={24} color={colors.text} /></Button>}>
-                        <Menu.Item onPress={() => {
-                            Share.share({
-                                url: `${props.item.photo}`,
-                                title: `${props.item.postedBy.userName}`,
-                                message: `${props.item.caption}`,
-                            })
-                        }} title="share" />
-                        <Menu.Item onPress={() => { downloadFile(props.item) }} title="Download Image" />
-                    </Menu>
+                    <Button onPress={() => { ReportTheUser(props.user) }}>
+                        <MaterialIcons name="report" size={24} color={colors.primary} />
+                    </Button>
                 </Right>
             </Header>
         )
     }
     return (
-        <SafeAreaView>
 
+        <SafeAreaView>
             {
                 props.route.name === 'message' ? (
                     <>
                         <Headerforchat {...props} />
                     </>
+
                 ) : (
                     <>
                         {
@@ -176,8 +182,6 @@ const Headingbar = (props) => {
                                         </>
                                     ) : (
                                         <>
-
-
                                             <Headingcomp />
                                         </>
                                     )}
@@ -187,8 +191,6 @@ const Headingbar = (props) => {
                     </>
                 )
             }
-
-
         </SafeAreaView>
     )
 }

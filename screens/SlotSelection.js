@@ -8,35 +8,60 @@ import { Button, Textarea, } from 'native-base';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Config } from '../config';
 import { DataLayerValue } from '../Context/DataLayer';
-
+import { setStatusBarNetworkActivityIndicatorVisible } from 'expo-status-bar';
+import * as ImagePicker from 'expo-image-picker';
+import { firebase } from '../components/firebase'
+import 'firebase/auth';
+import 'firebase/firestore';
 const SlotSelection = (props) => {
     const { colors } = useTheme();
     const [date, setDate] = useState('09-10-2020');
     const [Input, setInput] = useState(null);
     const [uploading, setuploading] = useState(false);
-    const [slotavailable, setslotavailable] = useState(null);
+    const [slotavailable, setslotavailable] = useState(false);
     const [attachment, setattachment] = useState(false)
     const [{ userToken, user }, dispatch] = DataLayerValue();
-    console.log(props.route.params.thread);
-    const VerifyTheSlot = (ele) => {
-        fetch(`${Config.url}` + `/Interview`, {
-            headers: {
-                'Authorization': 'Bearer ' + `${userToken}`,
-            },
-            method: 'GET'
-        })
-            .then((response) => response.json())
-            .then((responseJson) => {
-                console.log(responseJson)
+    const [active, setactive] = useState('1');
+    const VerifyTheSlot = () => {
+        try {
+            fetch(`${Config.url}` + `/Interview`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + `${userToken}`,
+                    'Content-Type': 'application/json',
+                },
             })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+                    data.map((ele) => {
+                        if (ele.InterviewDate == date && ele.InterviewTime == active.time) {
+                            alert('slot not available');
+                            setslotavailable(false);
+                        } else {
+                            alert('slot available');
+                            setslotavailable(true);
+                        }
+                    })
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        } catch (error) {
+            alert(error)
+        }
     }
     const _upload = async () => {
-        if (!attachment) {
-            alert('no photo selected to post');
-        }
-        else {
-            setuploading(true);
-            uploadPhotoAsync()
+        if (slotavailable) {
+            if (!attachment) {
+                alert('no photo selected to post');
+            }
+            else {
+                setuploading(true);
+                uploadPhotoAsync()
+            }
+        } else {
+            alert('Err: slot not available')
         }
     }
     const uploadPhotoAsync = async () => {
@@ -81,7 +106,7 @@ const SlotSelection = (props) => {
     }
     const mongoupload = (url) => {
         try {
-            fetch(`${Config.url}` + `/post`, {
+            fetch(`${Config.url}` + `/applyforinterview`, {
                 method: 'POST',
                 headers: {
                     'Authorization': 'Bearer ' + `${userToken}`,
@@ -89,7 +114,7 @@ const SlotSelection = (props) => {
                 },
                 body: JSON.stringify({
                     InterviewDate: date,
-                    InterviewTime: ele,
+                    InterviewTime: active.time,
                     Branch: props.route.params.thread,
                     paymentrefid: Input,
                     paymentattachment: attachment
@@ -152,14 +177,10 @@ const SlotSelection = (props) => {
                     renderItem={({ item }) => {
                         let ele = item
                         return (
-                            <TouchableOpacity style={{
-                                width: width / 2, height: 100, backgroundColor: colors.background, flexDirection: 'row',
-                                marginLeft: 0, marginBottom: 8, borderWidth: 2, borderColor: colors.border, justifyContent: 'center',
-                                borderRadius: 10, marginRight: 0
-                            }}
-                            // onPress={() => {
-                            //     props.navigation.navigate('external', { screen: 'slot', params: { thread: ele.course } })
-                            // }}
+                            <TouchableOpacity style={active.id == item.id ? styles(colors).selectedlist : styles(colors).timelist}
+                                onPress={() => {
+                                    setactive(ele)
+                                }}
                             >
                                 <View style={{ justifyContent: 'center', alignSelf: 'center' }}>
                                     <Text style={{ fontSize: 20, fontWeight: 'bold', color: colors.text, textAlign: "center" }} >{ele.time} </Text>
@@ -176,21 +197,24 @@ const SlotSelection = (props) => {
                     <Text style={{ color: colors.text, textAlign: "center" }}>Verify Slot Availability</Text>
                 </Button>
             </View>
-            <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                <Text style={{ color: colors.text, textAlign: 'center', }}>Attach Bug File</Text>
-                <TouchableOpacity onPress={_pickImagefromGallery}>
-                    <MaterialIcons name="attach-file" size={24} color={colors.primary} />
-                </TouchableOpacity>
-            </View>
+
             <View >
-                <Text style={{ fontSize: 18, color: colors.primary, textAlign: "center", marginBottom: 10, marginTop: 20 }}>Pay INR 300 to upi id: raghav@kotak</Text>
+                <Text style={{ fontSize: 18, color: colors.primary, textAlign: "center", marginBottom: 10, marginTop: 20 }}>Pay INR 300 to upi id: meetnischay@okicici</Text>
                 <TextInput
                     value={Input}
                     onChangeText={(e) => setInput(e)}
-                    style={{ borderWidth: 1, borderColor: 'grey', color: colors.text, marginLeft: 15, padding: 10, marginTop: 25, marginRight: 15 }}
+                    style={{ borderWidth: 1, borderColor: 'grey', color: colors.text, marginLeft: 15, padding: 10, marginTop: 25, marginRight: 15, marginBottom: 10 }}
                     placeholder='Payment Ref Id'
                     placeholderTextColor='grey'
                 />
+
+                <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                    <Text style={{ color: colors.text, textAlign: 'center', }}>Attach Payment Screenshot</Text>
+                    <TouchableOpacity onPress={_pickImagefromGallery}>
+                        <MaterialIcons name="attach-file" size={24} color={colors.primary} />
+                    </TouchableOpacity>
+                </View>
+
                 <Button
                     onPress={_upload}
                     style={{ justifyContent: 'center', alignSelf: 'center', width: 200, backgroundColor: colors.card, borderColor: 'grey', borderWidth: 0.2, marginTop: 15 }}>
@@ -210,6 +234,16 @@ const styles = (colors) => StyleSheet.create({
         color: colors.text,
         marginBottom: 10
     },
+    timelist: {
+        width: width / 2, height: 100, backgroundColor: colors.background, flexDirection: 'row',
+        marginLeft: 0, marginBottom: 8, borderWidth: 2, borderColor: colors.border, justifyContent: 'center',
+        borderRadius: 10, marginRight: 0
+    },
+    selectedlist: {
+        width: width / 2, height: 100, backgroundColor: 'grey', flexDirection: 'row',
+        marginLeft: 0, marginBottom: 8, borderWidth: 2, borderColor: colors.border, justifyContent: 'center',
+        borderRadius: 10, marginRight: 0
+    }
 })
 const Data = [{
     "time": "10.00",

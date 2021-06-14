@@ -3,7 +3,7 @@ import {
     DrawerItem
 } from '@react-navigation/drawer';
 import React, { useState } from 'react';
-import { StyleSheet, View, Linking, Text, Image } from 'react-native';
+import { StyleSheet, View, Linking, Text, Image, TouchableOpacity } from 'react-native';
 import { FontAwesome5, MaterialCommunityIcons, SimpleLineIcons, Octicons, FontAwesome, MaterialIcons, AntDesign } from '@expo/vector-icons';
 import { DataLayerValue } from '../Context/DataLayer';
 import * as SecureStore from 'expo-secure-store';
@@ -35,13 +35,13 @@ export function DrawerContent(props) {
             <View style={styles(colors).drawerContent}>
                 <View style={styles(colors).userInfoSection}>
                     <View style={{ flexDirection: 'row', marginTop: 5, }}>
-                    <View style={{ marginLeft: 15, flexDirection: 'column',justifyContent:"center",alignSelf:'center' }}>
+                        <View style={{ marginLeft: 15, flexDirection: 'column', justifyContent: "center", alignSelf: 'center' }}>
                             <Text style={{
-                                fontSize: 38, 
+                                fontSize: 38,
                                 marginTop: 5,
                                 color: colors.text,
-                                fontFamily: 'Montserrat', 
-                                textAlign:'center'
+                                fontFamily: 'Montserrat',
+                                textAlign: 'center'
                             }}>VtYuva</Text>
                             <Text style={styles(colors).caption}>Unleash your potential</Text>
                         </View>
@@ -94,7 +94,7 @@ export function DrawerContent(props) {
                             label="Mock interview"
                             onPress={() => {
                                 // dispatch({ type: 'ROUTEPROP', data: 'interview' })
-                                props.navigation.navigate('external', { screen: 'notes' })
+                                props.navigation.navigate('external', { screen: 'interview' })
                             }}
                         />
                         <DrawerItem
@@ -106,6 +106,26 @@ export function DrawerContent(props) {
                                 // dispatch({ type: 'ROUTEPROP', data: 'events' })
                                 props.navigation.navigate('external', { screen: 'events' })
 
+                            }}
+                        />
+                        <DrawerItem
+                            icon={({ color, size }) => (
+                                <MaterialIcons name="note" size={24} color={colors.text} />)}
+                            labelStyle={{ color: colors.text }}
+                            label="Notes"
+                            onPress={() => {
+                                // dispatch({ type: 'ROUTEPROP', data: 'events' })
+                                props.navigation.navigate('external', { screen: 'rendernotes' })
+                            }}
+                        />
+                        <DrawerItem
+                            icon={({ color, size }) => (
+                                <MaterialIcons name="file-upload" size={24} color={colors.text} />)}
+                            labelStyle={{ color: colors.text }}
+                            label="Add Notes"
+                            onPress={() => {
+                                // dispatch({ type: 'ROUTEPROP', data: 'events' })
+                                props.navigation.navigate('external', { screen: 'uploadNotes' })
                             }}
                         />
 
@@ -149,18 +169,7 @@ export function DrawerContent(props) {
 
                             }}
                         />
-                        {/* <DrawerItem
-                            icon={({ color, size }) => (
-                                <MaterialIcons name="money" size={24} color={colors.text} />
-                            )}
-                            labelStyle={{ color: colors.text }}
-                            label="Refer And Earn"
-                            onPress={
-                                () => {
-                                    props.navigation.navigate('external', { screen: 'referral' })
-                                }
-                            }
-                        /> */}
+
                     </View>
                 </DrawerContentScrollView>
                 <View style={styles(colors).bottomDrawerSection}>
@@ -174,7 +183,9 @@ export function DrawerContent(props) {
                     />
                 </View>
             </View>
-
+            <TouchableOpacity onPress={()=>Linking.openURL('https://guidemic.in')}>
+            <Text style={{color:colors.primary,textAlign:'center'}}>Supported By Guidemic</Text>
+            </TouchableOpacity>
         </View>
     );
 }
@@ -193,8 +204,8 @@ const styles = (colors) => StyleSheet.create({
     caption: {
         fontSize: 14,
         color: 'yellow',
-        textAlign:'right'
-    }, 
+        textAlign: 'right'
+    },
     userInfoSection: {
         paddingLeft: 20,
         backgroundColor: colors.border,

@@ -24,7 +24,8 @@ LogBox.ignoreLogs(['Animated.event now requires a second argument for options'])
 LogBox.ignoreLogs(['Animated: `useNativeDriver` was not specified']);
 import Image from 'react-native-image-progress';
 import * as Progress from 'react-native-progress';
-
+import { Menu, } from 'react-native-paper'
+import { Provider } from 'react-native-paper';
 export function Chat(props) {
   const [imagePicked, setImagePicked] = useState(null);
   const [visible, setVisible] = useState();

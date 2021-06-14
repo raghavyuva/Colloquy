@@ -32,7 +32,7 @@ const Events = (props) => {
         })
             .then((response) => response.json())
             .then((responseJson) => {
-                console.log(responseJson)
+                // console.log(responseJson)
                 dispatch({
                     type: "EVENTS",
                     eventdata: responseJson

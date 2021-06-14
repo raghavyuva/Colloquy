@@ -47,7 +47,7 @@ const Home = (props) => {
         requestUserPermission();
         AdMobInterstitial.setAdUnitID('ca-app-pub-1751328492898824/9408017662')
         _openInterstitial()
-        GetPermofStorage()
+        
         // setTestDeviceIDAsync('EMULATOR');
         // _openRewarded()
         registerForPushNotifications();
@@ -292,20 +292,7 @@ const Home = (props) => {
             setdisableinter(false);
         }
     }
-    const GetPermofStorage = async () => {
-        const { status } = await ImagePicker.getMediaLibraryPermissionsAsync()
-        if (status == 'granted') {
-            dispatch({ type: 'STORAGEPERMISSION', data: 'granted' })
-        } else {
-            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-            console.log(status)
-            if (status == 'granted') {
-                dispatch({ type: 'STORAGEPERMISSION', data: 'granted' })
-            } else {
-                dispatch({ type: 'STORAGEPERMISSION', data: 'notgranted' })
-            }
-        }
-    }
+   
 
     const _openRewarded = async () => {
         try {
