@@ -27,7 +27,7 @@ import WaveComp from '../components/WaveComp';
 
 const Home = (props) => {
 
-    const [{ userToken, postData, searchactive, UserId, allusers, isOnline, refreshhome }, dispatch] = DataLayerValue();
+    const [{ userToken, postData, searchactive, UserId, allusers, isOnline, }, dispatch] = DataLayerValue();
     const [Notify, setNotify] = useState('');
     const [refresh, setrefresh] = useState(false);
     const [loading, setloading] = useState(true);
@@ -45,9 +45,9 @@ const Home = (props) => {
     useEffect(() => {
         let IsMounted = true
         requestUserPermission();
-        AdMobInterstitial.setAdUnitID('ca-app-pub-1751328492898824/9408017662')
+        AdMobInterstitial.setAdUnitID('ca-app-pub-1751328492898824/7263750804')
         _openInterstitial()
-        
+
         // setTestDeviceIDAsync('EMULATOR');
         // _openRewarded()
         registerForPushNotifications();
@@ -59,19 +59,9 @@ const Home = (props) => {
         }
     }, [])
 
-    // fetch(`${Config.url}` + `/updateonlinestatus`, {
-    //     method: 'PUT',
-    //     headers: {
-    //         'Authorization': 'Bearer ' + `${userToken}`,
-    //         'Content-Type': "application/json",
-    //     },
-    //     body: JSON.stringify({
-    //         isonline: isOnline === 'active' ? true : false,
-    //     })
-    // }).then(res => res.json()).then((resp) => {
-    // })
+
     const fetching = () => {
-        dispatch({ type: "REFRESH", data: true })
+        setrefresh(true)
         fetch(`${Config.url}` + `/post`, {
             headers: {
                 'Authorization': 'Bearer ' + `${userToken}`,
@@ -84,7 +74,7 @@ const Home = (props) => {
                     type: "POSTDATA",
                     postData: responseJson
                 })
-                dispatch({ type: "REFRESH", data: false })
+                setrefresh(false);
                 setloading(false)
             })
     }
@@ -169,6 +159,7 @@ const Home = (props) => {
 
     const registerForPushNotifications = async () => {
         const token = await Notifications.getExpoPushTokenAsync();
+        console.log(token.data);
         try {
             fetch(`${Config.url}` + `/notifytoken`, {
                 method: 'PUT',
@@ -233,7 +224,7 @@ const Home = (props) => {
                     return item.username.toLowerCase().includes(searchText.toLowerCase());
                 });
                 setfiltered(filteredData);
-                if (filteredData.length === 0) {
+                if (filteredData.length === 0) { 
                     setNotfound(true)
                 }
                 break;
@@ -270,7 +261,7 @@ const Home = (props) => {
                 onScrollAnimationEnd
                 scrollToOverflowEnabled
                 onEndReachedThreshold={0}
-                refreshing={refreshhome}
+                refreshing={refresh}
                 onRefresh={fetching}
                 style={{ marginBottom: 100 }}
             />
@@ -292,7 +283,7 @@ const Home = (props) => {
             setdisableinter(false);
         }
     }
-   
+
 
     const _openRewarded = async () => {
         try {

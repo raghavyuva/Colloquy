@@ -11,6 +11,8 @@ import { DataLayerValue } from '../Context/DataLayer';
 import { Config } from '../config';
 import Usercard from '../components/Usercard';
 import LoadingComp from '../components/LoadingComp';
+var _ = require('lodash');
+
 require('firebase/storage');
 import {
     AdMobBanner,
@@ -31,6 +33,7 @@ const ListOfChats = (props) => {
     const [Notfound, setNotfound] = useState(false);
     const [AllUsers, setAllUsers] = useState(null);
     const [refresh, setrefresh] = useState(false);
+    const [snap, setsnap] = useState(null);
     const [{ user, searchactive, userToken, UserId, followinglist }, dispatch] = DataLayerValue()
     useEffect(() => {
         let IsMounted = true;
@@ -66,6 +69,12 @@ const ListOfChats = (props) => {
             .collection('chatrooms').orderBy("latestMessage", "desc")
             .onSnapshot((querySnapshot) => {
                 const threads = querySnapshot.docs.map((documentSnapshot) => {
+                    setsnap(documentSnapshot.data())
+                    if (documentSnapshot.data().UserType.sentBy === user.user._id || documentSnapshot.data().UserType.sentTo === user.user._id) {
+                        // console.log('hey')
+                        console.log(documentSnapshot.data().UserType.sentTo)
+                        // setAllUsers(AllUsers - documentSnapshot.data().UserType.sentTo )
+                    }
                     return {
                         _id: documentSnapshot.id,
                         name: "",
@@ -82,6 +91,7 @@ const ListOfChats = (props) => {
                         ...documentSnapshot.data(),
                     };
                 })
+
                 setThreads(threads);
                 setloading(false);
             });
@@ -111,16 +121,16 @@ const ListOfChats = (props) => {
         })
             .then((response) => response.json())
             .then((responseJson) => {
-                setAllUsers(responseJson)
+                var som = _.shuffle(responseJson)
+                setAllUsers(som);
                 setloading(false);
             })
     }
 
-
     const MessageParticularguy = (guy) => {
 
         props.navigation.navigate('external', {
-            screen: 'message', params: {
+            screen: 'message', params: { 
                 anotheruser: guy
             }
         })
@@ -137,6 +147,7 @@ const ListOfChats = (props) => {
                             ? (
                                 <>
                                     {item.UserType.sentBy === user.user._id ? (
+
                                         <TouchableOpacity onPress={() => { MessageParticularguy(item.latestMessage.user2) }}   >
                                             <Card style={{ borderWidth: 2, borderColor: colors.border, borderBottomColor: colors.border, }} >
 
@@ -212,7 +223,7 @@ const ListOfChats = (props) => {
                 renderItem={({ item }) => {
                     return (
                         <Usercard item={item} name={'chatscreen'} user={UserId} {...props} thread={threads} />
-                    );
+                    )
                 }}
                 keyExtractor={(item, index) => index.toString()}
                 data={filtered && filtered.length > 0 ? filtered : AllUsers}
@@ -231,13 +242,14 @@ const ListOfChats = (props) => {
                                 </>
                             ) : (
                                 <>
-                                  <Card style={{ backgroundColor: colors.background, borderWidth: 0, borderColor: colors.card }}>
+                                    <Card style={{ backgroundColor: colors.background, borderWidth: 0, borderColor: colors.card }}>
                                         <Text style={{ color: colors.primary, fontSize: 16, fontStyle: 'italic' }}>Recent chats</Text>
                                     </Card>
                                     <ChatSection />
                                     <Card style={{ backgroundColor: colors.background, borderWidth: 0, borderColor: colors.card }}>
                                         <Text style={{ color: colors.primary, fontSize: 16, fontStyle: 'italic' }}>Your Friends On Vtyuva</Text>
                                     </Card>
+
                                 </>
                             )}
                         </>
@@ -285,6 +297,7 @@ const ListOfChats = (props) => {
             {searchactive ? (
                 <>
                     <Header searchBar rounded style={{ backgroundColor: colors.background, }}>
+                    <StatusBar backgroundColor={colors.card} />
                         <Item style={{ backgroundColor: colors.background }}>
                             <TouchableOpacity onPress={ActivateSearch}>
                                 <Icon name="arrow-back" style={{ backgroundColor: colors.background }} />
@@ -310,7 +323,7 @@ const ListOfChats = (props) => {
                     <ListOfUsers />
                 </>
             ) : (
-                <> 
+                <>
                     <View style={{ flex: 1 }} >
                         <StatusBar backgroundColor={colors.card} />
                         <Headerv {...props} />

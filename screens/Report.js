@@ -15,6 +15,8 @@ import 'firebase/firestore';
 import { DataLayerValue } from '../Context/DataLayer';
 import LoadingComp from '../components/LoadingComp';
 require('firebase/storage');
+var _ = require('lodash');
+
 const Report = (props) => {
     const [Input, setInput] = useState('');
     const [{ userToken, user }, dispatch] = DataLayerValue();
@@ -26,12 +28,20 @@ const Report = (props) => {
     const [Data, setData] = useState(null);
     const [filtered, setfiltered] = useState(null);
     const [submitting, setsubmitting] = useState(false);
+    const [storagestatus, setstoragestatus] = useState(null);
     const handlePress = () => setExpanded(!expanded);
-    const attachFile = () => {
-        if (status === 'granted') {
+    const attachFile = async () => {
+        if (storagestatus === 'granted') {
             _pickImagefromGallery();
         } else {
-            alert('we need camera permission to attach file')
+            alert('we need camera permission to attach file');
+            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+            console.log(status)
+            if (status == 'granted') {
+                setstoragestatus('granted')
+            } else {
+                setstoragestatus('notgranted')
+            }
         }
     }
     const _pickImagefromGallery = async () => {
@@ -78,7 +88,7 @@ const Report = (props) => {
                             errscreenshot: url
                         })
                     }).then(res => res.json()).then((resp) => {
-                        console.log(resp);
+                        // console.log(resp); 
                         alert('submitted');
                         setInput('');
                         setattached(false);
@@ -91,7 +101,7 @@ const Report = (props) => {
     }
     useEffect(() => {
         let IsMounted = true;
-        getPermissionAsync();
+        GetPermofStorage();
         Fetching()
         return () => {
             IsMounted = false;
@@ -116,8 +126,8 @@ const Report = (props) => {
             })
                 .then(response => response.json())
                 .then(data => {
-                    setData(data);
-                    console.log(Data)
+                    var shuffled = _.shuffle(data);
+                    setData(shuffled);
                 })
                 .catch((error) => {
                     console.error('Error:', error);
@@ -126,14 +136,19 @@ const Report = (props) => {
             alert(error)
         }
     }
-    const getPermissionAsync = async () => {
-        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (status !== 'granted') {
-            alert('Sorry, we need camera roll permissions to make this work!');
-            setstatus('notgranted')
+    const GetPermofStorage = async () => {
+        const { status } = await ImagePicker.getMediaLibraryPermissionsAsync()
+        console.log(status);
+        if (status == 'granted') {
+            setstoragestatus('granted')
         } else {
-            setstatus('granted');
-
+            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+            console.log(status)
+            if (status == 'granted') {
+                setstoragestatus('granted')
+            } else {
+                setstoragestatus('notgranted')
+            }
         }
     }
     const submitfile = () => {
@@ -154,6 +169,20 @@ const Report = (props) => {
         return (
             <LoadingComp />
         )
+    }
+    if (setstoragestatus == 'notgranted') {
+        const { status } = ImagePicker.getMediaLibraryPermissionsAsync;
+        if (status != 'granted') {
+            setstoragestatus('granted')
+            return (
+                <View style={{ flex: 1, backgroundColor: colors.background }}>
+                    <Headingbar {...props} />
+                    <Text style={{ color: colors.text }}>We Need Camera Roll Permission to make this work</Text>
+                </View>
+            )
+        } else {
+            setstoragestatus('notgranted')
+        }
     }
     return (
         <View style={{ flex: 1, backgroundColor: colors.background }}>

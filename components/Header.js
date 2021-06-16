@@ -10,7 +10,7 @@ import { Menu, Provider } from 'react-native-paper';
 import { Config } from '../config';
 
 const Headingbar = (props) => {
-    const [{ user, defdarktheme, searchactive, chattee, chatteeOnline }, dispatch] = DataLayerValue()
+    const [{ user, defdarktheme, searchactive, chattee, chatteeOnline, userToken }, dispatch] = DataLayerValue()
     const [toggle, setToggle] = useState(true);
     const { colors } = useTheme();
     const [visible, setVisible] = React.useState(false);
@@ -110,12 +110,12 @@ const Headingbar = (props) => {
                 'Content-Type': "application/json",
             },
             body: JSON.stringify({
-                description: `chat`+item.username,
+                description: `chat` + item.username,
                 errscreenshot: item.userphoto
             })
         }).then(res => res.json()).then((resp) => {
             console.log(resp)
-            alert('reported this post and user')
+            alert('reported this  user')
         })
     }
     const Headerforchat = (props) => {
@@ -142,7 +142,42 @@ const Headingbar = (props) => {
                     </View>
                 </TouchableOpacity>
                 <Right>
-                    <Button onPress={() => { ReportTheUser(props.user) }}>
+                    <Button onPress={() => { ReportTheUser(props.user) }} transparent>
+                        <MaterialIcons name="report" size={24} color={colors.primary} />
+                    </Button>
+                </Right>
+            </Header>
+        )
+    }
+    const HeaderForStatus = (props) => {
+        console.log(props.user)
+        return (
+            <Header style={{ backgroundColor: colors.card }}>
+                <StatusBar backgroundColor={colors.background} />
+                <Left>
+                    <Button transparent onPress={() => { props.navigation.goBack() }}>
+                        <Icon name='arrow-back' style={{ color: colors.text }} />
+                    </Button>
+                </Left>
+                <TouchableOpacity style={{ flexDirection: "row" }}
+                // onPress={() => props.navigation.navigate('external', { screen: 'userpro', params: { thread: props.user._id } })}
+                >
+                    <Avatar.Image
+                        source={{
+                            uri: props.user.postedBy.userphoto
+                        }}
+                        size={40}
+                        style={{ margin: 8 }}
+                    />
+                    <View >
+                        <Text style={{ color: colors.text, fontSize: 20, margin: 10 }} numberOfLines={1}>{props.user.postedBy.username}</Text>
+                    </View>
+                </TouchableOpacity>
+                <Right>
+                    <Button
+                        // onPress={() => { ReportTheUser(props.user) }}
+                        transparent
+                    >
                         <MaterialIcons name="report" size={24} color={colors.primary} />
                     </Button>
                 </Right>
@@ -161,35 +196,48 @@ const Headingbar = (props) => {
                 ) : (
                     <>
                         {
-                            props.route.name === 'addblog' ? (
+                            props.route.name === 'StatusView' ? (
                                 <>
+                                    <HeaderForStatus {...props} />
                                 </>
                             ) : (
                                 <>
-                                    {props.route.name === 'Home' ? (
-                                        <>
-                                            {searchactive ? (
-                                                <>
+                                    {
+                                        props.route.name === 'addblog' ? (
+                                            <>
+                                            </>
+                                        ) : (
+                                            <>
+                                                {props.route.name === 'Home' ? (
+                                                    <>
+                                                        {searchactive ? (
+                                                            <>
 
-                                                </>
-                                            ) : (
-                                                <>
+                                                            </>
+                                                        ) : (
+                                                            <>
 
 
-                                                    <Headingcomp />
-                                                </>
-                                            )}
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Headingcomp />
-                                        </>
-                                    )}
+                                                                <Headingcomp />
+                                                            </>
+                                                        )}
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <Headingcomp />
+                                                    </>
+                                                )}
+                                            </>
+                                        )
+
+                                    }
                                 </>
                             )
                         }
+
                     </>
                 )
+
             }
         </SafeAreaView>
     )

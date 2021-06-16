@@ -23,7 +23,7 @@ import "@firebase/firestore";
 import UploadingComp from '../components/UploadingComp';
 import LoadingComp from '../components/LoadingComp';
 LogBox.ignoreLogs(['Setting a timer']);
-LogBox.ignoreLogs(['']);
+// LogBox.ignoreLogs(['']);
 
 const Uploadpost = (props) => {
     const [loading, setloading] = useState(true)
@@ -31,7 +31,7 @@ const Uploadpost = (props) => {
     const [uploading, setuploading] = useState(false);
     const [ondone, setondone] = useState(false);
     const [postimage, setpostimage] = useState('')
-    const [{ userToken, user, defdarktheme, permstorage }, dispatch] = DataLayerValue()
+    const [{ userToken, user, defdarktheme, }, dispatch] = DataLayerValue()
     const [loaclimages, setloaclimages] = useState('');
     const [selectedItems, setselectedItems] = useState([]);
     const [location, setLocation] = useState(null);
@@ -43,22 +43,12 @@ const Uploadpost = (props) => {
     const [toggle, setToggle] = useState(true);
     const [status, setstatus] = useState(null);
     const [active, setactive] = useState(false)
-
+    const [storagestatus, setstoragestatus] = useState(false)
     useEffect(() => {
         let IsMounted = true;
         // console.log(permstorage)
         GetPermofStorage();
-        (async () => {
-            if (status == 'granted') {
-                const media = MediaLibrary.getAssetsAsync({
-                    mediaType: MediaLibrary.MediaType.photo,
-                });
-                setloaclimages((await media).assets)
-                setfirst((await media).assets[0].uri);
-                setpostimage((await media).assets[0])
-                LOcGetter()
-            }
-        })();
+
         return () => {
             IsMounted = false;
         }
@@ -110,10 +100,10 @@ const Uploadpost = (props) => {
                 let upload = firebase.storage().ref(postimage.filename).put(file)
                 upload.on(
                     "state_changed",
-                    snapshot => { 
+                    snapshot => {
                         var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                         console.log('Upload is ' + progress + '% done');
-    
+
                         switch (snapshot.state) {
                             case firebase.storage.TaskState.PAUSED: // or 'paused'
                                 console.log('Upload is paused');
@@ -141,15 +131,31 @@ const Uploadpost = (props) => {
     };
     const GetPermofStorage = async () => {
         const { status } = await ImagePicker.getMediaLibraryPermissionsAsync()
+        console.log(status);
         if (status == 'granted') {
-            setstatus('granted')
-        } else { 
+            setstoragestatus('granted')
+            const media = MediaLibrary.getAssetsAsync({
+                mediaType: MediaLibrary.MediaType.photo,
+            });
+            setloaclimages((await media).assets)
+            setfirst((await media).assets[0].uri);
+            setpostimage((await media).assets[0])
+            LOcGetter()
+        } else {
             const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
             console.log(status)
             if (status == 'granted') {
-                setstatus('granted')
+                setstoragestatus('granted')
+
+                const media = MediaLibrary.getAssetsAsync({
+                    mediaType: MediaLibrary.MediaType.photo,
+                });
+                setloaclimages((await media).assets)
+                setfirst((await media).assets[0].uri);
+                setpostimage((await media).assets[0])
+                LOcGetter()
             } else {
-                setstatus('notgranted')
+                setstoragestatus('notgranted')
             }
         }
     }
@@ -295,11 +301,10 @@ const Uploadpost = (props) => {
         )
     }
 
-    if (permstorage == 'notgranted') {
+    if (setstoragestatus == 'notgranted') {
         const { status } = ImagePicker.getMediaLibraryPermissionsAsync;
-        console.log(status)
         if (status != 'granted') {
-            setstatus('notgranted')
+            setstoragestatus('granted')
             return (
                 <View style={{ flex: 1, backgroundColor: colors.background }}>
                     <HeaderView {...props} />
@@ -307,7 +312,7 @@ const Uploadpost = (props) => {
                 </View>
             )
         } else {
-            setstatus('granted')
+            setstoragestatus('notgranted')
         }
     }
 

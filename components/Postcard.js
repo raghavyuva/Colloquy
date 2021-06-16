@@ -18,16 +18,33 @@ const Postcard = (props) => {
     const [active, setactive] = useState(false);
     const [commenttext, setcommenttext] = useState('');
     const [visible, setVisible] = React.useState(false);
-
+    const [likes, setlikes] = useState(0);
     const [modalVisible, setModalVisible] = useState(false);
-
+    const [liked, setliked] = useState(null)
+    const [voted, setvoted] = useState(null)
+    const [votes, setvotes] = useState(0);
     const openMenu = () => setVisible(true);
-
     const closeMenu = () => setVisible(false);
     const { colors } = useTheme();
     useEffect(() => {
         let IsMounted = true;
+        setlikes(props.item.likes.length);
+        if (props.item.likes.includes(UserId)) {
+            setliked(true)
+        }
+        setvotes(props.item.votes.length)
+        if (props.item.votes.includes(UserId)) {
+            setvoted(true);
+        }
         return () => {
+            setlikes(props.item.likes.length);
+            if (props.item.likes.includes(UserId)) {
+                setliked(true)
+            }
+            setvotes(props.item.votes.length)
+            if (props.item.votes.includes(UserId)) {
+                setvoted(true);
+            }
             IsMounted = false;
         }
     }, [])
@@ -162,6 +179,8 @@ const Postcard = (props) => {
     }
     const onlIKE = async (item) => {
         try {
+            setlikes(likes + 1)
+            setliked(true);
             fetch(`${Config.url}` + `/posts/like/${item._id}`, {
                 method: 'PUT',
                 headers: {
@@ -170,8 +189,13 @@ const Postcard = (props) => {
                 },
             }).then(res => res.json()).then(async (resp) => {
                 let val = 'like';
-                await updatestore();
-                await Notifyy(val, item);
+                // await updatestore();
+                // dispatch({
+                //     type: "POSTDATA",
+                //     postData: resp
+                // })
+                // console.log(resp)
+                Notifyy(val, item);
             })
         } catch (error) {
             alert(error);
@@ -179,6 +203,8 @@ const Postcard = (props) => {
     }
     const onUnlIKE = (item) => {
         try {
+            setlikes(likes - 1)
+            setliked(false);
             fetch(`${Config.url}` + `/posts/unlike/${item._id}`, {
                 method: 'PUT',
                 headers: {
@@ -186,7 +212,8 @@ const Postcard = (props) => {
                     'Content-Type': "application/json",
                 },
             }).then(res => res.json()).then(async (resp) => {
-                await updatestore();
+                console.log(resp);
+                // await updatestore();
             })
         } catch (error) {
             alert(error);
@@ -201,6 +228,8 @@ const Postcard = (props) => {
     }
     const onVote = async (item) => {
         try {
+            setvotes(votes + 1);
+            setvoted(true);
             fetch(`${Config.url}` + `/posts/vote/${item._id}`, {
                 method: 'PUT',
                 headers: {
@@ -208,7 +237,8 @@ const Postcard = (props) => {
                     'Content-Type': "application/json",
                 },
             }).then(res => res.json()).then(async (resp) => {
-                await updatestore();
+                // await updatestore();
+
             })
         } catch (error) {
             alert(error);
@@ -216,6 +246,8 @@ const Postcard = (props) => {
     }
     const onVotecancell = (item) => {
         try {
+            setvotes(votes - 1);
+            setvoted(false);
             fetch(`${Config.url}` + `/posts/votecancell/${item._id}`, {
                 method: 'PUT',
                 headers: {
@@ -223,7 +255,7 @@ const Postcard = (props) => {
                     'Content-Type': "application/json",
                 },
             }).then(res => res.json()).then(async (resp) => {
-                await updatestore();
+                // await updatestore();
             })
         } catch (error) {
             alert(error);
@@ -277,15 +309,14 @@ const Postcard = (props) => {
     }
     const CardLayout = () => {
         return (
-
             <CardItem style={{ backgroundColor: colors.card, }} >
                 <Left style={{ flexDirection: "row", justifyContent: 'space-between' }}>
                     <Button transparent>
-                        {props.item.votes.includes(UserId) ?
+                        {voted ?
                             (<TouchableOpacity onPress={() => {
                                 onVotecancell(props.item)
                             }}>
-                                <MaterialIcons name="thumb-up-alt" size={24} color={colors.text} />
+                                <MaterialIcons name="thumb-up-alt" size={24} color='#ff1493' />
                             </TouchableOpacity>
                             ) : (
                                 <TouchableOpacity onPress={() => {
@@ -295,10 +326,10 @@ const Postcard = (props) => {
                                 </TouchableOpacity>
                             )
                         }
-                        <Text style={styles(colors).likecomtext}>{props.item.votes.length} vote</Text>
+                        <Text style={styles(colors).likecomtext}>{votes} vote</Text>
                     </Button>
                     <Button transparent  >
-                        {props.item.likes.includes(UserId) ?
+                        {liked ?
                             (<TouchableOpacity onPress={() => {
                                 onUnlIKE(props.item);
                             }}>
@@ -314,7 +345,7 @@ const Postcard = (props) => {
                         }
                         <Text style={{ textTransform: 'capitalize', color: colors.text }}
                             onPress={() => onGotoWhodid(props.item)}
-                        >{props.item.likes.length} {props.item.likes.length > 1 ? 'likes' : "like"}</Text>
+                        >{likes} {props.item.likes.length > 1 ? 'likes' : "like"}</Text>
                     </Button>
                     <Button transparent onPress={() => {
                         setactive(!active)

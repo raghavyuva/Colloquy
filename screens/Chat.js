@@ -34,11 +34,12 @@ export function Chat(props) {
   const [messages, setMessages] = useState([]);
   const { colors } = useTheme();
   const [AnOnline, setAnOnline] = useState(null);
-  const [{ userToken, postData, searchactive, UserId, user, permstorage }, dispatch] = DataLayerValue();
+  const [{ userToken, postData, searchactive, UserId, user, }, dispatch] = DataLayerValue();
   const [loading, setloading] = useState(true);
   const [filepresent, setfilepresent] = useState(false);
   const [imagetosendurl, setimagetosendurl] = useState(null);
   const [uploading, setuploading] = useState(null);
+  const [storagestatus, setstoragestatus] = useState(null);
   const _toggleBottomNavigationView = () => {
     setVisible(!visible);
   };
@@ -56,24 +57,25 @@ export function Chat(props) {
       </View>
     );
   };
-  const ImagePickerComponent = async () => {
-    if (permstorage == 'granted') {
-      setstatus('granted')
+  const GetPermofStorage = async () => {
+    const { status } = await ImagePicker.getMediaLibraryPermissionsAsync()
+    console.log(status);
+    if (status == 'granted') {
+      setstoragestatus('granted')
     } else {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       console.log(status)
       if (status == 'granted') {
-        dispatch({ type: 'STORAGEPERMISSION', data: 'granted' })
+        setstoragestatus('granted')
       } else {
-        dispatch({ type: 'STORAGEPERMISSION', data: 'notgranted' })
+        setstoragestatus('notgranted')
       }
     }
-  };
-
+  }
   useEffect(() => {
     let IsMounted = true;
     setloading(true);
-    ImagePickerComponent();
+    GetPermofStorage();
     const DocIdgenerated = anotheruser._id > user.user._id ? user.user._id + "-" + anotheruser._id : anotheruser._id + "-" + user.user._id
     const messagesListener = firebase
       .firestore()
@@ -107,7 +109,7 @@ export function Chat(props) {
     };
   }, []);
   const _pickImagefromGallery = async () => {
-    if (permstorage==='granted') {
+    if (storagestatus === 'granted') {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         base64: true,
@@ -122,7 +124,7 @@ export function Chat(props) {
     }
   };
   const _pickImagefromCamera = async () => {
-    if (permstorage==='granted') {
+    if (storagestatus === 'granted') {
       const result = await ImagePicker.launchCameraAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         base64: true,
@@ -247,8 +249,7 @@ export function Chat(props) {
 
 
 
-  const Notifyy = (val, sentby, sentto) => {
-    // console.log(val, sentto)
+  const Notifyy = async (val, sentby, sentto) => {
     fetch("https://exp.host/--/api/v2/push/send",
       {
         headers: {
@@ -262,9 +263,10 @@ export function Chat(props) {
           vibrationPattern: [0, 250, 250, 250],
           lightColor: '#FF231F7C',
           body: `${val}`,
-          title: `${sentby.username} sent you a message`
+          title: ` \uD83D\uDCE7 ${sentby.username} sent you a message`
         })
       })
+
   }
 
   const uploadImage = async (messages) => {

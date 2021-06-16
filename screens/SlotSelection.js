@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View, FlatList, TouchableOpacity, Dimensions, TextInput } from 'react-native'
 import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
 import Headingbar from '../components/Header';
@@ -13,6 +13,8 @@ import * as ImagePicker from 'expo-image-picker';
 import { firebase } from '../components/firebase'
 import 'firebase/auth';
 import 'firebase/firestore';
+import LoadingComp from '../components/LoadingComp';
+import UploadingComp from '../components/UploadingComp';
 const SlotSelection = (props) => {
     const { colors } = useTheme();
     const [date, setDate] = useState('09-10-2020');
@@ -21,9 +23,12 @@ const SlotSelection = (props) => {
     const [slotavailable, setslotavailable] = useState(false);
     const [attachment, setattachment] = useState(false)
     const [{ userToken, user }, dispatch] = DataLayerValue();
+    const [load, setload] = useState(false)
     const [active, setactive] = useState('1');
+    const [storagestatus, setstoragestatus] = useState(null);
     const VerifyTheSlot = () => {
         try {
+            setload(true);
             fetch(`${Config.url}` + `/Interview`, {
                 method: 'GET',
                 headers: {
@@ -33,35 +38,54 @@ const SlotSelection = (props) => {
             })
                 .then(response => response.json())
                 .then(data => {
-                    console.log('Success:', data);
                     data.map((ele) => {
                         if (ele.InterviewDate == date && ele.InterviewTime == active.time) {
-                            alert('slot not available');
+
                             setslotavailable(false);
                         } else {
-                            alert('slot available');
                             setslotavailable(true);
                         }
                     })
+                    if (slotavailable) {
+                        alert('slot available');
+                    } else {
+                        alert('slot not available');
+                    }
+                    setload(false)
                 })
                 .catch((error) => {
                     console.error('Error:', error);
+                    setload(false);
                 });
         } catch (error) {
             alert(error)
+            setload(false);
         }
+
     }
+
+    useEffect(() => {
+        let IsMounted = true;
+        GetPermofStorage();
+        return () => {
+            IsMounted = false;
+        }
+    }, [])
     const _upload = async () => {
-        if (slotavailable) {
-            if (!attachment) {
-                alert('no photo selected to post');
-            }
-            else {
-                setuploading(true);
-                uploadPhotoAsync()
+        if (storagestatus == 'granted') {
+            if (slotavailable) {
+                if (!attachment) {
+                    alert('no photo selected to post');
+                }
+                else {
+                    setuploading(true);
+                    uploadPhotoAsync()
+                }
+            } else {
+                alert('Err: slot not available')
             }
         } else {
-            alert('Err: slot not available')
+            alert('storage permission error');
         }
     }
     const uploadPhotoAsync = async () => {
@@ -89,19 +113,24 @@ const SlotSelection = (props) => {
             setuploading(false);
         }
     };
+
     const _pickImagefromGallery = async () => {
-        try {
-            let result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.All,
-                allowsEditing: true,
-                quality: 1,
-                aspect: [4, 3],
-            });
-            if (!result.cancelled) {
-                setattachment(result.uri)
+        if (storagestatus == 'granted') {
+            try {
+                let result = await ImagePicker.launchImageLibraryAsync({
+                    mediaTypes: ImagePicker.MediaTypeOptions.All,
+                    allowsEditing: true,
+                    quality: 1,
+                    aspect: [4, 3],
+                });
+                if (!result.cancelled) {
+                    setattachment(result.uri)
+                }
+            } catch (E) {
+                console.log(E);
             }
-        } catch (E) {
-            console.log(E);
+        } else {
+            alert('we need storage permission');
         }
     }
     const mongoupload = (url) => {
@@ -117,9 +146,10 @@ const SlotSelection = (props) => {
                     InterviewTime: active.time,
                     Branch: props.route.params.thread,
                     paymentrefid: Input,
-                    paymentattachment: attachment
+                    paymentattachment: url
                 })
             }).then(res => res.json()).then((resp) => {
+                alert('applied successfully')
                 setuploading(false);
             })
         } catch (error) {
@@ -127,7 +157,45 @@ const SlotSelection = (props) => {
             setuploading(false);
         }
     }
-
+    const GetPermofStorage = async () => {
+        const { status } = await ImagePicker.getMediaLibraryPermissionsAsync()
+        console.log(status);
+        if (status == 'granted') {
+            setstoragestatus('granted')
+        } else {
+            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+            console.log(status)
+            if (status == 'granted') {
+                setstoragestatus('granted')
+            } else {
+                setstoragestatus('notgranted')
+            }
+        }
+    }
+    if (setstoragestatus == 'notgranted') {
+        const { status } = ImagePicker.getMediaLibraryPermissionsAsync;
+        if (status != 'granted') {
+            setstoragestatus('granted')
+            return (
+                <View style={{ flex: 1, backgroundColor: colors.background }}>
+                    <Headingbar {...props} />
+                    <Text style={{ color: colors.text }}>We Need Camera Roll Permission to make this work</Text>
+                </View>
+            )
+        } else {
+            setstoragestatus('notgranted')
+        }
+    }
+    if (load) {
+        return (
+            <LoadingComp />
+        )
+    }
+    if (uploading) {
+        return (
+            <UploadingComp />
+        )
+    }
     return (
         <View style={{ flex: 1, backgroundColor: colors.background }}>
             <Headingbar {...props} />
@@ -197,30 +265,34 @@ const SlotSelection = (props) => {
                     <Text style={{ color: colors.text, textAlign: "center" }}>Verify Slot Availability</Text>
                 </Button>
             </View>
+            {slotavailable == true ? (
+                <View >
+                    <Text style={{ fontSize: 18, color: colors.primary, textAlign: "center", marginBottom: 10, marginTop: 20 }}>Pay INR 300 to upi id: meetnischay@okicici</Text>
+                    <TextInput
+                        value={Input}
+                        onChangeText={(e) => setInput(e)}
+                        style={{ borderWidth: 1, borderColor: 'grey', color: colors.text, marginLeft: 15, padding: 10, marginTop: 25, marginRight: 15, marginBottom: 10 }}
+                        placeholder='Payment Ref Id'
+                        placeholderTextColor='grey'
+                    />
 
-            <View >
-                <Text style={{ fontSize: 18, color: colors.primary, textAlign: "center", marginBottom: 10, marginTop: 20 }}>Pay INR 300 to upi id: meetnischay@okicici</Text>
-                <TextInput
-                    value={Input}
-                    onChangeText={(e) => setInput(e)}
-                    style={{ borderWidth: 1, borderColor: 'grey', color: colors.text, marginLeft: 15, padding: 10, marginTop: 25, marginRight: 15, marginBottom: 10 }}
-                    placeholder='Payment Ref Id'
-                    placeholderTextColor='grey'
-                />
+                    <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                        <Text style={{ color: colors.text, textAlign: 'center', }}>Attach Payment Screenshot</Text>
+                        <TouchableOpacity onPress={_pickImagefromGallery}>
+                            <MaterialIcons name="attach-file" size={24} color={colors.primary} />
+                        </TouchableOpacity>
+                    </View>
 
-                <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                    <Text style={{ color: colors.text, textAlign: 'center', }}>Attach Payment Screenshot</Text>
-                    <TouchableOpacity onPress={_pickImagefromGallery}>
-                        <MaterialIcons name="attach-file" size={24} color={colors.primary} />
-                    </TouchableOpacity>
+                    <Button
+                        onPress={_upload}
+                        style={{ justifyContent: 'center', alignSelf: 'center', width: 200, backgroundColor: colors.card, borderColor: 'grey', borderWidth: 0.2, marginTop: 15 }}>
+                        <Text style={{ color: colors.text }}>Apply For Interview</Text>
+                    </Button>
                 </View>
-
-                <Button
-                    onPress={_upload}
-                    style={{ justifyContent: 'center', alignSelf: 'center', width: 200, backgroundColor: colors.card, borderColor: 'grey', borderWidth: 0.2, marginTop: 15 }}>
-                    <Text style={{ color: colors.text }}>Apply For Interview</Text>
-                </Button>
-            </View>
+            ) : (
+                <>
+                </>
+            )}
         </View>
     )
 }
