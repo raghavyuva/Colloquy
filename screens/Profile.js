@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { StyleSheet, View, Dimensions, FlatList, TouchableOpacity, TextInput, Alert } from 'react-native'
-import { Fab, Button, Text } from 'native-base';
+import { Fab, Button, Text, Item, Label, Input } from 'native-base';
 const { width, height } = Dimensions.get('window');
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { DataLayerValue } from '../Context/DataLayer';
@@ -17,7 +17,6 @@ import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
 import LoadingComp from '../components/LoadingComp';
 import Image from 'react-native-image-progress';
 import * as Progress from 'react-native-progress';
-
 const Profile = (props) => {
     const [{ userToken, UserId, user }, dispatch] = DataLayerValue()
     const [load, setload] = useState(true);
@@ -28,12 +27,42 @@ const Profile = (props) => {
     const [postimage, setpostimage] = useState(user.user.userphoto)
     const [body, setbody] = useState(user.user.tagline);
     const [image, setimage] = useState('');
+    const [email, setemail] = useState(null);
+    const [token, settoken] = useState(null);
+    const [password, setPassword] = useState(null);
+    const [verifypass, setverifypass] = useState(null);
+    const [canbeshown, setcanbeshown] = useState(false);
+    const [acbottom, setacbottom] = useState(false)
     const GoTo_top_function = () => {
         flatListRef.scrollToOffset({ animated: true, offset: 0 });
     }
     const _toggleBottomNavigationView = () => {
         setvisible(!visible);
     };
+    const newpassword = () => {
+        if (password == verifypass) {
+            fetch(`${Config.url}` + `/new-password`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': "application/json",
+                },
+                body: JSON.stringify({
+                    token: token,
+                    password: password
+                })
+            }).then(res => res.json()).then((resp) => {
+                // console.log(resp);
+                alert(resp.message);
+                if (resp.message === 'password updated successfully') {
+
+                } else {
+
+                }
+            })
+        } else {
+            alert('err:passwords did not match')
+        }
+    }
     const { colors } = useTheme();
 
     const fetching = async () => {
@@ -161,6 +190,8 @@ const Profile = (props) => {
         }).then(res => res.json()).then((resp) => {
             console.log(resp);
             alert(resp.message);
+            setacbottom(true)
+            setcanbeshown(true);
         })
     }
     useEffect(() => {
@@ -184,7 +215,15 @@ const Profile = (props) => {
                 onBackButtonPress={_toggleBottomNavigationView}
                 onBackdropPress={_toggleBottomNavigationView}
             >
-                <View style={styles(colors).bottomNavigationView}>
+                <View style={{
+                    backgroundColor: colors.background,
+                    width: '100%',
+                    height: setacbottom ? height / 1 : height / 1.8,
+                    borderTopLeftRadius: 50,
+                    borderTopRightRadius: 50,
+                    borderWidth: 0.5,
+                    borderColor: colors.border
+                }}>
                     <View>
                         <View style={{ justifyContent: "center", alignSelf: 'center', paddingTop: 5 }}>
                             <TouchableOpacity onPress={_pickImagefromGallery} >
@@ -201,7 +240,6 @@ const Profile = (props) => {
                                         borderWidth: 0,
                                         color: 'rgba(150, 150, 150, 1)',
                                         unfilledColor: 'rgba(200, 200, 200, 0.2)',
-
                                     }}
                                 />
                                 <Text style={{ color: colors.text, textAlign: 'center' }}>Change Photo</Text>
@@ -268,6 +306,79 @@ const Profile = (props) => {
                     >
                         <Text style={{ color: colors.text }}>Send Password Reset Link to My Email</Text>
                     </Button>
+                    {canbeshown == true ? (
+                        <>
+                            <TextInput style={{
+                                width: "80%", paddingLeft: 10,
+                                paddingBottom: 10, paddingRight: 10,
+                                fontSize: 18, color: colors.text,
+                                borderColor: colors.border,
+                                borderWidth: 1.5,
+                                height: 60,
+                                justifyContent: 'center',
+                                alignContent: 'center',
+                                alignSelf: "center",
+                                opacity: 0.5,
+                                marginTop: 20
+                            }}
+                                value={password}
+                                placeholder='Enter new password'
+                                onChangeText={(useremail) => setPassword(useremail)}
+                                placeholderTextColor={colors.text}
+                            ></TextInput>
+                            <TextInput style={{
+                                width: "80%", paddingLeft: 10,
+                                paddingBottom: 10, paddingRight: 10,
+                                fontSize: 18, color: colors.text,
+                                borderColor: colors.border,
+                                borderWidth: 1.5,
+                                height: 60,
+                                justifyContent: 'center',
+                                alignContent: 'center',
+                                alignSelf: "center",
+                                opacity: 0.5,
+                                marginTop: 20
+                            }}
+                                value={verifypass}
+                                placeholder='Verify new password'
+                                onChangeText={(useremail) => setverifypass(useremail)}
+                                placeholderTextColor={colors.text}
+                            ></TextInput>
+                            <TextInput style={{
+                                width: "80%", paddingLeft: 10,
+                                paddingBottom: 10, paddingRight: 10,
+                                fontSize: 18, color: colors.text,
+                                borderColor: colors.border,
+                                borderWidth: 1.5,
+                                height: 60,
+                                justifyContent: 'center',
+                                alignContent: 'center',
+                                alignSelf: "center",
+                                opacity: 0.5,
+                                marginTop: 20
+                            }}
+                                value={token}
+                                placeholder='Enter token'
+                                onChangeText={(useremail) => settoken(useremail)}
+                                placeholderTextColor={colors.text}
+                            ></TextInput>
+                            <Button style={{
+                                backgroundColor: colors.card,
+                                justifyContent: 'center',
+                                alignSelf: "center",
+                                width: width - 50,
+                                marginTop: 25
+                            }}
+                                onPress={newpassword}
+                            >
+                                <Text style={{ color: colors.text }}>Submit New Password</Text>
+                            </Button>
+                        </>
+                    ) : (
+                        <>
+
+                        </>
+                    )}
                 </View>
             </BottomSheet>
         )
@@ -487,13 +598,7 @@ const styles = (colors) => StyleSheet.create({
         backgroundColor: colors.background,
     },
     bottomNavigationView: {
-        backgroundColor: colors.background,
-        width: '100%',
-        height: height / 1.8,
-        borderTopLeftRadius: 50,
-        borderTopRightRadius: 50,
-        borderWidth: 0.5,
-        borderColor: colors.border
+
     },
     bottomNavigation: {
         backgroundColor: colors.background,

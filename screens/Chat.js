@@ -76,6 +76,7 @@ export function Chat(props) {
     let IsMounted = true;
     setloading(true);
     GetPermofStorage();
+
     const DocIdgenerated = anotheruser._id > user.user._id ? user.user._id + "-" + anotheruser._id : anotheruser._id + "-" + user.user._id
     const messagesListener = firebase
       .firestore()
@@ -85,6 +86,7 @@ export function Chat(props) {
       .orderBy("createdAt", "desc")
       .onSnapshot((querySnapshot) => {
         const messages = querySnapshot.docs.map((doc) => {
+          ReadMessage();
           const firebaseData = doc.data();
           const data = {
             _id: doc.id,
@@ -106,10 +108,38 @@ export function Chat(props) {
     return () => {
       messagesListener()
       IsMounted = false;
-    };
+    }; 
   }, []);
+
+  const ReadMessage = () => {
+    const DocIdgenerated = anotheruser._id > user.user._id ? user.user._id + "-" + anotheruser._id : anotheruser._id + "-" + user.user._id
+    firebase.firestore().collection('chatrooms').doc(DocIdgenerated).collection("messages")
+      .where("received", "==", false).onSnapshot((qsnap) => {
+        if (qsnap.docs[0] == null) {
+          // console.log('hey')
+        } else {
+          qsnap.docs.map((e) => {
+            if (e.data().sentTo._id == user.user._id) {
+              console.log(e.id)
+              if (e.id != undefined) {
+                console.log('hey')
+                firebase.firestore().collection('chatrooms').doc(DocIdgenerated).collection('messages').doc(e.id).update({ received: true })
+              }
+            }
+          })
+          // if (qsnap.docs[0].data().sentTo._id==user.user._id) {
+
+          // } else {
+          //   // console.log('no')
+          // }
+        }
+      })
+  }
   const _pickImagefromGallery = async () => {
-    if (storagestatus === 'granted') {
+    const { status } = await ImagePicker.getMediaLibraryPermissionsAsync()
+    console.log(status);
+    if (status == 'granted') {
+      setstoragestatus('granted')
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         base64: true,
@@ -119,12 +149,29 @@ export function Chat(props) {
       setVisible(!visible);
       setfilepresent(true);
     } else {
-      console.log("Camera Permission error");
-      alert('need camera permission');
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      console.log(status)
+      if (status == 'granted') {
+        setstoragestatus('granted')
+        const result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.Images,
+          base64: true,
+          allowsEditing: true,
+        });
+        setImagePicked(result.uri)
+        setVisible(!visible);
+        setfilepresent(true);
+      } else {
+        setstoragestatus('notgranted')
+        alert(' storage permission error')
+      }
     }
   };
   const _pickImagefromCamera = async () => {
-    if (storagestatus === 'granted') {
+    const { status } = await ImagePicker.getCameraPermissionsAsync();
+    console.log(status);
+    if (status == 'granted') {
+      setstoragestatus('granted')
       const result = await ImagePicker.launchCameraAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         base64: true,
@@ -134,8 +181,22 @@ export function Chat(props) {
       setVisible(!visible)
       setfilepresent(true)
     } else {
-      console.log("Camera Permission error");
-      alert('need camera permission');
+      const { status } = await ImagePicker.requestCameraPermissionsAsync();
+      console.log(status)
+      if (status == 'granted') {
+        setstoragestatus('granted')
+        const result = await ImagePicker.launchCameraAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.Images,
+          base64: true,
+          allowsEditing: true,
+        });
+        setImagePicked(result.uri)
+        setVisible(!visible)
+        setfilepresent(true)
+      } else {
+        setstoragestatus('notgranted')
+        alert(' camera permission error')
+      }
     }
   };
   const downloadFile = (item) => {
@@ -295,7 +356,7 @@ export function Chat(props) {
             sentTo: anotheruser,
             createdAt: new Date().getTime(),
             sent: true,
-            received: AnOnline ? true : false,
+            received: false,
             pending: false,
             image: url,
             // video:"https://www.youtube.com/watch?v=BsOmYpP4UDU",
@@ -353,7 +414,7 @@ export function Chat(props) {
           sentTo: anotheruser,
           createdAt: new Date().getTime(),
           sent: true,
-          received: AnOnline ? true : false,
+          received: false,
           pending: false,
           // image: filepresent ? urlreturner : null,
           // video:"https://www.youtube.com/watch?v=BsOmYpP4UDU",
@@ -408,7 +469,7 @@ export function Chat(props) {
 
     return (
 
-      <View style={{ flexDirection: 'row' }}>
+      <View style={{ flexDirection: 'row' ,}}>
         {
           filepresent == false ? (
             <TouchableOpacity onPress={_toggleBottomNavigationView} style={{ marginBottom: 5 }}>
@@ -501,7 +562,7 @@ export function Chat(props) {
         onPressAvatar={() => opencomp(anotheruser._id)}
         renderInputToolbar={(props) => {
           return <InputToolbar {...props}
-            containerStyle={{ backgroundColor: colors.card, height: 50, borderWidth: 0.5, borderTopColor: colors.card, marginLeft: 8, marginRight: 8 }}
+            containerStyle={{ backgroundColor: colors.card, borderWidth: 0.5, borderTopColor: colors.card, marginLeft: 8, marginRight: 8 }}
             textInputStyle={{ color: colors.text }}
             primaryStyle={{ borderColor: colors.card }}
             accessoryStyle={{ borderColor: colors.card, borderWidth: 0 }}
@@ -545,7 +606,7 @@ export function Chat(props) {
       />
     </View>
   );
-}
+} 
 
 const styles = (colors) => StyleSheet.create({
   sendingContainer: {

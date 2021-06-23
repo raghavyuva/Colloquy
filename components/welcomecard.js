@@ -18,7 +18,7 @@ const Welcomecard = (props) => {
                 <Text style={styles(colors).caption}>Unleash your potential</Text>
             </Card>
             <Card style={{ backgroundColor: colors.background, borderColor: colors.background }}>
-                <Image source={require('../assets/logofinal.png')} style={{ width: 100, height: 200 ,alignSelf:'center'}} />
+                <Image source={require('../assets/logoorange.png')} style={{ width: 100, height: 200 ,alignSelf:'center'}} />
             </Card>
             <Card style={{ justifyContent: 'center', borderColor: colors.background, backgroundColor: colors.background, alignSelf: 'center', flexDirection: 'row' }}>
                 <CardItem style={{ backgroundColor: colors.background, borderColor: colors.background, }}>

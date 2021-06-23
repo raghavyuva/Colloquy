@@ -4,11 +4,11 @@
     "slug": "Vtyuva",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/slack.png",
+    "icon": "./assets/squarelogo.png",
     "splash": {
-      "image": "./assets/slack.png",
+      "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimg2.pngio.com%2Fyouth-png-free-youthpng-transparent-images-71774-pngio-youth-art-png-2166_2091.png&f=1&nofb=1",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#000000"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -22,7 +22,7 @@
         "googleSignIn": {
           "reservedClientId": "com.googleusercontent.apps.885939654496-5u9so9k574i6f0eef8tagnjnkr22b22a"
         },
-        "googleMobileAdsAppId": "ca-app-pub-1751328492898824~4290673929"
+        "googleMobileAdsAppId": "ca-app-pub-6850525676679466~1665338563"
       },
       "userInterfaceStyle": "automatic"
     },
@@ -30,15 +30,18 @@
       "googleServicesFile": "./google-services.json",
       "useNextNotificationsApi": true,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/slack.png",
-        "backgroundColor": "#FFFFFF"
+        "foregroundImage": "./assets/squarelogo.png",
+        "backgroundColor": "#000000"
       },
       "userInterfaceStyle": "automatic",
       "package": "com.vtyuva",
       "config": {
-        "googleMobileAdsAppId": "ca-app-pub-1751328492898824~7910462530"
+        "googleSignIn": {
+          "certificateHash": "47:69:5D:4C:B9:46:5F:F5:A7:3B:1D:5A:42:E9:CA:6F:92:B5:39:79"
+        },
+        "googleMobileAdsAppId": "ca-app-pub-6850525676679466~1665338563"
       },
-      "permissions": [
+      "permissions": [ 
         "ACCESS_BACKGROUND_LOCATION",
         "ACCESS_FINE_LOCATION",
         "ACCESS_COARSE_LOCATION",
@@ -47,7 +50,7 @@
       ]
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/squarelogo.png"
     }
   }
 }

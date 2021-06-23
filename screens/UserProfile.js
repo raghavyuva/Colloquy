@@ -21,12 +21,15 @@ import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 const UserProfile = (props) => {
     const [{ userToken, user, otherprofile }, dispatch] = DataLayerValue()
     const [load, setload] = useState(true);
+    const [refresh, setrefresh] = useState(true)
+    const [follow, setfollow] = useState(null)
     const GoTo_top_function = () => {
 
         flatListRef.scrollToOffset({ animated: true, offset: 0 });
 
     }
     const fetching = async (id) => {
+        setrefresh(true);
         try {
             await fetch(`${Config.url}` + `/user/${id}`, {
                 headers: {
@@ -39,11 +42,15 @@ const UserProfile = (props) => {
                         type: "PROFILEOFOTHER",
                         data: responseJson
                     })
+                    if (user.user.following.includes(otherprofile.user._id)) {
+                        setfollow(true);
+                    }
                     setload(false)
                 })
         } catch (e) {
             console.log(e);
         }
+        setrefresh(false);
     }
     useEffect(() => {
         const subscribe = fetching(props.route.params.thread);
@@ -64,6 +71,7 @@ const UserProfile = (props) => {
                 })
             }).then(res => res.json()).then((resp) => {
                 fetching(otherprofile.user._id)
+                setfollow(true);
             })
         }
         catch (error) {
@@ -140,9 +148,9 @@ const UserProfile = (props) => {
                             color: colors.text,
                         }}>{otherprofile.user.following.length} Following</Text>
                     </View>
-
+                    
                 </View>
-                {user.user.following.includes(otherprofile.user._id) ? (
+                {follow==true ? (
                     <View style={{ position: 'absolute', bottom: 30, marginHorizontal: 20, right: 10 }}>
                         <Button style={styles(colors).follow} onPress={unfollow}>
                             <Text style={{ justifyContent: 'center', alignSelf: 'center', color: colors.text, }}>Unfollow</Text>
@@ -175,7 +183,7 @@ const UserProfile = (props) => {
                 .then((response) => response.json())
                 .then((responseJson) => {
                     fetching(otherprofile.user._id);
-
+                    setfollow(false)
                 }).catch((err) => { alert(err); })
         } catch (error) {
             alert(error);
@@ -190,7 +198,7 @@ const UserProfile = (props) => {
     return (
         <View style={{ backgroundColor: colors.background, }}>
             <Headingbar {...props} />
-            {otherprofile.userposts[0] == null ? (
+            {otherprofile.userposts[0] == [] ? (
                 <>
                     <PostNotnullcomp />
                     <Image
@@ -203,7 +211,7 @@ const UserProfile = (props) => {
                     ListHeaderComponent={
                         <PostNotnullcomp />
                     }
-                    ref={(ref) => { flatListRef = ref; }}
+                    ref={(ref) => { const flatListRef = ref; }}
                     renderItem={({ item }) => {
                         return (
                             <Postcard item={item} {...props} />
@@ -217,7 +225,8 @@ const UserProfile = (props) => {
                     scrollToOverflowEnabled
                     onEndReachedThreshold={0}
                     style={{ marginBottom: 50 }}
-                />
+                    refreshing={refresh}
+                    onRefresh={fetching} />
             )}
         </View>
     )

@@ -38,18 +38,12 @@ const SlotSelection = (props) => {
             })
                 .then(response => response.json())
                 .then(data => {
-                    data.map((ele) => {
-                        if (ele.InterviewDate == date && ele.InterviewTime == active.time) {
-
+                    for (let index = 0; index < data.length; index++) {
+                        console.log(data[index].InterviewDate == date);
+                        if (data[index].InterviewDate == date && data[index].InterviewTime == active.time) {
                             setslotavailable(false);
-                        } else {
-                            setslotavailable(true);
-                        }
-                    })
-                    if (slotavailable) {
-                        alert('slot available');
-                    } else {
-                        alert('slot not available');
+                            alert('slot not available');
+                        } 
                     }
                     setload(false)
                 })
@@ -63,7 +57,7 @@ const SlotSelection = (props) => {
         }
 
     }
-
+    // console.log(slotavailable)
     useEffect(() => {
         let IsMounted = true;
         GetPermofStorage();
@@ -265,7 +259,7 @@ const SlotSelection = (props) => {
                     <Text style={{ color: colors.text, textAlign: "center" }}>Verify Slot Availability</Text>
                 </Button>
             </View>
-            {slotavailable == true ? (
+            {/* {slotavailable == true ? ( */}
                 <View >
                     <Text style={{ fontSize: 18, color: colors.primary, textAlign: "center", marginBottom: 10, marginTop: 20 }}>Pay INR 300 to upi id: meetnischay@okicici</Text>
                     <TextInput
@@ -289,10 +283,10 @@ const SlotSelection = (props) => {
                         <Text style={{ color: colors.text }}>Apply For Interview</Text>
                     </Button>
                 </View>
-            ) : (
+            {/* ) : (
                 <>
                 </>
-            )}
+            )} */}
         </View>
     )
 }

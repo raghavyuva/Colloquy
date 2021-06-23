@@ -45,7 +45,7 @@ const Home = (props) => {
     useEffect(() => {
         let IsMounted = true
         requestUserPermission();
-        AdMobInterstitial.setAdUnitID('ca-app-pub-1751328492898824/7263750804')
+        AdMobInterstitial.setAdUnitID('ca-app-pub-3940256099942544/1033173712')
         _openInterstitial()
 
         // setTestDeviceIDAsync('EMULATOR');
@@ -201,11 +201,13 @@ const Home = (props) => {
                 setdataforfilter(AllUsers);
                 setfiltered([])
                 setsearchText('')
+                setNotfound(false);
                 break;
             case 'Post':
                 setdataforfilter(postData);
                 setfiltered([])
                 setsearchText('')
+                setNotfound(false);
                 break;
             default:
                 break;
@@ -217,14 +219,15 @@ const Home = (props) => {
 
 
     const search = () => {
+        console.log(active)
         switch (active) {
             case 'People':
-                let filteredData = AllUsers.filter(function (item) {
+                let filteredData = allusers.filter(function (item) {
                     setNotfound(false)
                     return item.username.toLowerCase().includes(searchText.toLowerCase());
                 });
                 setfiltered(filteredData);
-                if (filteredData.length === 0) { 
+                if (filteredData.length === 0) {
                     setNotfound(true)
                 }
                 break;
@@ -283,8 +286,6 @@ const Home = (props) => {
             setdisableinter(false);
         }
     }
-
-
     const _openRewarded = async () => {
         try {
             setreward(true)
@@ -436,7 +437,7 @@ const Home = (props) => {
 
                     <AdMobBanner
                         bannerSize='fullBanner'
-                        adUnitID={Platform.OS == 'android' ? "ca-app-pub-1751328492898824/7808189055" : "ca-app-pub-1751328492898824/7396129668"}
+                        adUnitID={Platform.OS == 'android' ? "ca-app-pub-3940256099942544/6300978111" : "ca-app-pub-1751328492898824/7396129668"}
                         // servePersonalizedAds={true} // true or false
                         // style={{ backgroundColor: colors.background, color: colors.text }}
                         onAdFailedToLoad={error => console.error(error)}
@@ -460,18 +461,18 @@ const Filter = [
         "name": 'Post',
         "id": 2
     },
-    {
-        "name": 'Tag',
-        "id": 3
-    },
-    {
-        "name": 'Category',
-        "id": 74
-    },
-    {
-        "name": 'Location',
-        "id": 75
-    },
+    // {
+    //     "name": 'Tag',
+    //     "id": 3
+    // },
+    // {
+    //     "name": 'Category',
+    //     "id": 74
+    // },
+    // {
+    //     "name": 'Location',
+    //     "id": 75
+    // },
 ]
 const styles = (colors) => StyleSheet.create({
     cardoff: {

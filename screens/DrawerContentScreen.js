@@ -141,6 +141,16 @@ export function DrawerContent(props) {
                         />
                         <DrawerItem
                             icon={({ color, size }) => (
+                                <MaterialIcons name="web" size={24} color={colors.text} />
+                            )}
+                            labelStyle={{ color: colors.text }}
+                            label="Guidemic"
+                            onPress={() => {
+                                Linking.openURL('https://guidemic.in');
+                            }}
+                        />
+                        <DrawerItem
+                            icon={({ color, size }) => (
                                 <MaterialIcons name="call" size={24} color={colors.text} />
                             )}
                             labelStyle={{ color: colors.text }}
@@ -155,7 +165,19 @@ export function DrawerContent(props) {
                             )}
                             labelStyle={{ color: colors.text }}
                             label="Privacy Policy"
-
+                            onPress={() => {
+                                props.navigation.navigate('segment');
+                            }}
+                        />
+                        <DrawerItem
+                            icon={({ color, size }) => (
+                                <MaterialIcons name="fact-check" size={24} color={colors.text} />
+                            )}
+                            labelStyle={{ color: colors.text }}
+                            label="Terms & Condition"
+                            onPress={() => {
+                                props.navigation.navigate('terms');
+                            }}
                         />
                         <DrawerItem
                             icon={({ color, size }) => (
@@ -170,6 +192,7 @@ export function DrawerContent(props) {
                             }}
                         />
 
+
                     </View>
                 </DrawerContentScrollView>
                 <View style={styles(colors).bottomDrawerSection}>
@@ -183,8 +206,8 @@ export function DrawerContent(props) {
                     />
                 </View>
             </View>
-            <TouchableOpacity onPress={()=>Linking.openURL('https://guidemic.in')}>
-            <Text style={{color:colors.primary,textAlign:'center'}}>Supported By Guidemic</Text>
+            <TouchableOpacity onPress={() => Linking.openURL('https://guidemic.in')}>
+                <Text style={{ color: colors.primary, textAlign: 'center' }}>Supported By &#9829; Guidemic</Text>
             </TouchableOpacity>
         </View>
     );

@@ -32,6 +32,7 @@ import NotesUpload from '../screens/NotesUpload';
 import NotesRender from '../screens/NotesRender';
 import Status from '../screens/status';
 import StatusView from '../components/StatusView';
+import Terms from '../screens/TermsAndCondition';
 const Tab = createMaterialBottomTabNavigator();
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -52,6 +53,7 @@ function External() {
             <Stack.Screen name='slot' component={SlotSelection} />
             <Stack.Screen name='wholiked' component={WhoLiked} />
             <Stack.Screen name='aboutus' component={AboutUs} />
+            <Stack.Screen name='terms' component={Terms} />
             {/* <Stack.Screen name='rendernotes' component={NotesRender} />
             <Stack.Screen name='uploadNotes' component={Status} />
             <Stack.Screen name='StatusView' component={StatusView} /> */}
@@ -201,6 +203,7 @@ function Drawernav() {
             <Drawer.Screen name="feedback" component={Report} />
             <Drawer.Screen name="interview" component={MockInterview} />
             <Drawer.Screen name="aboutus" component={AboutUs} />
+            <Drawer.Screen name="terms" component={Terms} />
             {/* <Drawer.Screen name="uploadNotes" component={Status} />
             <Drawer.Screen name="rendernotes" component={NotesRender} />
             <Drawer.Screen name="StatusView" component={StatusView} /> */}

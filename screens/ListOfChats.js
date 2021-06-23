@@ -45,7 +45,7 @@ const ListOfChats = (props) => {
             IsMounted = false;
         }
     }, []);
-    AdMobInterstitial.setAdUnitID('ca-app-pub-1751328492898824/9408017662')
+    AdMobInterstitial.setAdUnitID('ca-app-pub-3940256099942544/1033173712')
 
     const _openInterstitial = async () => {
         try {
@@ -72,7 +72,7 @@ const ListOfChats = (props) => {
                     setsnap(documentSnapshot.data())
                     if (documentSnapshot.data().UserType.sentBy === user.user._id || documentSnapshot.data().UserType.sentTo === user.user._id) {
                         // console.log('hey')
-                        console.log(documentSnapshot.data().UserType.sentTo)
+                        // console.log(documentSnapshot.data().UserType.sentTo)
                         // setAllUsers(AllUsers - documentSnapshot.data().UserType.sentTo )
                     }
                     return {
@@ -337,7 +337,7 @@ const ListOfChats = (props) => {
             }
             <AdMobBanner
                 bannerSize='fullBanner'
-                adUnitID="ca-app-pub-1751328492898824/7808189055"
+                adUnitID="ca-app-pub-3940256099942544/6300978111"
 
 
                 // servePersonalizedAds={true} // true or false

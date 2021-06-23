@@ -13,18 +13,12 @@ import { MaterialIcons, MaterialCommunityIcons, Ionicons } from '@expo/vector-ic
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import * as Location from 'expo-location';
-import {
-    Avatar,
-} from 'react-native-paper';
 import * as firebase from "firebase";
 import LottieView from 'lottie-react-native';
 import "@firebase/auth";
 import "@firebase/firestore";
 import UploadingComp from '../components/UploadingComp';
-import LoadingComp from '../components/LoadingComp';
 LogBox.ignoreLogs(['Setting a timer']);
-// LogBox.ignoreLogs(['']);
-
 const Uploadpost = (props) => {
     const [loading, setloading] = useState(true)
     const [body, setbody] = useState('');
@@ -130,8 +124,7 @@ const Uploadpost = (props) => {
         }
     };
     const GetPermofStorage = async () => {
-        const { status } = await ImagePicker.getMediaLibraryPermissionsAsync()
-        console.log(status);
+        const { status } = await MediaLibrary.getPermissionsAsync()
         if (status == 'granted') {
             setstoragestatus('granted')
             const media = MediaLibrary.getAssetsAsync({
@@ -142,7 +135,7 @@ const Uploadpost = (props) => {
             setpostimage((await media).assets[0])
             LOcGetter()
         } else {
-            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+            const { status } = await MediaLibrary.requestPermissionsAsync();
             console.log(status)
             if (status == 'granted') {
                 setstoragestatus('granted')
@@ -249,19 +242,42 @@ const Uploadpost = (props) => {
         setfirst(result.uri);
     };
     const _pickImagefromCamera = async () => {
-
         if (Platform.OS !== 'web') {
-            const { status } = await ImagePicker.requestCameraPermissionsAsync();
+            const { status } = await ImagePicker.getCameraPermissionsAsync()
             console.log(status)
-            if (status !== 'granted') {
-                alert('Sorry, we need camera roll permissions to make this work!');
-            } else {
+            if (status == 'undetermined') {
+                const s = await (await ImagePicker.requestCameraPermissionsAsync()).status
+                if (s == 'granted') {
+                    const result = await ImagePicker.launchCameraAsync({
+                        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                        base64: true,
+                        allowsEditing: true,
+                    });
+                    setfirst(result.uri)
+                } else {
+                    alert('we need camera permissions')
+                }
+            }
+            if (status == 'granted') {
                 const result = await ImagePicker.launchCameraAsync({
                     mediaTypes: ImagePicker.MediaTypeOptions.Images,
                     base64: true,
                     allowsEditing: true,
                 });
                 setfirst(result.uri)
+            }
+            if (status == 'denied') {
+                const ss = await (await ImagePicker.requestCameraPermissionsAsync()).status
+                if (ss == 'granted') {
+                    const result = await ImagePicker.launchCameraAsync({
+                        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                        base64: true,
+                        allowsEditing: true,
+                    });
+                    setfirst(result.uri)
+                } else {
+                    alert('we need camera permissions')
+                }
             }
         }
     };
