@@ -32,7 +32,6 @@ const Notification = (props) => {
             })
                 .then((response) => response.json())
                 .then((responseJson) => {
-                    console.log(responseJson)
                     dispatch({
                         type: "NOTIFYLIST",
                         data: responseJson

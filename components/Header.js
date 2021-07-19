@@ -19,13 +19,9 @@ const Headingbar = (props) => {
         setToggle(!toggle);
         dispatch({ type: 'THEME', data: !defdarktheme })
     };
-
-
     const [loaded] = useFonts({
         Montserrat: require('../assets/Pacifico/Pacifico-Regular.ttf'),
     });
-
-    // console.log(chatteeOnline)
     if (!loaded) {
         return null;
     }
@@ -45,7 +41,9 @@ const Headingbar = (props) => {
             <View >
 
                 <Header style={{ backgroundColor: colors.background }}>
-                    <StatusBar backgroundColor={colors.background} />
+                    <StatusBar backgroundColor={colors.background}
+                        barStyle={defdarktheme ? 'light-content' : "dark-content"}
+                    />
                     <Left>
                         <Button transparent onPress={() => { props.navigation.openDrawer() }}>
                             <Icon name='menu' style={{ color: colors.text }} />

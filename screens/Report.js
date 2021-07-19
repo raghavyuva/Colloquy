@@ -53,7 +53,6 @@ const Report = (props) => {
             }
         } else {
             const { status } = await MediaLibrary.getPermissionsAsync()
-            console.log(status)
             if (status == 'granted') {
                 setstoragestatus('granted')
                 try {
@@ -217,6 +216,7 @@ const Report = (props) => {
                                     title={item.Question}
                                     left={props => <MaterialIcons name="article" size={24} color='grey' />}
                                     titleStyle={{ color: colors.text }}
+                                    style={{backgroundColor:colors.card}}
                                 >
                                     <Text style={{ color: 'grey' }}>{item.Answer}</Text>
                                 </List.Accordion>

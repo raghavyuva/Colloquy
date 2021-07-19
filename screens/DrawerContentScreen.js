@@ -108,7 +108,7 @@ export function DrawerContent(props) {
 
                             }}
                         />
-                        {/* <DrawerItem
+                        <DrawerItem
                             icon={({ color, size }) => (
                                 <MaterialIcons name="note" size={24} color={colors.text} />)}
                             labelStyle={{ color: colors.text }}
@@ -127,7 +127,7 @@ export function DrawerContent(props) {
                                 // dispatch({ type: 'ROUTEPROP', data: 'events' })
                                 props.navigation.navigate('external', { screen: 'uploadNotes' })
                             }}
-                        /> */}
+                        />
 
                         <DrawerItem
                             icon={({ color, size }) => (

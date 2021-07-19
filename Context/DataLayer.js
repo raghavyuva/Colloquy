@@ -14,7 +14,7 @@ export const DataLayer = ({ initialState, reducer, children }) => (
 export const DataLayerValue = () => useContext(DataLayerContext);
 
 export const initialState = {
-    isLoading: true,
+    isLoading: false,
     userToken: null,
     UserId: null,
     postData: null,

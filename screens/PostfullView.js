@@ -1,4 +1,4 @@
-import React, { useState, } from 'react'
+import React, { useState, useEffect } from 'react'
 import { StyleSheet, Image, FlatList, KeyboardAvoidingView, } from 'react-native'
 import { CardItem, Text, Button, Left, View, Input, Item, Label, Body, Right, } from 'native-base';
 import { DataLayerValue } from '../Context/DataLayer';
@@ -7,10 +7,38 @@ import { Config } from '../config';
 import Headingbar from '../components/Header';
 import { useTheme } from '@react-navigation/native';
 import { color } from 'react-native-reanimated';
+import LoadingComp from '../components/LoadingComp';
 const PostfullView = (props) => {
-    const [{ userToken, fullview }, dispatch] = DataLayerValue();
+    const [{ userToken, }, dispatch] = DataLayerValue();
     const [commenttext, setcommenttext] = useState('');
+    const [Data, setData] = useState(null);
     const { colors } = useTheme();
+    const [loading, setloading] = useState(true)
+    let fullview = props.route.params.fullview;
+
+    const fetching = (first) => {
+        if (first) {
+            setloading(true);
+        }
+        fetch(`${Config.url}` + `/post/${fullview}`, {
+            headers: {
+                'Authorization': 'Bearer ' + `${userToken}`,
+            },
+            method: 'GET'
+        })
+            .then((response) => response.json())
+            .then((responseJson) => {
+                setData(responseJson);
+                setloading(false);
+            })
+    }
+
+    useEffect(() => {
+        let first = true
+        fetching(first);
+        return () => {
+        }
+    }, [])
 
     const commentui = ({ item, index }) => {
         return (
@@ -21,7 +49,7 @@ const PostfullView = (props) => {
                         <Text style={{ fontSize: 18, color: colors.text, }}>{item.text}</Text>
                     </Body>
                     <Image
-                        source={{ uri: fullview.postedBy.userphoto }}
+                        source={{ uri: item.postedBy.userphoto }}
                         style={{ width: 30, height: 30, borderRadius: 100, margin: 5 }}
                     />
                 </Left>
@@ -64,7 +92,7 @@ const PostfullView = (props) => {
     }
     const comment = async () => {
         try {
-            fetch(`${Config.url}` + `/posts/comments/${fullview._id}`, {
+            fetch(`${Config.url}` + `/posts/comments/${fullview}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': 'Bearer ' + `${userToken}`,
@@ -75,8 +103,10 @@ const PostfullView = (props) => {
                 })
             }).then(res => res.json()).then(async (resp) => {
                 try {
-                    await Notifyy();
+                    // await Notifyy();
+                    fetching();
                     setcommenttext('')
+                    console.log(resp)
                 } catch (error) {
                     alert(error)
                     console.log(error)
@@ -86,16 +116,22 @@ const PostfullView = (props) => {
             alert(error);
         }
     }
+    if (loading) {
+        return (
+            <LoadingComp />
+        )
+    }
+
     return (
         <KeyboardAvoidingView style={styles(colors).screen}>
             <Headingbar {...props} />
             <FlatList
                 ListHeaderComponent={
-                    <Postcard item={fullview} {...props} name='NormalView' />
+                    <Postcard item={Data[0]} {...props} name='NormalView' />
                 }
                 renderItem={commentui}
                 keyExtractor={(item) => item._id}
-                data={fullview.comments}
+                data={Data[0].comments}
             />
             <Item style={{ backgroundColor: colors.border }}>
                 <Input style={styles(colors).fieldinpu}

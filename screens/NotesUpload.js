@@ -1,46 +1,131 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, Dimensions } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, Dimensions, ScrollView, KeyboardAvoidingView } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import * as DocumentPicker from 'expo-document-picker';
 import { useTheme } from '@react-navigation/native';
-import { Button, Card } from 'native-base';
+import { Button, Card, Item, Label, Input } from 'native-base';
 import { MaterialIcons } from '@expo/vector-icons';
 import Headingbar from '../components/Header';
 const { width, height } = Dimensions.get('window');
 import "firebase/auth";
 import "firebase/firestore";
 import 'firebase/storage';
+import DocumentPicker from 'react-native-document-picker';
+import RNFetchBlob from 'rn-fetch-blob'
+import { Config } from '../config';
+import { DataLayerValue } from '../Context/DataLayer';
+import UploadingComp from '../components/UploadingComp';
 
 const NotesUpload = (props) => {
+    const [{ userToken, postData, searchactive, UserId, allusers, isOnline, }, dispatch] = DataLayerValue();
     const { colors } = useTheme();
     const [document, setdocument] = useState('');
     const [docname, setdocname] = useState(null);
     const [first, setfirst] = useState(null)
+    const [title, settitle] = useState('');
+    const [year, setyear] = useState('');
+    const [branch, setbranch] = useState('');
+    const [uploading, setuploading] = useState(null);
     const PickDocument = async () => {
-        const response = await DocumentPicker.getDocumentAsync({})
-        if (response.type === 'success') {
-            setdocname(response.name);
-            setfirst(response.uri);
-        }
+        const res = await DocumentPicker.pick({
+            type: [DocumentPicker.types.allFiles],
+        });
+        RNFetchBlob.fs
+            .readFile(res.uri, 'base64')
+            .then((data) => {
+                setfirst(data)
+                setdocument(res.type)
+                setdocname(res.name)
+            })
+            .catch((err) => {
+                alert(err)
+            });
     }
-    const uriToBlob = () => {
-
-    }
-
     const UploadNotes = async () => {
-      
+        setuploading(true);
+        let base64Aud = `data:${document};base64,${first}`;
+        let fd = new FormData();
+        fd.append("file", `${base64Aud}`);
+        fd.append("upload_preset", 'raghav');
+        fd.append("resource_type", "video")
+        fetch('https://api.cloudinary.com/v1_1/raghavyuva/upload', {
+            method: 'POST',
+            body: fd,
+        })
+            .then(async (response) => {
+                let recordingURL = await response.json();
+                fetch(`${Config.url}/upload_notes`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + `${userToken}`,
+                        'Content-Type': "application/json",
+                    },
+                    body: JSON.stringify({
+                        notesurl: recordingURL.secure_url,
+                        type: document,
+                        title: title,
+                        branch: branch,
+                        year: year
+                    })
+                }).then(res => res.json()).then((resp) => {
+                    setuploading(false);
+                    console.log(resp);
+                })
+            })
+            .catch(err => alert('cloudinary err', err))
+        setuploading(false)
     }
- 
-    return (
-        <View style={{ flex: 1, }}>
-            <Headingbar {...props} />
-            <Text style={{ color: colors.text, textTransform: 'capitalize', fontWeight: 'bold', fontSize: 24, fontStyle: 'italic' }}>Do You Have Notes Related to  syallabus?</Text>
-            <Image source={{ uri: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2F4%2F4f%2FDocument-open.svg%2F768px-Document-open.svg.png&f=1&nofb=1' }} style={{ width: width / 1, height: height / 2, alignSelf: 'center', backgroundColor: colors.background }} />
-            <View style={{}}>
-                <Text style={{ color: 'grey', textTransform: 'capitalize', fontWeight: 'bold', fontSize: 18, textAlign: "center" }}>Upload Notes and share some knowledge with your friends</Text>
+    if (uploading) {
+        return (
+            <View style={{ flex: 1, backgroundColor: colors.background }}>
+                <Headingbar {...props} />
+                <UploadingComp />
             </View>
-            {first != null ? (
-                <View style={{ justifyContent: 'center', }}>
-                    <Card style={{ backgroundColor: colors.card, justifyContent: 'center', height: 100, }}>
+        )
+    }
+    return (
+        <View style={styles(colors).Main}>
+            <Headingbar {...props} />
+            <View style={styles(colors).scond}>
+                <View style={styles(colors).part}>
+                    <Image source={{ uri: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fdataqualitycampaign.org%2Fwp-content%2Fuploads%2F2016%2F03%2Fwhy-education-data-illustration-3.png&f=1&nofb=1" }}
+                        style={{ height: "100%", width: 400, }} />
+                </View>
+            </View>
+            <KeyboardAvoidingView style={styles(colors).bottompart}>
+                <Text style={styles(colors).header}>
+                    Upload Notes
+                 </Text>
+                <ScrollView style={{ height: '100%', marginTop: 20 }}>
+                    <View>
+                        <Item stackedLabel style={styles(colors).txtitm} >
+                            <Label style={styles(colors).txtinput}>Title for Notes</Label>
+                            <Input
+                                onChangeText={(e) => settitle(e)}
+                                value={title}
+                            />
+                        </Item>
+                    </View>
+                    <View>
+                        <Item stackedLabel style={styles(colors).txtitm} >
+                            <Label style={styles(colors).txtinput}>Notes for Branch</Label>
+                            <Input
+                                onChangeText={(e) => setbranch(e)}
+                                value={branch}
+                            />
+                        </Item>
+                    </View>
+                    <View>
+                        <Item stackedLabel style={styles(colors).txtitm} >
+                            <Label style={styles(colors).txtinput}>Notes for Semester</Label>
+                            <Input
+                                onChangeText={(e) => setyear(e)}
+                                keyboardType='number-pad'
+                                value={year}
+                            />
+                        </Item>
+                    </View>
+                </ScrollView>
+                {first != null ? (
+                    <View style={{ justifyContent: 'center', }}>
                         <View style={{ flexDirection: 'row', justifyContent: 'center', }}>
                             <Text style={{ color: colors.text, textAlign: 'center', margin: 10 }}>File Attached</Text>
                             <MaterialIcons name="file-present" size={24} color={colors.primary} style={{ marginTop: 5 }} />
@@ -49,33 +134,74 @@ const NotesUpload = (props) => {
                             </TouchableOpacity>
                         </View>
                         <Text style={{ color: colors.text, textAlign: 'center', }} numberOfLines={2}>{docname}</Text>
-                    </Card>
-                    <Button style={{ width: 200, backgroundColor: colors.card, justifyContent: 'center', alignSelf: 'center', marginTop: 20 }}
-                        onPress={UploadNotes}
-                    >
-                        <Text style={{ color: colors.text }}>
-                            upload Now
-                        </Text>
-                    </Button>
-                  
-                </View>
-            ) : (
-                <View style={{ justifyContent: 'center' }}>
-                    <Card style={{ backgroundColor: colors.card, justifyContent: 'center', height: 100, }}>
+                    </View>
+                ) : (
+                    <View style={{ justifyContent: 'center' }}>
                         <View style={{ flexDirection: "row", justifyContent: 'center' }}>
                             <Text style={{ color: colors.text, textAlign: 'center', marginRight: 5 }}>Attach Notes</Text>
                             <TouchableOpacity onPress={PickDocument}>
                                 <MaterialIcons name="attachment" size={24} color={colors.primary} style={{ alignSelf: 'center' }} />
                             </TouchableOpacity>
                         </View>
-                    </Card>
+                    </View>
+                )}
+            </KeyboardAvoidingView>
 
-                </View>
-            )}
+            <Button style={styles(colors).btn} onPress={UploadNotes}>
+                <Text style={{ color: 'white' }}>Submit</Text>
+            </Button>
         </View>
     )
 }
 export default NotesUpload;
 
 
-const styles = StyleSheet.create({})
+const styles = (colors) => StyleSheet.create({
+    Main: {
+        flex: 1,
+    },
+    scond: {
+        backgroundColor: colors.background,
+        flex: 0.5
+
+    },
+    header: {
+        fontSize: 35,
+        color: colors.text,
+        textAlign: 'center',
+    },
+    part: {
+        justifyContent: 'center',
+        padding: 10,
+        alignSelf: 'center'
+    },
+    bottompart: {
+        borderWidth: 1,
+        margin: 10,
+        borderColor: 'grey',
+        flex: 0.49,
+        justifyContent: 'center',
+        padding: 5
+    },
+    txtinput: {
+        color: colors.text,
+
+    },
+    txtitm: {
+        width: '90%',
+        alignSelf: 'center',
+        borderBottomColor: 'grey'
+    },
+    send: {
+        justifyContent: "center",
+        alignSelf: 'center'
+    },
+    btn: {
+        width: 200,
+        justifyContent: 'center',
+        marginTop: 20,
+        backgroundColor: colors.primary,
+        alignSelf: 'center',
+        borderRadius: 26
+    },
+})

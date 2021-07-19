@@ -1,0 +1,6 @@
+export const ActionTypes ={
+    SET_FEEDS :'SET_FEEDS',
+    SELECTED_FEEDS:'SELECTED_FEEDS',
+    REMOVE_SELECTED_FEED:'REMOVE_SELECTED_FEED',
+    
+}

@@ -24,7 +24,8 @@
         },
         "googleMobileAdsAppId": "ca-app-pub-6850525676679466~1665338563"
       },
-      "userInterfaceStyle": "automatic"
+      "userInterfaceStyle": "automatic",
+      "bundleIdentifier": "com.vtyuva"
     },
     "android": {
       "googleServicesFile": "./google-services.json",
@@ -41,7 +42,7 @@
         },
         "googleMobileAdsAppId": "ca-app-pub-6850525676679466~1665338563"
       },
-      "permissions": [ 
+      "permissions": [
         "ACCESS_BACKGROUND_LOCATION",
         "ACCESS_FINE_LOCATION",
         "ACCESS_COARSE_LOCATION",

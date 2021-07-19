@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { View, Text, SafeAreaView, FlatList, TouchableOpacity, StyleSheet, Platform } from 'react-native'
+import { View, Text, SafeAreaView, FlatList, TouchableOpacity, StyleSheet, Platform, StatusBar } from 'react-native'
 import Headerv from '../components/Header';
 import Postcard from '../components/Postcard';
 import { DataLayerValue } from '../Context/DataLayer';
@@ -24,10 +24,11 @@ import {
 
 } from 'expo-ads-admob';
 import WaveComp from '../components/WaveComp';
+import { Searchbar, } from 'react-native-paper';
 
 const Home = (props) => {
 
-    const [{ userToken, postData, searchactive, UserId, allusers, isOnline, }, dispatch] = DataLayerValue();
+    const [{ userToken, postData, searchactive, UserId, allusers, isOnline, defdarktheme }, dispatch] = DataLayerValue();
     const [Notify, setNotify] = useState('');
     const [refresh, setrefresh] = useState(false);
     const [loading, setloading] = useState(true);
@@ -46,8 +47,7 @@ const Home = (props) => {
         let IsMounted = true
         requestUserPermission();
         AdMobInterstitial.setAdUnitID('ca-app-pub-3940256099942544/1033173712')
-        _openInterstitial()
-
+        // _openInterstitial()
         // setTestDeviceIDAsync('EMULATOR');
         // _openRewarded()
         registerForPushNotifications();
@@ -159,7 +159,6 @@ const Home = (props) => {
 
     const registerForPushNotifications = async () => {
         const token = await Notifications.getExpoPushTokenAsync();
-        console.log(token.data);
         try {
             fetch(`${Config.url}` + `/notifytoken`, {
                 method: 'PUT',
@@ -183,14 +182,6 @@ const Home = (props) => {
 
 
     }
-
-
-
-
-
-
-
-
 
 
 
@@ -219,7 +210,6 @@ const Home = (props) => {
 
 
     const search = () => {
-        console.log(active)
         switch (active) {
             case 'People':
                 let filteredData = allusers.filter(function (item) {
@@ -266,7 +256,7 @@ const Home = (props) => {
                 onEndReachedThreshold={0}
                 refreshing={refresh}
                 onRefresh={fetching}
-                style={{ marginBottom: 100 }}
+                style={{ marginBottom: 50, marginTop: 10 }}
             />
 
         )
@@ -383,44 +373,34 @@ const Home = (props) => {
 
 
     return (
-        <SafeAreaView >
-
+        <SafeAreaView
+            style={{
+                backgroundColor: colors.card
+            }}
+        >
             {searchactive ? (
                 <>
                     <View>
                         <Header searchBar rounded style={{ backgroundColor: colors.background, }}>
+                            <StatusBar backgroundColor={colors.background}
+                                barStyle={defdarktheme ? 'light-content' : "dark-content"}
+                            />
                             <Item style={{ backgroundColor: colors.background }}>
                                 <TouchableOpacity onPress={ActivateSearch}>
-                                    <Icon name="arrow-back" style={{ backgroundColor: colors.background }} />
+                                    <Icon name="arrow-back" style={{ backgroundColor: colors.background,color:'red' }} fontSize={28} />
                                 </TouchableOpacity>
-                                <Input placeholder="Search" style={{ backgroundColor: colors.card, borderRadius: 25, color: colors.text, justifyContent: 'flex-end' }}
-                                    onChangeText={(bo) => setsearchText(bo)}
-                                    value={searchText}
-                                    clearButtonMode='while-editing'
-                                    multiline={false}
-                                    keyboardAppearance='dark'
-                                    keyboardType='web-search'
-                                    onSubmitEditing={() => search(searchText)}
-                                >
-                                </Input>
-
-                                <TouchableOpacity onPress={() => search(searchText)}>
-                                    <Icon name="ios-search" style={{ backgroundColor: colors.background, color: colors.primary }} />
-                                </TouchableOpacity>
+                                <Searchbar style={{ backgroundColor: colors.card, color: colors.text,width:300 }} iconColor='grey' inputStyle={{ color: colors.text }}
+                                    placeholder=""
+                                    placeholderTextColor='grey'
+                                    // onIconPress={search}
+                                    onChangeText={search}
+                                />
                             </Item>
-                            <Button transparent>
-                                <Text>Search</Text>
-                            </Button>
-                        </Header>
-                        <Card style={styles(colors).cardoff}>
-                            <FilterCardComp />
-                        </Card>
-                        {
+                        </Header>             
+                                   {
                             Notfound == false ? (
                                 <>
-
                                     <ActiveRenderer />
-
                                 </>
                             ) : (
                                 <>
@@ -434,14 +414,13 @@ const Home = (props) => {
             ) : (
                 <>
                     <Headerv {...props} />
-
-                    <AdMobBanner
+                    {/* <AdMobBanner
                         bannerSize='fullBanner'
                         adUnitID={Platform.OS == 'android' ? "ca-app-pub-3940256099942544/6300978111" : "ca-app-pub-1751328492898824/7396129668"}
                         // servePersonalizedAds={true} // true or false
                         // style={{ backgroundColor: colors.background, color: colors.text }}
                         onAdFailedToLoad={error => console.error(error)}
-                    />
+                    /> */}
                     <PostCardComp {...props} section='NormalView' />
 
                 </>

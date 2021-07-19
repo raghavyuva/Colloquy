@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react'
 import { StyleSheet, View, Dimensions, FlatList, TouchableOpacity, TextInput, Alert } from 'react-native'
 import { Fab, Button, Text, Item, Label, Input } from 'native-base';
@@ -32,13 +31,20 @@ const Profile = (props) => {
     const [password, setPassword] = useState(null);
     const [verifypass, setverifypass] = useState(null);
     const [canbeshown, setcanbeshown] = useState(false);
-    const [acbottom, setacbottom] = useState(false)
+    const [acbottom, setacbottom] = useState(false);
+
+
     const GoTo_top_function = () => {
         flatListRef.scrollToOffset({ animated: true, offset: 0 });
     }
+
     const _toggleBottomNavigationView = () => {
         setvisible(!visible);
     };
+
+
+    
+
     const newpassword = () => {
         if (password == verifypass) {
             fetch(`${Config.url}` + `/new-password`, {
@@ -63,6 +69,8 @@ const Profile = (props) => {
             alert('err:passwords did not match')
         }
     }
+
+
     const { colors } = useTheme();
 
     const fetching = async () => {
@@ -84,7 +92,9 @@ const Profile = (props) => {
         } catch (e) {
             console.log(e);
         }
+
     }
+
     // const _pickImagefromCamera = async () => {
     //     try {
     //         let result = await ImagePicker.launchCameraAsync({
@@ -104,6 +114,8 @@ const Profile = (props) => {
     //         console.log(E);
     //     }
     // };
+
+
     const _pickImagefromGallery = async () => {
         try {
             let result = await ImagePicker.launchImageLibraryAsync({

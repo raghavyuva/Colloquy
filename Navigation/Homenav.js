@@ -54,9 +54,9 @@ function External() {
             <Stack.Screen name='wholiked' component={WhoLiked} />
             <Stack.Screen name='aboutus' component={AboutUs} />
             <Stack.Screen name='terms' component={Terms} />
-            {/* <Stack.Screen name='rendernotes' component={NotesRender} />
-            <Stack.Screen name='uploadNotes' component={Status} />
-            <Stack.Screen name='StatusView' component={StatusView} /> */}
+            <Stack.Screen name='rendernotes' component={NotesRender} />
+            <Stack.Screen name='uploadNotes' component={NotesUpload} />
+            <Stack.Screen name='StatusView' component={StatusView} />
         </Stack.Navigator>
     );
 }
