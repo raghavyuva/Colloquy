@@ -12,12 +12,12 @@ import * as Device from 'expo-device';
 import NotFoundComp from '../components/NotFoundComp';
 import LoadingComp from '../components/LoadingComp';
 import { Searchbar, } from 'react-native-paper';
-import { useSelector, useDispatch } from 'react-redux'; 
+import { useSelector, useDispatch } from 'react-redux';
 import { setFeeds } from '../redux/actions/FeedAction';
-  
-const Home = (props) => { 
+
+const Home = (props) => {
     const feeds = useSelector((state) => state.allfeeds.feeds);
-    const user = useSelector((state) => state.userDetails); 
+    const user = useSelector((state) => state.userDetails);
     const load = useSelector((state) => state.loadingDetails.loading);
     const [Notify, setNotify] = useState('');
     const [refresh, setrefresh] = useState(false);
@@ -68,7 +68,7 @@ const Home = (props) => {
                 onRefresh={fetchFeeds}
                 style={{ marginBottom: 0, marginTop: 10 }}
             />
- 
+
         )
     }
 

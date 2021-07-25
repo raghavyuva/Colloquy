@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, FlatList, StatusBar } from 'react-native'
-import { firebase } from '../components/firebase'
 import 'firebase/auth';
 import 'firebase/firestore';
 import { Button, Input, Card, CardItem, Label, Left, Right, Body, Thumbnail, Fab, Icon, Header, Item, List, ListItem } from 'native-base';
@@ -13,11 +12,11 @@ import Usercard from '../components/Usercard';
 import LoadingComp from '../components/LoadingComp';
 var _ = require('lodash');
 import { useSelector, useDispatch } from 'react-redux'; 
-
+import * as firebase from 'firebase'
 require('firebase/storage');
 import {
     AdMobBanner,
-    AdMobInterstitial,
+    AdMobInterstitial, 
     PublisherBanner,
     AdMobRewarded,
     setTestDeviceIDAsync,
@@ -93,7 +92,6 @@ const ListOfChats = (props) => {
                         ...documentSnapshot.data(),
                     };
                 })
-
                 setThreads(threads);
                 setloading(false);
             });
@@ -145,10 +143,10 @@ const ListOfChats = (props) => {
                 renderItem={({ item, index }) =>
                 (
                     <>
-                        {item.UserType.sentBy === user.user._id || item.UserType.sentTo === user.user._id
+                        {item.UserType.sentBy === user.user.user._id || item.UserType.sentTo === user.user.user._id
                             ? (
                                 <>
-                                    {item.UserType.sentBy === user.user._id ? (
+                                    {item.UserType.sentBy === user.user.user._id ? (
 
                                         <TouchableOpacity onPress={() => { MessageParticularguy(item.latestMessage.user2) }}   >
                                             <Card style={{ borderWidth: 2, borderColor: colors.border, borderBottomColor: colors.border, }} >
@@ -337,7 +335,7 @@ const ListOfChats = (props) => {
                 </>
             )
             }
-            <AdMobBanner
+            {/* <AdMobBanner
                 bannerSize='fullBanner'
                 adUnitID="ca-app-pub-3940256099942544/6300978111"
 
@@ -345,7 +343,7 @@ const ListOfChats = (props) => {
                 // servePersonalizedAds={true} // true or false
                 // style={{ backgroundColor: colors.background, color: colors.text }}
                 onAdFailedToLoad={error => alert(error)}
-            />
+            /> */}
         </View>
     )
 }

@@ -15,6 +15,8 @@ import 'firebase/auth';
 import 'firebase/firestore';
 import LoadingComp from '../components/LoadingComp';
 import UploadingComp from '../components/UploadingComp';
+import { useSelector, useDispatch } from 'react-redux';
+
 const SlotSelection = (props) => {
     const { colors } = useTheme();
     const [date, setDate] = useState('09-10-2020');
@@ -22,17 +24,18 @@ const SlotSelection = (props) => {
     const [uploading, setuploading] = useState(false);
     const [slotavailable, setslotavailable] = useState(false);
     const [attachment, setattachment] = useState(false)
-    const [{ userToken, user }, dispatch] = DataLayerValue();
     const [load, setload] = useState(false)
     const [active, setactive] = useState('1');
     const [storagestatus, setstoragestatus] = useState(null);
+    const user = useSelector((state) => state.userDetails);
+
     const VerifyTheSlot = () => {
         try {
             setload(true);
             fetch(`${Config.url}` + `/Interview`, {
                 method: 'GET',
                 headers: {
-                    'Authorization': 'Bearer ' + `${userToken}`,
+                    'Authorization': 'Bearer ' + `${user.userToken}`,
                     'Content-Type': 'application/json',
                 },
             })
@@ -43,7 +46,7 @@ const SlotSelection = (props) => {
                         if (data[index].InterviewDate == date && data[index].InterviewTime == active.time) {
                             setslotavailable(false);
                             alert('slot not available');
-                        } 
+                        }
                     }
                     setload(false)
                 })
@@ -132,7 +135,7 @@ const SlotSelection = (props) => {
             fetch(`${Config.url}` + `/applyforinterview`, {
                 method: 'POST',
                 headers: {
-                    'Authorization': 'Bearer ' + `${userToken}`,
+                    'Authorization': 'Bearer ' + `${user.userToken}`,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
@@ -260,29 +263,29 @@ const SlotSelection = (props) => {
                 </Button>
             </View>
             {/* {slotavailable == true ? ( */}
-                <View >
-                    <Text style={{ fontSize: 18, color: colors.primary, textAlign: "center", marginBottom: 10, marginTop: 20 }}>Pay INR 300 to upi id: meetnischay@okicici</Text>
-                    <TextInput
-                        value={Input}
-                        onChangeText={(e) => setInput(e)}
-                        style={{ borderWidth: 1, borderColor: 'grey', color: colors.text, marginLeft: 15, padding: 10, marginTop: 25, marginRight: 15, marginBottom: 10 }}
-                        placeholder='Payment Ref Id'
-                        placeholderTextColor='grey'
-                    />
+            <View >
+                <Text style={{ fontSize: 18, color: colors.primary, textAlign: "center", marginBottom: 10, marginTop: 20 }}>Pay INR 300 to upi id: meetnischay@okicici</Text>
+                <TextInput
+                    value={Input}
+                    onChangeText={(e) => setInput(e)}
+                    style={{ borderWidth: 1, borderColor: 'grey', color: colors.text, marginLeft: 15, padding: 10, marginTop: 25, marginRight: 15, marginBottom: 10 }}
+                    placeholder='Payment Ref Id'
+                    placeholderTextColor='grey'
+                />
 
-                    <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                        <Text style={{ color: colors.text, textAlign: 'center', }}>Attach Payment Screenshot</Text>
-                        <TouchableOpacity onPress={_pickImagefromGallery}>
-                            <MaterialIcons name="attach-file" size={24} color={colors.primary} />
-                        </TouchableOpacity>
-                    </View>
-
-                    <Button
-                        onPress={_upload}
-                        style={{ justifyContent: 'center', alignSelf: 'center', width: 200, backgroundColor: colors.card, borderColor: 'grey', borderWidth: 0.2, marginTop: 15 }}>
-                        <Text style={{ color: colors.text }}>Apply For Interview</Text>
-                    </Button>
+                <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                    <Text style={{ color: colors.text, textAlign: 'center', }}>Attach Payment Screenshot</Text>
+                    <TouchableOpacity onPress={_pickImagefromGallery}>
+                        <MaterialIcons name="attach-file" size={24} color={colors.primary} />
+                    </TouchableOpacity>
                 </View>
+
+                <Button
+                    onPress={_upload}
+                    style={{ justifyContent: 'center', alignSelf: 'center', width: 200, backgroundColor: colors.card, borderColor: 'grey', borderWidth: 0.2, marginTop: 15 }}>
+                    <Text style={{ color: colors.text }}>Apply For Interview</Text>
+                </Button>
+            </View>
             {/* ) : (
                 <>
                 </>

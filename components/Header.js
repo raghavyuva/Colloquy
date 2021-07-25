@@ -137,7 +137,7 @@ const Headingbar = (props) => {
             <View >
                 <Header style={{ backgroundColor: colors.background }}>
                     <StatusBar backgroundColor={colors.background}
-                        barStyle={defdarktheme ? 'light-content' : "dark-content"}
+                    
                     />
                     <Left>
                         <Button transparent onPress={() => { props.navigation.openDrawer() }}>

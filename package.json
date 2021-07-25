@@ -10,6 +10,8 @@
     "@codler/react-native-keyboard-aware-scroll-view": "^1.0.1",
     "@react-native-community/masked-view": "0.1.10",
     "@react-native-community/netinfo": "^6.0.0",
+    "@react-native-firebase/app": "^12.3.0",
+    "@react-native-firebase/firestore": "^12.3.0",
     "@react-native-picker/picker": "^1.15.0",
     "@react-navigation/drawer": "^5.12.5",
     "@react-navigation/material-bottom-tabs": "^5.3.15",

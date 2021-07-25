@@ -26,6 +26,8 @@ import Image from 'react-native-image-progress';
 import * as Progress from 'react-native-progress';
 import { Menu, } from 'react-native-paper'
 import { Provider } from 'react-native-paper';
+import { useSelector, useDispatch } from 'react-redux'; 
+
 export function Chat(props) {
   const [imagePicked, setImagePicked] = useState(null);
   const [visible, setVisible] = useState();
@@ -34,11 +36,11 @@ export function Chat(props) {
   const [messages, setMessages] = useState([]);
   const { colors } = useTheme();
   const [AnOnline, setAnOnline] = useState(null);
-  const [{ userToken, postData, searchactive, UserId, user, }, dispatch] = DataLayerValue();
   const [loading, setloading] = useState(true);
   const [filepresent, setfilepresent] = useState(false);
   const [imagetosendurl, setimagetosendurl] = useState(null);
   const [uploading, setuploading] = useState(null);
+  const user = useSelector((state) => state.userDetails.user); 
   const [storagestatus, setstoragestatus] = useState(null);
   const _toggleBottomNavigationView = () => {
     setVisible(!visible);
@@ -59,12 +61,10 @@ export function Chat(props) {
   };
   const GetPermofStorage = async () => {
     const { status } = await ImagePicker.getMediaLibraryPermissionsAsync()
-    console.log(status);
     if (status == 'granted') {
       setstoragestatus('granted')
     } else {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      console.log(status)
       if (status == 'granted') {
         setstoragestatus('granted')
       } else {
@@ -120,9 +120,7 @@ export function Chat(props) {
         } else {
           qsnap.docs.map((e) => {
             if (e.data().sentTo._id == user.user._id) {
-              console.log(e.id)
               if (e.id != undefined) {
-                console.log('hey')
                 firebase.firestore().collection('chatrooms').doc(DocIdgenerated).collection('messages').doc(e.id).update({ received: true })
               }
             }
@@ -213,7 +211,6 @@ export function Chat(props) {
             FileSystem.downloadAsync(uri, fileUri)
               .then(({ uri }) => {
                 saveFile(uri);
-                console.log(uri)
                 ToastAndroid.show(" Image Downloaded !", ToastAndroid.LONG);
               })
               .catch(error => {
@@ -546,7 +543,7 @@ export function Chat(props) {
       <GiftedChat
         messages={messages}
         onSend={handleSend}
-        user={{ _id: UserId }}
+        user={{ _id: user.user._id }}
         renderBubble={renderBubble}
         renderSend={renderSend}
         scrollToBottomComponent={scrollToBottomComponent}

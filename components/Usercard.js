@@ -123,7 +123,17 @@ const Usercard = (props) => {
     }
     if (props.name == 'followers') {
         return (
-            <List style={{ borderWidth: 2, borderColor: colors.border, borderBottomColor: colors.border, margin: 5 }}>
+            <List style={{ borderWidth: 2, borderColor: colors.border, borderBottomColor: colors.border, margin: 5 ,
+                shadowColor: "#000",
+                shadowOffset: {
+                    width: 0,
+                    height: 6,
+                },
+                shadowOpacity: 0.37,
+                shadowRadius: 7.49,
+
+                elevation: 12,
+            }}>
                 <ListItem thumbnail onPress={() => opencomp(props.item._id)}  >
                     <Left>
                         <Thumbnail source={{ uri: props.item.userphoto }} />
@@ -164,7 +174,16 @@ const Usercard = (props) => {
     }
     if (props.name === 'following') {
         return (
-            <List style={{ borderBottomWidth: 0, borderWidth: 2, borderColor: colors.border, borderBottomColor: colors.border, }}>
+            <List style={{ borderBottomWidth: 0, borderWidth: 2, borderColor: colors.border, borderBottomColor: colors.border,
+                shadowColor: "#000",
+                shadowOffset: {
+                    width: 0,
+                    height: 6,
+                },
+                shadowOpacity: 0.37,
+                shadowRadius: 7.49,
+
+                elevation: 12, }}>
                 <ListItem thumbnail onPress={() => opencomp(props.item._id)}>
                     <Left>
                         <Thumbnail square source={{ uri: props.item.userphoto }} />
@@ -194,7 +213,18 @@ const Usercard = (props) => {
 
                     <>
                         <TouchableOpacity onPress={() => opencomp(props.item._id)}   >
-                            <Card style={{ borderWidth: 2, borderColor: colors.border, borderBottomColor: colors.border, }} >
+                            <Card style={{ borderWidth: 2, borderColor: colors.border, borderBottomColor: colors.border,
+                            shadowColor: "#000",
+                            shadowOffset: {
+                                width: 0,
+                                height: 6,
+                            },
+                            shadowOpacity: 0.37,
+                            shadowRadius: 7.49,
+            
+                            elevation: 12,
+                            margin: 10
+                            }} >
 
                                 <CardItem avatar style={{ backgroundColor: colors.background, borderRadius: null, borderWidth: 0, margin: 0 }} onPress={() => opencomp(props.item._id)}>
                                     <Thumbnail
@@ -213,7 +243,7 @@ const Usercard = (props) => {
                                     </Left>
                                     <Right>
                                         <Button style={styles(colors).follow} onPress={() => { MessageParticularguy(props.item) }}>
-                                            <Text style={{ textTransform: 'capitalize', color: colors.text }}>message </Text>
+                                            <Text style={{ textTransform: 'capitalize', color: colors.card }}>message </Text>
                                         </Button>
                                     </Right>
                                 </CardItem>
@@ -231,7 +261,7 @@ const Usercard = (props) => {
 export default Usercard
 const styles = (colors) => StyleSheet.create({
     follow: {
-        backgroundColor: colors.card,
+        backgroundColor: colors.primary,
         borderBottomWidth: 0,
         borderWidth: 0,
         borderColor: colors.border,

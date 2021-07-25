@@ -519,7 +519,15 @@ const styles = (colors) => StyleSheet.create({
         flexDirection: 'row',
         borderBottomStartRadius: 20,
         borderBottomEndRadius: 20,
-        marginBottom: 20
+        marginBottom: 20,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 6,
+        },
+        shadowOpacity: 0.37,
+        shadowRadius: 7.49,
+        elevation: 12,
     },
     row1: {
         marginTop: 50,
