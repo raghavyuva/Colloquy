@@ -16,12 +16,14 @@ import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
 import LoadingComp from '../components/LoadingComp';
 import Image from 'react-native-image-progress';
 import * as Progress from 'react-native-progress';
+import { useSelector, useDispatch } from 'react-redux';
+
 const Profile = (props) => {
-    const [{ userToken, UserId, user }, dispatch] = DataLayerValue()
     const [load, setload] = useState(true);
     const [active, setactive] = useState(false)
     const [refresh, setrefresh] = useState(false)
     const [visible, setvisible] = useState(false);
+    const user = useSelector((state) => state.userDetails.user);
     const [username, setusername] = useState(user.user.username);
     const [postimage, setpostimage] = useState(user.user.userphoto)
     const [body, setbody] = useState(user.user.tagline);
@@ -32,8 +34,7 @@ const Profile = (props) => {
     const [verifypass, setverifypass] = useState(null);
     const [canbeshown, setcanbeshown] = useState(false);
     const [acbottom, setacbottom] = useState(false);
-
-
+    const dispatch = useDispatch();
     const GoTo_top_function = () => {
         flatListRef.scrollToOffset({ animated: true, offset: 0 });
     }
@@ -41,9 +42,6 @@ const Profile = (props) => {
     const _toggleBottomNavigationView = () => {
         setvisible(!visible);
     };
-
-
-    
 
     const newpassword = () => {
         if (password == verifypass) {
@@ -75,18 +73,15 @@ const Profile = (props) => {
 
     const fetching = async () => {
         try {
-            await fetch(`${Config.url}` + `/user/${UserId}`, {
+            await fetch(`${Config.url}` + `/user/${user.UserId}`, {
                 headers: {
-                    'Authorization': 'Bearer ' + `${userToken}`,
+                    'Authorization': 'Bearer ' + `${user.userToken}`,
                 }
             })
                 .then((response) => response.json())
                 .then((responseJson) => {
 
-                    dispatch({
-                        type: "USERPROFILE",
-                        data: responseJson
-                    })
+
                     setload(false)
                 })
         } catch (e) {
@@ -95,25 +90,6 @@ const Profile = (props) => {
 
     }
 
-    // const _pickImagefromCamera = async () => {
-    //     try {
-    //         let result = await ImagePicker.launchCameraAsync({
-    //             mediaTypes: ImagePicker.MediaTypeOptions.All,
-    //             allowsEditing: true,
-    //             quality: 1,
-    //             base64: true,
-    //             aspect: [4, 3],
-    //         });
-
-    //         if (!result.cancelled) {
-    //             const { uri, base64 } = result
-    //             setpostimage(uri);
-    //             setimage(base64)
-    //         }
-    //     } catch (E) {
-    //         console.log(E);
-    //     }
-    // };
 
 
     const _pickImagefromGallery = async () => {
@@ -147,7 +123,7 @@ const Profile = (props) => {
             fetch(`${Config.url}` + `/user/update`, {
                 method: 'PUT',
                 headers: {
-                    'Authorization': 'Bearer ' + `${userToken}`,
+                    'Authorization': 'Bearer ' + `${user.userToken}`,
                     'Content-Type': "application/json",
                 },
                 body: JSON.stringify({
@@ -173,7 +149,7 @@ const Profile = (props) => {
                 fetch(`${Config.url}` + `/user/update`, {
                     method: 'PUT',
                     headers: {
-                        'Authorization': 'Bearer ' + `${userToken}`,
+                        'Authorization': 'Bearer ' + `${user.userToken}`,
                         'Content-Type': "application/json",
                     },
                     body: JSON.stringify({
@@ -193,7 +169,7 @@ const Profile = (props) => {
         fetch(`${Config.url}` + `/reset-password`, {
             method: 'POST',
             headers: {
-                'Authorization': 'Bearer ' + `${userToken}`,
+                'Authorization': 'Bearer ' + `${user.userToken}`,
                 'Content-Type': "application/json",
             },
             body: JSON.stringify({

@@ -9,28 +9,29 @@ import Header from '../components/Header';
 const { width, height } = Dimensions.get('window');
 import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
 import LoadingComp from '../components/LoadingComp';
+import { useSelector, useDispatch } from 'react-redux';
+import { setUserFollowers } from '../redux/actions/UserAction';
 
 const Followers = (props) => {
-  const [{ userToken, followerslist, UserId }, dispatch] = DataLayerValue();
   const [load, setload] = useState(true);
   const { colors } = useTheme();
-
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.userDetails);
+  const followers = useSelector((state) => state.userDetails.followers);
 
   const fetching = async () => {
     try {
       const Listener = fetch(`${Config.url}` + `/followerslist`, {
         headers: {
-          'Authorization': 'Bearer ' + `${userToken}`,
+          'Authorization': 'Bearer ' + `${user.userToken}`,
         }
       })
         .then((response) => response.json())
         .then((responseJson) => {
-          dispatch({
-            type: "FOLLOWERSLIST",
-            data: responseJson
-          })
+          console.log(responseJson)
+          dispatch(setUserFollowers(responseJson));
           setload(false);
-        })
+        }) 
     } catch (e) {
       console.log(e);
     }
@@ -38,12 +39,11 @@ const Followers = (props) => {
   useEffect(() => {
     let IsMounted = true;
     fetching();
-    dispatch({ type: 'ROUTEPROP', data: 'Following' })
     return () => {
       IsMounted = false;
     }
   }, [])
-  if (followerslist == 0 || followerslist == null) {
+  if (followers == 0 || followers == null) {
     return (
       <View style={{ flex: 1, backgroundColor: colors.background, }}>
         <Header {...props} />
@@ -65,9 +65,9 @@ const Followers = (props) => {
   return (
     <Container style={{ backgroundColor: colors.background }}>
       <Header {...props} />
-      {followerslist[0] != null ? (
+      {followers[0] != null ? (
         <FlatList
-          data={followerslist}
+          data={followers}
           renderItem={({ item }) => {
             return (
               <Usercard item={item} name={'followers'} user={UserId} {...props} />

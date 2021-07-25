@@ -19,10 +19,8 @@ import Notification from '../screens/Notification';
 import { DrawerContent } from '../screens/DrawerContentScreen';
 import { Chat } from '../screens/Chat';
 import { Config } from '../config';
-import { DataLayerValue } from '../Context/DataLayer';
-import LottieView from 'lottie-react-native';
 import WhoLiked from '../screens/WhoLiked';
-import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
+import { useTheme } from '@react-navigation/native';
 import ListOfChats from '../screens/ListOfChats';
 import LoadingComp from '../components/LoadingComp';
 import SlotSelection from '../screens/SlotSelection';
@@ -30,9 +28,11 @@ import AboutUs from '../screens/AboutUs';
 import MockInterview from '../screens/Interview';
 import NotesUpload from '../screens/NotesUpload';
 import NotesRender from '../screens/NotesRender';
-import Status from '../screens/status';
 import StatusView from '../components/StatusView';
 import Terms from '../screens/TermsAndCondition';
+import { useSelector, useDispatch } from 'react-redux';
+import { setUser } from '../redux/actions/UserAction';
+
 const Tab = createMaterialBottomTabNavigator();
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -63,7 +63,6 @@ function External() {
 
 function HomeScreen() {
     const { colors } = useTheme();
-    const [{ userToken, isLoading, UserId, refreshhome }, dispatch] = DataLayerValue();
     return (
         <Tab.Navigator
             initialRouteName="Home"
@@ -74,26 +73,6 @@ function HomeScreen() {
             <Tab.Screen
                 name="Home" initialRouteName="Home"
                 component={Home}
-                // listeners={{
-                //     tabPress: () => {
-                //         dispatch({ type: "REFRESH", data: true })
-                //         fetch(`${Config.url}` + `/post`, {
-                //             headers: {
-                //                 'Authorization': 'Bearer ' + `${userToken}`,
-                //             },
-                //             method: 'GET'
-                //         })
-                //             .then((response) => response.json())
-                //             .then((responseJson) => {
-                //                 dispatch({
-                //                     type: "POSTDATA",
-                //                     postData: responseJson
-                //                 })
-                //                 dispatch({ type: "REFRESH", data: false })
-                //             })
-                //     }
-                // }
-                // }
                 options={{
                     tabBarLabel: 'Home',
                     tabBarColor: Config.secondary,
@@ -108,7 +87,7 @@ function HomeScreen() {
 
 
             />
-            <Tab.Screen
+             <Tab.Screen
                 name="subscribed"
                 component={Subscription}
                 options={{
@@ -118,8 +97,8 @@ function HomeScreen() {
                         <MaterialCommunityIcons name="post-outline" size={24} color={color} />
                     ),
                 }}
-            />
-            <Tab.Screen
+            /> 
+             <Tab.Screen
                 name="addblog"
                 component={Uploadpost}
                 options={{
@@ -155,44 +134,37 @@ function HomeScreen() {
 
                 }}
 
-            />
+            /> 
         </Tab.Navigator>
     );
 }
 
 function Drawernav() {
     const [load, setload] = useState(true);
-    const [{ userToken, isLoading, UserId }, dispatch] = DataLayerValue();
-    const { colors } = useTheme();
+    const user = useSelector((state) => state.userDetails);
+    const dispatch = useDispatch();
 
     const fetching = async () => {
         try {
-            await fetch(`${Config.url}` + `/user/${UserId}`, {
+            await fetch(`${Config.url}` + `/user/${user.userId}`, {
                 headers: {
-                    'Authorization': 'Bearer ' + `${userToken}`,
+                    'Authorization': 'Bearer ' + `${user.userToken}`,
                     'Content-Type': 'application/json'
                 }
             })
                 .then((response) => response.json())
                 .then((responseJson) => {
-                    dispatch({
-                        type: "USERPROFILE",
-                        data: responseJson
-                    })
-                    setload(false)
+                    dispatch(setUser(responseJson))
                 })
         } catch (e) {
             console.log(e);
         }
     }
     useEffect(() => {
-        fetching()
+        fetching();
+        return () => {
+        }
     }, [])
-    if (load) {
-        return (
-            <LoadingComp />
-        );
-    }
     return (
         <Drawer.Navigator drawerContent={props => <DrawerContent {...props} />} drawerPosition='left' drawerType='front'>
             <Drawer.Screen name="external" component={External} />
@@ -204,10 +176,6 @@ function Drawernav() {
             <Drawer.Screen name="interview" component={MockInterview} />
             <Drawer.Screen name="aboutus" component={AboutUs} />
             <Drawer.Screen name="terms" component={Terms} />
-            {/* <Drawer.Screen name="uploadNotes" component={Status} />
-            <Drawer.Screen name="rendernotes" component={NotesRender} />
-            <Drawer.Screen name="StatusView" component={StatusView} /> */}
-
         </Drawer.Navigator>
     );
 }

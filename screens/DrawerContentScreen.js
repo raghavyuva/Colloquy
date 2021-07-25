@@ -5,7 +5,6 @@ import {
 import React, { useState } from 'react';
 import { StyleSheet, View, Linking, Text, Image, TouchableOpacity } from 'react-native';
 import { FontAwesome5, MaterialCommunityIcons, SimpleLineIcons, Octicons, FontAwesome, MaterialIcons, AntDesign } from '@expo/vector-icons';
-import { DataLayerValue } from '../Context/DataLayer';
 import * as SecureStore from 'expo-secure-store';
 import {
     Avatar,
@@ -13,7 +12,6 @@ import {
 import { useFonts } from 'expo-font';
 import { useTheme } from '@react-navigation/native';
 export function DrawerContent(props) {
-    const [{ userToken }, dispatch] = DataLayerValue()
     const { colors } = useTheme();
     const [loaded] = useFonts({
         Montserrat: require('../assets/Pacifico/Pacifico-Regular.ttf'),

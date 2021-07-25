@@ -1,42 +1,36 @@
 import React, { useState, useEffect } from 'react'
-import { Text, StyleSheet, View, Dimensions, ImageBackground, FlatList } from 'react-native'
+import { Text, StyleSheet, View, FlatList } from 'react-native'
 import Eventcard from '../components/Eventcard'
 import Header from '../components/Header';
-const { width, } = Dimensions.get('window');
 import { Config } from '../config';
-import { DataLayerValue } from '../Context/DataLayer';
-import LottieView from 'lottie-react-native';
-import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
+import { useTheme } from '@react-navigation/native';
 import LoadingComp from '../components/LoadingComp';
+import { useSelector, useDispatch } from 'react-redux';
+import { setEvents } from '../redux/actions/EventAction';
 
 const Events = (props) => {
-    const [{ userToken, EventData }, dispatch] = DataLayerValue()
     const [refresh, setrefresh] = useState(false)
     const [load, setload] = useState(true);
     const { colors } = useTheme();
-
+    const user = useSelector((state) => state.userDetails);
+    const EventData = useSelector(state => state.EventData.events);
+    const dispatch = useDispatch();
     useEffect(() => {
         fetching()
-        dispatch({ type: 'ROUTEPROP', data: 'events' })
         return () => {
         }
     }, [])
-   
     const fetching = () => {
         setrefresh(true)
         fetch(`${Config.url}` + `/Event`, {
             headers: {
-                'Authorization': 'Bearer ' + `${userToken}`,
+                'Authorization': 'Bearer ' + `${user.userToken}`,
             },
             method: 'GET'
         })
             .then((response) => response.json())
             .then((responseJson) => {
-                // console.log(responseJson)
-                dispatch({
-                    type: "EVENTS",
-                    eventdata: responseJson
-                })
+                dispatch(setEvents(responseJson));
                 setrefresh(false);
                 setload(false);
             })

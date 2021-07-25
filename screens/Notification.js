@@ -2,18 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, FlatList, } from 'react-native';
 import { View, } from 'native-base';
 import Header from '../components/Header';
-import { DataLayerValue } from '../Context/DataLayer'
 import { Config } from '../config';
 import Notify from '../components/Notify';
-import LottieView from 'lottie-react-native';
-import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
 import LoadingComp from '../components/LoadingComp';
+import { useSelector, useDispatch } from 'react-redux';
+import { setNotifications } from '../redux/actions/NotifyAction';
 
 const Notification = (props) => {
-    const [{ userToken, notifylist, UserId }, dispatch] = DataLayerValue();
     const [refresh, setrefresh] = useState(false)
     const [load, setload] = useState(true);
-    const { colors } = useTheme();
+    const user = useSelector((state) => state.userDetails);
+    const notifylist = useSelector((state) => state.userDetails.notificationlist);
+    const dispatch = useDispatch()
     useEffect(() => {
         fetching();
 
@@ -23,19 +23,15 @@ const Notification = (props) => {
     }, [])
     const fetching = () => {
         try {
-            console.log(`${Config.url}` + `/savednotification`,)
             fetch(`${Config.url}` + `/savednotification`, {
                 headers: {
-                    'Authorization': 'Bearer ' + `${userToken}`,
+                    'Authorization': 'Bearer ' + `${user.userToken}`,
                 },
                 method: 'GET'
             })
                 .then((response) => response.json())
                 .then((responseJson) => {
-                    dispatch({
-                        type: "NOTIFYLIST",
-                        data: responseJson
-                    })
+                    dispatch(setNotifications(responseJson));
                     setload(false);
                 })
         } catch (e) {

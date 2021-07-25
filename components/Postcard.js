@@ -7,17 +7,17 @@ import * as FileSystem from 'expo-file-system';
 import Image from 'react-native-image-progress';
 import { Config } from '../config';
 const { width, height } = Dimensions.get('window');
-import { DataLayerValue } from '../Context/DataLayer';
 import { useTheme } from '@react-navigation/native';
 import * as Progress from 'react-native-progress';
 import { Menu, } from 'react-native-paper'
 import { Provider } from 'react-native-paper';
+import { useSelector, useDispatch } from 'react-redux';
 
-const Postcard = ({ item, navigation, name }) => {
-    const [{ userToken, UserId }, dispatch] = DataLayerValue();
+const Postcard = ({ item, navigation, name, route }) => {
     const [active, setactive] = useState(false);
     const [commenttext, setcommenttext] = useState('');
     const [visible, setVisible] = React.useState(false);
+    const user = useSelector((state) => state.userDetails);
     const [likes, setlikes] = useState(0);
     const [modalVisible, setModalVisible] = useState(false);
     const [liked, setliked] = useState(null)
@@ -29,20 +29,20 @@ const Postcard = ({ item, navigation, name }) => {
     useEffect(() => {
         let IsMounted = true;
         setlikes(item.likes.length);
-        if (item.likes.includes(UserId)) {
+        if (item.likes.includes(user.userId)) {
             setliked(true)
         }
         setvotes(item.votes.length)
-        if (item.votes.includes(UserId)) {
+        if (item.votes.includes(user.UserId)) {
             setvoted(true);
         }
         return () => {
             setlikes(item.likes.length);
-            if (item.likes.includes(UserId)) {
+            if (item.likes.includes(user.UserId)) {
                 setliked(true)
             }
             setvotes(item.votes.length)
-            if (item.votes.includes(UserId)) {
+            if (item.votes.includes(user.UserId)) {
                 setvoted(true);
             }
             IsMounted = false;
@@ -94,7 +94,7 @@ const Postcard = ({ item, navigation, name }) => {
                         fetch(`${Config.url}` + `/post/${item._id}`, {
                             method: 'Delete',
                             headers: {
-                                'Authorization': 'Bearer ' + `${userToken}`,
+                                'Authorization': 'Bearer ' + `${user.userToken}`,
                                 'Content-Type': "application/json",
                             },
                         }).then(res => res.json()).then((resp) => {
@@ -107,42 +107,33 @@ const Postcard = ({ item, navigation, name }) => {
     const updatestore = () => {
         fetch(`${Config.url}` + `/subscription`, {
             headers: {
-                'Authorization': 'Bearer ' + `${userToken}`,
+                'Authorization': 'Bearer ' + `${user.userToken}`,
             },
             method: 'GET'
         })
             .then((response) => response.json())
             .then((responseJson) => {
-                dispatch({
-                    type: "SUBSCRIPTION",
-                    data: responseJson
-                })
+
             })
         fetch(`${Config.url}` + `/post`, {
             headers: {
-                'Authorization': 'Bearer ' + `${userToken}`,
+                'Authorization': 'Bearer ' + `${user.userToken}`,
             },
             method: 'GET'
         })
             .then((response) => response.json())
             .then((responseJson) => {
-                dispatch({
-                    type: "POSTDATA",
-                    postData: responseJson
-                })
+
             })
 
         fetch(`${Config.url}` + `/savednotification`, {
             headers: {
-                'Authorization': 'Bearer ' + `${userToken}`,
+                'Authorization': 'Bearer ' + `${user.userToken}`,
             }
         })
             .then((response) => response.json())
             .then((responseJson) => {
-                dispatch({
-                    type: "NOTIFYLIST",
-                    data: responseJson
-                })
+
             })
     }
     const Notifyy = (val, item) => {
@@ -167,7 +158,7 @@ const Postcard = ({ item, navigation, name }) => {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + `${userToken}`,
+                    'Authorization': 'Bearer ' + `${user.userToken}`,
                 },
                 method: "POST",
                 body: JSON.stringify({
@@ -184,7 +175,7 @@ const Postcard = ({ item, navigation, name }) => {
             fetch(`${Config.url}` + `/posts/like/${item._id}`, {
                 method: 'PUT',
                 headers: {
-                    'Authorization': 'Bearer ' + `${userToken}`,
+                    'Authorization': 'Bearer ' + `${user.userToken}`,
                     'Content-Type': "application/json",
                 },
             }).then(res => res.json()).then(async (resp) => {
@@ -208,7 +199,7 @@ const Postcard = ({ item, navigation, name }) => {
             fetch(`${Config.url}` + `/posts/unlike/${item._id}`, {
                 method: 'PUT',
                 headers: {
-                    'Authorization': 'Bearer ' + `${userToken}`,
+                    'Authorization': 'Bearer ' + `${user.userToken}`,
                     'Content-Type': "application/json",
                 },
             }).then(res => res.json()).then(async (resp) => {
@@ -224,7 +215,7 @@ const Postcard = ({ item, navigation, name }) => {
         //     type: 'FULLVIEW',
         //     data: item
         // })
-        navigation.navigate('external', { screen: 'view',params:{fullview:item._id} })
+        navigation.navigate('external', { screen: 'view', params: { fullview: item._id } })
     }
     const onVote = async (item) => {
         try {
@@ -233,7 +224,7 @@ const Postcard = ({ item, navigation, name }) => {
             fetch(`${Config.url}` + `/posts/vote/${item._id}`, {
                 method: 'PUT',
                 headers: {
-                    'Authorization': 'Bearer ' + `${userToken}`,
+                    'Authorization': 'Bearer ' + `${user.userToken}`,
                     'Content-Type': "application/json",
                 },
             }).then(res => res.json()).then(async (resp) => {
@@ -251,7 +242,7 @@ const Postcard = ({ item, navigation, name }) => {
             fetch(`${Config.url}` + `/posts/votecancell/${item._id}`, {
                 method: 'PUT',
                 headers: {
-                    'Authorization': 'Bearer ' + `${userToken}`,
+                    'Authorization': 'Bearer ' + `${user.userToken}`,
                     'Content-Type': "application/json",
                 },
             }).then(res => res.json()).then(async (resp) => {
@@ -266,7 +257,7 @@ const Postcard = ({ item, navigation, name }) => {
             fetch(`${Config.url}` + `/posts/comments/${item._id}`, {
                 method: 'PUT',
                 headers: {
-                    'Authorization': 'Bearer ' + `${userToken}`,
+                    'Authorization': 'Bearer ' + `${user.userToken}`,
                     'Content-Type': "application/json",
                 },
                 body: JSON.stringify({
@@ -296,7 +287,7 @@ const Postcard = ({ item, navigation, name }) => {
         fetch(`${Config.url}` + `/report`, {
             method: 'POST',
             headers: {
-                'Authorization': 'Bearer ' + `${userToken}`,
+                'Authorization': 'Bearer ' + `${user.userToken}`,
                 'Content-Type': "application/json",
             },
             body: JSON.stringify({
@@ -459,7 +450,7 @@ const Postcard = ({ item, navigation, name }) => {
         >
             <TouchableOpacity onPress={
                 () => {
-                    if (item.postedBy._id == UserId) {
+                    if (item.postedBy._id == user.UserId) {
                         navigation.navigate('external', { screen: 'profile' })
                     } else {
                         navigation.navigate('external', { screen: 'userprofile', params: { item: item } })
@@ -512,7 +503,7 @@ const Postcard = ({ item, navigation, name }) => {
                         marginRight: 15,
                     }}
                 >
-                    <MaterialIcons name='details' color={colors.primary} size={26} />
+                    <MaterialIcons name='info-outline' color={colors.primary} size={26} />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => {
                     item.photo && downloadFile(item);
@@ -546,7 +537,12 @@ const Postcard = ({ item, navigation, name }) => {
             {renderTopPart()}
 
             <View>
-                <TouchableOpacity onPress={() => NavigateFull(item)}>
+                <TouchableOpacity onPress={() => {
+                    if (route.name != 'view') {
+                        NavigateFull(item)
+                    }
+                }}
+                >
                     {
                         item.photo && <Image
                             source={{ uri: item.photo }}
@@ -603,7 +599,7 @@ const Postcard = ({ item, navigation, name }) => {
                 )
             }
 
-        </View>
+        </View >
 
     )
 }

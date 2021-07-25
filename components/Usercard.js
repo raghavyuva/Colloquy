@@ -7,8 +7,11 @@ import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
 import { firebase } from './firebase'
 import 'firebase/auth';
 import 'firebase/firestore';
+import { useSelector, useDispatch } from 'react-redux';
+
 const Usercard = (props) => {
-    const [{ userToken, user }, dispatch] = DataLayerValue()
+    const dispatch = useDispatch();
+    const user = useSelector((state) => state.userDetails);
     const [users, setusers] = useState([]);
     const [name, setname] = useState('');
     const [roomName, setRoomName] = useState("");
@@ -28,7 +31,7 @@ const Usercard = (props) => {
             fetch(`${Config.url}` + `/follow`, {
                 method: 'PUT',
                 headers: {
-                    'Authorization': 'Bearer ' + `${userToken}`,
+                    'Authorization': 'Bearer ' + `${user.userToken}`,
                     'Content-type': 'application/json'
                 },
                 body: JSON.stringify({
@@ -47,38 +50,32 @@ const Usercard = (props) => {
         try {
             const Listener = fetch(`${Config.url}` + `/followerslist`, {
                 headers: {
-                    'Authorization': 'Bearer ' + `${userToken}`,
+                    'Authorization': 'Bearer ' + `${user.userToken}`,
                 }
             })
                 .then((response) => response.json())
                 .then((responseJson) => {
-                    dispatch({
-                        type: "FOLLOWERSLIST",
-                        data: responseJson
-                    })
+                  
                 })
 
             fetch(`${Config.url}` + `/allusers`, {
                 headers: {
-                    'Authorization': 'Bearer ' + `${userToken}`,
+                    'Authorization': 'Bearer ' + `${user.userToken}`,
                 },
                 method: 'GET'
             })
                 .then((response) => response.json())
                 .then((responseJson) => {
-                    dispatch({ type: 'RETRIEVEALLUSERS', data: responseJson })
+                   
                 })
             fetch(`${Config.url}` + `/followinglist`, {
                 headers: {
-                    'Authorization': 'Bearer ' + `${userToken}`,
+                    'Authorization': 'Bearer ' + `${user.userToken}`,
                 }
             })
                 .then((response) => response.json())
                 .then((responseJson) => {
-                    dispatch({
-                        type: "FOLLOWINGLIST",
-                        data: responseJson
-                    })
+                  
                 })
 
         } catch (e) {
@@ -91,7 +88,7 @@ const Usercard = (props) => {
             fetch(`${Config.url}` + `/unfollow`, {
                 method: 'PUT',
                 headers: {
-                    'Authorization': 'Bearer ' + `${userToken}`,
+                    'Authorization': 'Bearer ' + `${user.userToken}`,
                     'Content-type': 'application/json'
                 },
 

@@ -11,11 +11,12 @@ import 'firebase/storage';
 import DocumentPicker from 'react-native-document-picker';
 import RNFetchBlob from 'rn-fetch-blob'
 import { Config } from '../config';
-import { DataLayerValue } from '../Context/DataLayer';
 import UploadingComp from '../components/UploadingComp';
+import { useSelector, useDispatch } from 'react-redux';
 
 const NotesUpload = (props) => {
-    const [{ userToken, postData, searchactive, UserId, allusers, isOnline, }, dispatch] = DataLayerValue();
+    const user = useSelector((state) => state.userDetails);
+
     const { colors } = useTheme();
     const [document, setdocument] = useState('');
     const [docname, setdocname] = useState(null);
@@ -55,7 +56,7 @@ const NotesUpload = (props) => {
                 fetch(`${Config.url}/upload_notes`, {
                     method: 'POST',
                     headers: {
-                        'Authorization': 'Bearer ' + `${userToken}`,
+                        'Authorization': 'Bearer ' + `${user.userToken}`,
                         'Content-Type': "application/json",
                     },
                     body: JSON.stringify({

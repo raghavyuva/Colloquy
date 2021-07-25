@@ -18,6 +18,7 @@ import LottieView from 'lottie-react-native';
 import "@firebase/auth";
 import "@firebase/firestore";
 import UploadingComp from '../components/UploadingComp';
+import { useSelector, useDispatch } from 'react-redux';
 LogBox.ignoreLogs(['Setting a timer']);
 const Uploadpost = (props) => {
     const [loading, setloading] = useState(true)
@@ -25,7 +26,6 @@ const Uploadpost = (props) => {
     const [uploading, setuploading] = useState(false);
     const [ondone, setondone] = useState(false);
     const [postimage, setpostimage] = useState('')
-    const [{ userToken, user, defdarktheme, }, dispatch] = DataLayerValue()
     const [loaclimages, setloaclimages] = useState('');
     const [selectedItems, setselectedItems] = useState([]);
     const [location, setLocation] = useState(null);
@@ -38,6 +38,9 @@ const Uploadpost = (props) => {
     const [status, setstatus] = useState(null);
     const [active, setactive] = useState(false)
     const [storagestatus, setstoragestatus] = useState(false)
+    const user = useSelector((state) => state.userDetails);
+
+    let defdarktheme = true;
     useEffect(() => {
         let IsMounted = true;
         // console.log(permstorage)
@@ -82,7 +85,7 @@ const Uploadpost = (props) => {
     }
     const toggleFunction = () => {
         setToggle(!toggle);
-        dispatch({ type: 'THEME', data: !defdarktheme })
+      
     };
 
     const uploadPhotoAsync = async () => {
@@ -158,7 +161,7 @@ const Uploadpost = (props) => {
             fetch(`${Config.url}` + `/post`, {
                 method: 'POST',
                 headers: {
-                    'Authorization': 'Bearer ' + `${userToken}`,
+                    'Authorization': 'Bearer ' + `${user.userToken}`,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({

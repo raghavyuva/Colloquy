@@ -8,11 +8,9 @@ import LottieView from 'lottie-react-native';
 import Headingbar from '../components/Header';
 import { ScrollView, TouchableHighlight, TouchableOpacity } from 'react-native-gesture-handler';
 import { Config } from '../config';
-import { DataLayerValue } from '../Context/DataLayer';
 import LoadingComp from '../components/LoadingComp';
 const MockInterview = (props) => {
     const [load, setload] = useState(true);
-    const [{ userToken, defdarktheme, routename }, dispatch] = DataLayerValue()
     // const [selected, setselected] = useState(null);
     const Data = [{
         "course": "CSE",

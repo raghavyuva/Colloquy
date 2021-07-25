@@ -8,21 +8,22 @@ import Headingbar from '../components/Header';
 import { useTheme } from '@react-navigation/native';
 import { color } from 'react-native-reanimated';
 import LoadingComp from '../components/LoadingComp';
+import { useSelector, useDispatch } from 'react-redux';
+
 const PostfullView = (props) => {
-    const [{ userToken, }, dispatch] = DataLayerValue();
+    const user = useSelector((state) => state.userDetails);
     const [commenttext, setcommenttext] = useState('');
     const [Data, setData] = useState(null);
     const { colors } = useTheme();
     const [loading, setloading] = useState(true)
     let fullview = props.route.params.fullview;
-
     const fetching = (first) => {
         if (first) {
             setloading(true);
         }
         fetch(`${Config.url}` + `/post/${fullview}`, {
             headers: {
-                'Authorization': 'Bearer ' + `${userToken}`,
+                'Authorization': 'Bearer ' + `${user.userToken}`,
             },
             method: 'GET'
         })
@@ -32,14 +33,12 @@ const PostfullView = (props) => {
                 setloading(false);
             })
     }
-
     useEffect(() => {
         let first = true
         fetching(first);
         return () => {
         }
     }, [])
-
     const commentui = ({ item, index }) => {
         return (
             <CardItem style={{ backgroundColor: colors.card, borderBottomWidth: 0.2, borderBottomColor: colors.border }}>
@@ -79,7 +78,7 @@ const PostfullView = (props) => {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + `${userToken}`,
+                    'Authorization': 'Bearer ' + `${user.userToken}`,
                 },
                 method: "POST",
                 body: JSON.stringify({
@@ -95,7 +94,7 @@ const PostfullView = (props) => {
             fetch(`${Config.url}` + `/posts/comments/${fullview}`, {
                 method: 'PUT',
                 headers: {
-                    'Authorization': 'Bearer ' + `${userToken}`,
+                    'Authorization': 'Bearer ' + `${user.userToken}`,
                     'Content-Type': "application/json",
                 },
                 body: JSON.stringify({

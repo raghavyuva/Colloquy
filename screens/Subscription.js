@@ -2,31 +2,32 @@ import React, { useState, useEffect } from 'react'
 import { SafeAreaView, FlatList, View, Dimensions, Image } from 'react-native'
 import Header from '../components/Header';
 import Postcard from '../components/Postcard';
-import { DataLayerValue } from '../Context/DataLayer';
 import { Config } from '../config';
 import LottieView from 'lottie-react-native';
 import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
 import LoadingComp from '../components/LoadingComp';
 const { width, height } = Dimensions.get('window');
+import { useSelector, useDispatch } from 'react-redux';
+import { setSubscribedFeeds } from '../redux/actions/FeedAction';
 
 const Home = (props) => {
-    const [{ userToken, subscribeddata }, dispatch] = DataLayerValue();
     const [refresh, setrefresh] = useState(false);
     const [load, setload] = useState(true);
+    const dispatch = useDispatch();
+    const subscribeddata = useSelector(state => state.allfeeds.subscribedfeeds)
+    const user = useSelector((state) => state.userDetails);
+
     const fetching = () => {
         setrefresh(true);
         fetch(`${Config.url}` + `/subscription`, {
             headers: {
-                'Authorization': 'Bearer ' + `${userToken}`,
+                'Authorization': 'Bearer ' + `${user.userToken}`,
             },
             method: 'GET'
         })
             .then((response) => response.json())
             .then((responseJson) => {
-                dispatch({
-                    type: "SUBSCRIPTION",
-                    data: responseJson
-                })
+                dispatch(setSubscribedFeeds(responseJson));
                 setrefresh(false)
                 setload(false);
             })
@@ -43,8 +44,8 @@ const Home = (props) => {
     if (load) {
         return (
             <LoadingComp />
-        );
-    }
+        ); 
+    } 
 
     if (subscribeddata.length == null || subscribeddata.length == 0 || subscribeddata.length == undefined || subscribeddata == null) {
         return (
@@ -64,7 +65,7 @@ const Home = (props) => {
         <SafeAreaView >
             <Header {...props} />
             <FlatList
-                ref={(ref) => { flatListRef = ref; }}
+                // ref={(ref) => { flatListRef = ref; }}
                 renderItem={({ item }) => {
                     return (
                         <Postcard item={item} {...props} />

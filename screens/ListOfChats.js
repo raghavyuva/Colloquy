@@ -12,6 +12,7 @@ import { Config } from '../config';
 import Usercard from '../components/Usercard';
 import LoadingComp from '../components/LoadingComp';
 var _ = require('lodash');
+import { useSelector, useDispatch } from 'react-redux'; 
 
 require('firebase/storage');
 import {
@@ -34,32 +35,33 @@ const ListOfChats = (props) => {
     const [AllUsers, setAllUsers] = useState(null);
     const [refresh, setrefresh] = useState(false);
     const [snap, setsnap] = useState(null);
-    const [{ user, searchactive, userToken, UserId, followinglist }, dispatch] = DataLayerValue()
+    const user = useSelector((state) => state.userDetails); 
+    const searchactive = false
     useEffect(() => {
         let IsMounted = true;
         setloading(true);
-        _openInterstitial();
+        // _openInterstitial();
         FetchThreads();
         FetchAll();
         return () => {
             IsMounted = false;
         }
     }, []);
-    AdMobInterstitial.setAdUnitID('ca-app-pub-3940256099942544/1033173712')
+    // AdMobInterstitial.setAdUnitID('ca-app-pub-3940256099942544/1033173712')
 
-    const _openInterstitial = async () => {
-        try {
-            setdisableinter(true)
-            await AdMobInterstitial.requestAdAsync()
-            await AdMobInterstitial.showAdAsync()
-            FetchThreads();
-            FetchAll();
-        } catch (error) {
-            console.error(error)
-        } finally {
-            setdisableinter(false);
-        }
-    }
+    // const _openInterstitial = async () => {
+    //     try {
+    //         setdisableinter(true)
+    //         await AdMobInterstitial.requestAdAsync()
+    //         await AdMobInterstitial.showAdAsync()
+    //         FetchThreads();
+    //         FetchAll();
+    //     } catch (error) {
+    //         console.error(error)
+    //     } finally {
+    //         setdisableinter(false);
+    //     }
+    // }
 
 
     const FetchThreads = () => {
@@ -115,7 +117,7 @@ const ListOfChats = (props) => {
     const FetchAll = () => {
         fetch(`${Config.url}` + `/AllUsers`, {
             headers: {
-                'Authorization': 'Bearer ' + `${userToken}`,
+                'Authorization': 'Bearer ' + `${user.userToken}`,
             },
             method: 'GET'
         })
@@ -222,7 +224,7 @@ const ListOfChats = (props) => {
             <FlatList
                 renderItem={({ item }) => {
                     return (
-                        <Usercard item={item} name={'chatscreen'} user={UserId} {...props} thread={threads} />
+                        <Usercard item={item} name={'chatscreen'} user={user.UserId} {...props} thread={threads} />
                     )
                 }}
                 keyExtractor={(item, index) => index.toString()}

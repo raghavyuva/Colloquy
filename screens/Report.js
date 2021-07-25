@@ -16,10 +16,11 @@ import { DataLayerValue } from '../Context/DataLayer';
 import LoadingComp from '../components/LoadingComp';
 require('firebase/storage');
 var _ = require('lodash');
+import { useSelector, useDispatch } from 'react-redux';
 
 const Report = (props) => {
     const [Input, setInput] = useState('');
-    const [{ userToken, user }, dispatch] = DataLayerValue();
+
     const [attached, setattached] = useState(false);
     const { colors } = useTheme();
     const [status, setstatus] = useState(null);
@@ -31,6 +32,7 @@ const Report = (props) => {
     const [submitting, setsubmitting] = useState(false);
     const [storagestatus, setstoragestatus] = useState(null);
     const handlePress = () => setExpanded(!expanded);
+    const user = useSelector((state) => state.userDetails);
 
     const _pickImagefromGallery = async () => {
         const { status } = await MediaLibrary.getPermissionsAsync()
@@ -96,7 +98,7 @@ const Report = (props) => {
                     fetch(`${Config.url}` + `/report`, {
                         method: 'POST',
                         headers: {
-                            'Authorization': 'Bearer ' + `${userToken}`,
+                            'Authorization': 'Bearer ' + `${user.userToken}`,
                             'Content-Type': "application/json",
                         },
                         body: JSON.stringify({
@@ -140,7 +142,7 @@ const Report = (props) => {
             fetch(`${Config.url}` + `/faq`, {
                 method: 'GET',
                 headers: {
-                    'Authorization': 'Bearer ' + `${userToken}`,
+                    'Authorization': 'Bearer ' + `${user.userToken}`,
                     'Content-Type': 'application/json',
                 },
             })
@@ -216,7 +218,7 @@ const Report = (props) => {
                                     title={item.Question}
                                     left={props => <MaterialIcons name="article" size={24} color='grey' />}
                                     titleStyle={{ color: colors.text }}
-                                    style={{backgroundColor:colors.card}}
+                                    style={{ backgroundColor: colors.card }}
                                 >
                                     <Text style={{ color: 'grey' }}>{item.Answer}</Text>
                                 </List.Accordion>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, Image, View ,Dimensions} from 'react-native';
+import { FlatList, Image, View, Dimensions } from 'react-native';
 import { Container, } from 'native-base';
 import LottieView from 'lottie-react-native';
 import { Config } from '../config';
@@ -9,25 +9,25 @@ import Header from '../components/Header';
 const { width, height } = Dimensions.get('window');
 import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
 import LoadingComp from '../components/LoadingComp';
+import { useSelector, useDispatch } from 'react-redux';
+import { setUserFollowings } from '../redux/actions/UserAction';
 
 const Following = (props) => {
-  const [{ userToken, followinglist ,UserId}, dispatch] = DataLayerValue()
   const [load, setload] = useState(true);
-  const {colors} = useTheme();
-
+  const { colors } = useTheme();
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.userDetails);
+  const followinglist = useSelector((state) => state.userDetails.following);
   const fetching = async () => {
     try {
       const Listener = fetch(`${Config.url}` + `/followinglist`, {
         headers: {
-          'Authorization': 'Bearer ' + `${userToken}`,
+          'Authorization': 'Bearer ' + `${user.userToken}`,
         }
       })
         .then((response) => response.json())
         .then((responseJson) => {
-          dispatch({
-            type: "FOLLOWINGLIST",
-            data: responseJson
-          })
+          dispatch(setUserFollowings(responseJson));
           setload(false);
         })
     } catch (e) {
@@ -36,32 +36,32 @@ const Following = (props) => {
   }
   useEffect(() => {
     fetching();
-   
+
     return () => {
 
     }
   }, [])
   if (followinglist == 0 || followinglist == null) {
-    return(
-      <View style={{ flex: 1, backgroundColor: colors.background,}}>
-                <Header {...props} />
-                <View style={{ justifyContent: 'center',alignSelf: 'center',flex: 1}}>
-                <Image
-                    source={{uri:'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fcdn.onlinewebfonts.com%2Fsvg%2Fimg_412721.png&f=1&nofb=1'}}
-                    style={{ width: width, height: 400, alignSelf: 'center', marginLeft: 2,justifyContent: 'center', }}
-                />
-                </View>
-              
-            </View>
+    return (
+      <View style={{ flex: 1, backgroundColor: colors.background, }}>
+        <Header {...props} />
+        <View style={{ justifyContent: 'center', alignSelf: 'center', flex: 1 }}>
+          <Image
+            source={{ uri: 'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fcdn.onlinewebfonts.com%2Fsvg%2Fimg_412721.png&f=1&nofb=1' }}
+            style={{ width: width, height: 400, alignSelf: 'center', marginLeft: 2, justifyContent: 'center', }}
+          />
+        </View>
+
+      </View>
     )
   }
-  if (load) { 
+  if (load) {
     return (
-     <LoadingComp />
+      <LoadingComp />
     )
   }
   return (
-    <Container style={{ backgroundColor: colors.background}}>
+    <Container style={{ backgroundColor: colors.background }}>
       <Header {...props} />
       {
         followinglist[0] != null ? (
@@ -69,17 +69,17 @@ const Following = (props) => {
             data={followinglist}
             renderItem={({ item }) => {
               return (
-                <Usercard item={item} {...props} name={'following'} user={UserId}/>
+                <Usercard item={item} {...props} name={'following'} user={user.userId} />
               );
             }}
             keyExtractor={item => item._id}
           />
         ) : (
-            <Image
+          <Image
             source={{ uri: 'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fcdn.onlinewebfonts.com%2Fsvg%2Fimg_412721.png&f=1&nofb=1' }}
-              style={{ width: width, height: height , alignSelf: 'center',justifyContent:'center',}}
-            />
-          )
+            style={{ width: width, height: height, alignSelf: 'center', justifyContent: 'center', }}
+          />
+        )
       }
 
     </Container>

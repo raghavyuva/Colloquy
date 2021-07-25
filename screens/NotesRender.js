@@ -5,19 +5,19 @@ import { useTheme } from '@react-navigation/native';
 import { Searchbar, List } from 'react-native-paper';
 import { MaterialIcons, AntDesign, MaterialCommunityIcons, Entypo } from '@expo/vector-icons';
 import { Config } from '../config';
-import { DataLayerValue } from '../Context/DataLayer';
+import { useSelector, useDispatch } from 'react-redux';
 
 const NotesRender = (props) => {
     const { colors } = useTheme();
     const [Notes, setNotes] = useState(null);
-    const [{ userToken, }, dispatch] = DataLayerValue();
     const [typeofnotes, settypeofnotes] = useState(null);
+    const user = useSelector((state) => state.userDetails);
 
     const fetching = () => {
         fetch(`${Config.url}` + `/get_notes`, {
             headers: {
-                'Authorization': 'Bearer ' + `${userToken}`,
-            },
+                'Authorization': 'Bearer ' + `${user.userToken}`,
+            }, 
             method: 'GET'
         })
             .then((response) => response.json())

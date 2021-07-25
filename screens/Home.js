@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { View, Text, SafeAreaView, FlatList, TouchableOpacity, StyleSheet, Platform, StatusBar } from 'react-native'
 import Headerv from '../components/Header';
 import Postcard from '../components/Postcard';
@@ -6,238 +6,48 @@ import { DataLayerValue } from '../Context/DataLayer';
 import { Config } from '../config';
 import * as Notifications from 'expo-notifications';
 import { useTheme } from '@react-navigation/native';
-import LottieView from 'lottie-react-native';
-import Constants from 'expo-constants';
-import { Button, Icon, Item, Input, Header, Card, CardItem, List, ListItem, Left, Body, Thumbnail, Right } from 'native-base';
-import { MaterialIcons } from '@expo/vector-icons';
+import { Icon, Item, Header, CardItem, } from 'native-base';
 import Usercard from '../components/Usercard';
 import * as Device from 'expo-device';
 import NotFoundComp from '../components/NotFoundComp';
 import LoadingComp from '../components/LoadingComp';
-import * as ImagePicker from 'expo-image-picker';
-import {
-    AdMobBanner,
-    AdMobInterstitial,
-    PublisherBanner,
-    AdMobRewarded,
-    setTestDeviceIDAsync,
-
-} from 'expo-ads-admob';
-import WaveComp from '../components/WaveComp';
 import { Searchbar, } from 'react-native-paper';
-
-const Home = (props) => {
-
-    const [{ userToken, postData, searchactive, UserId, allusers, isOnline, defdarktheme }, dispatch] = DataLayerValue();
+import { useSelector, useDispatch } from 'react-redux'; 
+import { setFeeds } from '../redux/actions/FeedAction';
+  
+const Home = (props) => { 
+    const feeds = useSelector((state) => state.allfeeds.feeds);
+    const user = useSelector((state) => state.userDetails); 
+    const load = useSelector((state) => state.loadingDetails.loading);
     const [Notify, setNotify] = useState('');
     const [refresh, setrefresh] = useState(false);
-    const [loading, setloading] = useState(true);
     const [searchText, setsearchText] = useState(null);
     const [filtered, setfiltered] = useState(null);
     const [active, setactive] = useState('Post');
     const [AllUsers, setAllUsers] = useState(null);
     const [dataforfilter, setdataforfilter] = useState(null);
     const [Notfound, setNotfound] = useState(false);
-    const [reward, setreward] = useState(false);
-    const [disableinter, setdisableinter] = useState(false);
-
     const { colors } = useTheme();
-    AdMobRewarded.setAdUnitID("ca-app-pub-1751328492898824/8806464007")
+    const dispatch = useDispatch();
+
+    const fetchFeeds = async () => {
+        const respo = await fetch(`${Config.url}/post`, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + `${user.userToken}`,
+            },
+        }).then(resp => resp.json()).then((d) => {
+            dispatch(setFeeds(d))
+        })
+    }
+
     useEffect(() => {
         let IsMounted = true
-        requestUserPermission();
-        AdMobInterstitial.setAdUnitID('ca-app-pub-3940256099942544/1033173712')
-        // _openInterstitial()
-        // setTestDeviceIDAsync('EMULATOR');
-        // _openRewarded()
-        registerForPushNotifications();
-        Notifications.addNotificationReceivedListener(_handleNotification);
-        fetching();
-        FetchAll();
+        fetchFeeds();
         return () => {
             IsMounted = false;
         }
     }, [])
-
-
-    const fetching = () => {
-        setrefresh(true)
-        fetch(`${Config.url}` + `/post`, {
-            headers: {
-                'Authorization': 'Bearer ' + `${userToken}`,
-            },
-            method: 'GET'
-        })
-            .then((response) => response.json())
-            .then((responseJson) => {
-                dispatch({
-                    type: "POSTDATA",
-                    postData: responseJson
-                })
-                setrefresh(false);
-                setloading(false)
-            })
-    }
-    const FetchAll = () => {
-        fetch(`${Config.url}` + `/allusers`, {
-            headers: {
-                'Authorization': 'Bearer ' + `${userToken}`,
-            },
-            method: 'GET'
-        })
-            .then((response) => response.json())
-            .then((responseJson) => {
-                dispatch({ type: 'RETRIEVEALLUSERS', data: responseJson })
-            })
-    }
-
-
-
-
-
-
-
-    const _handleNotification = notification => {
-        setNotify(notification)
-    };
-
-
-
-
-    const ActivateSearch = () => {
-        // if (searchactive == true) {
-        //     props.navigation.goBack();
-        // }
-        dispatch({ type: 'SEARCHCOMPONENT', data: !searchactive })
-    }
-
-
-
-
-
-    async function requestUserPermission() {
-        let token;
-        if (Device.osName == 'Android') {
-            const { status: existingStatus } = await Notifications.getPermissionsAsync();
-            let finalStatus = existingStatus;
-            if (existingStatus !== 'granted') {
-                const { status } = await Notifications.requestPermissionsAsync();
-                finalStatus = status;
-            }
-            if (finalStatus !== 'granted') {
-                alert('Failed to get push token for push notification!');
-                return;
-            }
-            token = (await Notifications.getExpoPushTokenAsync()).data;
-        } else {
-            alert('Must use physical device for Push Notifications');
-        }
-        if (Platform.OS === 'android') {
-            Notifications.setNotificationChannelAsync('default', {
-                name: 'default',
-                importance: Notifications.AndroidImportance.MAX,
-                vibrationPattern: [0, 250, 250, 250],
-                lightColor: '#FF231F7C',
-                showBadge: true,
-                sound: true,
-                lockscreenVisibility: true,
-                enableVibrate: true,
-                description: 'check now'
-            });
-        }
-        return token;
-    }
-
-
-
-
-
-
-
-
-
-
-    const registerForPushNotifications = async () => {
-        const token = await Notifications.getExpoPushTokenAsync();
-        try {
-            fetch(`${Config.url}` + `/notifytoken`, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': 'Bearer ' + `${userToken}`,
-                    'Content-Type': "application/json",
-                },
-                body: JSON.stringify({
-                    notifytoken: token.data
-                })
-            }).then(res => res.json()).then((resp) => {
-            })
-        } catch (error) {
-            alert(error);
-            console.log(error);
-        }
-    };
-
-    const GoTo_top_function = () => {
-
-
-
-    }
-
-
-
-
-    const changedata = () => {
-        switch (active) {
-            case 'People':
-                setdataforfilter(AllUsers);
-                setfiltered([])
-                setsearchText('')
-                setNotfound(false);
-                break;
-            case 'Post':
-                setdataforfilter(postData);
-                setfiltered([])
-                setsearchText('')
-                setNotfound(false);
-                break;
-            default:
-                break;
-        }
-    }
-
-
-
-
-
-    const search = () => {
-        switch (active) {
-            case 'People':
-                let filteredData = allusers.filter(function (item) {
-                    setNotfound(false)
-                    return item.username.toLowerCase().includes(searchText.toLowerCase());
-                });
-                setfiltered(filteredData);
-                if (filteredData.length === 0) {
-                    setNotfound(true)
-                }
-                break;
-            case 'Post':
-                let filteredDatas = postData.filter(function (item) {
-                    setNotfound(false)
-                    return item.caption.toLowerCase().includes(searchText.toLowerCase());
-
-                });
-                if (filteredDatas.length === 0) {
-                    setNotfound(true)
-                }
-                setfiltered(filteredDatas);
-                break;
-            default:
-                break;
-        }
-
-    };
-
 
     const PostCardComp = (props) => {
         return (
@@ -248,128 +58,37 @@ const Home = (props) => {
                     );
                 }}
                 keyExtractor={(item, index) => index.toString()}
-                data={props.section === 'NormalView' ? postData : filtered && filtered.length > 0 ? filtered : postData}
-                onEndReached={fetching && GoTo_top_function}
+                data={props.section === 'NormalView' ? feeds : filtered && filtered.length > 0 ? filtered : feeds}
+                // onEndReached={fetching && GoTo_top_function}
                 scrollEnabled
                 onScrollAnimationEnd
                 scrollToOverflowEnabled
                 onEndReachedThreshold={0}
                 refreshing={refresh}
-                onRefresh={fetching}
-                style={{ marginBottom: 50, marginTop: 10 }}
+                onRefresh={fetchFeeds}
+                style={{ marginBottom: 0, marginTop: 10 }}
             />
-
+ 
         )
     }
-    const _openInterstitial = async () => {
-        try {
-            setdisableinter(true)
-            await AdMobInterstitial.requestAdAsync()
-            await AdMobInterstitial.showAdAsync().then((d) => {
-                alert(d)
+
+    const FetchAll = () => {
+        fetch(`${Config.url}` + `/allusers`, {
+            headers: {
+                'Authorization': 'Bearer ' + `${userToken}`,
+            },
+            method: 'GET'
+        })
+            .then((response) => response.json())
+            .then((responseJson) => {
+
             })
-
-        } catch (error) {
-            console.error(error)
-            alert(error);
-        } finally {
-            setdisableinter(false);
-        }
-    }
-    const _openRewarded = async () => {
-        try {
-            setreward(true)
-            await AdMobRewarded.requestAdAsync()
-            await AdMobRewarded.showAdAsync()
-        } catch (error) {
-            console.error(error)
-        } finally {
-            setreward(false);
-        }
-    }
-    const PeopLeComp = () => {
-        return (
-            <FlatList
-
-                renderItem={({ item }) => {
-                    return (
-                        <Usercard item={item} name={'followers'} user={UserId} {...props} />
-                    );
-                }}
-                keyExtractor={(item, index) => index.toString()}
-                data={filtered && filtered.length > 0 ? filtered : allusers}
-                onEndReached={FetchAll && GoTo_top_function}
-                scrollEnabled
-                onScrollAnimationEnd
-                scrollToOverflowEnabled
-                onEndReachedThreshold={0}
-                refreshing={refresh}
-                onRefresh={FetchAll}
-
-
-            />
-        )
-    }
-    const FilterCardComp = () => {
-        return (
-            <FlatList
-                renderItem={({ item }) => {
-                    return (
-                        <CardItem style={active == item.name ? styles(colors).cardofactive : styles(colors).cardof}>
-                            <TouchableOpacity onPress={() => {
-                                setactive(item.name)
-                                changedata();
-                            }}
-                                style={{ flexDirection: 'row' }}>
-                                <Text style={{ color: colors.text }}>{item.name} </Text>
-
-                            </TouchableOpacity>
-                        </CardItem>
-                    );
-                }}
-                keyExtractor={(item, index) => index.toString()}
-                data={Filter}
-                horizontal
-            />
-        )
-    }
-
-    // const HeaderComp = () => {
-    //     return (
-
-    //     )
-    // }
-
-
-    const ActiveRenderer = () => {
-        return (
-            <>
-                {active == 'Post' ? (
-                    <PostCardComp  {...props} section='FilterView' />
-                ) : (
-                    <>
-                        {active == 'People' ? (
-                            <>
-                                <PeopLeComp />
-                            </>
-                        ) : (
-                            <>
-
-                            </>
-                        )}
-                    </>
-                )}
-            </>
-        )
     }
 
 
 
-    if (loading) {
-        return (
-            <LoadingComp />
-        )
-    }
+
+
 
 
     return (
@@ -378,99 +97,15 @@ const Home = (props) => {
                 backgroundColor: colors.card
             }}
         >
-            {searchactive ? (
-                <>
-                    <View>
-                        <Header searchBar rounded style={{ backgroundColor: colors.background, }}>
-                            <StatusBar backgroundColor={colors.background}
-                                barStyle={defdarktheme ? 'light-content' : "dark-content"}
-                            />
-                            <Item style={{ backgroundColor: colors.background }}>
-                                <TouchableOpacity onPress={ActivateSearch}>
-                                    <Icon name="arrow-back" style={{ backgroundColor: colors.background,color:'red' }} fontSize={28} />
-                                </TouchableOpacity>
-                                <Searchbar style={{ backgroundColor: colors.card, color: colors.text,width:300 }} iconColor='grey' inputStyle={{ color: colors.text }}
-                                    placeholder=""
-                                    placeholderTextColor='grey'
-                                    // onIconPress={search}
-                                    onChangeText={search}
-                                />
-                            </Item>
-                        </Header>             
-                                   {
-                            Notfound == false ? (
-                                <>
-                                    <ActiveRenderer />
-                                </>
-                            ) : (
-                                <>
-                                    <NotFoundComp />
-                                </>
-                            )
-                        }
 
-                    </View>
-                </>
-            ) : (
-                <>
-                    <Headerv {...props} />
-                    {/* <AdMobBanner
-                        bannerSize='fullBanner'
-                        adUnitID={Platform.OS == 'android' ? "ca-app-pub-3940256099942544/6300978111" : "ca-app-pub-1751328492898824/7396129668"}
-                        // servePersonalizedAds={true} // true or false
-                        // style={{ backgroundColor: colors.background, color: colors.text }}
-                        onAdFailedToLoad={error => console.error(error)}
-                    /> */}
-                    <PostCardComp {...props} section='NormalView' />
+            <>
+                <Headerv {...props} />
+                <PostCardComp {...props} section='NormalView' />
 
-                </>
-            )
-            }
+            </>
+
+
         </SafeAreaView >
     )
 }
-
-export default Home
-const Filter = [
-    {
-        "name": 'People',
-        "id": 1
-    },
-    {
-        "name": 'Post',
-        "id": 2
-    },
-    // {
-    //     "name": 'Tag',
-    //     "id": 3
-    // },
-    // {
-    //     "name": 'Category',
-    //     "id": 74
-    // },
-    // {
-    //     "name": 'Location',
-    //     "id": 75
-    // },
-]
-const styles = (colors) => StyleSheet.create({
-    cardoff: {
-        backgroundColor: colors.background,
-        borderWidth: 0,
-        borderColor: colors.background
-    },
-    cardof: {
-        margin: 4,
-        backgroundColor: colors.background,
-        borderRadius: 20,
-        borderWidth: 1,
-        borderColor: colors.border
-    },
-    cardofactive: {
-        backgroundColor: colors.card,
-        borderRadius: 20,
-        borderWidth: 1,
-        borderColor: colors.primary,
-        margin: 4
-    }
-});
+export default Home;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { SafeAreaView, Text, StatusBar, TouchableOpacity, Share } from 'react-native';
+import { SafeAreaView, Text, StatusBar, TouchableOpacity, Share, FlatList, } from 'react-native';
 import { Header, Button, Icon, Left, Body, View, Right, Title, Item, Input, Radio, } from 'native-base';
 import { Avatar, } from 'react-native-paper';
 import { DataLayerValue } from '../Context/DataLayer';
@@ -8,38 +8,133 @@ import { useFonts } from 'expo-font';
 import { useTheme } from '@react-navigation/native';
 import { Menu, Provider } from 'react-native-paper';
 import { Config } from '../config';
+import { useSelector, useDispatch } from 'react-redux';
+import { setCurrentTheme, setTheme } from '../redux/actions/ThemeAction';
+import { BottomSheet } from 'react-native-btr';
+import * as SecureStore from 'expo-secure-store';
+
+const ThemeSelectingComponent = ({ color, themename, colors, theme }) => {
+    const dispatch = useDispatch();
+    return (
+        <View
+            style={{
+                marginTop: 20,
+
+                width: 200,
+            }}
+        >
+
+            <TouchableOpacity
+                style={{
+                    flexDirection: 'row',
+                    borderRadius: 10,
+                    padding: 5,
+                    marginRight: 10,
+                    borderColor: 'grey',
+                    alignItems: 'center'
+                }}
+                onPress={() => {
+                    dispatch(setCurrentTheme(theme.theme))
+                    SecureStore.setItemAsync('themeid', theme.id.toString())
+                }}
+            >
+                <Icon name='palette-swatch' style={{ color: color, backgroundColor: colors.notification, borderRadius: 10, padding: 5, marginRight: 5 }} type='MaterialCommunityIcons' />
+                <Text style={{ color: colors.text, textAlign: 'center', fontWeight: '500', fontSize: 18, textTransform: 'capitalize' }}>{themename}</Text>
+            </TouchableOpacity>
+        </View>
+    )
+}
 
 const Headingbar = (props) => {
-    const [{ user, defdarktheme, searchactive, chattee, chatteeOnline, userToken }, dispatch] = DataLayerValue()
     const [toggle, setToggle] = useState(true);
+    const user = useSelector((state) => state.userDetails.user.user);
+    const dispatch = useDispatch();
     const { colors } = useTheme();
-    const [visible, setVisible] = React.useState(false);
+    const [visible, setvisible] = React.useState(false);
+    const [selected, setselected] = useState('key1')
+    let defdarktheme = useSelector(state => state.theme.dark)
 
-    const toggleFunction = () => {
-        setToggle(!toggle);
-        dispatch({ type: 'THEME', data: !defdarktheme })
-    };
     const [loaded] = useFonts({
         Montserrat: require('../assets/Pacifico/Pacifico-Regular.ttf'),
     });
     if (!loaded) {
         return null;
     }
-
     const ActivateSearch = () => {
-        dispatch({ type: 'SEARCHCOMPONENT', data: !searchactive })
+        // dispatch({ type: 'SEARCHCOMPONENT', data: !searchactive })
     }
+    const _toggleBottomNavigationView = () => {
+        setvisible(!visible);
+    };
 
 
-    const openMenu = () => setVisible(true);
 
-    const closeMenu = () => setVisible(false);
-
-
+    const BottomComponent = () => {
+        return (
+            <BottomSheet
+                visible={visible}
+                onBackButtonPress={_toggleBottomNavigationView}
+                onBackdropPress={_toggleBottomNavigationView}
+            >
+                <View style={{
+                    backgroundColor: colors.background,
+                    width: '100%',
+                    borderTopLeftRadius: 10,
+                    borderTopRightRadius: 10,
+                    borderWidth: 0.5,
+                    borderColor: colors.border,
+                    padding: 10
+                }}>
+                    <View>
+                        <View style={{ paddingTop: 5, justifyContent: 'space-between' }}>
+                            <View style={{
+                                flexDirection: 'row',
+                                justifyContent: 'space-around',
+                                alignItems: 'center'
+                            }}>
+                                <TouchableOpacity
+                                    style={{
+                                        flexDirection: 'row',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                        position: 'absolute',
+                                        left: 5
+                                    }}
+                                    onPress={() => {
+                                        dispatch(setCurrentTheme(null));
+                                        SecureStore.deleteItemAsync('themeid')
+                                    }}
+                                >
+                                    <Icon name='undo' style={{ color: 'grey', marginRight: 2 }} type='MaterialCommunityIcons' />
+                                    <Text style={{ color: colors.text, fontSize: 14, }}>Default</Text>
+                                </TouchableOpacity>
+                                <View>
+                                    <Text style={{ color: colors.text, fontWeight: 'bold', fontSize: 24, }}>Select Theme</Text>
+                                </View>
+                            </View>
+                            <FlatList
+                                data={THEME}
+                                renderItem={({ item, index }) => {
+                                    return (
+                                        <ThemeSelectingComponent
+                                            color={item.color}
+                                            themename={item.name}
+                                            colors={colors}
+                                            theme={item}
+                                        />
+                                    )
+                                }}
+                                numColumns={2}
+                            />
+                        </View>
+                    </View>
+                </View>
+            </BottomSheet>
+        )
+    }
     const Headingcomp = () => {
         return (
             <View >
-
                 <Header style={{ backgroundColor: colors.background }}>
                     <StatusBar backgroundColor={colors.background}
                         barStyle={defdarktheme ? 'light-content' : "dark-content"}
@@ -53,12 +148,11 @@ const Headingbar = (props) => {
                         <Title style={{ fontFamily: 'Montserrat', fontSize: 25, color: colors.primary }}>VtYuva</Title>
                     </Body>
                     <Right>
-                        <Button transparent onPress={toggleFunction}>
-                            {toggle ? (
-                                <MaterialIcons name="wb-sunny" size={24} color={colors.text} />
-                            ) : (
-                                <Ionicons name="md-moon-sharp" size={24} color={colors.text} />
-                            )}
+                        <Button transparent
+                            onPress={_toggleBottomNavigationView}
+                        >
+                            <Icon name='palette' style={{ color: colors.text }} type='MaterialIcons' />
+                            <BottomComponent />
                         </Button>
                         {props.route.name === 'Home' || props.route.name === 'chat' ? (
                             <Button transparent onPress={ActivateSearch}>
@@ -84,7 +178,7 @@ const Headingbar = (props) => {
                                     <>
                                         <Avatar.Image
                                             source={{
-                                                uri: user.user.userphoto
+                                                uri: user.userphoto
                                             }}
                                             size={30}
                                             style={{ borderRadius: 14 }}
@@ -104,7 +198,7 @@ const Headingbar = (props) => {
         fetch(`${Config.url}` + `/report`, {
             method: 'POST',
             headers: {
-                'Authorization': 'Bearer ' + `${userToken}`,
+                'Authorization': 'Bearer ' + `${user.userToken}`,
                 'Content-Type': "application/json",
             },
             body: JSON.stringify({
@@ -208,17 +302,7 @@ const Headingbar = (props) => {
                                             <>
                                                 {props.route.name === 'Home' ? (
                                                     <>
-                                                        {searchactive ? (
-                                                            <>
-
-                                                            </>
-                                                        ) : (
-                                                            <>
-
-
-                                                                <Headingcomp />
-                                                            </>
-                                                        )}
+                                                        <Headingcomp />
                                                     </>
                                                 ) : (
                                                     <>
@@ -242,3 +326,102 @@ const Headingbar = (props) => {
 }
 
 export default Headingbar;
+const THEME = [
+    {
+        id: 1,
+        color: 'blue',
+        name: `Toads Turnpike`,
+        theme: {
+            dark: true,
+            colors: {
+                primary: '#ffd700',
+                background: "#022c43",
+                card: "#053f5e",
+                text: "#fff",
+                border: "#278ea5",
+                notification: "#BDBDBD",
+            },
+        },
+    },
+    {
+        id: 2,
+        name: 'Choco Dark',
+        color: '#55423d',
+        theme: {
+            dark: false,
+            colors: {
+                primary: '#ffc0ad',
+                background: "#55423d",
+                card: "#55423d",
+                text: "#fffffe",
+                border: "#278ea5",
+                notification: "#BDBDBD",
+            },
+        }
+    },
+    {
+        id: 3,
+        name: 'Emarald-green',
+        color: '#004643',
+        theme: {
+            dark: false,
+            colors: {
+                primary: '#f9bc60',
+                background: "#004643",
+                card: "#004643",
+                text: "#fff",
+                border: "#278ea5",
+                notification: "#BDBDBD",
+            },
+        }
+    },
+    {
+        id: 4,
+        color: 'black',
+        name: 'raven black',
+        theme: {
+            dark: true,
+            colors: {
+                primary: 'rgb(10,132,255)',
+                background: 'rgb(1,1,1)',
+                border: 'rgb(39,39,41)',
+                card: 'rgb(18,18,18)',
+                notification: 'rgb(255,69,58)',
+                text: 'rgb(229,229,231)'
+            }
+        }
+    },
+    {
+        id: 5,
+        color: '#fef6e4',
+        name: 'Mo-Mo Farm',
+        theme: {
+            dark: true,
+            colors: {
+                primary: '#f582ae',
+                background: '#fef6e4',
+                border: '#8bd3dd',
+                card: '#fef6e4',
+                notification: '#f582ae',
+                text: '#001858'
+            }
+        }
+    },
+    {
+        id: 6,
+        color: '#fec7d7',
+        name: 'rose Pink',
+        theme: {
+            dark: true,
+            colors: {
+                primary: '#0e172c',
+                background: '#fec7d7',
+                border: '#8bd3dd',
+                card: '#fec7d7',
+                notification: '#f582ae',
+                text: '#001858'
+            }
+        }
+    },
+
+]
