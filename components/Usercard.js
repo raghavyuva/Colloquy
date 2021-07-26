@@ -123,16 +123,8 @@ const Usercard = (props) => {
     }
     if (props.name == 'followers') {
         return (
-            <List style={{ borderWidth: 2, borderColor: colors.border, borderBottomColor: colors.border, margin: 5 ,
-                shadowColor: "#000",
-                shadowOffset: {
-                    width: 0,
-                    height: 6,
-                },
-                shadowOpacity: 0.37,
-                shadowRadius: 7.49,
-
-                elevation: 12,
+            <List style={{ borderWidth: 2, borderColor: colors.border, borderBottomColor: colors.border, 
+              
             }}>
                 <ListItem thumbnail onPress={() => opencomp(props.item._id)}  >
                     <Left>
@@ -175,15 +167,7 @@ const Usercard = (props) => {
     if (props.name === 'following') {
         return (
             <List style={{ borderBottomWidth: 0, borderWidth: 2, borderColor: colors.border, borderBottomColor: colors.border,
-                shadowColor: "#000",
-                shadowOffset: {
-                    width: 0,
-                    height: 6,
-                },
-                shadowOpacity: 0.37,
-                shadowRadius: 7.49,
-
-                elevation: 12, }}>
+              }}>
                 <ListItem thumbnail onPress={() => opencomp(props.item._id)}>
                     <Left>
                         <Thumbnail square source={{ uri: props.item.userphoto }} />
@@ -223,7 +207,6 @@ const Usercard = (props) => {
                             shadowRadius: 7.49,
             
                             elevation: 12,
-                            margin: 10
                             }} >
 
                                 <CardItem avatar style={{ backgroundColor: colors.background, borderRadius: null, borderWidth: 0, margin: 0 }} onPress={() => opencomp(props.item._id)}>

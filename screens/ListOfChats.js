@@ -35,7 +35,7 @@ const ListOfChats = (props) => {
     const [refresh, setrefresh] = useState(false);
     const [snap, setsnap] = useState(null);
     const user = useSelector((state) => state.userDetails); 
-    const searchactive = false
+    const searchactive = false;
     useEffect(() => {
         let IsMounted = true;
         setloading(true);
@@ -98,7 +98,7 @@ const ListOfChats = (props) => {
 
     }
     const ActivateSearch = () => {
-        dispatch({ type: 'SEARCHCOMPONENT', data: !searchactive })
+       
     }
 
     const search = () => {
@@ -147,7 +147,6 @@ const ListOfChats = (props) => {
                             ? (
                                 <>
                                     {item.UserType.sentBy === user.user.user._id ? (
-
                                         <TouchableOpacity onPress={() => { MessageParticularguy(item.latestMessage.user2) }}   >
                                             <Card style={{ borderWidth: 2, borderColor: colors.border, borderBottomColor: colors.border, }} >
 
@@ -242,14 +241,9 @@ const ListOfChats = (props) => {
                                 </>
                             ) : (
                                 <>
-                                    <Card style={{ backgroundColor: colors.background, borderWidth: 0, borderColor: colors.card }}>
-                                        <Text style={{ color: colors.primary, fontSize: 16, fontStyle: 'italic' }}>Recent chats</Text>
-                                    </Card>
+                                        <Text style={{ color: colors.primary, fontSize: 24,marginLeft:15 }}>Recent chats</Text>
                                     <ChatSection />
-                                    <Card style={{ backgroundColor: colors.background, borderWidth: 0, borderColor: colors.card }}>
-                                        <Text style={{ color: colors.primary, fontSize: 16, fontStyle: 'italic' }}>Your Friends On Vtyuva</Text>
-                                    </Card>
-
+                                        <Text style={{ color: colors.primary, fontSize: 18, marginLeft:15}}>Your Friends On Vtyuva</Text>
                                 </>
                             )}
                         </>

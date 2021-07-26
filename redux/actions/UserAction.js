@@ -33,3 +33,11 @@ export const setUserFollowings = (following) => {
         payload: following
     }
 } 
+
+export const setOtherUser = (user) => {
+    return {
+        type: ActionTypes.SET_OTHER_USER,
+        payload: user
+    }
+} 
+

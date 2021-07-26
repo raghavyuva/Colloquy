@@ -423,8 +423,26 @@ const Postcard = ({ item, navigation, name, route }) => {
                     }} >
                         <MaterialIcons name='share' color={colors.primary} size={26} />
                     </TouchableOpacity>
+                    {
+                        item.postedBy._id === user.user.user._id ? (
+                            <>
+                                <TouchableOpacity style={{
+                                    marginLeft: 15
+                                }} 
+                                onPress={() => DeletePost(item)}
+                                >
+                                    <MaterialIcons name='delete' color={colors.primary} size={26} />
+                                </TouchableOpacity>
+                            </>
+                        ) : (
+                            <>
+                            </>
+                        )
+                    }
                 </View>
+                
             </View>
+
         </View>
     )
     const videoBuffer = (isBuffer) => {
@@ -448,15 +466,13 @@ const Postcard = ({ item, navigation, name, route }) => {
                 alignItems: 'center',
             }}
         >
-            <TouchableOpacity onPress={
-                () => {
-                    if (item.postedBy._id == user.UserId) {
-                        navigation.navigate('external', { screen: 'profile' })
-                    } else {
-                        navigation.navigate('external', { screen: 'userprofile', params: { item: item } })
-                    }
+            <TouchableOpacity onPress={() => {
+                if (item.postedBy._id == user.user.user._id) {
+                    navigation.navigate('external', { screen: 'profile' })
+                } else {
+                    navigation.navigate('external', { screen: 'userpro', params: { thread: item.postedBy._id } })
                 }
-            }>
+            }}>
                 <Image
                     source={{ uri: item.postedBy.userphoto }}
                     style={{ width: 50, height: 50, alignSelf: 'center', margin: 5, }}
@@ -547,6 +563,14 @@ const Postcard = ({ item, navigation, name, route }) => {
                         item.photo && <Image
                             source={{ uri: item.photo }}
                             style={{ width: width - 50, height: 200, alignSelf: 'center', resizeMode: name != 'NormalView' ? 'cover' : "contain", borderRadius: 10 }}
+                            indicator={Progress.Pie}
+
+                            indicatorProps={{
+                                size: 180,
+                                borderWidth: 0,
+                                color: 'rgba(150, 150, 150, 1)',
+                                unfilledColor: 'rgba(200, 200, 200, 0.2)'
+                            }}
                         />
                     }
                     {/* {

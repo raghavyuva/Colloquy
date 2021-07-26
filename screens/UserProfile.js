@@ -9,7 +9,6 @@ import {
 } from 'react-native'
 import { Button, Text } from 'native-base';
 const { height, width } = Dimensions.get('window');
-import { DataLayerValue } from '../Context/DataLayer';
 import { Config } from '../config'
 import LottieView from 'lottie-react-native';
 import Postcard from '../components/Postcard';
@@ -17,12 +16,18 @@ import Headingbar from '../components/Header';
 import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
 import LoadingComp from '../components/LoadingComp';
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useSelector, useDispatch } from 'react-redux';
+import { setOtherUser } from '../redux/actions/UserAction';
 
 const UserProfile = (props) => {
-    const [{ userToken, user, otherprofile }, dispatch] = DataLayerValue()
+   
     const [load, setload] = useState(true);
     const [refresh, setrefresh] = useState(true)
     const [follow, setfollow] = useState(null)
+    const user = useSelector((state) => state.userDetails);
+    const otherprofile = useSelector((state) => state.userDetails.otheruser);
+
+    const dispatch = useDispatch();
     const GoTo_top_function = () => {
 
         flatListRef.scrollToOffset({ animated: true, offset: 0 });
@@ -33,16 +38,13 @@ const UserProfile = (props) => {
         try {
             await fetch(`${Config.url}` + `/user/${id}`, {
                 headers: {
-                    'Authorization': 'Bearer ' + `${userToken}`,
+                    'Authorization': 'Bearer ' + `${user.userToken}`,
                 }
             })
                 .then((response) => response.json())
                 .then((responseJson) => {
-                    dispatch({
-                        type: "PROFILEOFOTHER",
-                        data: responseJson
-                    })
-                    if (user.user.following.includes(otherprofile.user._id)) {
+                    dispatch(setOtherUser(responseJson))
+                    if (user.user.user.following.includes(otherprofile.user._id)) {
                         setfollow(true);
                     }
                     setload(false)
@@ -63,7 +65,7 @@ const UserProfile = (props) => {
             fetch(`${Config.url}` + `/follow`, {
                 method: 'PUT',
                 headers: {
-                    'Authorization': 'Bearer ' + `${userToken}`,
+                    'Authorization': 'Bearer ' + `${user.userToken}`,
                     'Content-type': 'application/json'
                 },
                 body: JSON.stringify({
@@ -73,7 +75,7 @@ const UserProfile = (props) => {
                 fetching(otherprofile.user._id)
                 setfollow(true);
             })
-        }
+        } 
         catch (error) {
             console.log('error', error)
         }
@@ -172,7 +174,7 @@ const UserProfile = (props) => {
             fetch(`${Config.url}` + `/unfollow`, {
                 method: 'PUT',
                 headers: {
-                    'Authorization': 'Bearer ' + `${userToken}`,
+                    'Authorization': 'Bearer ' + `${user.userToken}`,
                     'Content-type': 'application/json'
                 },
 

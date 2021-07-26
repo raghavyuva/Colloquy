@@ -10,7 +10,7 @@ const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 import * as MediaLibrary from 'expo-media-library';
 import { useTheme } from '@react-navigation/native';
 import { MaterialIcons, MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
-import SectionedMultiSelect from 'react-native-sectioned-multi-select';
+// import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import * as Location from 'expo-location';
 import * as firebase from "firebase";
@@ -384,7 +384,7 @@ const Uploadpost = (props) => {
                     </CardItem>
                 </Card>
                 <Card style={{ backgroundColor: colors.card, padding: 0, }} keyboardShouldPersistTaps='always'>
-                    <SectionedMultiSelect
+                    {/* <SectionedMultiSelect
                         items={items}
                         IconRenderer={Icon}
                         uniqueKey="id"
@@ -430,7 +430,7 @@ const Uploadpost = (props) => {
                             },
                         }}
                         colors={{ primary: colors.primary, searchSelectionColor: colors.text, searchPlaceholderTextColor: colors.text, itemBackground: colors.card, success: 'red', selectToggleTextColor: colors.text }}
-                    />
+                    /> */}
                 </Card>
                 <Card style={{ backgroundColor: colors.card, padding: 0, margin: 5, height: screenHeight / 4, borderColor: colors.border }}>
                     <Text style={{ color: colors.text, opacity: 0.4 }}>Choose One Photo</Text>

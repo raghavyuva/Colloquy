@@ -129,7 +129,7 @@ export function DrawerContent(props) {
 
                         <DrawerItem
                             icon={({ color, size }) => (
-                                <MaterialIcons name="details" size={24} color={colors.text} />
+                                <MaterialIcons name="info-outline" size={24} color={colors.text} />
                             )}
                             label="About Us"
                             labelStyle={{ color: colors.text }}
@@ -154,7 +154,7 @@ export function DrawerContent(props) {
                             labelStyle={{ color: colors.text }}
                             label="Contact Us"
                             onPress={() => {
-                                Linking.openURL('https://t.me/raghavyuva');
+                                // Linking.openURL('https://t.me/raghavyuva');
                             }}
                         />
                         <DrawerItem

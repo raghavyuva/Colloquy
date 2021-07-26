@@ -6,7 +6,6 @@ import { DataLayerValue } from "../Context/DataLayer";
 import * as SecureStore from 'expo-secure-store';
 import Svg, { Stop, Path, Defs, LinearGradient as Fgrad } from 'react-native-svg';
 import { useTheme } from '@react-navigation/native';
-import { StatusBar } from 'expo-status-bar';
 import { Item, Input, Label, Right } from 'native-base';
 import { useFonts } from 'expo-font';
 import LoadingComp from "../components/LoadingComp";
@@ -70,7 +69,6 @@ const Login = ({ navigation }) => {
     }
     return (
         <View style={styles(colors).screen}>
-            <StatusBar hidden />
             <View style={{ height: '40%' }}>
                 <Svg height="35%" width="100%" id="svg" viewBox="0 0 1440 400"
                     xmlns="http://www.w3.org/2000/svg" class="transition duration-300 ease-in-out delay-150">

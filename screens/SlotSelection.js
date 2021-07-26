@@ -2,13 +2,11 @@ import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View, FlatList, TouchableOpacity, Dimensions, TextInput } from 'react-native'
 import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
 import Headingbar from '../components/Header';
-import DatePicker from 'react-native-datepicker';
 const { width, height } = Dimensions.get('window');
 import { Button, Textarea, } from 'native-base';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Config } from '../config';
 import { DataLayerValue } from '../Context/DataLayer';
-import { setStatusBarNetworkActivityIndicatorVisible } from 'expo-status-bar';
 import * as ImagePicker from 'expo-image-picker';
 import { firebase } from '../components/firebase'
 import 'firebase/auth';
@@ -16,6 +14,7 @@ import 'firebase/firestore';
 import LoadingComp from '../components/LoadingComp';
 import UploadingComp from '../components/UploadingComp';
 import { useSelector, useDispatch } from 'react-redux';
+import Payment_Parent from './Payment_Parent';
 
 const SlotSelection = (props) => {
     const { colors } = useTheme();
@@ -201,7 +200,7 @@ const SlotSelection = (props) => {
             </Text>
             <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 30 }}>
                 <Text style={{ color: colors.text, }}>Pick a Date for Interview</Text>
-                <DatePicker
+                {/* <DatePicker
                     style={styles(colors).datePickerStyle}
                     date={date} //initial date from state
                     mode="date" //The enum of date, datetime and time
@@ -233,8 +232,9 @@ const SlotSelection = (props) => {
                     onDateChange={(date) => {
                         setDate(date);
                     }}
-                />
+                /> */}
             </View>
+            <Payment_Parent  />
             <View style={{ marginTop: 20 }}>
                 <Text style={{ color: colors.text, marginLeft: 15 }}>Select a Time</Text>
                 <FlatList

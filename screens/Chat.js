@@ -26,7 +26,7 @@ import Image from 'react-native-image-progress';
 import * as Progress from 'react-native-progress';
 import { Menu, } from 'react-native-paper'
 import { Provider } from 'react-native-paper';
-import { useSelector, useDispatch } from 'react-redux'; 
+import { useSelector, useDispatch } from 'react-redux';
 
 export function Chat(props) {
   const [imagePicked, setImagePicked] = useState(null);
@@ -40,7 +40,7 @@ export function Chat(props) {
   const [filepresent, setfilepresent] = useState(false);
   const [imagetosendurl, setimagetosendurl] = useState(null);
   const [uploading, setuploading] = useState(null);
-  const user = useSelector((state) => state.userDetails.user); 
+  const user = useSelector((state) => state.userDetails.user);
   const [storagestatus, setstoragestatus] = useState(null);
   const _toggleBottomNavigationView = () => {
     setVisible(!visible);
@@ -108,7 +108,7 @@ export function Chat(props) {
     return () => {
       messagesListener()
       IsMounted = false;
-    }; 
+    };
   }, []);
 
   const ReadMessage = () => {
@@ -404,57 +404,55 @@ export function Chat(props) {
       uploadImage(messages);
     } else {
       try {
-        const giftedArray = messages[0];
-        const SENDINGMESSAGE = {
-          ...giftedArray,
-          sentBy: user.user,
-          sentTo: anotheruser,
-          createdAt: new Date().getTime(),
-          sent: true,
-          received: false,
-          pending: false,
-          // image: filepresent ? urlreturner : null,
-          // video:"https://www.youtube.com/watch?v=BsOmYpP4UDU",
-          user: {
-            name: user.user.username,
-            avatar: user.user.userphoto,
-            _id: user.user._id
+          const giftedArray = messages[0];
+          const SENDINGMESSAGE = {
+            ...giftedArray,
+            sentBy: user.user,
+            sentTo: anotheruser,
+            createdAt: new Date().getTime(),
+            sent: true,
+            received: false,
+            pending: false,
+            // image: filepresent ? urlreturner : null,
+            // video:"https://www.youtube.com/watch?v=BsOmYpP4UDU",
+            user: {
+              name: user.user.username,
+              avatar: user.user.userphoto,
+              _id: user.user._id
+            }
           }
-        }
-        setMessages(previousMessages => GiftedChat.append(previousMessages, SENDINGMESSAGE))
-        const DocIdgenerated = anotheruser._id > user.user._id ? user.user._id + "-" + anotheruser._id : anotheruser._id + "-" + user.user._id
-        firebase
-          .firestore()
-          .collection("chatrooms").doc(DocIdgenerated).collection('messages').add({ ...SENDINGMESSAGE })
-        await firebase.firestore()
-          .collection('chatrooms')
-          .doc(DocIdgenerated)
-          .set(
-            {
-              latestMessage: {
-                text: giftedArray.text,
-                createdAt: new Date().getTime(),
-                user2: anotheruser,
-                sentBy: user.user,
+          await setMessages(previousMessages => GiftedChat.append(previousMessages, SENDINGMESSAGE))
+          const DocIdgenerated = anotheruser._id > user.user._id ? user.user._id + "-" + anotheruser._id : anotheruser._id + "-" + user.user._id
+          await firebase
+            .firestore()
+            .collection("chatrooms").doc(DocIdgenerated).collection('messages').add({ ...SENDINGMESSAGE })
+          await firebase.firestore()
+            .collection('chatrooms')
+            .doc(DocIdgenerated)
+            .set(
+              {
+                latestMessage: {
+                  text: giftedArray.text,
+                  createdAt: new Date().getTime(),
+                  user2: anotheruser,
+                  sentBy: user.user,
+                },
+                UserType: {
+                  sentBy: user.user._id,
+                  sentTo: anotheruser._id,
+                  SentUserDetails: user.user,
+                  SentToUserDetails: anotheruser
+                }
               },
-              UserType: {
-                sentBy: user.user._id,
-                sentTo: anotheruser._id,
-                SentUserDetails: user.user,
-                SentToUserDetails: anotheruser
-              }
-            },
-            { merge: true }
+              { merge: true }
 
-          );
-        let val = 'message';
-        Notifyy(giftedArray.text, user.user, anotheruser)
+            );
+          let val = 'message';
+          await Notifyy(giftedArray.text, user.user, anotheruser) 
       } catch (error) {
         alert(error)
       }
     }
-
-
   };
 
 
@@ -466,7 +464,7 @@ export function Chat(props) {
 
     return (
 
-      <View style={{ flexDirection: 'row' ,}}>
+      <View style={{ flexDirection: 'row', }}>
         {
           filepresent == false ? (
             <TouchableOpacity onPress={_toggleBottomNavigationView} style={{ marginBottom: 5 }}>
@@ -603,7 +601,7 @@ export function Chat(props) {
       />
     </View>
   );
-} 
+}
 
 const styles = (colors) => StyleSheet.create({
   sendingContainer: {

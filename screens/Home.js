@@ -8,7 +8,6 @@ import * as Notifications from 'expo-notifications';
 import { useTheme } from '@react-navigation/native';
 import { Icon, Item, Header, CardItem, } from 'native-base';
 import Usercard from '../components/Usercard';
-import * as Device from 'expo-device';
 import NotFoundComp from '../components/NotFoundComp';
 import LoadingComp from '../components/LoadingComp';
 import { Searchbar, } from 'react-native-paper';

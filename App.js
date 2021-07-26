@@ -15,7 +15,7 @@ import { firebase } from './components/firebase'
 import LoadingComp from './components/LoadingComp';
 import { Provider } from 'react-redux';
 import store from './redux/Store';
-
+ 
 function App() {
   const [loading, setLoading] = useState(true);
   const [connected, setconnected] = useState(null);

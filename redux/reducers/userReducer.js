@@ -7,11 +7,11 @@ const initialState = {
     notificationlist: [],
     followers: [],
     following: [],
+    otheruser: null,
 }
 export const userReducer = (state = initialState, { type, payload }) => {
     console.log(type);
     switch (type) {
-
         case ActionTypes.SET_USER:
             return { ...state, user: payload };
         case ActionTypes.SET_USERTOKEN:
@@ -23,7 +23,9 @@ export const userReducer = (state = initialState, { type, payload }) => {
         case ActionTypes.USER_FOLLOWERS:
             return { ...state, followers: payload };
         case ActionTypes.USER_FOLLOWING:
-            return { ...state, following: payload }
+            return { ...state, following: payload };
+        case ActionTypes.SET_OTHER_USER:
+            return { ...state, otheruser: payload }
         default:
             return state;
     }

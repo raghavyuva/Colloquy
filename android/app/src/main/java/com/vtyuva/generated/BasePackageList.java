@@ -12,8 +12,6 @@ public class BasePackageList {
         new expo.modules.application.ApplicationPackage(),
         new expo.modules.av.AVPackage(),
         new expo.modules.constants.ConstantsPackage(),
-        new expo.modules.device.DevicePackage(),
-        new expo.modules.documentpicker.DocumentPickerPackage(),
         new expo.modules.errorrecovery.ErrorRecoveryPackage(),
         new expo.modules.filesystem.FileSystemPackage(),
         new expo.modules.firebase.core.FirebaseCorePackage(),
@@ -28,7 +26,6 @@ public class BasePackageList {
         new expo.modules.permissions.PermissionsPackage(),
         new expo.modules.screencapture.ScreenCapturePackage(),
         new expo.modules.securestore.SecureStorePackage(),
-        new expo.modules.sharing.SharingPackage(),
         new expo.modules.splashscreen.SplashScreenPackage(),
         new expo.modules.updates.UpdatesPackage()
     );

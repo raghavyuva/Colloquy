@@ -79,10 +79,6 @@ const Headingbar = (props) => {
                 <View style={{
                     backgroundColor: colors.background,
                     width: '100%',
-                    borderTopLeftRadius: 10,
-                    borderTopRightRadius: 10,
-                    borderWidth: 0.5,
-                    borderColor: colors.border,
                     padding: 10
                 }}>
                     <View>
