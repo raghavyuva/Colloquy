@@ -11,12 +11,12 @@ import { Config } from '../config';
 import Usercard from '../components/Usercard';
 import LoadingComp from '../components/LoadingComp';
 var _ = require('lodash');
-import { useSelector, useDispatch } from 'react-redux'; 
+import { useSelector, useDispatch } from 'react-redux';
 import * as firebase from 'firebase'
 require('firebase/storage');
 import {
     AdMobBanner,
-    AdMobInterstitial, 
+    AdMobInterstitial,
     PublisherBanner,
     AdMobRewarded,
     setTestDeviceIDAsync,
@@ -34,7 +34,7 @@ const ListOfChats = (props) => {
     const [AllUsers, setAllUsers] = useState(null);
     const [refresh, setrefresh] = useState(false);
     const [snap, setsnap] = useState(null);
-    const user = useSelector((state) => state.userDetails); 
+    const user = useSelector((state) => state.userDetails);
     const searchactive = false;
     useEffect(() => {
         let IsMounted = true;
@@ -45,8 +45,8 @@ const ListOfChats = (props) => {
         return () => {
             IsMounted = false;
         }
-    }, []);
-    // AdMobInterstitial.setAdUnitID('ca-app-pub-3940256099942544/1033173712')
+    }, []); 
+    // AdMobInterstitial.setAdUnitID('ca-app-pub-6850525676679466/9071881837')
 
     // const _openInterstitial = async () => {
     //     try {
@@ -61,7 +61,7 @@ const ListOfChats = (props) => {
     //         setdisableinter(false);
     //     }
     // }
-
+ 
 
     const FetchThreads = () => {
         setloading(true);
@@ -70,7 +70,6 @@ const ListOfChats = (props) => {
             .collection('chatrooms').orderBy("latestMessage", "desc")
             .onSnapshot((querySnapshot) => {
                 const threads = querySnapshot.docs.map((documentSnapshot) => {
-                    setsnap(documentSnapshot.data())
                     if (documentSnapshot.data().UserType.sentBy === user.user._id || documentSnapshot.data().UserType.sentTo === user.user._id) {
                         // console.log('hey')
                         // console.log(documentSnapshot.data().UserType.sentTo)
@@ -98,7 +97,7 @@ const ListOfChats = (props) => {
 
     }
     const ActivateSearch = () => {
-       
+
     }
 
     const search = () => {
@@ -128,9 +127,8 @@ const ListOfChats = (props) => {
     }
 
     const MessageParticularguy = (guy) => {
-
         props.navigation.navigate('external', {
-            screen: 'message', params: { 
+            screen: 'message', params: {
                 anotheruser: guy
             }
         })
@@ -148,8 +146,9 @@ const ListOfChats = (props) => {
                                 <>
                                     {item.UserType.sentBy === user.user.user._id ? (
                                         <TouchableOpacity onPress={() => { MessageParticularguy(item.latestMessage.user2) }}   >
-                                            <Card style={{ borderWidth: 2, borderColor: colors.border, borderBottomColor: colors.border, }} >
-
+                                            <View style={{
+                                                margin: 0.2,
+                                            }} >
                                                 <CardItem avatar style={{ backgroundColor: colors.background, borderRadius: null, borderWidth: 0, margin: 0 }}>
                                                     <Thumbnail
                                                         source={{
@@ -172,11 +171,14 @@ const ListOfChats = (props) => {
                                                         </Body>
                                                     </Right>
                                                 </CardItem>
-                                            </Card>
+                                            </View>
                                         </TouchableOpacity>
                                     ) : (
                                         <TouchableOpacity onPress={() => { MessageParticularguy(item.UserType.SentUserDetails) }}   >
-                                            <Card style={{ borderWidth: 2, borderColor: colors.border, borderBottomColor: colors.border, }} >
+                                            <View style={{
+
+                                                margin: 0.2,
+                                            }} >
                                                 <CardItem avatar style={{ backgroundColor: colors.background, borderRadius: null, borderWidth: 0, margin: 0 }}>
                                                     <Thumbnail
                                                         source={{
@@ -199,7 +201,7 @@ const ListOfChats = (props) => {
                                                         </Body>
                                                     </Right>
                                                 </CardItem>
-                                            </Card>
+                                            </View>
                                         </TouchableOpacity>
                                     )}
                                 </>
@@ -241,9 +243,9 @@ const ListOfChats = (props) => {
                                 </>
                             ) : (
                                 <>
-                                        <Text style={{ color: colors.primary, fontSize: 24,marginLeft:15 }}>Recent chats</Text>
+                                    <Text style={{ color: colors.primary, fontSize: 20, marginLeft: 15 }}>Recent chats</Text>
                                     <ChatSection />
-                                        <Text style={{ color: colors.primary, fontSize: 18, marginLeft:15}}>Your Friends On Vtyuva</Text>
+                                    <Text style={{ color: colors.primary, fontSize: 18, marginLeft: 15 }}>Your Friends On Vtyuva</Text>
                                 </>
                             )}
                         </>
@@ -291,7 +293,7 @@ const ListOfChats = (props) => {
             {searchactive ? (
                 <>
                     <Header searchBar rounded style={{ backgroundColor: colors.background, }}>
-                    <StatusBar backgroundColor={colors.card} />
+                        <StatusBar backgroundColor={colors.card} />
                         <Item style={{ backgroundColor: colors.background }}>
                             <TouchableOpacity onPress={ActivateSearch}>
                                 <Icon name="arrow-back" style={{ backgroundColor: colors.background }} />
@@ -330,17 +332,13 @@ const ListOfChats = (props) => {
             )
             }
             {/* <AdMobBanner
-                bannerSize='fullBanner'
-                adUnitID="ca-app-pub-3940256099942544/6300978111"
-
-
-                // servePersonalizedAds={true} // true or false
-                // style={{ backgroundColor: colors.background, color: colors.text }}
-                onAdFailedToLoad={error => alert(error)}
+                bannerSize="fullBanner"
+                adUnitID="ca-app-pub-3940256099942544/6300978111" // Test ID, Replace with your-admob-unit-id
+                servePersonalizedAds // true or false
             /> */}
         </View>
     )
-}
+} 
 
 export default ListOfChats
 

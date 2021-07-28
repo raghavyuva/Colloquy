@@ -24,6 +24,8 @@ const Profile = (props) => {
     const [refresh, setrefresh] = useState(false)
     const [visible, setvisible] = useState(false);
     const user = useSelector((state) => state.userDetails.user);
+    const User = useSelector((state) => state.userDetails);
+
     const [username, setusername] = useState(user.user.username);
     const [postimage, setpostimage] = useState(user.user.userphoto)
     const [body, setbody] = useState(user.user.tagline);
@@ -41,7 +43,7 @@ const Profile = (props) => {
 
     const _toggleBottomNavigationView = () => {
         setvisible(!visible);
-    };
+    }; 
 
     const newpassword = () => {
         if (password == verifypass) {
@@ -73,9 +75,9 @@ const Profile = (props) => {
 
     const fetching = async () => {
         try {
-            await fetch(`${Config.url}` + `/user/${user.UserId}`, {
+            await fetch(`${Config.url}` + `/user/${User.UserId}`, {
                 headers: {
-                    'Authorization': 'Bearer ' + `${user.userToken}`,
+                    'Authorization': 'Bearer ' + `${User.userToken}`,
                 }
             })
                 .then((response) => response.json())
@@ -123,7 +125,7 @@ const Profile = (props) => {
             fetch(`${Config.url}` + `/user/update`, {
                 method: 'PUT',
                 headers: {
-                    'Authorization': 'Bearer ' + `${user.userToken}`,
+                    'Authorization': 'Bearer ' + `${User.userToken}`,
                     'Content-Type': "application/json",
                 },
                 body: JSON.stringify({
@@ -133,7 +135,7 @@ const Profile = (props) => {
                 })
             }).then(res => res.json()).then((resp) => {
                 console.log(resp);
-            })
+            })  
         } else {
             const uriArr = postimage.split('.');
             const fileType = uriArr[uriArr.length - 1]
@@ -149,7 +151,7 @@ const Profile = (props) => {
                 fetch(`${Config.url}` + `/user/update`, {
                     method: 'PUT',
                     headers: {
-                        'Authorization': 'Bearer ' + `${user.userToken}`,
+                        'Authorization': 'Bearer ' + `${User.userToken}`,
                         'Content-Type': "application/json",
                     },
                     body: JSON.stringify({
@@ -169,7 +171,7 @@ const Profile = (props) => {
         fetch(`${Config.url}` + `/reset-password`, {
             method: 'POST',
             headers: {
-                'Authorization': 'Bearer ' + `${user.userToken}`,
+                'Authorization': 'Bearer ' + `${User.userToken}`,
                 'Content-Type': "application/json",
             },
             body: JSON.stringify({

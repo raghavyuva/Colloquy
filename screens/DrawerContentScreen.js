@@ -2,31 +2,37 @@ import {
     DrawerContentScrollView,
     DrawerItem
 } from '@react-navigation/drawer';
-import React, { useState } from 'react';
-import { StyleSheet, View, Linking, Text, Image, TouchableOpacity } from 'react-native';
-import { FontAwesome5, MaterialCommunityIcons, SimpleLineIcons, Octicons, FontAwesome, MaterialIcons, AntDesign } from '@expo/vector-icons';
+import React from 'react';
+import { StyleSheet, View, Linking, Text, TouchableOpacity } from 'react-native';
+import { MaterialCommunityIcons, MaterialIcons, AntDesign } from '@expo/vector-icons';
 import * as SecureStore from 'expo-secure-store';
-import {
-    Avatar,
-} from 'react-native-paper';
 import { useFonts } from 'expo-font';
 import { useTheme } from '@react-navigation/native';
+import { useSelector, useDispatch } from 'react-redux';
+import { setUser, setUserId, setUserToken } from '../redux/actions/UserAction';
+import { setFeeds } from '../redux/actions/FeedAction';
+import { setTheme } from '../redux/actions/ThemeAction';
+
 export function DrawerContent(props) {
     const { colors } = useTheme();
+    const dispatch = useDispatch();
     const [loaded] = useFonts({
         Montserrat: require('../assets/Pacifico/Pacifico-Regular.ttf'),
     });
 
-    // console.log(chatteeOnline)
     if (!loaded) {
         return null;
     }
+
     const signOut = () => {
         SecureStore.deleteItemAsync('userToken');
-        SecureStore.deleteItemAsync('User');
-        dispatch({
-            type: 'LOGOUT',
-        })
+        SecureStore.deleteItemAsync('UserId');
+        SecureStore.deleteItemAsync('themeid');
+        dispatch(setUserId(null))
+        dispatch(setUserToken(null));
+        dispatch(setFeeds(null));
+        dispatch(setTheme(null))
+        dispatch(setUser(null));
     }
     return (
         <View style={{ flex: 1, backgroundColor: colors.card }}>
@@ -224,12 +230,12 @@ const styles = (colors) => StyleSheet.create({
     },
     caption: {
         fontSize: 14,
-        color: 'yellow',
+        color: colors.text,
         textAlign: 'right'
     },
     userInfoSection: {
         paddingLeft: 20,
-        backgroundColor: colors.border,
+        backgroundColor: colors.card,
         // justifyContent:"center",
     },
     row: {
@@ -255,7 +261,7 @@ const styles = (colors) => StyleSheet.create({
     bottomDrawerSection: {
         borderTopColor: colors.primary,
         borderTopWidth: 3,
-        backgroundColor: colors.border
+        backgroundColor: colors.card
     },
     preference: {
         flexDirection: 'row',

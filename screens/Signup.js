@@ -6,7 +6,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '@react-navigation/native';
 import { Text } from "native-base";
 import { Config } from '../config';
-import { DataLayerValue } from '../Context/DataLayer';
 import * as SecureStore from 'expo-secure-store';
 import LoadingComp from '../components/LoadingComp';
 import { FirebaseRecaptchaVerifierModal } from 'expo-firebase-recaptcha';
@@ -14,9 +13,11 @@ import firebase from 'firebase';
 const { width: screenWidth, } = Dimensions.get('window');
 import { CodeField, Cursor, useBlurOnFulfill, useClearByFocusCell, } from 'react-native-confirmation-code-field';
 import WaveComp from '../components/WaveComp';
+import {useDispatch,useSelector} from 'react-redux'
+import { setUserId, setUserToken } from '../redux/actions/UserAction';
 
 const Signup = ({ navigation }) => {
-    const [{ userToken }, dispatch] = DataLayerValue()
+    const dispatch = useDispatch();
     const recaptchaVerifier = useRef(null);
     const [age, setAge] = useState("");
     const [username, setUsername] = useState("");
@@ -73,7 +74,6 @@ const Signup = ({ navigation }) => {
                         setPassword(null);
                         setAge(null);
                         setUsername(null);
-                       
                         setId(responseData.user._id);
                         settoken(responseData.token)
                         setloggingin(false)
@@ -109,11 +109,8 @@ const Signup = ({ navigation }) => {
                     })
                         .then((response) => response.json())
                         .then((responseData) => {
-                            dispatch({
-                                type: 'REGISTER',
-                                token: token,
-                                id: Id
-                            })
+                            dispatch(setUserId(Id));
+                            dispatch(setUserToken(token));
                             SecureStore.setItemAsync('userToken', token);
                             SecureStore.setItemAsync('UserId', Id)
                         })

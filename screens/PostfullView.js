@@ -9,6 +9,7 @@ import { useTheme } from '@react-navigation/native';
 import { color } from 'react-native-reanimated';
 import LoadingComp from '../components/LoadingComp';
 import { useSelector, useDispatch } from 'react-redux';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const PostfullView = (props) => {
     const user = useSelector((state) => state.userDetails);
@@ -47,10 +48,18 @@ const PostfullView = (props) => {
                         <Text style={{ color: colors.text }} >{item.postedBy.username}</Text>
                         <Text style={{ fontSize: 18, color: colors.text, }}>{item.text}</Text>
                     </Body>
-                    <Image
-                        source={{ uri: item.postedBy.userphoto }}
-                        style={{ width: 30, height: 30, borderRadius: 100, margin: 5 }}
-                    />
+                    <TouchableOpacity onPress={() => {
+                        if (item.postedBy._id == user.user.user._id) {
+                            props.navigation.navigate('external', { screen: 'profile' })
+                        } else {
+                            props.navigation.navigate('external', { screen: 'userpro', params: { thread: item.postedBy._id } })
+                        }
+                    }}>
+                        <Image
+                            source={{ uri: item.postedBy.userphoto }}
+                            style={{ width: 30, height: 30, borderRadius: 100, margin: 5 }}
+                        />
+                    </TouchableOpacity>
                 </Left>
             </CardItem>
         )
@@ -126,7 +135,7 @@ const PostfullView = (props) => {
             <Headingbar {...props} />
             <FlatList
                 ListHeaderComponent={
-                    <Postcard item={Data[0]} {...props} name='NormalView' />
+                    <Postcard item={Data[0]} {...props} name='fullview' />
                 }
                 renderItem={commentui}
                 keyExtractor={(item) => item._id}

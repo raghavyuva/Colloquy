@@ -210,7 +210,7 @@ const Report = (props) => {
                 />
             </View>
             <ScrollView keyboardShouldPersistTaps='always'>
-                <List.Section title="Articles" style={{ backgroundColor: colors.background }} titleStyle={{ color: colors.text }} >
+                <List.Section title="FAQs" style={{ backgroundColor: colors.background }} titleStyle={{ color: colors.text }} >
                     <FlatList
                         renderItem={({ item }) => {
                             return (

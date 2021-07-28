@@ -10,7 +10,6 @@ const NotFoundComp = () => {
                 autoPlay={true}
                 loop={false}
                 source={require('../animation/notfound.json')}
-                style={{ justifyContent: 'center', width: 400, height: 400, alignSelf: 'center' }}
             />
         </View>
     )

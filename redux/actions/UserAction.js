@@ -41,3 +41,9 @@ export const setOtherUser = (user) => {
     }
 } 
 
+export const setAppusers = (users) => {
+    return {
+        type: ActionTypes.SET_ALL_USERS_LIST,
+        payload: users
+    }
+} 

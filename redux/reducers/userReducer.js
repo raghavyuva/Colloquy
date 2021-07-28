@@ -8,6 +8,7 @@ const initialState = {
     followers: [],
     following: [],
     otheruser: null,
+    Allusers: null,
 }
 export const userReducer = (state = initialState, { type, payload }) => {
     console.log(type);
@@ -25,7 +26,9 @@ export const userReducer = (state = initialState, { type, payload }) => {
         case ActionTypes.USER_FOLLOWING:
             return { ...state, following: payload };
         case ActionTypes.SET_OTHER_USER:
-            return { ...state, otheruser: payload }
+            return { ...state, otheruser: payload };
+        case ActionTypes.SET_ALL_USERS_LIST:
+            return { ...state, Allusers: payload }
         default:
             return state;
     }

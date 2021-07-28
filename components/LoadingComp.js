@@ -11,7 +11,7 @@ const LoadingComp = (props) => {
             <LottieView
                 loop={true}
                 autoPlay={true}
-                source={require('../animation/8370-loading.json')}
+                source={require('../animation/7751-load.json')}
             />
         </View>
     )

@@ -2,21 +2,21 @@ import React, { useState, } from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Config } from '../config';
-import { DataLayerValue } from "../Context/DataLayer";
 import * as SecureStore from 'expo-secure-store';
 import Svg, { Stop, Path, Defs, LinearGradient as Fgrad } from 'react-native-svg';
 import { useTheme } from '@react-navigation/native';
 import { Item, Input, Label, Right } from 'native-base';
 import { useFonts } from 'expo-font';
 import LoadingComp from "../components/LoadingComp";
-import { MaterialIcons } from '@expo/vector-icons';
+import { setUserId, setUserToken } from "../redux/actions/UserAction";
+import {useDispatch,useSelector} from 'react-redux'
 const Login = ({ navigation }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [{ userToken }, dispatch] = DataLayerValue()
     const { colors } = useTheme();
     const [loggingin, setloggingin] = useState(false);
     const [passvisibility, setpassvisibility] = useState(true);
+    const dispatch = useDispatch();
     const [loaded] = useFonts({
         Montserrat: require('../assets/Pacifico/Pacifico-Regular.ttf'),
     });
@@ -42,11 +42,8 @@ const Login = ({ navigation }) => {
                 .then((response) => response.json())
                 .then((responseData) => {
                     if (responseData.message == 'Auth successfull') {
-                        dispatch({
-                            type: 'LOGIN',
-                            token: responseData.token,
-                            id: responseData.user._id
-                        })
+                        dispatch(setUserId(responseData.user._id));
+                        dispatch(setUserToken(responseData.token));
                         SecureStore.setItemAsync('userToken', responseData.token);
                         SecureStore.setItemAsync('UserId', responseData.user._id)
                         setEmail(null);

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, TouchableOpacity, Dimensions, Share, Alert, ToastAndroid, Modal, Pressable, TouchableHighlight } from 'react-native';
+import { StyleSheet, TouchableOpacity, Dimensions, Share, Alert, ToastAndroid, Modal, Pressable, TouchableHighlight, Clipboard } from 'react-native';
 import { CardItem, Text, Button, Left, View, Right, Body, Item, Input, Card } from 'native-base';
 import { MaterialIcons, AntDesign, MaterialCommunityIcons, Entypo } from '@expo/vector-icons';
 import * as MediaLibrary from 'expo-media-library';
@@ -9,9 +9,8 @@ import { Config } from '../config';
 const { width, height } = Dimensions.get('window');
 import { useTheme } from '@react-navigation/native';
 import * as Progress from 'react-native-progress';
-import { Menu, } from 'react-native-paper'
-import { Provider } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux';
+var _ = require('lodash');
 
 const Postcard = ({ item, navigation, name, route }) => {
     const [active, setactive] = useState(false);
@@ -23,8 +22,13 @@ const Postcard = ({ item, navigation, name, route }) => {
     const [liked, setliked] = useState(null)
     const [voted, setvoted] = useState(null)
     const [votes, setvotes] = useState(0);
+    const userslist = useSelector((state) => state.userDetails.Allusers);
     const openMenu = () => setVisible(true);
     const closeMenu = () => setVisible(false);
+    const [haveliked, sethaveliked] = useState(null);
+    const [imgwidth, setimgwidth] = useState(null);
+    const [imgheight, setimgheight] = useState(null);
+
     const { colors } = useTheme();
     useEffect(() => {
         let IsMounted = true;
@@ -36,6 +40,7 @@ const Postcard = ({ item, navigation, name, route }) => {
         if (item.votes.includes(user.UserId)) {
             setvoted(true);
         }
+        Postcommentfollowers(item)
         return () => {
             setlikes(item.likes.length);
             if (item.likes.includes(user.UserId)) {
@@ -83,6 +88,22 @@ const Postcard = ({ item, navigation, name, route }) => {
             alert('provide permission');
         }
     }
+
+    const PostInfo = async (item) => {
+        Alert.alert(
+            'Post Information',
+            `created At : ${item.createdAt} \n\ncaption : ${item.caption} \n\nCategory : ${item.category[0]}`,
+            [
+                { text: 'Cancel' },
+                {
+                    text: 'Copy', onPress: () => {
+                        Clipboard.setString(item.caption)
+                        ToastAndroid.show("copied caption to clipboard", ToastAndroid.SHORT);
+                    }
+                }
+            ]
+        );
+    }
     const DeletePost = async (item) => {
         Alert.alert(
             'Delete Post',
@@ -98,44 +119,44 @@ const Postcard = ({ item, navigation, name, route }) => {
                                 'Content-Type': "application/json",
                             },
                         }).then(res => res.json()).then((resp) => {
-                            updatestore();
+                            // updatestore();
                         })
                 }
             ]
         );
     }
-    const updatestore = () => {
-        fetch(`${Config.url}` + `/subscription`, {
-            headers: {
-                'Authorization': 'Bearer ' + `${user.userToken}`,
-            },
-            method: 'GET'
-        })
-            .then((response) => response.json())
-            .then((responseJson) => {
+    // const updatestore = () => {
+    //     fetch(`${Config.url}` + `/subscription`, {
+    //         headers: {
+    //             'Authorization': 'Bearer ' + `${user.userToken}`,
+    //         },
+    //         method: 'GET'
+    //     })
+    //         .then((response) => response.json())
+    //         .then((responseJson) => {
 
-            })
-        fetch(`${Config.url}` + `/post`, {
-            headers: {
-                'Authorization': 'Bearer ' + `${user.userToken}`,
-            },
-            method: 'GET'
-        })
-            .then((response) => response.json())
-            .then((responseJson) => {
+    //         })
+    //     fetch(`${Config.url}` + `/post`, {
+    //         headers: {
+    //             'Authorization': 'Bearer ' + `${user.userToken}`,
+    //         },
+    //         method: 'GET'
+    //     })
+    //         .then((response) => response.json())
+    //         .then((responseJson) => {
 
-            })
+    //         })
 
-        fetch(`${Config.url}` + `/savednotification`, {
-            headers: {
-                'Authorization': 'Bearer ' + `${user.userToken}`,
-            }
-        })
-            .then((response) => response.json())
-            .then((responseJson) => {
+    //     fetch(`${Config.url}` + `/savednotification`, {
+    //         headers: {
+    //             'Authorization': 'Bearer ' + `${user.userToken}`,
+    //         }
+    //     })
+    //         .then((response) => response.json())
+    //         .then((responseJson) => {
 
-            })
-    }
+    //         })
+    // }
     const Notifyy = (val, item) => {
         fetch("https://exp.host/--/api/v2/push/send",
             {
@@ -211,46 +232,30 @@ const Postcard = ({ item, navigation, name, route }) => {
         }
     }
     const NavigateFull = (item) => {
-        // dispatch({
-        //     type: 'FULLVIEW',
-        //     data: item
-        // })
         navigation.navigate('external', { screen: 'view', params: { fullview: item._id } })
     }
-    const onVote = async (item) => {
-        try {
-            setvotes(votes + 1);
-            setvoted(true);
-            fetch(`${Config.url}` + `/posts/vote/${item._id}`, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': 'Bearer ' + `${user.userToken}`,
-                    'Content-Type': "application/json",
-                },
-            }).then(res => res.json()).then(async (resp) => {
-                // await updatestore();
 
+
+    const Postcommentfollowers = (item) => {
+        setTimeout(() => {
+            let y = item.likes.filter((ele) => {
+                return user.user.user.following.includes(ele)
             })
-        } catch (error) {
-            alert(error);
-        }
-    }
-    const onVotecancell = (item) => {
-        try {
-            setvotes(votes - 1);
-            setvoted(false);
-            fetch(`${Config.url}` + `/posts/votecancell/${item._id}`, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': 'Bearer ' + `${user.userToken}`,
-                    'Content-Type': "application/json",
-                },
-            }).then(res => res.json()).then(async (resp) => {
-                // await updatestore();
-            })
-        } catch (error) {
-            alert(error);
-        }
+            for (let index = 0; index < y.length; index++) {
+                const element = y[index];
+                userslist.forEach(user => {
+                    if (user._id == element) {
+                        sethaveliked(user.username);
+                        // console.log(item.caption,user.username,_.random(user.username))
+                    }
+                });
+            }
+        }, 1000);
+        Image.getSize(item.photo, (widthof, heightof) => {
+            const ratio = Math.min(width / widthof, height / heightof);
+            setimgheight(heightof * ratio);
+            setimgwidth(widthof * ratio);
+        })
     }
     const comment = async (item) => {
         try {
@@ -284,20 +289,31 @@ const Postcard = ({ item, navigation, name, route }) => {
 
 
     const ReportTheUser = (item) => {
-        fetch(`${Config.url}` + `/report`, {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Bearer ' + `${user.userToken}`,
-                'Content-Type': "application/json",
-            },
-            body: JSON.stringify({
-                description: `post` + item.postedBy.username,
-                errscreenshot: item.photo
-            })
-        }).then(res => res.json()).then((resp) => {
-            console.log(resp)
-            alert('reported this post and user')
-        })
+        Alert.alert(
+            'Report the Post',
+            'Do you want to report this post and user?',
+            [
+                { text: 'Cancel' },
+                {
+                    text: 'YES', onPress: () => {
+                        fetch(`${Config.url}` + `/report`, {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': 'Bearer ' + `${user.userToken}`,
+                                'Content-Type': "application/json",
+                            },
+                            body: JSON.stringify({
+                                description: `post` + item.postedBy.username,
+                                errscreenshot: item.photo
+                            })
+                        }).then(res => res.json()).then((resp) => {
+                            console.log(resp)
+                            alert('reported this post and user')
+                        })
+                    }
+                }
+            ]
+        );
     }
 
     const renderBottomPart = () => (
@@ -322,7 +338,7 @@ const Postcard = ({ item, navigation, name, route }) => {
                         overflow: 'hidden',
 
                     }}
-                    numberOfLines={name == 'NormalView' ? 50 : 2}
+                    numberOfLines={name == 'NormalView' ? 2 : 50}
                 >
                     {item.caption}
                 </Text>
@@ -347,17 +363,18 @@ const Postcard = ({ item, navigation, name, route }) => {
                             <TouchableOpacity onPress={() => {
                                 onUnlIKE(item);
                             }}>
-                                <MaterialIcons name='thumb-up' color={colors.primary} size={26}
+                                <MaterialIcons name='thumb-down' color={colors.primary} size={26}
                                     style={{
                                         marginRight: 5
                                     }}
                                 />
+
                             </TouchableOpacity>
                         ) : (
                             <TouchableOpacity onPress={() => {
                                 onlIKE(item);
                             }}>
-                                <MaterialIcons name='thumb-down' color={colors.primary} size={26}
+                                <MaterialIcons name='thumb-up' color={colors.primary} size={26}
                                     style={{
                                         marginRight: 5
                                     }}
@@ -424,25 +441,67 @@ const Postcard = ({ item, navigation, name, route }) => {
                         <MaterialIcons name='share' color={colors.primary} size={26} />
                     </TouchableOpacity>
                     {
-                        item.postedBy._id === user.user.user._id ? (
+                        item.postedBy._id === user.userId ? (
                             <>
                                 <TouchableOpacity style={{
                                     marginLeft: 15
-                                }} 
-                                onPress={() => DeletePost(item)}
+                                }}
+                                    onPress={() => DeletePost(item)}
                                 >
                                     <MaterialIcons name='delete' color={colors.primary} size={26} />
                                 </TouchableOpacity>
                             </>
                         ) : (
                             <>
+                                <TouchableOpacity style={{
+                                    marginLeft: 15
+                                }}
+                                    onPress={() => ReportTheUser(item)}
+                                >
+                                    <MaterialIcons name='report' color={colors.primary} size={26} />
+                                </TouchableOpacity>
                             </>
                         )
                     }
                 </View>
-                
-            </View>
 
+            </View>
+            <View
+                style={{
+                    marginLeft: 15,
+                    marginTop: 5,
+                }}
+            >
+                {
+                    haveliked &&
+                    <View style={{
+                        flexDirection: 'row',
+
+                    }}>
+                        <TouchableOpacity>
+                            <Text
+                                style={{
+                                    color: colors.primary,
+                                }}
+                            >
+                                @{haveliked}
+                            </Text>
+                        </TouchableOpacity>
+                        <Text
+                            style={{
+                                color: colors.text,
+                                fontSize: 16,
+                                opacity: 0.8,
+                                overflow: 'hidden',
+                                marginLeft: 5
+                            }}
+                            numberOfLines={name == 'NormalView' ? 50 : 2}
+                        >
+                            also liked this post
+                             </Text>
+                    </View>
+                }
+            </View>
         </View>
     )
     const videoBuffer = (isBuffer) => {
@@ -518,6 +577,7 @@ const Postcard = ({ item, navigation, name, route }) => {
                     style={{
                         marginRight: 15,
                     }}
+                    onPress={() => PostInfo(item)}
                 >
                     <MaterialIcons name='info-outline' color={colors.primary} size={26} />
                 </TouchableOpacity>
@@ -547,7 +607,7 @@ const Postcard = ({ item, navigation, name, route }) => {
                 shadowRadius: 7.49,
 
                 elevation: 12,
-                margin: 10
+                margin: name == 'NormalView' ? 10 : 0
             }}
         >
             {renderTopPart()}
@@ -562,9 +622,8 @@ const Postcard = ({ item, navigation, name, route }) => {
                     {
                         item.photo && <Image
                             source={{ uri: item.photo }}
-                            style={{ width: width - 50, height: 200, alignSelf: 'center', resizeMode: name != 'NormalView' ? 'cover' : "contain", borderRadius: 10 }}
+                            style={{ width: name == 'NormalView' ? width - 50 : imgwidth, height: name == 'NormalView' ? 200 : imgheight, alignSelf: 'center', resizeMode: name == 'NormalView' ? 'cover' : "contain", borderRadius: 10 }}
                             indicator={Progress.Pie}
-
                             indicatorProps={{
                                 size: 180,
                                 borderWidth: 0,

@@ -154,6 +154,12 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+             storeFile file('vtyuva.keystore')
+             storePassword 'password123'
+            keyAlias 'vtyuva'
+            keyPassword 'vtyuva'
+    }
     }
     buildTypes {
         debug {

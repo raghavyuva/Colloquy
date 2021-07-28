@@ -9,11 +9,13 @@ import { useTheme } from '@react-navigation/native';
 import { Menu, Provider } from 'react-native-paper';
 import { Config } from '../config';
 import { useSelector, useDispatch } from 'react-redux';
-import { setCurrentTheme, setTheme } from '../redux/actions/ThemeAction';
+import { setCurrentTheme, setModalForTHeme, setTheme } from '../redux/actions/ThemeAction';
 import { BottomSheet } from 'react-native-btr';
 import * as SecureStore from 'expo-secure-store';
-
+import { setHomeSearch } from '../redux/actions/FeedAction';
+global.myvar;
 const ThemeSelectingComponent = ({ color, themename, colors, theme }) => {
+    const activemodal = useSelector(state => state.theme.active)
     const dispatch = useDispatch();
     return (
         <View
@@ -36,6 +38,7 @@ const ThemeSelectingComponent = ({ color, themename, colors, theme }) => {
                 onPress={() => {
                     dispatch(setCurrentTheme(theme.theme))
                     SecureStore.setItemAsync('themeid', theme.id.toString())
+                    dispatch(setModalForTHeme(!activemodal))
                 }}
             >
                 <Icon name='palette-swatch' style={{ color: color, backgroundColor: colors.notification, borderRadius: 10, padding: 5, marginRight: 5 }} type='MaterialCommunityIcons' />
@@ -46,14 +49,14 @@ const ThemeSelectingComponent = ({ color, themename, colors, theme }) => {
 }
 
 const Headingbar = (props) => {
-    const [toggle, setToggle] = useState(true);
     const user = useSelector((state) => state.userDetails.user.user);
+    const activemodal = useSelector(state => state.theme.active)
+    const darkcontent = useSelector(state => state.theme.currentTheme)
+
     const dispatch = useDispatch();
     const { colors } = useTheme();
     const [visible, setvisible] = React.useState(false);
-    const [selected, setselected] = useState('key1')
-    let defdarktheme = useSelector(state => state.theme.dark)
-
+    const searchbutton = useSelector(state => state.allfeeds.search)
     const [loaded] = useFonts({
         Montserrat: require('../assets/Pacifico/Pacifico-Regular.ttf'),
     });
@@ -61,18 +64,15 @@ const Headingbar = (props) => {
         return null;
     }
     const ActivateSearch = () => {
-        // dispatch({ type: 'SEARCHCOMPONENT', data: !searchactive })
+        dispatch(setHomeSearch(!searchbutton))
     }
     const _toggleBottomNavigationView = () => {
-        setvisible(!visible);
+        dispatch(setModalForTHeme(!activemodal))
     };
-
-
-
     const BottomComponent = () => {
         return (
             <BottomSheet
-                visible={visible}
+                visible={activemodal}
                 onBackButtonPress={_toggleBottomNavigationView}
                 onBackdropPress={_toggleBottomNavigationView}
             >
@@ -98,7 +98,8 @@ const Headingbar = (props) => {
                                     }}
                                     onPress={() => {
                                         dispatch(setCurrentTheme(null));
-                                        SecureStore.deleteItemAsync('themeid')
+                                        SecureStore.deleteItemAsync('themeid');
+                                        dispatch(setModalForTHeme(!activemodal))
                                     }}
                                 >
                                     <Icon name='undo' style={{ color: 'grey', marginRight: 2 }} type='MaterialCommunityIcons' />
@@ -133,8 +134,8 @@ const Headingbar = (props) => {
             <View >
                 <Header style={{ backgroundColor: colors.background }}>
                     <StatusBar backgroundColor={colors.background}
-                    
-                    />
+                        barStyle={darkcontent.dark?'light-content':'dark-content'}
+                    />  
                     <Left>
                         <Button transparent onPress={() => { props.navigation.openDrawer() }}>
                             <Icon name='menu' style={{ color: colors.text }} />
@@ -344,7 +345,7 @@ const THEME = [
         name: 'Choco Dark',
         color: '#55423d',
         theme: {
-            dark: false,
+            dark: true,
             colors: {
                 primary: '#ffc0ad',
                 background: "#55423d",
@@ -360,7 +361,7 @@ const THEME = [
         name: 'Emarald-green',
         color: '#004643',
         theme: {
-            dark: false,
+            dark: true,
             colors: {
                 primary: '#f9bc60',
                 background: "#004643",
@@ -392,7 +393,7 @@ const THEME = [
         color: '#fef6e4',
         name: 'Mo-Mo Farm',
         theme: {
-            dark: true,
+            dark: false,
             colors: {
                 primary: '#f582ae',
                 background: '#fef6e4',
@@ -408,7 +409,7 @@ const THEME = [
         color: '#fec7d7',
         name: 'rose Pink',
         theme: {
-            dark: true,
+            dark: false,
             colors: {
                 primary: '#0e172c',
                 background: '#fec7d7',
@@ -419,5 +420,4 @@ const THEME = [
             }
         }
     },
-
 ]

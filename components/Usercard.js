@@ -197,16 +197,8 @@ const Usercard = (props) => {
 
                     <>
                         <TouchableOpacity onPress={() => opencomp(props.item._id)}   >
-                            <Card style={{ borderWidth: 2, borderColor: colors.border, borderBottomColor: colors.border,
-                            shadowColor: "#000",
-                            shadowOffset: {
-                                width: 0,
-                                height: 6,
-                            },
-                            shadowOpacity: 0.37,
-                            shadowRadius: 7.49,
-            
-                            elevation: 12,
+                            <View style={{
+                            margin:0.2,
                             }} >
 
                                 <CardItem avatar style={{ backgroundColor: colors.background, borderRadius: null, borderWidth: 0, margin: 0 }} onPress={() => opencomp(props.item._id)}>
@@ -230,7 +222,7 @@ const Usercard = (props) => {
                                         </Button>
                                     </Right>
                                 </CardItem>
-                            </Card>
+                            </View>
                         </TouchableOpacity>
 
                     </>

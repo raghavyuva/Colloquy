@@ -15,12 +15,13 @@ import Postcard from '../components/Postcard';
 import Headingbar from '../components/Header';
 import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
 import LoadingComp from '../components/LoadingComp';
-import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialIcons, MaterialCommunityIcons, SimpleLineIcons } from '@expo/vector-icons';
 import { useSelector, useDispatch } from 'react-redux';
 import { setOtherUser } from '../redux/actions/UserAction';
+import NotFoundComp from '../components/NotFoundComp';
 
 const UserProfile = (props) => {
-   
+
     const [load, setload] = useState(true);
     const [refresh, setrefresh] = useState(true)
     const [follow, setfollow] = useState(null)
@@ -44,10 +45,12 @@ const UserProfile = (props) => {
                 .then((response) => response.json())
                 .then((responseJson) => {
                     dispatch(setOtherUser(responseJson))
-                    if (user.user.user.following.includes(otherprofile.user._id)) {
-                        setfollow(true);
-                    }
-                    setload(false)
+                    setTimeout(() => {
+                        if (user.user.user.following.includes(otherprofile.user._id)) {
+                            setfollow(true);
+                        }
+                        setload(false)
+                    }, 1000);
                 })
         } catch (e) {
             console.log(e);
@@ -75,7 +78,7 @@ const UserProfile = (props) => {
                 fetching(otherprofile.user._id)
                 setfollow(true);
             })
-        } 
+        }
         catch (error) {
             console.log('error', error)
         }
@@ -90,20 +93,21 @@ const UserProfile = (props) => {
                             height: 150,
                             width: 150,
                             borderRadius: 20,
-                            marginVertical: 30,
-                            marginHorizontal: 10
+                            marginTop: 20,
+                            marginRight: 10,
+                            marginLeft: 10
                         }}
                     />
                     <View>
-                        <View style={{ marginTop: 50 }}>
+                        <View style={{ marginTop: 20 }}>
                             <Text style={styles(colors).txt1}>
                                 {otherprofile.user.username}
                             </Text>
                         </View>
-                        <View style={{ width: 250, marginRight: 10 }}>
+                        <View style={{ width: 220, marginRight: 10 }}>
                             {otherprofile.user.tagline == null ? (
                                 <Text style={styles(colors).txt2}>
-                                    {otherprofile.user.email}
+                                    hey there iam using this cool app are you? yay! that's great,what do you feel?
                                 </Text>
                             ) : (
                                 <Text style={styles(colors).txt2}>
@@ -111,9 +115,50 @@ const UserProfile = (props) => {
                                 </Text>
                             )}
                         </View>
+                        <View style={{ flexDirection: 'row', marginTop: 10 }}>
+                            <View style={{ marginRight: 5, flexDirection: 'column' }}>
+                                <Text style={{
+                                    fontWeight: "bold",
+                                    fontSize: 15,
+                                    color: colors.text,
+                                }}>Posts</Text>
+                                <Text style={{
+                                    fontWeight: "bold",
+                                    fontSize: 15,
+                                    color: colors.primary,
+                                    textAlign: 'center'
+                                }}>{otherprofile.userposts.length}</Text>
+                            </View>
+                            <View style={{ marginRight: 5, flexDirection: 'column' }}>
+                                <Text style={{
+                                    fontWeight: "bold",
+                                    fontSize: 15,
+                                    color: colors.text,
+                                }}>Followers</Text>
+                                <Text style={{
+                                    fontWeight: "bold",
+                                    fontSize: 15,
+                                    color: colors.primary,
+                                    textAlign: 'center'
+                                }}>{otherprofile.user.followers.length}</Text>
+                            </View>
+                            <View style={{ marginRight: 5, flexDirection: 'column' }}>
+                                <Text style={{
+                                    fontWeight: "bold",
+                                    fontSize: 15,
+                                    color: colors.text,
+                                }}>Following</Text>
+                                <Text style={{
+                                    fontWeight: "bold",
+                                    fontSize: 15,
+                                    color: colors.primary,
+                                    textAlign: 'center'
+                                }}>{otherprofile.user.following.length}</Text>
+                            </View>
+                        </View>
                     </View>
                 </View>
-                <View style={{ position: 'absolute', bottom: 60, marginHorizontal: 20, flexDirection: 'row' }}>
+                <View style={{ flexDirection: 'row', marginLeft: 10, marginTop: 10 }}>
                     {
                         otherprofile.user.verified == true ? (
                             <>
@@ -127,44 +172,55 @@ const UserProfile = (props) => {
                         )
                     }
                 </View>
-                <View style={{ flexDirection: 'row', position: 'absolute', bottom: 30, marginHorizontal: 20 }}>
-                    <View style={{ marginRight: 5 }}>
-                        <Text style={{
-                            fontWeight: "bold",
-                            fontSize: 15,
-                            color: colors.text,
-                        }}>{otherprofile.userposts.length} Posts</Text>
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-around',
+                        marginTop: 10
+                    }}
+                >
+                    {follow == true ? (
+                        <View
+                            style={{
+                                flexDirection: 'row',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                marginLeft: 5
+                            }}
+                        >
+                            <SimpleLineIcons name="user-unfollow" size={24} color={colors.primary} />
+                            <Text style={{ justifyContent: 'center', alignSelf: 'center', color: colors.text, marginLeft: 2 }}>Unfollow</Text>
+                        </View>
+                    ) : (
+                        <View style={{}}>
+                            <Button style={styles(colors).follow} onPress={followuser} >
+                                <Text style={{ justifyContent: 'center', alignSelf: 'center', color: colors.text }}>Follow</Text>
+                            </Button>
+                        </View>
+                    )}
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            marginLeft: 5
+                        }}
+                    >
+                        <MaterialCommunityIcons name="instagram" size={24} color={colors.primary} />
+                        <Text style={{ justifyContent: 'center', alignSelf: 'center', color: colors.text, marginLeft: 2 }}>Instagram</Text>
                     </View>
-                    <View style={{ marginRight: 5 }}>
-                        <Text style={{
-                            fontWeight: "bold",
-                            fontSize: 15,
-                            color: colors.text,
-                        }}>{otherprofile.user.followers.length} Followers</Text>
-
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            marginLeft: 5
+                        }}
+                    >
+                        <MaterialCommunityIcons name="telegram" size={24} color={colors.primary} />
+                        <Text style={{ justifyContent: 'center', alignSelf: 'center', color: colors.text, marginLeft: 2 }}>Telegram</Text>
                     </View>
-                    <View style={{ marginRight: 5 }}>
-                        <Text style={{
-                            fontWeight: "bold",
-                            fontSize: 15,
-                            color: colors.text,
-                        }}>{otherprofile.user.following.length} Following</Text>
-                    </View>
-                    
                 </View>
-                {follow==true ? (
-                    <View style={{ position: 'absolute', bottom: 30, marginHorizontal: 20, right: 10 }}>
-                        <Button style={styles(colors).follow} onPress={unfollow}>
-                            <Text style={{ justifyContent: 'center', alignSelf: 'center', color: colors.text, }}>Unfollow</Text>
-                        </Button>
-                    </View>
-                ) : (
-                    <View style={{ position: 'absolute', bottom: 30, marginHorizontal: 20, right: 10 }}>
-                        <Button style={styles(colors).follow} onPress={followuser} >
-                            <Text style={{ justifyContent: 'center', alignSelf: 'center', color: colors.text }}>Follow</Text>
-                        </Button>
-                    </View>
-                )}
             </View>
         )
     }
@@ -198,17 +254,24 @@ const UserProfile = (props) => {
         );
     }
     return (
-        <View style={{ backgroundColor: colors.background, }}>
+        <View style={{ backgroundColor: colors.background, flex: 1, }}>
             <Headingbar {...props} />
-            {otherprofile.userposts[0] == [] ? (
+            {otherprofile.userposts[0] == undefined ? (
                 <>
                     <PostNotnullcomp />
-                    <Image
-                        source={{ uri: 'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fcdn.onlinewebfonts.com%2Fsvg%2Fimg_412721.png&f=1&nofb=1' }}
-                        style={{ width: width, height: height / 1.8, alignSelf: 'center' }}
-                    />
+                    <LottieView
+                        autoPlay={true}
+                        loop={true}
+                        source={require('../animation/notfound.json')}
+                        style={{
+                         width:400,
+                         height: 300,
+                         alignSelf:'center',
+
+                        }} 
+                    /> 
                 </>
-            ) : (
+            ) : (  
                 <FlatList
                     ListHeaderComponent={
                         <PostNotnullcomp />
@@ -216,7 +279,7 @@ const UserProfile = (props) => {
                     ref={(ref) => { const flatListRef = ref; }}
                     renderItem={({ item }) => {
                         return (
-                            <Postcard item={item} {...props} />
+                            <Postcard item={item} {...props} name='NormalView' />
                         );
                     }}
                     keyExtractor={(item, index) => index.toString()}
@@ -229,20 +292,27 @@ const UserProfile = (props) => {
                     style={{ marginBottom: 50 }}
                     refreshing={refresh}
                     onRefresh={fetching} />
-            )}
+            )} 
         </View>
-    )
+    )  
 }
 
 export default UserProfile;
 const styles = (colors) => StyleSheet.create({
     mainscreen: {
-        height: height / 3,
         backgroundColor: colors.card,
-        flexDirection: 'row',
         borderBottomStartRadius: 20,
         borderBottomEndRadius: 20,
-        marginBottom: 20
+        marginBottom: 20,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 6,
+        },
+        shadowOpacity: 0.37,
+        shadowRadius: 7.49,
+        elevation: 12,
+        padding: 10,
     },
     row1: {
         marginTop: 50,
@@ -304,10 +374,10 @@ const styles = (colors) => StyleSheet.create({
         backgroundColor: colors.background,
         width: 120,
         justifyContent: 'center',
-        alignSelf: 'center',
         borderRadius: 15,
         borderColor: colors.border,
         borderWidth: 2,
-        marginLeft: 4
+        marginLeft: 4,
+        marginTop: 5
     },
 })

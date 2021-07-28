@@ -21,3 +21,9 @@ export const setCurrentTheme = (data) => {
     }
 }
 
+export const setModalForTHeme = (data) => {
+    return {
+        type: ActionTypes.SET_MODAL_FOR_THEME,
+        payload: data
+    }
+}
