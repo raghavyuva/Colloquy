@@ -18,9 +18,9 @@ const Notification = (props) => {
         fetching();
 
         return () => {
-
+            
         }
-    }, [])
+    },[])
     const fetching = () => {
         try {
             fetch(`${Config.url}` + `/savednotification`, {

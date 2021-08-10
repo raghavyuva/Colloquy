@@ -123,8 +123,20 @@ const Usercard = (props) => {
     }
     if (props.name == 'followers') {
         return (
-            <List style={{ borderWidth: 2, borderColor: colors.border, borderBottomColor: colors.border, 
-              
+            <List style={{ 
+                backgroundColor: colors.background,
+                borderRadius: 15,
+                marginBottom: 5,
+                shadowColor: "#000",
+                shadowOffset: {
+                    width: 0,
+                    height: 6,
+                },
+                shadowOpacity: 0.37,
+                shadowRadius: 7.49,
+          
+                elevation: 12,
+                margin:10,
             }}>
                 <ListItem thumbnail onPress={() => opencomp(props.item._id)}  >
                     <Left>
@@ -132,7 +144,7 @@ const Usercard = (props) => {
                     </Left>
                     <Body style={{ borderBottomWidth: 0, borderWidth: 0, borderColor: colors.border, borderBottomColor: colors.border, }} >
                         <Text style={{ color: colors.text }}>{props.item.username}</Text>
-                        <Text note numberOfLines={1}>{props.item.tagline}</Text>
+                        <Text note numberOfLines={1}>{props.item.tagline?props.item.tagline:'hey there iam using this cool app are you?yay! thats great,what do you feel?'}</Text>
                     </Body>
                     <Right style={{ borderBottomWidth: 0, borderWidth: 0, borderColor: colors.border, borderBottomColor: colors.border, }}>
                         {
@@ -152,7 +164,7 @@ const Usercard = (props) => {
                                     ) : (
                                         <View style={{ borderWidth: 0.5, borderColor: 'grey', borderBottomColor: 'grey', }}>
                                             <Button style={styles(colors).follow} onPress={() => followuser(props.item)} >
-                                                <Text>follow</Text>
+                                                <Text style={{color:colors.text,}}>follow</Text>
                                             </Button>
                                         </View>
                                     )}
@@ -166,7 +178,19 @@ const Usercard = (props) => {
     }
     if (props.name === 'following') {
         return (
-            <List style={{ borderBottomWidth: 0, borderWidth: 2, borderColor: colors.border, borderBottomColor: colors.border,
+            <List style={{  backgroundColor: colors.background,
+                borderRadius: 15,
+                marginBottom: 5,
+                shadowColor: "#000",
+                shadowOffset: {
+                    width: 0,
+                    height: 6,
+                },
+                shadowOpacity: 0.37,
+                shadowRadius: 7.49,
+          
+                elevation: 12,
+                margin:10
               }}>
                 <ListItem thumbnail onPress={() => opencomp(props.item._id)}>
                     <Left>
@@ -241,6 +265,7 @@ const styles = (colors) => StyleSheet.create({
         borderWidth: 0,
         borderColor: colors.border,
         borderBottomColor: 'grey',
+
     },
     search: {
         backgroundColor: colors.background,

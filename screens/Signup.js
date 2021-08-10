@@ -87,7 +87,6 @@ const Signup = ({ navigation }) => {
     }
     const confirmCode = () => {
         setloggingin(true);
-
         try {
             const credential = firebase.auth.PhoneAuthProvider.credential(
                 verificationId,

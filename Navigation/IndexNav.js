@@ -16,11 +16,9 @@ const IndexNavigator = () => {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.userDetails);
     const load = useSelector((state) => state.loadingDetails.loading);
-    let defdarktheme = useSelector(state => state.theme.dark);
     let themename = useSelector(state => state.theme.name)
     let currenttheme = useSelector(state => state.theme.currentTheme)
     const [LOADING, setLOADING] = useState(true);
-    const [THEMENAME, setTHEMENAME] = useState(null)
     useEffect(() => {
         setTimeout(() => {
             SecureStore.getItemAsync('UserId').then(user => {
@@ -87,7 +85,7 @@ const THEME = [
         name: 'Choco Dark',
         color: '#55423d',
         theme: {
-            dark: false,
+            dark: true,
             colors: {
                 primary: '#ffc0ad',
                 background: "#55423d",
@@ -103,7 +101,7 @@ const THEME = [
         name: 'Emarald-green',
         color: '#004643',
         theme: {
-            dark: false,
+            dark: true,
             colors: {
                 primary: '#f9bc60',
                 background: "#004643",
@@ -135,7 +133,7 @@ const THEME = [
         color: '#fef6e4',
         name: 'Mo-Mo Farm',
         theme: {
-            dark: true,
+            dark: false,
             colors: {
                 primary: '#f582ae',
                 background: '#fef6e4',
@@ -151,7 +149,7 @@ const THEME = [
         color: '#fec7d7',
         name: 'rose Pink',
         theme: {
-            dark: true,
+            dark: false,
             colors: {
                 primary: '#0e172c',
                 background: '#fec7d7',

@@ -125,38 +125,7 @@ const Postcard = ({ item, navigation, name, route }) => {
             ]
         );
     }
-    // const updatestore = () => {
-    //     fetch(`${Config.url}` + `/subscription`, {
-    //         headers: {
-    //             'Authorization': 'Bearer ' + `${user.userToken}`,
-    //         },
-    //         method: 'GET'
-    //     })
-    //         .then((response) => response.json())
-    //         .then((responseJson) => {
-
-    //         })
-    //     fetch(`${Config.url}` + `/post`, {
-    //         headers: {
-    //             'Authorization': 'Bearer ' + `${user.userToken}`,
-    //         },
-    //         method: 'GET'
-    //     })
-    //         .then((response) => response.json())
-    //         .then((responseJson) => {
-
-    //         })
-
-    //     fetch(`${Config.url}` + `/savednotification`, {
-    //         headers: {
-    //             'Authorization': 'Bearer ' + `${user.userToken}`,
-    //         }
-    //     })
-    //         .then((response) => response.json())
-    //         .then((responseJson) => {
-
-    //         })
-    // }
+   
     const Notifyy = (val, item) => {
         fetch("https://exp.host/--/api/v2/push/send",
             {
@@ -200,13 +169,7 @@ const Postcard = ({ item, navigation, name, route }) => {
                     'Content-Type': "application/json",
                 },
             }).then(res => res.json()).then(async (resp) => {
-                let val = 'like';
-                // await updatestore();
-                // dispatch({
-                //     type: "POSTDATA",
-                //     postData: resp
-                // })
-                // console.log(resp)
+                let val = 'like';               
                 Notifyy(val, item);
             })
         } catch (error) {
@@ -241,14 +204,17 @@ const Postcard = ({ item, navigation, name, route }) => {
             let y = item.likes.filter((ele) => {
                 return user.user.user.following.includes(ele)
             })
+            let xy=[]
             for (let index = 0; index < y.length; index++) {
                 const element = y[index];
                 userslist.forEach(user => {
                     if (user._id == element) {
-                        sethaveliked(user.username);
-                        // console.log(item.caption,user.username,_.random(user.username))
+                        xy.push(user);
                     }
                 });
+
+            let r=_.random(xy.length)
+            sethaveliked(xy[r]?.username)
             }
         }, 1000);
         Image.getSize(item.photo, (widthof, heightof) => {
@@ -256,6 +222,7 @@ const Postcard = ({ item, navigation, name, route }) => {
             setimgheight(heightof * ratio);
             setimgwidth(widthof * ratio);
         })
+ 
     }
     const comment = async (item) => {
         try {
@@ -382,6 +349,7 @@ const Postcard = ({ item, navigation, name, route }) => {
                             </TouchableOpacity>
                         )
                     }
+                    <TouchableOpacity onPress={()=>onGotoWhodid(item)}>
                     <Text
                         style={{
                             color: colors.text,
@@ -392,6 +360,7 @@ const Postcard = ({ item, navigation, name, route }) => {
                     >
                         {likes}
                     </Text>
+                    </TouchableOpacity>
                 </View>
                 <View
                     style={{

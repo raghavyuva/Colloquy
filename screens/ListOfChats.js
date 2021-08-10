@@ -14,6 +14,7 @@ var _ = require('lodash');
 import { useSelector, useDispatch } from 'react-redux';
 import * as firebase from 'firebase'
 require('firebase/storage');
+
 import {
     AdMobBanner,
     AdMobInterstitial,
@@ -23,7 +24,6 @@ import {
 
 } from 'expo-ads-admob';
 const ListOfChats = (props) => {
-    const [disableinter, setdisableinter] = useState(false);
     const { colors } = useTheme();
     const [threads, setThreads] = useState([]);
     const [active, setActive] = useState(false);
@@ -33,15 +33,15 @@ const ListOfChats = (props) => {
     const [Notfound, setNotfound] = useState(false);
     const [AllUsers, setAllUsers] = useState(null);
     const [refresh, setrefresh] = useState(false);
-    const [snap, setsnap] = useState(null);
     const user = useSelector((state) => state.userDetails);
     const searchactive = false;
     useEffect(() => {
         let IsMounted = true;
         setloading(true);
-        // _openInterstitial();
+        // _openInterstitial(); 
         FetchThreads();
         FetchAll();
+        ExcludealreadySpokenUser()
         return () => {
             IsMounted = false;
         }
@@ -72,10 +72,9 @@ const ListOfChats = (props) => {
                 const threads = querySnapshot.docs.map((documentSnapshot) => {
                     if (documentSnapshot.data().UserType.sentBy === user.user._id || documentSnapshot.data().UserType.sentTo === user.user._id) {
                         // console.log('hey')
-                        // console.log(documentSnapshot.data().UserType.sentTo)
                         // setAllUsers(AllUsers - documentSnapshot.data().UserType.sentTo )
                     }
-                    return {
+                    return { 
                         _id: documentSnapshot.id,
                         name: "",
                         avatar: '',
@@ -125,10 +124,12 @@ const ListOfChats = (props) => {
                 setloading(false);
             })
     }
+   const ExcludealreadySpokenUser = () =>{
 
+   }  
     const MessageParticularguy = (guy) => {
         props.navigation.navigate('external', {
-            screen: 'message', params: {
+            screen: 'message', params: { 
                 anotheruser: guy
             }
         })
@@ -147,7 +148,19 @@ const ListOfChats = (props) => {
                                     {item.UserType.sentBy === user.user.user._id ? (
                                         <TouchableOpacity onPress={() => { MessageParticularguy(item.latestMessage.user2) }}   >
                                             <View style={{
-                                                margin: 0.2,
+                                                 backgroundColor: colors.background,
+                                                 borderRadius: 15,
+                                                 marginBottom: 5,
+                                                 shadowColor: "#000",
+                                                 shadowOffset: {
+                                                     width: 0,
+                                                     height: 6,
+                                                 },
+                                                 shadowOpacity: 0.37,
+                                                 shadowRadius: 7.49,
+                                           
+                                                 elevation: 12,
+                                                 margin:10
                                             }} >
                                                 <CardItem avatar style={{ backgroundColor: colors.background, borderRadius: null, borderWidth: 0, margin: 0 }}>
                                                     <Thumbnail
@@ -177,7 +190,19 @@ const ListOfChats = (props) => {
                                         <TouchableOpacity onPress={() => { MessageParticularguy(item.UserType.SentUserDetails) }}   >
                                             <View style={{
 
-                                                margin: 0.2,
+                                                    backgroundColor: colors.background,
+                                                    borderRadius: 15,
+                                                    marginBottom: 5,
+                                                    shadowColor: "#000",
+                                                    shadowOffset: {
+                                                        width: 0,
+                                                        height: 6,
+                                                    },
+                                                    shadowOpacity: 0.37,
+                                                    shadowRadius: 7.49,
+
+                                                    elevation: 12,
+                                                    margin:10
                                             }} >
                                                 <CardItem avatar style={{ backgroundColor: colors.background, borderRadius: null, borderWidth: 0, margin: 0 }}>
                                                     <Thumbnail

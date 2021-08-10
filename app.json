@@ -4,7 +4,7 @@
     "slug": "Vtyuva",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/squarelogo.png",
+    "icon": "./assets/slack.png",
     "splash": {
       "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimg2.pngio.com%2Fyouth-png-free-youthpng-transparent-images-71774-pngio-youth-art-png-2166_2091.png&f=1&nofb=1",
       "resizeMode": "contain",
@@ -31,7 +31,7 @@
       "googleServicesFile": "./google-services.json",
       "useNextNotificationsApi": true,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/squarelogo.png",
+        "foregroundImage": "./assets/slack.png",
         "backgroundColor": "#000000"
       },
       "userInterfaceStyle": "automatic",
@@ -51,7 +51,7 @@
       ]
     },
     "web": {
-      "favicon": "./assets/squarelogo.png"
+      "favicon": "./assets/slack.png"
     }
   }
 }

@@ -100,7 +100,7 @@ const NotesRender = (props) => {
                             }}
                         >{item.branch}</Text>
                     </View>
-                    <View
+                    {/* <View
                         style={{
                             height: 30,
                             marginLeft: 5,
@@ -122,7 +122,7 @@ const NotesRender = (props) => {
                             }}
                             numberOfLines={1}
                         >{item.type}</Text>
-                    </View>
+                    </View> */}
                 </View>
                 <View
                     style={{
