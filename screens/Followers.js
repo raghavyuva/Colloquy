@@ -28,7 +28,6 @@ const Followers = (props) => {
       })
         .then((response) => response.json())
         .then((responseJson) => {
-          console.log(responseJson)
           dispatch(setUserFollowers(responseJson));
           setload(false);
         }) 
@@ -43,20 +42,7 @@ const Followers = (props) => {
       IsMounted = false;
     }
   }, [])
-  if (followers == 0 || followers == null) {
-    return (
-      <View style={{ flex: 1, backgroundColor: colors.background, }}>
-        <Header {...props} />
-        <View style={{ justifyContent: 'center', alignSelf: 'center', flex: 1 }}>
-          <Image
-            source={{ uri: 'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fcdn.onlinewebfonts.com%2Fsvg%2Fimg_412721.png&f=1&nofb=1' }}
-            style={{ width: width, height: 400, alignSelf: 'center', marginLeft: 2, justifyContent: 'center', }}
-          />
-        </View>
 
-      </View>
-    )
-  }
   if (load) {
     return (
       <LoadingComp />
@@ -65,7 +51,7 @@ const Followers = (props) => {
   return (
     <Container style={{ backgroundColor: colors.background }}>
       <Header {...props} />
-      {followers[0] != null ? (
+    
         <FlatList
           data={followers}
           renderItem={({ item }) => {
@@ -74,15 +60,23 @@ const Followers = (props) => {
             );
           }}
           keyExtractor={item => item._id}
+          ListEmptyComponent={
+            <View style={{ flex: 1, backgroundColor: colors.background,alignItems:"center",marginTop:'50%'}}>
+            <View style={{ justifyContent: 'center', alignSelf: 'center', flex: 1 }}>
+            <LottieView
+                            autoPlay={true}
+                            loop={false}
+                            source={require('../animation/notfound.json')}
+                            style={{
+                             width:400,
+                             height: 300,
+                             alignSelf:'center',
+                            }} 
+                        /> 
+            </View>
+          </View>
+          }
         />
-      ) : (
-        <Image
-          source={{ uri: 'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fcdn.onlinewebfonts.com%2Fsvg%2Fimg_412721.png&f=1&nofb=1' }}
-          style={{ width: width, height: height, alignSelf: 'center' }}
-        />
-      )}
-
-
     </Container>
   )
 }

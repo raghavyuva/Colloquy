@@ -1,336 +1,348 @@
-import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, Dimensions, TextInput } from 'react-native'
-import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
-import Headingbar from '../components/Header';
-const { width, height } = Dimensions.get('window');
-import { Button, Textarea, } from 'native-base';
-import { MaterialIcons } from '@expo/vector-icons';
-import { Config } from '../config';
-import { DataLayerValue } from '../Context/DataLayer';
-import * as ImagePicker from 'expo-image-picker';
-import { firebase } from '../components/firebase'
-import 'firebase/auth';
-import 'firebase/firestore';
-import LoadingComp from '../components/LoadingComp';
-import UploadingComp from '../components/UploadingComp';
-import { useSelector, useDispatch } from 'react-redux';
-import Payment_Parent from './Payment_Parent';
-
+import React, { useState, useEffect } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  TouchableOpacity,
+  Dimensions,
+  TextInput,
+  TouchableHighlight,
+} from "react-native";
+import { useTheme } from "@react-navigation/native";
+import Headingbar from "../components/Header";
+const { width, height } = Dimensions.get("window");
+import { Config } from "../config";
+import "firebase/auth";
+import "firebase/firestore";
+import LoadingComp from "../components/LoadingComp";
+import UploadingComp from "../components/UploadingComp";
+import { useSelector } from "react-redux";
+import Payment_Parent from "./Payment_Parent";
+import DatePicker from "react-native-date-picker";
 const SlotSelection = (props) => {
-    const { colors } = useTheme();
-    const [date, setDate] = useState('09-10-2020');
-    const [Input, setInput] = useState(null);
-    const [uploading, setuploading] = useState(false);
-    const [slotavailable, setslotavailable] = useState(false);
-    const [attachment, setattachment] = useState(false)
-    const [load, setload] = useState(false)
-    const [active, setactive] = useState('1');
-    const [storagestatus, setstoragestatus] = useState(null);
-    const user = useSelector((state) => state.userDetails);
-
-    const VerifyTheSlot = () => {
-        try {
-            setload(true);
-            fetch(`${Config.url}` + `/Interview`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': 'Bearer ' + `${user.userToken}`,
-                    'Content-Type': 'application/json',
-                },
-            })
-                .then(response => response.json())
-                .then(data => {
-                    for (let index = 0; index < data.length; index++) {
-                        console.log(data[index].InterviewDate == date);
-                        if (data[index].InterviewDate == date && data[index].InterviewTime == active.time) {
-                            setslotavailable(false);
-                            alert('slot not available');
-                        }
-                    }
-                    setload(false)
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                    setload(false);
-                });
-        } catch (error) {
-            alert(error)
-            setload(false);
-        }
-
-    }
-    // console.log(slotavailable)
-    useEffect(() => {
-        let IsMounted = true;
-        GetPermofStorage();
-        return () => {
-            IsMounted = false;
-        }
-    }, [])
-    const _upload = async () => {
-        if (storagestatus == 'granted') {
-            if (slotavailable) {
-                if (!attachment) {
-                    alert('no photo selected to post');
-                }
-                else {
-                    setuploading(true);
-                    uploadPhotoAsync()
-                }
-            } else {
-                alert('Err: slot not available')
-            }
-        } else {
-            alert('storage permission error');
-        }
-    }
-    const uploadPhotoAsync = async () => {
-        try {
-            return new Promise(async (res, rej) => {
-                const response = await fetch(attachment);
-                const file = await response.blob();
-                let upload = firebase.storage().ref(`images/${user.user.username}/${Date.now()}/interview`).put(file)
-                upload.on(
-                    "state_changed",
-                    snapshot => { },
-                    err => {
-                        rej(err);
-                    },
-                    async () => {
-                        const url = await upload.snapshot.ref.getDownloadURL();
-                        res(url);
-                        console.log(url)
-                        mongoupload(url);
-                    }
-                );
-            });
-        } catch (error) {
-            alert(error);
-            setuploading(false);
-        }
-    };
-
-    const _pickImagefromGallery = async () => {
-        if (storagestatus == 'granted') {
-            try {
-                let result = await ImagePicker.launchImageLibraryAsync({
-                    mediaTypes: ImagePicker.MediaTypeOptions.All,
-                    allowsEditing: true,
-                    quality: 1,
-                    aspect: [4, 3],
-                });
-                if (!result.cancelled) {
-                    setattachment(result.uri)
-                }
-            } catch (E) {
-                console.log(E);
-            }
-        } else {
-            alert('we need storage permission');
-        }
-    }
-    const mongoupload = (url) => {
-        try {
-            fetch(`${Config.url}` + `/applyforinterview`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': 'Bearer ' + `${user.userToken}`,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    InterviewDate: date,
-                    InterviewTime: active.time,
-                    Branch: props.route.params.thread,
-                    paymentrefid: Input,
-                    paymentattachment: url
-                })
-            }).then(res => res.json()).then((resp) => {
-                alert('applied successfully')
-                setuploading(false);
-            })
-        } catch (error) {
-            alert(error);
-            setuploading(false);
-        }
-    }
-    const GetPermofStorage = async () => {
-        const { status } = await ImagePicker.getMediaLibraryPermissionsAsync()
-        console.log(status);
-        if (status == 'granted') {
-            setstoragestatus('granted')
-        } else {
-            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-            console.log(status)
-            if (status == 'granted') {
-                setstoragestatus('granted')
-            } else {
-                setstoragestatus('notgranted')
-            }
-        }
-    }
-    if (setstoragestatus == 'notgranted') {
-        const { status } = ImagePicker.getMediaLibraryPermissionsAsync;
-        if (status != 'granted') {
-            setstoragestatus('granted')
+  const { colors } = useTheme();
+  const [Input, setInput] = useState(null);
+  const [uploading, setuploading] = useState(false);
+  const [load, setload] = useState(false);
+  const [active, setactive] = useState("1");
+  const user = useSelector((state) => state.userDetails);
+  const [date, setDate] = useState(new Date());
+  const [today, settoday] = useState(null);
+  const [month, setmonth] = useState(null);
+  const [slotavailable, setslotavailable] = useState(false);
+  const VerifyTheSlot = () => {
+    try {
+      setload(true);
+      fetch(`${Config.url}` + `/Interview`, {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + `${user.userToken}`,
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          let filtered = null;
+          filtered = data.filter((ele) => {
             return (
-                <View style={{ flex: 1, backgroundColor: colors.background }}>
-                    <Headingbar {...props} />
-                    <Text style={{ color: colors.text }}>We Need Camera Roll Permission to make this work</Text>
-                </View>
-            )
-        } else {
-            setstoragestatus('notgranted')
-        }
+              ele.InterviewDate.includes(date.toLocaleDateString()) &&
+              ele.InterviewTime.includes(active.time)
+            );
+          });
+          if (filtered[0] != null) {
+            setslotavailable(false);
+             alert('slot not available')
+          } else {
+            setslotavailable(true);
+            alert('slot available')
+          }
+          setload(false);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          setload(false);
+        });
+    } catch (error) {
+      alert(error);
+      setload(false);
     }
-    if (load) {
-        return (
-            <LoadingComp />
-        )
-    }
-    if (uploading) {
-        return (
-            <UploadingComp />
-        )
-    }
-    return (
-        <View style={{ flex: 1, backgroundColor: colors.background }}>
-            <Headingbar {...props} />
-            <Text style={{ color: colors.text, fontSize: 24, fontWeight: 'bold', marginLeft: 10 }}>
-                Select a Slot
+  };
+  useEffect(() => {
+    let IsMounted = true;
+    settoday(new Date());
+    var tomorrow = new Date();
+    var some = new Date(tomorrow.setUTCDate(tomorrow.getDate() + 30));
+    setmonth(some);
+    return () => {
+      IsMounted = false;
+    };
+  }, []);
+
+  
+  if (load) {
+    return <LoadingComp />;
+  }
+  if (uploading) {
+    return <UploadingComp />;
+  }
+  return (
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
+      <Headingbar {...props} />
+      <Text
+        style={{
+          color: colors.text,
+          fontSize: 24,
+          fontWeight: "bold",
+          marginLeft: 10,
+        }}
+      >
+        Select a Slot
+      </Text>
+      <View
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          marginTop: 30,
+        }}
+      >
+        <Text
+          style={{ color: colors.text, textAlign: "center", marginBottom: 15 }}
+        >
+          Pick a Date in the range of one month for an interview
+        </Text>
+        <DatePicker
+          date={date}
+          onDateChange={setDate}
+          mode="date"
+          minimumDate={today}
+          maximumDate={month}
+          fadeToColor={colors.primary}
+          androidVariant="iosClone"
+          textColor={colors.text}
+        />
+      </View>
+      <View style={{ marginTop: 20 }}>
+        <Text style={{ color: colors.text, textAlign: "center" }}>
+          Select a Time slot for an interview to be conducted
+        </Text>
+        <FlatList
+          renderItem={({ item }) => {
+            let ele = item;
+            return (
+              <View
+                style={{
+                  justifyContent: "center",
+                  alignSelf: "center",
+                  alignItems: "center",
+                  alignContent: "center",
+                }}
+              >
+                <TouchableOpacity
+                  style={
+                    active.id == item.id
+                      ? styles(colors).selectedlist
+                      : styles(colors).timelist
+                  }
+                  onPress={() => {
+                    setactive(ele);
+                  }}
+                >
+                  <View
+                    style={{ justifyContent: "center", alignSelf: "center" }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 20,
+                        fontWeight: "bold",
+                        color: colors.text,
+                        textAlign: "center",
+                      }}
+                    >
+                      {ele.time}{" "}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            );
+          }}
+          keyExtractor={(item, index) => index.toString()}
+          data={Data}
+          style={{ margin: 20 }}
+          numColumns={2}
+        />
+        <TouchableHighlight
+          style={{
+            borderWidth: 0.5,
+            borderColor: "grey",
+            width: 200,
+            height: 40,
+            backgroundColor: colors.card,
+            justifyContent: "center",
+            alignSelf: "center",
+          }}
+          onPress={VerifyTheSlot}
+          underlayColor={colors.primary}
+        >
+          <Text style={{ color: colors.text, textAlign: "center" }}>
+            Verify Slot Availability
+          </Text>
+        </TouchableHighlight>
+      </View>
+      <View
+        style={{
+          flexDirection: "column",
+          marginTop: 20,
+          padding: 20,
+          borderBottomColor: colors.text,
+          borderBottomWidth: 1,
+        }}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <View>
+            <Text style={{ color: colors.text, fontSize: 20 }}>Interview</Text>
+          </View>
+          <View>
+            <Text
+              style={{
+                color: colors.text,
+                fontWeight: "bold",
+                fontSize: 20,
+              }}
+            >
+              400 {"\u20A8"}
             </Text>
-            <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 30 }}>
-                <Text style={{ color: colors.text, }}>Pick a Date for Interview</Text>
-                {/* <DatePicker
-                    style={styles(colors).datePickerStyle}
-                    date={date} //initial date from state
-                    mode="date" //The enum of date, datetime and time
-                    placeholder="select date"
-                    format="DD-MM-YYYY"
-                    minDate='01-01-2021'
-                    maxDate="01-01-2022"
-                    confirmBtnText="Confirm"
-                    cancelBtnText="Cancel"
-                    customStyles={{
-                        dateIcon: {
-                            //display: 'none',
-                            position: 'absolute',
-                            left: 0,
-                            top: 4,
-                            marginLeft: 0,
-                        },
-                        dateInput: {
-                            marginLeft: 36,
-                            color: colors.text
-                        },
-                        placeholderText: {
-                            color: colors.text
-                        },
-                        dateText: {
-                            color: colors.text
-                        }
-                    }}
-                    onDateChange={(date) => {
-                        setDate(date);
-                    }}
-                /> */}
-            </View>
-            <Payment_Parent  />
-            <View style={{ marginTop: 20 }}>
-                <Text style={{ color: colors.text, marginLeft: 15 }}>Select a Time</Text>
-                <FlatList
-                    ref={(ref) => { flatListRef = ref; }}
-                    renderItem={({ item }) => {
-                        let ele = item
-                        return (
-                            <TouchableOpacity style={active.id == item.id ? styles(colors).selectedlist : styles(colors).timelist}
-                                onPress={() => {
-                                    setactive(ele)
-                                }}
-                            >
-                                <View style={{ justifyContent: 'center', alignSelf: 'center' }}>
-                                    <Text style={{ fontSize: 20, fontWeight: 'bold', color: colors.text, textAlign: "center" }} >{ele.time} </Text>
-                                </View>
-                            </TouchableOpacity>
-                        );
-                    }}
-                    keyExtractor={(item, index) => index.toString()}
-                    data={Data}
-                    style={{ margin: 2 }}
-                    numColumns={2}
-                />
-                <Button style={{ borderWidth: 0.5, borderColor: 'grey', width: 200, backgroundColor: colors.card, justifyContent: "center", alignSelf: 'center' }} onPress={VerifyTheSlot}>
-                    <Text style={{ color: colors.text, textAlign: "center" }}>Verify Slot Availability</Text>
-                </Button>
-            </View>
-            {/* {slotavailable == true ? ( */}
-            <View >
-                <Text style={{ fontSize: 18, color: colors.primary, textAlign: "center", marginBottom: 10, marginTop: 20 }}>Pay INR 300 to upi id: meetnischay@okicici</Text>
-                <TextInput
-                    value={Input}
-                    onChangeText={(e) => setInput(e)}
-                    style={{ borderWidth: 1, borderColor: 'grey', color: colors.text, marginLeft: 15, padding: 10, marginTop: 25, marginRight: 15, marginBottom: 10 }}
-                    placeholder='Payment Ref Id'
-                    placeholderTextColor='grey'
-                />
-
-                <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                    <Text style={{ color: colors.text, textAlign: 'center', }}>Attach Payment Screenshot</Text>
-                    <TouchableOpacity onPress={_pickImagefromGallery}>
-                        <MaterialIcons name="attach-file" size={24} color={colors.primary} />
-                    </TouchableOpacity>
-                </View>
-
-                <Button
-                    onPress={_upload}
-                    style={{ justifyContent: 'center', alignSelf: 'center', width: 200, backgroundColor: colors.card, borderColor: 'grey', borderWidth: 0.2, marginTop: 15 }}>
-                    <Text style={{ color: colors.text }}>Apply For Interview</Text>
-                </Button>
-            </View>
-            {/* ) : (
-                <>
-                </>
-            )} */}
+          </View>
         </View>
-    )
-}
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <View>
+            <Text style={{ color: colors.text, fontSize: 20 }}>
+              Report of Interview
+            </Text>
+          </View>
+          <View>
+            <Text
+              style={{
+                color: colors.text,
+                fontWeight: "bold",
+                fontSize: 20,
+              }}
+            >
+              100 {"\u20A8"}
+            </Text>
+          </View>
+        </View>
+      </View>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          padding: 20,
+        }}
+      >
+        <View>
+          <Text style={{ color: colors.text, fontSize: 20 }}>Total Amount</Text>
+        </View>
+        <View>
+          <Text
+            style={{ color: colors.primary, fontWeight: "bold", fontSize: 20 }}
+          >
+            500 {"\u20A8"}
+          </Text>
+        </View>
+      </View>
+      <View
+        style={{
+          position: "absolute",
+          bottom: 0,
+          width: "100%",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Payment_Parent disabled={slotavailable} date={date}  time={active.time} Branch={props.route.params.thread} />
+      </View>
+    </View>
+  );
+};
 
-export default SlotSelection
+export default SlotSelection;
 
-const styles = (colors) => StyleSheet.create({
+const styles = (colors) =>
+  StyleSheet.create({
     datePickerStyle: {
-        width: 200,
-        marginTop: 0,
-        color: colors.text,
-        marginBottom: 10
+      width: 200,
+      marginTop: 0,
+      color: colors.text,
+      marginBottom: 10,
     },
     timelist: {
-        width: width / 2, height: 100, backgroundColor: colors.background, flexDirection: 'row',
-        marginLeft: 0, marginBottom: 8, borderWidth: 2, borderColor: colors.border, justifyContent: 'center',
-        borderRadius: 10, marginRight: 0
+      width: width / 2.5,
+      backgroundColor: colors.background,
+      borderRadius: 1,
+      marginBottom: 5,
+      shadowColor: "#000",
+      shadowOffset: {
+        width: 0,
+        height: 6,
+      },
+      shadowOpacity: 0.37,
+      shadowRadius: 7.49,
+      elevation: 12,
+      margin: 10,
     },
     selectedlist: {
-        width: width / 2, height: 100, backgroundColor: 'grey', flexDirection: 'row',
-        marginLeft: 0, marginBottom: 8, borderWidth: 2, borderColor: colors.border, justifyContent: 'center',
-        borderRadius: 10, marginRight: 0
-    }
-})
-const Data = [{
-    "time": "10.00",
-    "id": "1"
-},
-{
-    "time": "12.00",
-    "id": "2"
-}, {
-    "time": "16.00",
-    "id": "3"
-}, {
-    "time": "18.00",
-    "id": "4"
-}, {
-    "time": "20.00",
-    "id": "5"
-}, {
-    "time": "22.00",
-    "id": "6"
-}]
+      width: width / 2.5,
+      backgroundColor: colors.primary,
+      borderRadius: 1,
+      marginBottom: 5,
+      shadowColor: "#000",
+      shadowOffset: {
+        width: 0,
+        height: 6,
+      },
+      shadowOpacity: 0.37,
+      shadowRadius: 7.49,
+
+      elevation: 12,
+      margin: 10,
+    },
+  });
+const Data = [
+  {
+    time: "10.00",
+    id: "1",
+  },
+  {
+    time: "12.00",
+    id: "2",
+  },
+  {
+    time: "04.00",
+    id: "3",
+  },
+  {
+    time: "06.00",
+    id: "4",
+  },
+  {
+    time: "08.00",
+    id: "5",
+  },
+  {
+    time: "10.00",
+    id: "6",
+  },
+];

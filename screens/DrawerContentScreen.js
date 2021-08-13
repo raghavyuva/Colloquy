@@ -101,7 +101,7 @@ export function DrawerContent(props) {
                                 props.navigation.navigate('external', { screen: 'interview' })
                             }}
                         />
-                        <DrawerItem
+                        {/* <DrawerItem
                             icon={({ color, size }) => (
                                 <MaterialIcons name="event-seat" size={24} color={colors.text} />)}
                             labelStyle={{ color: colors.text }}
@@ -111,7 +111,7 @@ export function DrawerContent(props) {
                                 props.navigation.navigate('external', { screen: 'events' })
 
                             }}
-                        />
+                        /> */}
                         <DrawerItem
                             icon={({ color, size }) => (
                                 <MaterialIcons name="note" size={24} color={colors.text} />)}
@@ -219,7 +219,6 @@ export function DrawerContent(props) {
 const styles = (colors) => StyleSheet.create({
     drawerContent: {
         flex: 1,
-
     },
     title: {
         fontSize: 28,

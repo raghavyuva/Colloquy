@@ -93,10 +93,13 @@ function HomeScreen() {
                 options={{
                     tabBarLabel: 'subscribed',
                     tabBarColor: 'red',
+                    
                     tabBarIcon: ({ color }) => (
-                        <MaterialCommunityIcons name="post-outline" size={24} color={color} />
+                        <MaterialCommunityIcons name="post-outline" size={24} color={color}  />
                     ),
+                    
                 }}
+
             /> 
              <Tab.Screen
                 name="addblog"
