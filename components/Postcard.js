@@ -441,7 +441,7 @@ const Postcard = ({ item, navigation, name, route }) => {
                     marginTop: 5,
                 }}
             >
-                {
+                {/* {
                     haveliked &&
                     <View style={{
                         flexDirection: 'row',
@@ -469,7 +469,7 @@ const Postcard = ({ item, navigation, name, route }) => {
                             also liked this post
                              </Text>
                     </View>
-                }
+                } */}
             </View>
         </View>
     )

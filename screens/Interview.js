@@ -63,16 +63,15 @@ const MockInterview = (props) => {
           textTransform: "capitalize",
           fontWeight: "bold",
           fontSize: 20,
+          textAlign:'center'
         }}
       >
         Preparing For AN iNTERVIEW ?
       </Text>
       <Image
-        source={{
-          uri: "https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fblogs.longwood.edu%2Ffiles%2F2014%2F12%2FStudent-Icon.png&f=1&nofb=1",
-        }}
+        source={require('../assets/meditating.png')}
         style={{
-          width: width / 1.5,
+          width: width / 1.3,
           height: height / 3.3,
           alignSelf: "center",
           backgroundColor: colors.background,

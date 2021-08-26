@@ -239,7 +239,7 @@ const Headingbar = (props) => {
               />
               <BottomComponent />
             </Button>
-            {props.route.name === "Home" || props.route.name === "chat" ? (
+            {props.route.name === "Home" ? (
               <Button transparent onPress={ActivateSearch}>
                 <Icon name="search" style={{ color: colors.text }} />
               </Button>
@@ -298,7 +298,9 @@ const Headingbar = (props) => {
   const Headerforchat = (props) => {
     return (
       <Header style={{ backgroundColor: colors.card }}>
-        <StatusBar backgroundColor={colors.background} />
+        <StatusBar backgroundColor={colors.background}
+         barStyle={darkcontent?.dark ? "light-content" : "dark-content"}
+        />
         <Left>
           <Button
             transparent

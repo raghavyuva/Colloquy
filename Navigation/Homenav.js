@@ -32,6 +32,7 @@ import StatusView from '../components/StatusView';
 import Terms from '../screens/TermsAndCondition';
 import { useSelector, useDispatch } from 'react-redux';
 import { setUser } from '../redux/actions/UserAction';
+import BottomComponent from '../screens/Updateprofile';
 
 const Tab = createMaterialBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -56,7 +57,7 @@ function External() {
             <Stack.Screen name='terms' component={Terms} />
             <Stack.Screen name='rendernotes' component={NotesRender} />
             <Stack.Screen name='uploadNotes' component={NotesUpload} />
-            <Stack.Screen name='StatusView' component={StatusView} />
+            <Stack.Screen name='editprofile' component={BottomComponent} />
         </Stack.Navigator>
     );
 }
@@ -69,6 +70,8 @@ function HomeScreen() {
             activeColor={colors.text}
             shifting={false}
             barStyle={{ backgroundColor: colors.background }}
+            // keyboardHidesNavigationBar
+            sceneAnimationEnabled
         >
             <Tab.Screen
                 name="Home" initialRouteName="Home"

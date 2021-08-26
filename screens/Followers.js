@@ -11,6 +11,7 @@ import { DefaultTheme, DarkTheme, useTheme } from '@react-navigation/native';
 import LoadingComp from '../components/LoadingComp';
 import { useSelector, useDispatch } from 'react-redux';
 import { setUserFollowers } from '../redux/actions/UserAction';
+import NotFoundComp from '../components/NotFoundComp';
 
 const Followers = (props) => {
   const [load, setload] = useState(true);
@@ -61,20 +62,7 @@ const Followers = (props) => {
           }}
           keyExtractor={item => item._id}
           ListEmptyComponent={
-            <View style={{ flex: 1, backgroundColor: colors.background,alignItems:"center",marginTop:'50%'}}>
-            <View style={{ justifyContent: 'center', alignSelf: 'center', flex: 1 }}>
-            <LottieView
-                            autoPlay={true}
-                            loop={false}
-                            source={require('../animation/notfound.json')}
-                            style={{
-                             width:400,
-                             height: 300,
-                             alignSelf:'center',
-                            }} 
-                        /> 
-            </View>
-          </View>
+         <NotFoundComp />
           }
         />
     </Container>

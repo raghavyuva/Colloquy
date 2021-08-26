@@ -9,6 +9,7 @@ import LoadingComp from '../components/LoadingComp';
 const { width, height } = Dimensions.get('window');
 import { useSelector, useDispatch } from 'react-redux';
 import { setSubscribedFeeds } from '../redux/actions/FeedAction';
+import NotFoundComp from '../components/NotFoundComp';
 
 const Home = (props) => {
     const [refresh, setrefresh] = useState(false);
@@ -47,25 +48,10 @@ const Home = (props) => {
         ); 
     } 
 
-    if (subscribeddata.length == null || subscribeddata.length == 0 || subscribeddata.length == undefined || subscribeddata == null) {
-        return (
-            <View style={{ flex: 1, backgroundColor: colors.background, }}>
-                <Header {...props} />
-                <View style={{ justifyContent: 'center', alignSelf: 'center', flex: 1 }}>
-                    <Image
-                        source={{ uri: 'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fcdn.onlinewebfonts.com%2Fsvg%2Fimg_412721.png&f=1&nofb=1' }}
-                        style={{ width: width, height: 400, alignSelf: 'center', marginLeft: 2, justifyContent: 'center', }}
-                    />
-                </View>
-
-            </View>
-        )
-    }
     return (
         <SafeAreaView >
             <Header {...props} />
             <FlatList
-                // ref={(ref) => { flatListRef = ref; }}
                 renderItem={({ item }) => {
                     return (
                         <Postcard item={item} {...props} />
@@ -81,6 +67,9 @@ const Home = (props) => {
                 style={{ marginBottom: 50 }}
                 refreshing={refresh}
                 onRefresh={fetching}
+                ListEmptyComponent={
+                    <NotFoundComp />
+                }
             />
         </SafeAreaView>
     )

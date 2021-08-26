@@ -9,7 +9,12 @@ import firebase from 'firebase';
 import { Config } from '../config';
 const { width: screenWidth, } = Dimensions.get('window');
 import { LinearGradient } from 'expo-linear-gradient';
-
+import Svg, {
+    Stop,
+    Path,
+    Defs,
+    LinearGradient as Fgrad,
+  } from "react-native-svg";
 const ForgotPass = ({ navigation }) => {
     const { colors } = useTheme();
     const [password, setPassword] = useState(null);
@@ -57,7 +62,19 @@ const ForgotPass = ({ navigation }) => {
     }
     return (
         <View style={styles(colors).screen}>
-            <WaveComp />
+            <View
+        style={{
+          height: "15%",
+        }}
+      >
+        <Svg xmlns="http://www.w3.org/2000/svg">
+          <Path
+            fill="#e7008a"
+            fillOpacity="1"
+            d="M0,64L48,80C96,96,192,128,288,122.7C384,117,480,75,576,90.7C672,107,768,181,864,208C960,235,1056,213,1152,213.3C1248,213,1344,235,1392,245.3L1440,256L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z"
+          ></Path>
+        </Svg>
+      </View>
             {
                 canbeshown == true ? (
                     <>
@@ -83,7 +100,7 @@ const ForgotPass = ({ navigation }) => {
                                 onPress={newpassword}
                             >
                                 <LinearGradient
-                                    colors={[colors.card, colors.primary]}
+                                    colors={["#e7008a", "#e7008a"]}
                                     style={styles(colors).btn1}
                                     start={[0, 0]}
                                     end={[1, 1]}
@@ -112,7 +129,7 @@ const ForgotPass = ({ navigation }) => {
                                 onPress={SendResetLink}
                             >
                                 <LinearGradient
-                                    colors={[colors.card, colors.primary]}
+                                    colors={["#e7008a", "#e7008a"]}
                                     style={styles(colors).btn1}
                                     start={[0, 0]}
                                     end={[1, 1]}
@@ -147,7 +164,7 @@ const styles = (colors) => StyleSheet.create({
     },
     btntxt: {
         backgroundColor: 'transparent',
-        fontSize: 15, color: colors.text,
+        fontSize: 15, color: 'white',
         textAlign: 'center',
         fontFamily: 'Montserrat'
     },
@@ -171,5 +188,4 @@ const styles = (colors) => StyleSheet.create({
         textAlign: 'center',
         color: colors.text
     }
-
 })

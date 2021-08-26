@@ -17,7 +17,7 @@ const Welcome = (props) => {
     return (
         <View style={styles(colors).screen}>
             <Welcomecard  {...props} />
-            <GoogleAuthComp {...props} />
+            {/* <GoogleAuthComp {...props} /> */}
         </View>
     )
 }

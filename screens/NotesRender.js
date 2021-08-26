@@ -9,57 +9,85 @@ import {
   Modal,
   Alert,
   Pressable,
-
+  ToastAndroid
 } from "react-native";
 import Headingbar from "../components/Header";
 import React, { useEffect, useState } from "react";
 import { useTheme } from "@react-navigation/native";
 import { Searchbar, List } from "react-native-paper";
-import {
-  MaterialIcons,
-  AntDesign,
-  MaterialCommunityIcons,
-  Entypo,
-} from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import { Config } from "../config";
 import { useSelector, useDispatch } from "react-redux";
 import { WebView } from "react-native-webview";
 import LoadingComp from "../components/LoadingComp";
-
+import * as MediaLibrary from "expo-media-library";
+import * as FileSystem from "expo-file-system";
 const TopPart = ({ item }) => {
-   const [defaultRating, setDefaultRating] = useState(2);
-   const [maxRating, setMaxRating] = useState([1, 2, 3, 4, 5]);
-   const [modalVisible, setModalVisible] = useState(false);
-   const starImageFilled =
-     'https://raw.githubusercontent.com/AboutReact/sampleresource/master/star_filled.png';
-   const starImageCorner =
-     'https://raw.githubusercontent.com/AboutReact/sampleresource/master/star_corner.png';
-     const CustomRatingBar = () => {
-      return (
-        <View style={styles.customRatingBarStyle}>
-          {maxRating.map((item, key) => {
-            return (
-              <TouchableOpacity
-                activeOpacity={0.7}
-                key={item}
-                onPress={() => setDefaultRating(item)}>
-                <Image
-                  style={styles.starImageStyle}
-                  source={
-                    item <= defaultRating
-                      ? {uri: starImageFilled}
-                      : {uri: starImageCorner}
-                  }
-                />
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-      );
-    };
-     
+  const [defaultRating, setDefaultRating] = useState(2);
+  const [maxRating, setMaxRating] = useState([1, 2, 3, 4, 5]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const starImageFilled =
+    "https://raw.githubusercontent.com/AboutReact/sampleresource/master/star_filled.png";
+  const starImageCorner =
+    "https://raw.githubusercontent.com/AboutReact/sampleresource/master/star_corner.png";
+  const CustomRatingBar = () => {
+    return (
+      <View style={styles.customRatingBarStyle}>
+        {maxRating.map((item, key) => {
+          return (
+            <TouchableOpacity
+              activeOpacity={0.7}
+              key={item}
+              onPress={() => setDefaultRating(item)}
+            >
+              <Image
+                style={styles.starImageStyle}
+                source={
+                  item <= defaultRating
+                    ? { uri: starImageFilled }
+                    : { uri: starImageCorner }
+                }
+              />
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+    );
+  };
+
   const { colors } = useTheme();
- 
+  const downloadFile = (item) => {
+    Alert.alert("Download Post", "Do you want to download this post?,", [
+      { text: "Cancel" },
+      {
+        text: "YES",
+        onPress: () => {
+          const uri = item.Url;
+          var randomstring = Math.random().toString(36).slice(-9);
+          let fileUri =
+            FileSystem.documentDirectory +
+            `${item.postedBy.username + randomstring}.${item.type}`;
+          FileSystem.downloadAsync(uri, fileUri)
+            .then(({ uri }) => {
+              saveFile(uri);
+              ToastAndroid.show("Post Image Downloaded !", ToastAndroid.LONG);
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        },
+      },
+    ]);
+  };
+  const saveFile = async (fileUri) => {
+    const { status } = await MediaLibrary.requestPermissionsAsync();
+    if (status === "granted") {
+      const asset = await MediaLibrary.createAssetAsync(fileUri);
+      await MediaLibrary.createAlbumAsync("Primish", asset, false);
+    } else {
+      alert("provide permission");
+    }
+  };
   return (
     <View
       style={{
@@ -108,38 +136,9 @@ const TopPart = ({ item }) => {
         >
           <View
             style={{
-              width: 80,
-              height: 30,
               marginLeft: 5,
-              borderRadius: 15,
-              borderWidth: 1,
               borderColor: colors.border,
               marginTop: 5,
-              padding: 5,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 18,
-                color: colors.primary,
-                marginLeft: 5,
-                textAlign: "center",
-              }}
-            >
-              {item.branch}
-            </Text>
-          </View>
-          <View
-            style={{
-              height: 30,
-              marginLeft: 5,
-              borderRadius: 15,
-              borderWidth: 1,
-              borderColor: colors.border,
-              marginTop: 5,
-              padding: 15,
               justifyContent: "center",
               alignItems: "center",
             }}
@@ -153,7 +152,7 @@ const TopPart = ({ item }) => {
               }}
               numberOfLines={1}
             >
-              {item.type.includes("pdf") ? "pdf" : "word"}
+              {item.type?.includes("pdf") ? "pdf" : "word"}
             </Text>
           </View>
         </View>
@@ -172,39 +171,40 @@ const TopPart = ({ item }) => {
               marginRight: 15,
             }}
           >
-            <TouchableOpacity style={{
+            <TouchableOpacity
+              style={{
                 flexDirection: "row",
                 justifyContent: "center",
                 alignItems: "center",
-            }}
-            onPress={()=>setModalVisible(!modalVisible)}
-            >
-            <MaterialIcons name="star" color={colors.primary} size={26} />
-            <Text
-              style={{
-                color: colors.text,
-                marginLeft: 2,
-                fontWeight: "500",
               }}
+              onPress={() => setModalVisible(!modalVisible)}
             >
-              8.2
-            </Text>
+              <MaterialIcons name="star" color={colors.primary} size={26} />
+              <Text
+                style={{
+                  color: colors.text,
+                  marginLeft: 2,
+                  fontWeight: "500",
+                }}
+              >
+                8.2
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
       </View>
-      <View style={{
-        position:'absolute',
-        right:0,
-        bottom:0
-      }}>
-            <MaterialIcons
-              name="bookmark-outline"
-              color={colors.primary}
-              size={26}
-            />
-          </View>
-          <Modal
+      <View
+        style={{
+          position: "absolute",
+          right: 0,
+          bottom: 0,
+        }}
+      >
+        <TouchableOpacity onPress={()=>downloadFile(item)}>
+        <MaterialIcons name="save" color={colors.primary} size={26} />
+        </TouchableOpacity>
+      </View>
+      <Modal
         animationType="slide"
         transparent={true}
         visible={modalVisible}
@@ -212,11 +212,11 @@ const TopPart = ({ item }) => {
           Alert.alert("Modal has been closed.");
           setModalVisible(!modalVisible);
         }}
-      > 
+      >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-          <Text style={styles.modalText}>Rate this Notes</Text>
-          <CustomRatingBar />
+            <Text style={styles.modalText}>Rate this Notes</Text>
+            <CustomRatingBar />
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={() => setModalVisible(!modalVisible)}
@@ -253,7 +253,7 @@ const NotesRender = (props) => {
 
   useEffect(() => {
     fetching();
-    return () => {}; 
+    return () => {};
   }, []);
 
   const NotesCard = (item) => (
@@ -276,22 +276,28 @@ const NotesRender = (props) => {
       <View
         style={{
           position: "absolute",
-          right: 5,
+          right: 10,
           top: 10,
         }}
       >
-        <TouchableOpacity
-          onPress={() => {
-            setopen(item.Url);
-            setreading(true);
+        <View
+          style={{
+            borderColor: colors.border,
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
-          <MaterialCommunityIcons
-            name="read"
-            size={24}
-            color={colors.primary}
-          />
-        </TouchableOpacity>
+          <Text
+            style={{
+              fontSize: 18,
+              color: colors.primary,
+              marginLeft: 5,
+              textAlign: "center",
+            }}
+          >
+            {item.branch}
+          </Text>
+        </View>
       </View>
       <TopPart item={item} />
     </View>
@@ -349,7 +355,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 22
+    marginTop: 22,
   },
   modalView: {
     margin: 20,
@@ -360,7 +366,7 @@ const styles = StyleSheet.create({
   button: {
     borderRadius: 0,
     padding: 10,
-    marginTop:5
+    marginTop: 5,
   },
   buttonOpen: {
     backgroundColor: "#F194FF",
@@ -371,22 +377,22 @@ const styles = StyleSheet.create({
   textStyle: {
     color: "white",
     fontWeight: "bold",
-    textAlign: "center"
+    textAlign: "center",
   },
   modalText: {
     marginBottom: 5,
-    textAlign: "center"
+    textAlign: "center",
   },
 
   customRatingBarStyle: {
-    justifyContent: 'center',
-    flexDirection: 'row',
+    justifyContent: "center",
+    flexDirection: "row",
     marginTop: 0,
   },
   starImageStyle: {
     width: 40,
     height: 40,
-    resizeMode: 'cover',
+    resizeMode: "cover",
   },
 });
 const typeofnote = [

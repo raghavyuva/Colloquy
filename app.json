@@ -41,14 +41,7 @@
           "certificateHash": "47:69:5D:4C:B9:46:5F:F5:A7:3B:1D:5A:42:E9:CA:6F:92:B5:39:79"
         },
         "googleMobileAdsAppId": "ca-app-pub-6850525676679466~1665338563"
-      },
-      "permissions": [
-        "ACCESS_BACKGROUND_LOCATION",
-        "ACCESS_FINE_LOCATION",
-        "ACCESS_COARSE_LOCATION",
-        "READ_INTERNAL_STORAGE",
-        "READ_EXTERNAL_STORAGE"
-      ]
+      }
     },
     "web": {
       "favicon": "./assets/slack.png"
