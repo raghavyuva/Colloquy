@@ -48,10 +48,11 @@ const Login = ({ navigation }) => {
         body: JSON.stringify({
           email: email,
           password: password,
-        }),
+        }), 
       })
         .then((response) => response.json())
         .then((responseData) => {
+          console.log(responseData);
           if (responseData.message == "Auth successfull") {
             dispatch(setUserId(responseData.user._id));
             dispatch(setUserToken(responseData.token));

@@ -35,7 +35,6 @@ import Svg, {
 const Signup = ({ navigation }) => {
   const dispatch = useDispatch();
   const recaptchaVerifier = useRef(null);
-  const [age, setAge] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [loggingin, setloggingin] = useState(false);
@@ -147,13 +146,13 @@ const Signup = ({ navigation }) => {
         alert("OTP has been sent to your phone number");
         setotpactive(true);
       });
-  };
+  }; 
 
   const CELL_COUNT = 6;
 
   if (loggingin) {
     return <LoadingComp />;
-  }
+  } 
   return (
     <View style={styles(colors).screen}>
       <View

@@ -13,5 +13,6 @@ function Payment_Parent({disabled,date,time,Branch}) {
         </StripeProvider>
     );
 }
+ 
 
-export default Payment_Parent;
+export default Payment_Parent; 

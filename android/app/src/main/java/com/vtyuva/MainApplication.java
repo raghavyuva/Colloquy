@@ -6,6 +6,7 @@ import android.net.Uri;
 
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.rnfs.RNFSPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import io.github.elyx0.reactnativedocumentpicker.DocumentPickerPackage;
 import com.facebook.react.ReactInstanceManager;

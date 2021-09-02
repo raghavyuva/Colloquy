@@ -21,13 +21,19 @@ import Image from "react-native-image-progress";
 import * as Progress from "react-native-progress";
 import { useSelector, useDispatch } from "react-redux";
 import Headingbar from "../components/Header";
+import mime from "mime";
 
 const BottomComponent = (props) => {
   const { colors } = useTheme();
   const user = useSelector((state) => state.userDetails.user);
   const User = useSelector((state) => state.userDetails);
   const [username, setusername] = useState(user.user.username);
-  const [postimage, setpostimage] = useState(user.user.userphoto);
+  const [postimage, setpostimage] = useState(
+    `${Config.url}/${user?.user.userphoto.substring(
+      8,
+      user.user.userphoto.length
+    )}`
+  );
   const [body, setbody] = useState(user.user.tagline);
   const [image, setimage] = useState("");
   const [email, setemail] = useState(null);
@@ -82,55 +88,48 @@ const BottomComponent = (props) => {
   };
   const _upload = async () => {
     if (postimage == user.user.userphoto) {
+      console.log("hey");
+
+      // fetch(`${Config.url}` + `/user/update`, {
+      //   method: "PUT",
+      //   headers: {
+      //     Authorization: "Bearer " + `${User.userToken}`,
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify({
+      //     tagline: body,
+      //     username: username,
+      //     userphoto: user.user.userphoto,
+      //   }),
+      // })
+      //   .then((res) => res.json())
+      //   .then((resp) => {
+      //     console.log(resp);
+      //   });
+    } else {
+      const newImageUri = "file:///" + postimage.split("file:/").join("");
+      console.log(newImageUri);
+      console.log(mime.getType(newImageUri));
+      console.log(newImageUri.split("/").pop());
+      const formData = new FormData();
+      formData.append("myfile", {
+        uri: newImageUri,
+        type: mime.getType(newImageUri),
+        name: newImageUri.split("/").pop(),
+      });
+      formData.append("username", username);
+      formData.append("tagline", body);
+      console.log(formData);
       fetch(`${Config.url}` + `/user/update`, {
         method: "PUT",
         headers: {
           Authorization: "Bearer " + `${User.userToken}`,
-          "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          tagline: body,
-          username: username,
-          userphoto: user.user.userphoto,
-        }),
+        body: formData,
       })
         .then((res) => res.json())
         .then((resp) => {
           console.log(resp);
-        });
-    } else {
-      const uriArr = postimage.split(".");
-      const fileType = uriArr[uriArr.length - 1];
-      const file = `data:${fileType};base64,${image}`;
-      const data = new FormData();
-      data.append("file", file);
-      data.append("upload_preset", "primish");
-      data.append("cloud_name", "raghavyuva");
-      fetch("https://api.cloudinary.com/v1_1/raghavyuva/image/upload", {
-        method: "POST",
-        body: data,
-      })
-        .then((res) => res.json())
-        .then((da) => {
-          fetch(`${Config.url}` + `/user/update`, {
-            method: "PUT",
-            headers: {
-              Authorization: "Bearer " + `${User.userToken}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              tagline: body,
-              username: username,
-              userphoto: da.secure_url,
-            }),
-          })
-            .then((res) => res.json())
-            .then((resp) => {
-              console.log(resp);
-            });
-        })
-        .catch((err) => {
-          Alert.alert(err);
         });
     }
   };

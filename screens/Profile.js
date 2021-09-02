@@ -88,7 +88,12 @@ const Profile = (props) => {
       <View style={styles(colors).mainscreen}>
         <View style={{ flexDirection: "row" }}>
           <Image
-            source={{ uri: user.user.userphoto }}
+            source={{
+              uri: `${Config.url}/${user?.user?.userphoto.substring(
+                8,
+                user.user.userphoto.length
+              )}`,
+            }}
             style={{
               height: 150,
               width: 150,

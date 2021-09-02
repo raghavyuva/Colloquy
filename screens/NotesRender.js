@@ -9,7 +9,7 @@ import {
   Modal,
   Alert,
   Pressable,
-  ToastAndroid
+  ToastAndroid,
 } from "react-native";
 import Headingbar from "../components/Header";
 import React, { useEffect, useState } from "react";
@@ -62,7 +62,9 @@ const TopPart = ({ item }) => {
       {
         text: "YES",
         onPress: () => {
-          const uri = item.Url;
+          console.log(item.Url);
+          let urix = `${Config.url}/${item?.Url.substring(8, item.Url.length)}`;
+          const uri = urix;
           var randomstring = Math.random().toString(36).slice(-9);
           let fileUri =
             FileSystem.documentDirectory +
@@ -70,7 +72,7 @@ const TopPart = ({ item }) => {
           FileSystem.downloadAsync(uri, fileUri)
             .then(({ uri }) => {
               saveFile(uri);
-              ToastAndroid.show("Post Image Downloaded !", ToastAndroid.LONG);
+              ToastAndroid.show(" Downloaded !", ToastAndroid.LONG);
             })
             .catch((error) => {
               console.error(error);
@@ -200,8 +202,8 @@ const TopPart = ({ item }) => {
           bottom: 0,
         }}
       >
-        <TouchableOpacity onPress={()=>downloadFile(item)}>
-        <MaterialIcons name="save" color={colors.primary} size={26} />
+        <TouchableOpacity onPress={() => downloadFile(item)}>
+          <MaterialIcons name="save" color={colors.primary} size={26} />
         </TouchableOpacity>
       </View>
       <Modal

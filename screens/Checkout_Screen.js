@@ -29,7 +29,7 @@ export default function PaymentsUICompleteScreen({ item,disabled,date,time,Branc
           PackageName: "mockinterview",
           user: user.user.user,
           date:date,
-          time:time,
+          time:time, 
           Branch:Branch,
         },
       }),
@@ -58,6 +58,7 @@ export default function PaymentsUICompleteScreen({ item,disabled,date,time,Branc
       Alert.alert(`Error code: ${error.code}`, error.message);
       console.log(error);
     } else {
+      console.log(paymentIntent);
       Alert.alert("Success", "The payment was confirmed successfully");
       fetch(`${Config.url}/create-invoice`, {
         method: "POST",
@@ -75,7 +76,7 @@ export default function PaymentsUICompleteScreen({ item,disabled,date,time,Branc
             console.log(error);
           }
         });
-    }
+    } 
     setPaymentSheetEnabled(false);
   };
 

@@ -263,7 +263,10 @@ const Headingbar = (props) => {
                   <>
                     <Avatar.Image
                       source={{
-                        uri: user.userphoto,
+                        uri: `${Config.url}/${user?.userphoto.substring(
+                          8,
+                          user.userphoto.length
+                        )}`,
                       }}
                       size={30}
                       style={{ borderRadius: 14 }}
@@ -298,8 +301,9 @@ const Headingbar = (props) => {
   const Headerforchat = (props) => {
     return (
       <Header style={{ backgroundColor: colors.card }}>
-        <StatusBar backgroundColor={colors.background}
-         barStyle={darkcontent?.dark ? "light-content" : "dark-content"}
+        <StatusBar
+          backgroundColor={colors.background}
+          barStyle={darkcontent?.dark ? "light-content" : "dark-content"}
         />
         <Left>
           <Button

@@ -160,9 +160,9 @@ export function DrawerContent(props) {
                             labelStyle={{ color: colors.text }}
                             label="Contact Us"
                             onPress={() => {
-                                // Linking.openURL('https://t.me/raghavyuva');
+                                Linking.openURL('https://t.me/raghavyuva');
                             }}
-                        />
+                        /> 
                         <DrawerItem
                             icon={({ color, size }) => (
                                 <MaterialIcons name="privacy-tip" size={24} color={colors.text} />
