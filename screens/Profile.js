@@ -54,7 +54,7 @@ const Profile = (props) => {
         });
     } catch (e) {
       console.log(e);
-    }
+    } 
   };
 
   const getPermissionAsync = async () => {
@@ -111,7 +111,7 @@ const Profile = (props) => {
           />
           <View>
             <View style={{ marginTop: 50 }}>
-              <Text style={styles(colors).txt1}>{user.user.username}</Text>
+              <Text style={styles(colors).txt1} note >{user.user.username}</Text>
             </View>
             <View style={{ width: 250, marginRight: 10 }}>
               {user.user.tagline == null ? (
@@ -216,7 +216,6 @@ const Profile = (props) => {
             </Text>
           </View>
         </View>
-
         <Fab
           active={active}
           direction="up"
@@ -303,9 +302,10 @@ const styles = (colors) =>
       marginBottom: 10,
     },
     txt1: {
-      fontSize: 25,
+      fontSize: 20,
       color: colors.text,
       fontWeight: "bold",
+      flexWrap: "wrap"
     },
     txt2: {
       fontSize: 16,

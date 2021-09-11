@@ -33,6 +33,7 @@ import Terms from '../screens/TermsAndCondition';
 import { useSelector, useDispatch } from 'react-redux';
 import { setUser } from '../redux/actions/UserAction';
 import BottomComponent from '../screens/Updateprofile';
+import Search from '../screens/Search';
 
 const Tab = createMaterialBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -58,6 +59,7 @@ function External() {
             <Stack.Screen name='rendernotes' component={NotesRender} />
             <Stack.Screen name='uploadNotes' component={NotesUpload} />
             <Stack.Screen name='editprofile' component={BottomComponent} />
+            <Stack.Screen name='search' component={Search} />
         </Stack.Navigator>
     );
 }
@@ -90,21 +92,21 @@ function HomeScreen() {
 
 
             />
-             <Tab.Screen
+            <Tab.Screen
                 name="subscribed"
                 component={Subscription}
                 options={{
                     tabBarLabel: 'subscribed',
                     tabBarColor: 'red',
-                    
+
                     tabBarIcon: ({ color }) => (
-                        <MaterialCommunityIcons name="post-outline" size={24} color={color}  />
+                        <MaterialCommunityIcons name="post-outline" size={24} color={color} />
                     ),
-                    
+
                 }}
 
-            /> 
-             <Tab.Screen
+            />
+            <Tab.Screen
                 name="addblog"
                 component={Uploadpost}
                 options={{
@@ -140,7 +142,7 @@ function HomeScreen() {
 
                 }}
 
-            /> 
+            />
         </Tab.Navigator>
     );
 }

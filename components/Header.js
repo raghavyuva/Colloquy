@@ -240,7 +240,7 @@ const Headingbar = (props) => {
               <BottomComponent />
             </Button>
             {props.route.name === "Home" ? (
-              <Button transparent onPress={ActivateSearch}>
+              <Button transparent onPress={() => props.navigation.navigate('search')}>
                 <Icon name="search" style={{ color: colors.text }} />
               </Button>
             ) : (
@@ -371,7 +371,7 @@ const Headingbar = (props) => {
         </Left>
         <TouchableOpacity
           style={{ flexDirection: "row" }}
-          // onPress={() => props.navigation.navigate('external', { screen: 'userpro', params: { thread: props.user._id } })}
+        // onPress={() => props.navigation.navigate('external', { screen: 'userpro', params: { thread: props.user._id } })}
         >
           <Avatar.Image
             source={{
